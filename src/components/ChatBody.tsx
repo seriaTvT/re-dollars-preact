@@ -43,6 +43,7 @@ import { fetchHistoryMessages, fetchRecentMessages, fetchMessageContext, fetchNe
 import { formatDate } from '@/utils/format';
 import { syncPresenceSubscriptions } from '@/hooks/useWebSocket';
 import { insertUnreadSeparator } from '@/hooks/useStateKeeper';
+import { smoothScrollTo as sharedSmoothScrollTo } from '@/utils/smoothScroll';
 
 // 配置常量
 const MAX_DOM_MESSAGES = 100;
@@ -59,7 +60,7 @@ export function ChatBody() {
     const isProgrammaticScroll = useRef(false); // 程序滚动标记，防止 ResizeObserver 干扰
 
     /**
-     * 自定义平滑滚动函数 - 使用 easeOutExpo 缓动实现丝滑效果
+     * 自定义平滑滚动函数 - 委托给共享的平滑滚动工具
      * @param targetTop - 目标滚动位置
      * @param duration - 动画时长 (ms)，如果未指定则根据距离动态计算
      */
@@ -71,43 +72,10 @@ export function ChatBody() {
             cancelAnimationFrame(scrollAnimationRef.current);
         }
 
-        const container = bodyRef.current;
-        const startTop = container.scrollTop;
-        const distance = Math.abs(targetTop - startTop);
-
-        // 如果距离很短，不需要动画，直接跳转
-        if (distance < 10) {
-            container.scrollTop = targetTop;
-            return;
-        }
-
-        // 动态计算时长：更快的基准速度，更平滑的过渡
-        // 短距离 (< 500px): 250-350ms
-        // 中等距离 (500-2000px): 350-500ms  
-        // 长距离 (> 2000px): 500-650ms
-        const calculatedDuration = duration ?? Math.min(250 + Math.sqrt(distance) * 8, 650);
-        const startTime = performance.now();
-        const diff = targetTop - startTop;
-
-        // easeOutExpo - 更丝滑的指数缓动，开始快后减速更自然
-        const easeOutExpo = (t: number) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-
-        const animateScroll = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / calculatedDuration, 1);
-            const eased = easeOutExpo(progress);
-
-            container.scrollTop = startTop + diff * eased;
-
-            if (progress < 1) {
-                scrollAnimationRef.current = requestAnimationFrame(animateScroll);
-            } else {
-                scrollAnimationRef.current = null;
-            }
-        };
-
-        scrollAnimationRef.current = requestAnimationFrame(animateScroll);
+        const animId = sharedSmoothScrollTo(bodyRef.current, targetTop, { duration });
+        scrollAnimationRef.current = animId;
     }, []);
+
 
     // 滚动到底部
     const scrollToBottom = useCallback((smooth = true) => {

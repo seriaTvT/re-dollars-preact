@@ -27,6 +27,11 @@ export const profileCardUserId = signal<string | null>(null);
 export const profileCardAnchor = signal<HTMLElement | null>(null);
 export const isProfileCardClosing = signal(false);
 
+// 用户资料页面（Telegram 风格）
+export const isUserProfilePanelOpen = signal(false);
+export const isUserProfilePanelClosing = signal(false);
+export const userProfilePanelUserId = signal<string | null>(null);
+
 // 图片查看器
 export const isImageViewerOpen = signal(false);
 export const imageViewerImages = signal<string[]>([]);
@@ -118,6 +123,24 @@ export function hideProfileCard() {
         profileCardAnchor.value = null;
         isProfileCardClosing.value = false;
     }, 200); // 匹配 CSS 动画时长
+}
+
+// 显示用户资料页面（Telegram 风格）
+export function showUserProfile(userId: string) {
+    userProfilePanelUserId.value = userId;
+    isUserProfilePanelClosing.value = false;
+    isUserProfilePanelOpen.value = true;
+}
+
+// 隐藏用户资料页面 (带动画)
+export function hideUserProfile() {
+    if (!isUserProfilePanelOpen.value || isUserProfilePanelClosing.value) return;
+    isUserProfilePanelClosing.value = true;
+    setTimeout(() => {
+        isUserProfilePanelOpen.value = false;
+        isUserProfilePanelClosing.value = false;
+        userProfilePanelUserId.value = null;
+    }, 250);
 }
 
 // 显示图片查看器

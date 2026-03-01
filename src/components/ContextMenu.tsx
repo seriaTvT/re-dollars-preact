@@ -153,10 +153,10 @@ export function ContextMenu() {
 
         hideContextMenu();
 
-        const msgData = messageStore.value.get(targetId);
-        if (!msgData) return;
+        const msg = messageMap.value.get(Number(targetId));
+        if (!msg) return;
 
-        const rawContent = msgData.raw;
+        const rawContent = msg.message;
         const quoteRegex = /^(\[quote(?:=[^\]]*)?\][\s\S]*?\[\/quote\])\s*/i;
         const match = rawContent.match(quoteRegex);
 
@@ -171,7 +171,8 @@ export function ContextMenu() {
         setEditingMessage({
             id: targetId,
             raw: editableText,
-            hiddenQuote
+            hiddenQuote,
+            image_meta: msg.image_meta
         });
     }, []);
 

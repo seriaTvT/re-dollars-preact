@@ -4,22 +4,7 @@ import { searchQuery } from '@/stores/chat';
 import { fetchUserProfile } from '@/utils/api';
 import { getAvatarUrl, formatDate } from '@/utils/format';
 import { SVGIcons } from '@/utils/constants';
-
-interface UserProfile {
-    id: number;
-    nickname: string;
-    username: string;
-    avatar: string;
-    sign?: string;
-    url: string;
-    lastActive?: number;
-    stats?: {
-        message_count: number;
-        average_messages_per_day: number;
-        first_message_time: string;
-        last_message_time: string;
-    };
-}
+import type { UserProfile } from '@/types';
 
 export function ProfileCard() {
     const cardRef = useRef<HTMLDivElement>(null);

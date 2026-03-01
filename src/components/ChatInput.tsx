@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'preact/hooks';
-import { replyingTo, editingMessage, cancelReplyOrEdit, addOptimisticMessage, removeOptimisticMessage, pendingMention, setReplyTo } from '@/stores/chat';
+import { replyingTo, editingMessage, cancelReplyOrEdit, addOptimisticMessage, removeOptimisticMessage, pendingMention, setReplyTo, updateMessage } from '@/stores/chat';
 import { toggleSmileyPanel, inputAreaHeight, showImageViewer } from '@/stores/ui';
 import { userInfo, settings } from '@/stores/user';
 import { sendMessage as apiSendMessage, editMessage as apiEditMessage, uploadFile, lookupUsersByName } from '@/utils/api';
@@ -69,7 +69,7 @@ export function ChatInput() {
     };
 
     // 解析图片和视频
-    const parseMediaFiles = (text: string) => {
+    const parseMediaFiles = (text: string, knownMeta?: Record<string, import('@/types').ImageMeta>) => {
         const imgRegex = /\[img\](.*?)\[\/img\]/g;
         const videoRegex = /\[video\](.*?)\[\/video\]/g;
 
@@ -97,7 +97,21 @@ export function ChatInput() {
             // 保留已有的尺寸信息
             return media.map(({ type, url }) => {
                 const existing = prev.find(p => p.url === url);
-                return existing ? { ...existing, type, url } : { type, url };
+                if (existing) {
+                    return { ...existing, type, url };
+                }
+                // 如果有已知的 meta 信息，使用它
+                if (knownMeta && knownMeta[url]) {
+                    const meta = knownMeta[url];
+                    return {
+                        type,
+                        url,
+                        width: meta.width,
+                        height: meta.height,
+                        placeholder: meta.blurhash
+                    };
+                }
+                return { type, url };
             });
         });
     };
@@ -179,7 +193,8 @@ export function ChatInput() {
                     uid: reply.uid,
                     user: reply.user,
                     avatar: reply.avatar,
-                    text: reply.text
+                    text: reply.text,
+                    raw: reply.raw
                 } : null;
                 saveDraft(content, replyInfo);
             }, 1000);
@@ -286,7 +301,10 @@ export function ChatInput() {
 
             // 恢复回复状态
             if (draft.replyTo) {
-                setReplyTo(draft.replyTo);
+                setReplyTo({
+                    ...draft.replyTo,
+                    raw: draft.replyTo.raw || draft.replyTo.text
+                });
             }
         }
 
@@ -302,6 +320,8 @@ export function ChatInput() {
             textareaRef.current.focus();
             // Trigger auto-grow
             handleInput();
+            // 解析媒体文件，传入已知的 meta
+            parseMediaFiles(msg.raw, msg.image_meta);
         }
     }, [editingMessage.value]);
 
@@ -332,6 +352,21 @@ export function ChatInput() {
                     // 编辑成功后清空输入框
                     textarea.value = '';
                     textarea.style.height = 'auto';
+
+                    // 更新本地 store 中的 image_meta
+                    const imageMeta: Record<string, import('@/types').ImageMeta> = {};
+                    for (const media of previewMedia) {
+                        if (media.type === 'image' && media.width && media.height) {
+                            imageMeta[media.url] = {
+                                width: media.width,
+                                height: media.height,
+                                blurhash: media.placeholder
+                            };
+                        }
+                    }
+                    if (Object.keys(imageMeta).length > 0) {
+                        updateMessage(Number(editingMessage.value.id), { image_meta: imageMeta });
+                    }
                 }
                 cancelReplyOrEdit();
             } else {
@@ -428,7 +463,13 @@ export function ChatInput() {
     // 文件上传
     const handlePaste = async (e: ClipboardEvent) => {
         const items = [...(e.clipboardData?.items || [])].filter(
-            (it) => it.kind === 'file' && (it.type.startsWith('image/') || it.type.startsWith('video/') || it.type.startsWith('audio/'))
+            (it) => it.kind === 'file' && (
+                it.type.startsWith('image/') ||
+                it.type.startsWith('video/') ||
+                it.type.startsWith('audio/') ||
+                it.type === 'application/octet-stream' || // Some browsers report this for certain image types
+                it.type === '' // Firefox sometimes reports empty type for pasted images
+            )
         );
 
         if (items.length > 0) {
@@ -442,16 +483,55 @@ export function ChatInput() {
         }
     };
 
+    // Known file extensions for client-side validation
+    const ALLOWED_IMAGE_EXTS = new Set([
+        '.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif',
+        '.bmp', '.tiff', '.tif', '.svg', '.heic', '.heif',
+        '.ico', '.jxl', '.apng',
+    ]);
+    const ALLOWED_VIDEO_EXTS = new Set([
+        '.mp4', '.webm', '.mov', '.mkv', '.avi',
+    ]);
+    const ALLOWED_AUDIO_EXTS = new Set([
+        '.mp3', '.wav', '.ogg', '.aac', '.flac', '.weba',
+    ]);
+
     const handleFileUpload = async (file: File) => {
+        // Client-side file type validation
+        const ext = '.' + (file.name.split('.').pop() || '').toLowerCase();
+        const isImage = file.type.startsWith('image/') || ALLOWED_IMAGE_EXTS.has(ext);
+        const isVideo = file.type.startsWith('video/') || ALLOWED_VIDEO_EXTS.has(ext);
+        const isAudio = file.type.startsWith('audio/') || ALLOWED_AUDIO_EXTS.has(ext);
+
+        if (!isImage && !isVideo && !isAudio) {
+            alert(`不支持的文件格式: ${ext || file.type || '未知'}\n支持的图片格式: JPEG, PNG, WebP, GIF, AVIF, BMP, HEIC, TIFF 等\n支持的视频格式: MP4, WebM, MOV, MKV 等`);
+            return;
+        }
+
+        // Handle files with missing MIME type (common for HEIC on some platforms)
+        let fileToUpload = file;
+        if (!file.type && isImage) {
+            // Create a new file with corrected MIME type based on extension
+            const mimeMap: Record<string, string> = {
+                '.heic': 'image/heic', '.heif': 'image/heif',
+                '.bmp': 'image/bmp', '.tiff': 'image/tiff', '.tif': 'image/tiff',
+                '.jxl': 'image/jxl', '.avif': 'image/avif',
+                '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+                '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif',
+            };
+            const correctedMime = mimeMap[ext] || 'application/octet-stream';
+            fileToUpload = new File([file], file.name, { type: correctedMime });
+        }
+
         setIsUploading(true);
 
         // Pre-calculate image dimensions client-side (before upload)
         let clientWidth = 0;
         let clientHeight = 0;
-        if (file.type.startsWith('image/')) {
+        if (isImage) {
             try {
                 const img = new Image();
-                const objectUrl = URL.createObjectURL(file);
+                const objectUrl = URL.createObjectURL(fileToUpload);
                 await new Promise<void>((resolve) => {
                     img.onload = () => {
                         clientWidth = img.naturalWidth;
@@ -471,14 +551,14 @@ export function ChatInput() {
         }
 
         try {
-            const result = await uploadFile(file);
+            const result = await uploadFile(fileToUpload);
             if (result.status && result.url) {
                 const textarea = textareaRef.current;
                 if (textarea) {
                     let tag = 'img';
-                    if (file.type.startsWith('video/')) {
+                    if (isVideo) {
                         tag = 'video';
-                    } else if (file.type.startsWith('audio/')) {
+                    } else if (isAudio) {
                         tag = 'audio';
                     }
                     const bbcode = `[${tag}]${result.url}[/${tag}]`;
@@ -505,7 +585,7 @@ export function ChatInput() {
                 alert(result.error || '上传失败');
             }
         } catch (e) {
-            alert('上传失败');
+            alert('上传失败，请重试');
         } finally {
             setIsUploading(false);
         }

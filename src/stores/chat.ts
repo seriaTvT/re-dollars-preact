@@ -83,6 +83,7 @@ export interface ReplyInfo {
     user: string;
     avatar: string;
     text: string;
+    raw: string;
 }
 
 export interface Draft {
@@ -249,6 +250,7 @@ export const editingMessage = signal<{
     id: string;
     raw: string;
     hiddenQuote?: string;
+    image_meta?: Record<string, import('@/types').ImageMeta>;
 } | null>(null);
 
 // 未读计数
@@ -858,13 +860,12 @@ export function setActiveConversation(conversationId: string) {
  * 更新会话最后消息
  */
 export function updateConversationLastMessage(conversationId: string, text: string, timestamp: number) {
-    conversations.value = conversations.value.map(conv =>
+    const updated = conversations.value.map(conv =>
         conv.id === conversationId
             ? { ...conv, lastMessage: { text, timestamp } }
             : conv
     );
-    // 按时间排序
-    conversations.value = [...conversations.value].sort(
-        (a, b) => (b.lastMessage.timestamp || 0) - (a.lastMessage.timestamp || 0)
-    );
+    // 按时间排序 (就地排序，避免额外数组分配)
+    updated.sort((a, b) => (b.lastMessage.timestamp || 0) - (a.lastMessage.timestamp || 0));
+    conversations.value = updated;
 }

@@ -282,9 +282,25 @@ function stopHeartbeat() {
 }
 
 /**
+ * 发送 WebSocket 消息的类型 (outgoing)
+ */
+type OutgoingWSMessage =
+    | { type: 'identify'; uid: string }
+    | { type: 'join'; user: { id: string; name: string; avatar: string } }
+    | { type: 'presence'; open: boolean }
+    | { type: 'presence_subscribe'; uids: string[] }
+    | { type: 'presence_unsubscribe'; uids?: string[] }
+    | { type: 'presence_query'; uids: string[] }
+    | { type: 'ping' }
+    | { type: 'ack'; ackId: string }
+    | { type: 'typing_start' }
+    | { type: 'typing_stop' }
+    | { type: 'pending_message'; tempId: string; content: string };
+
+/**
  * 发送 WebSocket 消息
  */
-function sendMessage(data: any) {
+function sendMessage(data: OutgoingWSMessage) {
     if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify(data));
     }
@@ -372,15 +388,16 @@ function handleWebSocketMessage(data: any) {
         case 'presence_result':
             if (Array.isArray(data.users)) {
                 const newOnlineUsers = new Map(onlineUsers.value);
+                let changed = false;
                 data.users.forEach(({ id, active }: { id: string; active: boolean }) => {
                     const uid = String(id);
                     if (active) {
-                        newOnlineUsers.set(uid, true as any);
+                        if (!newOnlineUsers.has(uid)) { newOnlineUsers.set(uid, true as any); changed = true; }
                     } else {
-                        newOnlineUsers.delete(uid);
+                        if (newOnlineUsers.has(uid)) { newOnlineUsers.delete(uid); changed = true; }
                     }
                 });
-                onlineUsers.value = newOnlineUsers;
+                if (changed) onlineUsers.value = newOnlineUsers;
             }
             break;
 
@@ -409,6 +426,15 @@ function handleWebSocketMessage(data: any) {
                 typingUserId,
                 data.user.name || data.user.nickname
             );
+            // 10秒后自动清除输入状态（防止 typing_stop 丢失）
+            setTimeout(() => {
+                const current = typingUsers.value;
+                if (current.has(typingUserId)) {
+                    const next = new Map(current);
+                    next.delete(typingUserId);
+                    typingUsers.value = next;
+                }
+            }, 10000);
             break;
         }
 

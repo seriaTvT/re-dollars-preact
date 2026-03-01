@@ -1,5 +1,5 @@
 import { onlineCount, conversations, activeConversationId, toggleChat } from '@/stores/chat';
-import { isMaximized, toggleMaximize, toggleSearch, isSearchActive, isNarrowLayout, mobileChatViewActive, setMobileChatView } from '@/stores/ui';
+import { isMaximized, toggleMaximize, toggleSearch, isSearchActive, isNarrowLayout, mobileChatViewActive, setMobileChatView, isUserProfilePanelOpen, hideUserProfile } from '@/stores/ui';
 import { activeExtensionId, extensionConversations } from '@/stores/extensionConversations';
 import { SVGIcons } from '@/utils/constants';
 import { openSettingsPanel } from '@/utils/settingsPanel';
@@ -58,6 +58,41 @@ export function ChatHeader() {
         showOnlineStatus = activeConv.type === 'channel';
     }
 
+    // 用户资料页面模式（仅窄视图/全屏时接管 header）
+    if (isUserProfilePanelOpen.value && isNarrowLayout.value) {
+        return (
+            <div class="chat-header">
+                <div class="chat-header-left-pane">
+                    <button
+                        id="dollars-back-btn"
+                        class="header-btn"
+                        title="返回"
+                        onClick={hideUserProfile}
+                        dangerouslySetInnerHTML={{ __html: SVGIcons.arrowLeft }}
+                    />
+                </div>
+                <div class="title-wrapper">
+                    <div class="header-text-column">
+                        <span class="header-main-title">用户资料</span>
+                    </div>
+                </div>
+                <div class="header-buttons">
+                    <button
+                        id="dollars-maximize-btn"
+                        class="header-btn maximize-btn"
+                        title={isMaximized.value ? '还原' : '最大化'}
+                        onClick={handleMaximize}
+                    />
+                    <button
+                        class="header-btn close-btn"
+                        title="关闭"
+                        onClick={handleClose}
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div class="chat-header">
             <div class="chat-header-left-pane">
@@ -76,7 +111,7 @@ export function ChatHeader() {
                     title="返回"
                     onClick={handleBack}
                     style={{ display: isShowingChatView ? 'flex' : 'none' }}
-                    dangerouslySetInnerHTML={{ __html: SVGIcons.arrowLeft || '<svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>' }}
+                    dangerouslySetInnerHTML={{ __html: SVGIcons.arrowLeft }}
                 />
             </div>
 

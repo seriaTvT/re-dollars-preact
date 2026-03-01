@@ -1,6 +1,6 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'preact/hooks';
 import { isMobile } from '@/utils/format';
-import { memo } from 'preact/compat';
+import { memo } from '@/utils/memo';
 import { DollarsBlurHash } from '@/utils/blurhash';
 import { messageStore, setReplyTo, newMessageIds, retryMessage } from '@/stores/chat';
 import { settings } from '@/stores/user';
@@ -46,6 +46,14 @@ const COLLAPSE_THRESHOLD = 500;
 export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext }: MessageItemProps) => {
     const messageRef = useRef<HTMLDivElement>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isNew, setIsNew] = useState(() => newMessageIds.peek().has(message.id));
+
+    useEffect(() => {
+        if (isNew) {
+            const timer = setTimeout(() => setIsNew(false), 350);
+            return () => clearTimeout(timer);
+        }
+    }, [isNew]);
 
     // 提取原始值用于依赖
     const messageId = message.id;
@@ -361,7 +369,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
         isGrouped && 'is-grouped-with-prev',
         isGroupedWithNext && 'is-grouped-with-next',
         editedAt && !isDeleted && 'is-edited',
-        newMessageIds.value.has(messageId) && 'new-message',
+        isNew && 'new-message',
         message.state === 'sending' && 'pending',
         message.state === 'failed' && 'failed',
     ].filter(Boolean).join(' ');

@@ -160,8 +160,6 @@ export function initDollarsAPI(): void {
     isChatOpen.subscribe((isOpen) => {
         api.events.emit(isOpen ? 'chatOpen' : 'chatClose');
     });
-
-    console.log(`[Re:Dollars] Extension API v${API_VERSION} initialized`);
 }
 
 /**

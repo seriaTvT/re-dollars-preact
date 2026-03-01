@@ -23,6 +23,7 @@ export const settings = signal<Settings>({
     rememberOpenState: false,
 
     backgroundMode: 'tint',
+    glassBlur: true,
 });
 
 // 屏蔽用户

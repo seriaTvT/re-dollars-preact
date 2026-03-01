@@ -80,17 +80,12 @@ export const getAvatarUrl = (avatar: string, size: 's' | 'm' | 'l' = 'l', fallba
 /**
  * 防抖函数
  */
-export function debounce<T extends (...args: any[]) => any>(fn: T, delay = 400) {
+export function debounce<T extends (...args: any[]) => any>(fn: T, delay = 400): T {
     let t: ReturnType<typeof setTimeout>;
-    const debounced = (...args: Parameters<T>) => {
+    return ((...args: Parameters<T>) => {
         clearTimeout(t);
         t = setTimeout(() => fn(...args), delay);
-    };
-    (debounced as any).flush = (...args: Parameters<T>) => {
-        clearTimeout(t);
-        fn(...args);
-    };
-    return debounced as T & { flush: T };
+    }) as T;
 }
 
 /**

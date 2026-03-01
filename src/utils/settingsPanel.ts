@@ -75,6 +75,12 @@ const settingsConfig: SettingsConfigItem[] = [
         },
         onchange: applyBackgroundPattern,
     },
+    {
+        key: 'glassBlur',
+        type: 'checkbox',
+        label: '玻璃模糊',
+        onchange: applyGlassBlur,
+    },
 ];
 
 function applyHomeCardDisplay() {
@@ -92,6 +98,17 @@ function applyBackgroundPattern() {
     }
 }
 
+function applyGlassBlur() {
+    const root = document.getElementById('dollars-chat-root');
+    if (root) {
+        if (settings.value.glassBlur) {
+            root.classList.remove('disable-blur');
+        } else {
+            root.classList.add('disable-blur');
+        }
+    }
+}
+
 function handleRememberOpenStateChange() {
     // 如果关闭了记忆状态，清除所有保存的窗口状态
     if (!settings.value.rememberOpenState) {
@@ -102,7 +119,7 @@ function handleRememberOpenStateChange() {
     } else {
         // 如果开启了记忆状态，保存当前所有窗口状态
         localStorage.setItem('dollars.isChatOpen', JSON.stringify(isChatOpen.value));
-        
+
         // 导入 UI 状态
         import('@/stores/ui').then(({ isMaximized, mobileChatViewActive }) => {
             localStorage.setItem('dollars.isMaximized', JSON.stringify(isMaximized.value));
@@ -116,6 +133,7 @@ function handleRememberOpenStateChange() {
 export function applyAllSettings() {
     applyHomeCardDisplay();
     applyBackgroundPattern();
+    applyGlassBlur();
 }
 
 function generateApiConfig() {

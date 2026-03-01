@@ -119,34 +119,13 @@ export function SearchPanel() {
                     // 第一步：快速定位
                     el.scrollIntoView({ behavior: 'auto', block: 'center' });
 
-                    // 第二步：使用自定义缓动动画平滑微调
+                    // 第二步：使用共享的平滑滚动工具微调居中
                     setTimeout(() => {
-                        // 查找滚动容器
-                        const container = document.querySelector('.chat-body');
+                        const container = document.querySelector('.chat-body') as HTMLElement;
                         if (container) {
-                            const startTop = container.scrollTop;
-                            const containerHeight = container.clientHeight;
-                            const elTop = (el as HTMLElement).offsetTop;
-                            const elHeight = (el as HTMLElement).offsetHeight;
-                            // 目标：将元素居中
-                            const targetTop = Math.max(0, elTop - containerHeight / 2 + elHeight / 2);
-                            const distance = targetTop - startTop;
-                            const duration = 600;
-                            const startTime = performance.now();
-                            const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
-                            const animate = (currentTime: number) => {
-                                const elapsed = currentTime - startTime;
-                                const progress = Math.min(elapsed / duration, 1);
-
-                                if (progress < 1) {
-                                    container.scrollTop = startTop + distance * easeOutCubic(progress);
-                                    requestAnimationFrame(animate);
-                                } else {
-                                    container.scrollTop = startTop + distance;
-                                }
-                            };
-                            requestAnimationFrame(animate);
+                            import('@/utils/smoothScroll').then(({ smoothScrollToCenter }) => {
+                                smoothScrollToCenter(container, el as HTMLElement);
+                            });
                         } else {
                             // Fallback
                             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -258,7 +237,7 @@ export function SearchPanel() {
                     class={`search-gallery-btn ${isGalleryMode.value ? 'active' : ''}`}
                     onClick={toggleGalleryMode}
                     title="相册模式"
-                    dangerouslySetInnerHTML={{ __html: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>` }}
+                    dangerouslySetInnerHTML={{ __html: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-photo"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" /><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" /></svg>` }}
                 />
             </div>
 

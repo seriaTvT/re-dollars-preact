@@ -59,6 +59,23 @@ export interface LinkPreview {
     url: string;
 }
 
+// 用户资料（ProfileCard / UserProfilePanel 共用）
+export interface UserProfile {
+    id: number;
+    nickname: string;
+    username: string;
+    avatar: string;
+    sign?: string;
+    url: string;
+    lastActive?: number;
+    stats?: {
+        message_count: number;
+        average_messages_per_day: number;
+        first_message_time: string;
+        last_message_time: string;
+    };
+}
+
 // 用户类型
 export interface UserInfo {
     id: string;
@@ -79,6 +96,7 @@ export interface Settings {
     rememberOpenState: boolean;
 
     backgroundMode: 'tint' | 'transparent' | 'lines';
+    glassBlur: boolean;
 }
 
 // 通知类型

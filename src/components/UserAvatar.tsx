@@ -1,6 +1,6 @@
 import { computed } from '@preact/signals';
 import { onlineUsers, pendingMention } from '@/stores/chat';
-import { showProfileCard } from '@/stores/ui';
+import { showUserProfile } from '@/stores/ui';
 import { useLongPress } from '@/hooks/useLongPress';
 
 interface UserAvatarProps {
@@ -25,9 +25,9 @@ export function UserAvatar({ uid, src, nickname, className = '' }: UserAvatarPro
         }
         e.stopPropagation();
 
-        // For uid=0 (bot), show profile card for uid 3605
+        // For uid=0 (bot), show profile for uid 3605
         const profileUid = (uid === 0 || String(uid) === '0') ? '3605' : String(uid);
-        showProfileCard(profileUid, e.target as HTMLElement);
+        showUserProfile(profileUid);
     };
 
     const handleLongPress = (e: MouseEvent | TouchEvent) => {

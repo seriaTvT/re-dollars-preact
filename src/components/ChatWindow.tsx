@@ -6,6 +6,7 @@ import { ChatHeader } from './ChatHeader';
 import { ChatBody } from './ChatBody';
 import { ChatInput } from './ChatInput';
 import { SearchPanel } from './SearchPanel';
+import { UserProfilePanel } from './UserProfilePanel';
 import { FloatingUI } from './FloatingUI';
 import { Sidebar } from './Sidebar';
 import { useWebSocket } from '@/hooks/useWebSocket';
@@ -305,6 +306,7 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
                 <Sidebar />
                 <div id="dollars-main-chat">
                     <SearchPanel />
+                    <UserProfilePanel />
                     <ChatBody />
                     <FloatingUI />
                     <ChatInput />
