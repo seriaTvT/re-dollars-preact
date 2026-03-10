@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'preact/hooks';
 import { WEBSOCKET_URL } from '@/utils/constants';
+import { updateSignalMap } from '@/utils/signalMap';
 import {
     wsConnected,
     onlineUsers,
@@ -405,14 +406,9 @@ function handleWebSocketMessage(data: any) {
             const u = data.user;
             if (u && u.id != null) {
                 const uid = String(u.id);
-                const isActive = !!u.active;
-                const newOnlineUsers = new Map(onlineUsers.value);
-                if (isActive) {
-                    newOnlineUsers.set(uid, true as any);
-                } else {
-                    newOnlineUsers.delete(uid);
-                }
-                onlineUsers.value = newOnlineUsers;
+                updateSignalMap(onlineUsers, map => {
+                    u.active ? map.set(uid, true as any) : map.delete(uid);
+                });
             }
             break;
         }
@@ -422,28 +418,19 @@ function handleWebSocketMessage(data: any) {
             // 忽略自己和屏蔽用户的输入状态
             if (typingUserId === String(userInfo.value.id)) return;
             if (blockedUsers.value.has(typingUserId)) return;
-            typingUsers.value = new Map(typingUsers.value).set(
-                typingUserId,
-                data.user.name || data.user.nickname
-            );
+            updateSignalMap(typingUsers, map => map.set(typingUserId, data.user.name || data.user.nickname));
             // 10秒后自动清除输入状态（防止 typing_stop 丢失）
             setTimeout(() => {
-                const current = typingUsers.value;
-                if (current.has(typingUserId)) {
-                    const next = new Map(current);
-                    next.delete(typingUserId);
-                    typingUsers.value = next;
+                if (typingUsers.value.has(typingUserId)) {
+                    updateSignalMap(typingUsers, map => map.delete(typingUserId));
                 }
             }, 10000);
             break;
         }
 
-        case 'typing_stop': {
-            const newTyping = new Map(typingUsers.value);
-            newTyping.delete(String(data.user?.id));
-            typingUsers.value = newTyping;
+        case 'typing_stop':
+            updateSignalMap(typingUsers, map => map.delete(String(data.user?.id)));
             break;
-        }
 
         case 'reaction_add':
             updateReactionUI(data.payload.message_id, data.payload.reaction, 'add');

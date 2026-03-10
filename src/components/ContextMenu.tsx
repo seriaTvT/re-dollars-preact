@@ -11,7 +11,7 @@ import {
     hideReactionPicker,
     isReactionPickerOpen,
 } from '@/stores/ui';
-import { setReplyTo, setEditingMessage, messageMap, messageStore } from '@/stores/chat';
+import { setReplyTo, setEditingMessage, messageMap, getRawMessage } from '@/stores/chat';
 import { userInfo } from '@/stores/user';
 import { toggleReaction as apiToggleReaction, deleteMessage as apiDeleteMessage } from '@/utils/api';
 import { CONTEXT_MENU_REACTIONS, SVGIcons } from '@/utils/constants';
@@ -123,15 +123,15 @@ export function ContextMenu() {
 
         hideContextMenu();
 
-        const msgData = messageStore.value.get(targetId);
+        const raw = getRawMessage(targetId);
         const messageEl = document.getElementById(`db-${targetId}`);
-        if (!msgData || !messageEl) return;
+        if (!raw || !messageEl) return;
 
         const uid = messageEl.dataset.uid || '';
         const user = messageEl.querySelector('.nickname a')?.textContent?.trim() || '';
         const avatar = (messageEl.querySelector('.avatar') as HTMLImageElement)?.src || '';
 
-        const text = stripQuotes(decodeHTML(msgData.raw))
+        const text = stripQuotes(decodeHTML(raw))
             .replace(/\[img\].*?\[\/img\]/gi, '[图片]')
             .replace(/\n/g, ' ')
             .replace(/\s+/g, ' ')
@@ -142,7 +142,7 @@ export function ContextMenu() {
             uid,
             user,
             text,
-            raw: msgData.raw,
+            raw: raw,
             avatar,
         });
     }, []);
@@ -182,10 +182,10 @@ export function ContextMenu() {
 
         hideContextMenu();
 
-        const msgData = messageStore.value.get(targetId);
-        if (!msgData) return;
+        const raw = getRawMessage(targetId);
+        if (!raw) return;
 
-        const plainText = decodeHTML(msgData.raw).replace(/\[.*?\]/g, '').trim();
+        const plainText = decodeHTML(raw).replace(/\[.*?\]/g, '').trim();
 
         try {
             await navigator.clipboard.writeText(plainText);

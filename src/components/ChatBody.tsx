@@ -10,8 +10,7 @@ import {
     unreadWhileScrolled,
     unreadJumpList,
     pendingScrollToBottom,
-    prependMessages,
-    appendMessages,
+    addMessagesBatch,
     setMessages,
     timelineIsLive,
     isContextLoading,
@@ -327,7 +326,7 @@ export function ChatBody() {
 
                 // 标记需要恢复滚动
                 isRestoringScroll.current = true;
-                prependMessages(filtered);
+                addMessagesBatch(filtered);
 
                 // 订阅新出现用户的在线状态
                 syncPresenceSubscriptions();
@@ -360,7 +359,7 @@ export function ChatBody() {
 
             if (filteredNewMessages.length > 0) {
                 // 追加新消息
-                appendMessages(filteredNewMessages);
+                addMessagesBatch(filteredNewMessages);
 
                 // 更新最新消息ID
                 const maxId = Math.max(...filteredNewMessages.map(m => m.id));
@@ -607,7 +606,7 @@ export function ChatBody() {
                 const recentMessages = await fetchRecentMessages(50);
                 if (recentMessages.length > 0) {
                     const filtered = recentMessages.filter(m => !blockedUsers.value.has(String(m.uid)));
-                    appendMessages(filtered);
+                    addMessagesBatch(filtered);
 
                     if (filtered.length > 0) {
                         historyOldestId.value = filtered[0].id;

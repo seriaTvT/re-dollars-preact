@@ -26,12 +26,6 @@
 
   var s;function l(i,n){l$3[i]=n.bind(null,l$3[i]||function(){});}function d(i){if(s)s();s=i&&i.S();}function h$1(i){var r=this,f=i.data,o=useSignal(f);o.value=f;var e=T$2(function(){var i=r.__v;while(i=i.__)if(i.__c){i.__c.__$f|=4;break}r.__$u.c=function(){var i,t=r.__$u.S(),f=e.value;t();if(t$2(f)||3!==(null==(i=r.base)?void 0:i.nodeType)){r.__$f|=1;r.setState({});}else r.base.data=f;};return w$2(function(){var i=o.value.value;return 0===i?0:true===i?"":i||""})},[]);return e.value}h$1.displayName="_st";Object.defineProperties(u.prototype,{constructor:{configurable:true,value:void 0},type:{configurable:true,value:h$1},props:{configurable:true,get:function(){return {data:this}}},__b:{configurable:true,value:1}});l("__b",function(i,r){if("string"==typeof r.type){var n,t=r.props;for(var f in t)if("children"!==f){var o=t[f];if(o instanceof u){if(!n)r.__np=n={};n[f]=o;t[f]=o.peek();}}}i(r);});l("__r",function(i,r){d();var n,t=r.__c;if(t){t.__$f&=-2;if(void 0===(n=t.__$u))t.__$u=n=function(i){var r;E$2(function(){r=this;});r.c=function(){t.__$f|=1;t.setState({});};return r}();}d(n);i(r);});l("__e",function(i,r,n,t){d();i(r,n,t);});l("diffed",function(i,r){d();var n;if("string"==typeof r.type&&(n=r.__e)){var t=r.__np,f=r.props;if(t){var o=n.U;if(o)for(var e in o){var u=o[e];if(void 0!==u&&!(e in t)){u.d();o[e]=void 0;}}else n.U=o={};for(var a in t){var c=o[a],s=t[a];if(void 0===c){c=p$1(n,a,s,f);o[a]=c;}else c.o(s,f);}}}i(r);});function p$1(i,r,n,t){var f=r in i&&void 0===i.ownerSVGElement,o=d$1(n);return {o:function(i,r){o.value=i;t=r;},d:E$2(function(){var n=o.value.value;if(t[r]!==n){t[r]=n;if(f)i[r]=n;else if(n)i.setAttribute(r,n);else i.removeAttribute(r);}})}}l("unmount",function(i,r){if("string"==typeof r.type){var n=r.__e;if(n){var t=n.U;if(t){n.U=void 0;for(var f in t){var o=t[f];if(o)o.d();}}}}else {var e=r.__c;if(e){var u=e.__$u;if(u){e.__$u=void 0;u.d();}}}i(r);});l("__h",function(i,r,n,t){if(t<3||9===t)r.__$f|=2;i(r,n,t);});x$3.prototype.shouldComponentUpdate=function(i,r){var n=this.__$u,t=n&&void 0!==n.s;for(var f in r)return  true;if(this.__f||"boolean"==typeof this.u&&true===this.u){if(!(t||2&this.__$f||4&this.__$f))return  true;if(1&this.__$f)return  true}else {if(!(t||4&this.__$f))return  true;if(3&this.__$f)return  true}for(var o in i)if("__source"!==o&&i[o]!==this.props[o])return  true;for(var e in this.props)if(!(e in i))return  true;return  false};function useSignal(i){return T$2(function(){return d$1(i)},[])}
 
-  const BACKEND_URL = "https://bgmchat.ry.mk";
-  const WEBSOCKET_URL = "wss://bgmchat.ry.mk/ws";
-  const BGM_APP_ID = "bgm460268b348b05f082";
-  const BGM_CALLBACK_URL = `https://bgmchat.ry.mk/api/auth/callback`;
-  const MESSAGE_GROUP_TIME_GAP = 300;
-  const CONTEXT_MENU_REACTIONS = [67, 63, 38, 124, 46, 106].map((n) => `(bgm${n})`);
   const _$1 = "http://www.w3.org/2000/svg";
   const a = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
   const s24 = (c) => `<svg xmlns="${_$1}" width="24" height="24" viewBox="0 0 24 24" ${a}>${c}</svg>`;
@@ -65,6 +59,97 @@
     calendar: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/>'),
     pen: s24('<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>')
   };
+
+  const BACKEND_URL = "https://bgmchat.ry.mk";
+  const WEBSOCKET_URL = "wss://bgmchat.ry.mk/ws";
+  const BGM_APP_ID = "bgm460268b348b05f082";
+  const BGM_CALLBACK_URL = `https://bgmchat.ry.mk/api/auth/callback`;
+  const MESSAGE_GROUP_TIME_GAP = 300;
+  const CONTEXT_MENU_REACTIONS = [67, 63, 38, 124, 46, 106].map((n) => `(bgm${n})`);
+
+  function updateSignalMap(sig, fn) {
+    const next = new Map(sig.value);
+    fn(next);
+    sig.value = next;
+  }
+  function updateSignalSet(sig, fn) {
+    const next = new Set(sig.value);
+    fn(next);
+    sig.value = next;
+  }
+
+  const BROWSE_POSITION_KEY = "dollars_browse_position";
+  const browsePosition = d$1(null);
+  function saveBrowsePosition(anchorMessageId) {
+    const position = {
+      anchorMessageId,
+      timestamp: Date.now()
+    };
+    browsePosition.value = position;
+    localStorage.setItem(BROWSE_POSITION_KEY, JSON.stringify(position));
+  }
+  function loadBrowsePosition() {
+    try {
+      const saved = localStorage.getItem(BROWSE_POSITION_KEY);
+      if (!saved) return null;
+      const position = JSON.parse(saved);
+      const MAX_AGE = 24 * 60 * 60 * 1e3;
+      if (Date.now() - position.timestamp > MAX_AGE) {
+        clearBrowsePosition();
+        return null;
+      }
+      browsePosition.value = position;
+      return position;
+    } catch {
+      return null;
+    }
+  }
+  function clearBrowsePosition() {
+    browsePosition.value = null;
+    localStorage.removeItem(BROWSE_POSITION_KEY);
+  }
+
+  const DRAFT_KEY_PREFIX = "dollars_draft_";
+  const DRAFT_EXPIRY = 7 * 24 * 60 * 60 * 1e3;
+  const currentDraft = d$1(null);
+  function getDraftKey() {
+    return `${DRAFT_KEY_PREFIX}main`;
+  }
+  function saveDraft(content, replyTo = null) {
+    if (!content.trim() && !replyTo) {
+      clearDraft();
+      return;
+    }
+    const draft = {
+      content,
+      replyTo,
+      timestamp: Date.now()
+    };
+    const key = getDraftKey();
+    localStorage.setItem(key, JSON.stringify(draft));
+    currentDraft.value = draft;
+  }
+  function loadDraft() {
+    try {
+      const key = getDraftKey();
+      const saved = localStorage.getItem(key);
+      if (!saved) return null;
+      const draft = JSON.parse(saved);
+      if (Date.now() - draft.timestamp > DRAFT_EXPIRY) {
+        clearDraft();
+        return null;
+      }
+      currentDraft.value = draft;
+      return draft;
+    } catch {
+      return null;
+    }
+  }
+  function clearDraft() {
+    const key = getDraftKey();
+    localStorage.removeItem(key);
+    currentDraft.value = null;
+  }
 
   function getChiiApp() {
     return chiiApp;
@@ -202,136 +287,6 @@
     userInfo
   }, Symbol.toStringTag, { value: 'Module' }));
 
-  const BROWSE_POSITION_KEY = "dollars_browse_position";
-  const browsePosition = d$1(null);
-  function saveBrowsePosition(anchorMessageId) {
-    const position = {
-      anchorMessageId,
-      timestamp: Date.now()
-    };
-    browsePosition.value = position;
-    localStorage.setItem(BROWSE_POSITION_KEY, JSON.stringify(position));
-  }
-  function loadBrowsePosition() {
-    try {
-      const saved = localStorage.getItem(BROWSE_POSITION_KEY);
-      if (!saved) return null;
-      const position = JSON.parse(saved);
-      const MAX_AGE = 24 * 60 * 60 * 1e3;
-      if (Date.now() - position.timestamp > MAX_AGE) {
-        clearBrowsePosition();
-        return null;
-      }
-      browsePosition.value = position;
-      return position;
-    } catch {
-      return null;
-    }
-  }
-  function clearBrowsePosition() {
-    browsePosition.value = null;
-    localStorage.removeItem(BROWSE_POSITION_KEY);
-  }
-  const DRAFT_KEY_PREFIX = "dollars_draft_";
-  const DRAFT_EXPIRY = 7 * 24 * 60 * 60 * 1e3;
-  const currentDraft = d$1(null);
-  function getDraftKey() {
-    return `${DRAFT_KEY_PREFIX}main`;
-  }
-  function saveDraft(content, replyTo = null) {
-    if (!content.trim() && !replyTo) {
-      clearDraft();
-      return;
-    }
-    const draft = {
-      content,
-      replyTo,
-      timestamp: Date.now()
-    };
-    const key = getDraftKey();
-    localStorage.setItem(key, JSON.stringify(draft));
-    currentDraft.value = draft;
-  }
-  function loadDraft() {
-    try {
-      const key = getDraftKey();
-      const saved = localStorage.getItem(key);
-      if (!saved) return null;
-      const draft = JSON.parse(saved);
-      if (Date.now() - draft.timestamp > DRAFT_EXPIRY) {
-        clearDraft();
-        return null;
-      }
-      currentDraft.value = draft;
-      return draft;
-    } catch {
-      return null;
-    }
-  }
-  function clearDraft() {
-    const key = getDraftKey();
-    localStorage.removeItem(key);
-    currentDraft.value = null;
-  }
-  function cleanupExpiredDrafts() {
-    const draft = loadDraft();
-    if (!draft) {
-      clearDraft();
-    }
-  }
-  const scrollButtonMode = d$1("to-bottom");
-  function getCurrentUserId() {
-    return String(window.CHOBITS_UID || "");
-  }
-  const messageMap = d$1(/* @__PURE__ */ new Map());
-  const messageStore = d$1(/* @__PURE__ */ new Map());
-  const messageIds = w$2(() => {
-    const map = messageMap.value;
-    return Array.from(map.keys()).sort((a, b) => {
-      const msgA = map.get(a);
-      const msgB = map.get(b);
-      if (msgA.timestamp !== msgB.timestamp) return msgA.timestamp - msgB.timestamp;
-      if (msgA.uid === 0 && msgB.uid !== 0) return 1;
-      if (msgA.uid !== 0 && msgB.uid === 0) return -1;
-      return a - b;
-    });
-  });
-  const conversations = d$1([
-    {
-      id: "dollars",
-      type: "channel",
-      title: "Re:Dollars",
-      avatar: "https://lsky.ry.mk/i/2025/09/06/68bc5540a8c51.webp",
-      lastMessage: { text: "", timestamp: 0 },
-      unreadCount: 0
-    }
-  ]);
-  const isChatOpen = d$1(false);
-  const activeConversationId = d$1("dollars");
-  const isLoadingHistory = d$1(false);
-  const historyFullyLoaded = d$1(false);
-  const historyOldestId = d$1(null);
-  const historyNewestId = d$1(null);
-  const timelineIsLive = d$1(true);
-  const isContextLoading = d$1(false);
-  const initialMessagesLoaded = d$1(false);
-  const replyingTo = d$1(null);
-  const editingMessage = d$1(null);
-  const unreadWhileScrolled = d$1(0);
-  const unreadJumpList = d$1([]);
-  const searchQuery = d$1("");
-  const pendingMention = d$1(null);
-  const currentDateLabel = d$1(null);
-  const showScrollBottomBtn = d$1(false);
-  const newMessageIds = d$1(/* @__PURE__ */ new Set());
-  const pendingJumpToMessage = d$1(null);
-  let nextOptimisticId = -1;
-  const pendingTimeouts = /* @__PURE__ */ new Map();
-  const PENDING_TIMEOUT_MS = 1e4;
-  const wsConnected = d$1(false);
-  const onlineUsers = d$1(/* @__PURE__ */ new Map());
-  const onlineCount = d$1(0);
-  const typingUsers = d$1(/* @__PURE__ */ new Map());
   const lastReadId = d$1(null);
   const pendingReadId = d$1(null);
   const isReadStateSyncing = d$1(false);
@@ -445,6 +400,62 @@
     }
     return null;
   }
+
+  const scrollButtonMode = d$1("to-bottom");
+  function getCurrentUserId() {
+    return String(window.CHOBITS_UID || "");
+  }
+  const messageMap = d$1(/* @__PURE__ */ new Map());
+  function getRawMessage(id) {
+    return messageMap.value.get(Number(id))?.message;
+  }
+  const messageIds = w$2(() => {
+    const map = messageMap.value;
+    return Array.from(map.keys()).sort((a, b) => {
+      const msgA = map.get(a);
+      const msgB = map.get(b);
+      if (msgA.timestamp !== msgB.timestamp) return msgA.timestamp - msgB.timestamp;
+      if (msgA.uid === 0 && msgB.uid !== 0) return 1;
+      if (msgA.uid !== 0 && msgB.uid === 0) return -1;
+      return a - b;
+    });
+  });
+  const conversations = d$1([
+    {
+      id: "dollars",
+      type: "channel",
+      title: "Re:Dollars",
+      avatar: "https://lsky.ry.mk/i/2025/09/06/68bc5540a8c51.webp",
+      lastMessage: { text: "", timestamp: 0 },
+      unreadCount: 0
+    }
+  ]);
+  const isChatOpen = d$1(false);
+  const activeConversationId = d$1("dollars");
+  const isLoadingHistory = d$1(false);
+  const historyFullyLoaded = d$1(false);
+  const historyOldestId = d$1(null);
+  const historyNewestId = d$1(null);
+  const timelineIsLive = d$1(true);
+  const isContextLoading = d$1(false);
+  const initialMessagesLoaded = d$1(false);
+  const replyingTo = d$1(null);
+  const editingMessage = d$1(null);
+  const unreadWhileScrolled = d$1(0);
+  const unreadJumpList = d$1([]);
+  const searchQuery = d$1("");
+  const pendingMention = d$1(null);
+  const currentDateLabel = d$1(null);
+  const showScrollBottomBtn = d$1(false);
+  const newMessageIds = d$1(/* @__PURE__ */ new Set());
+  const pendingJumpToMessage = d$1(null);
+  let nextOptimisticId = -1;
+  const pendingTimeouts = /* @__PURE__ */ new Map();
+  const PENDING_TIMEOUT_MS = 1e4;
+  const wsConnected = d$1(false);
+  const onlineUsers = d$1(/* @__PURE__ */ new Map());
+  const onlineCount = d$1(0);
+  const typingUsers = d$1(/* @__PURE__ */ new Map());
   function getMessageGrouping(msgId) {
     const map = messageMap.peek();
     const ids = messageIds.peek();
@@ -496,18 +507,9 @@
       const confirmedMsg = inheritedStableKey ? { ...msg, stableKey: inheritedStableKey, state: "sent" } : { ...msg, state: "sent" };
       map.set(confirmedMsg.id, confirmedMsg);
       messageMap.value = map;
-      const store = new Map(messageStore.value);
-      store.set(String(confirmedMsg.id), { raw: confirmedMsg.message });
-      messageStore.value = store;
       if (!replacedOptimistic) {
-        const newIds = new Set(newMessageIds.value);
-        newIds.add(confirmedMsg.id);
-        newMessageIds.value = newIds;
-        setTimeout(() => {
-          const ids = new Set(newMessageIds.value);
-          ids.delete(confirmedMsg.id);
-          newMessageIds.value = ids;
-        }, 350);
+        updateSignalSet(newMessageIds, (s) => s.add(confirmedMsg.id));
+        setTimeout(() => updateSignalSet(newMessageIds, (s) => s.delete(confirmedMsg.id)), 350);
       }
       pendingScrollToBottom.value = true;
     });
@@ -532,17 +534,8 @@
       const map = new Map(messageMap.value);
       map.set(tempId, optimisticMsg);
       messageMap.value = map;
-      const store = new Map(messageStore.value);
-      store.set(String(tempId), { raw: content });
-      messageStore.value = store;
-      const newIds = new Set(newMessageIds.value);
-      newIds.add(tempId);
-      newMessageIds.value = newIds;
-      setTimeout(() => {
-        const ids = new Set(newMessageIds.value);
-        ids.delete(tempId);
-        newMessageIds.value = ids;
-      }, 350);
+      updateSignalSet(newMessageIds, (s) => s.add(tempId));
+      setTimeout(() => updateSignalSet(newMessageIds, (s) => s.delete(tempId)), 350);
       manualScrollToBottom.value++;
     });
     const timeoutId = setTimeout(() => {
@@ -553,11 +546,9 @@
     return { tempId, stableKey };
   }
   function markMessageFailed(tempId) {
-    const map = new Map(messageMap.value);
-    const msg = map.get(tempId);
+    const msg = messageMap.value.get(tempId);
     if (msg && msg.state === "sending") {
-      map.set(tempId, { ...msg, state: "failed" });
-      messageMap.value = map;
+      updateSignalMap(messageMap, (map) => map.set(tempId, { ...msg, state: "failed" }));
     }
   }
   function removeOptimisticMessage(tempId) {
@@ -566,24 +557,14 @@
       clearTimeout(timeout);
       pendingTimeouts.delete(tempId);
     }
-    r(() => {
-      const map = new Map(messageMap.value);
-      map.delete(tempId);
-      messageMap.value = map;
-      const store = new Map(messageStore.value);
-      store.delete(String(tempId));
-      messageStore.value = store;
-    });
+    updateSignalMap(messageMap, (map) => map.delete(tempId));
   }
   function retryMessage(tempId) {
-    const map = messageMap.value;
-    const msg = map.get(tempId);
+    const msg = messageMap.value.get(tempId);
     if (!msg || msg.state !== "failed") return null;
     const content = msg.message;
     const stableKey = msg.stableKey || `temp-${Math.random().toString(36).slice(2)}`;
-    const newMap = new Map(map);
-    newMap.set(tempId, { ...msg, state: "sending" });
-    messageMap.value = newMap;
+    updateSignalMap(messageMap, (map) => map.set(tempId, { ...msg, state: "sending" }));
     const timeoutId = setTimeout(() => {
       markMessageFailed(tempId);
       pendingTimeouts.delete(tempId);
@@ -593,31 +574,19 @@
   }
   function addMessagesBatch(newMessages) {
     if (newMessages.length === 0) return;
-    r(() => {
-      const map = new Map(messageMap.value);
-      const store = new Map(messageStore.value);
-      for (const msg of newMessages) {
-        const existing = map.get(msg.id);
-        if (!existing || msg.edited_at && msg.edited_at > (existing.edited_at || 0)) {
-          map.set(msg.id, msg);
-          store.set(String(msg.id), { raw: msg.message });
-        }
+    const map = new Map(messageMap.value);
+    for (const msg of newMessages) {
+      const existing = map.get(msg.id);
+      if (!existing || msg.edited_at && msg.edited_at > (existing.edited_at || 0)) {
+        map.set(msg.id, msg);
       }
-      messageMap.value = map;
-      messageStore.value = store;
-    });
+    }
+    messageMap.value = map;
   }
   function updateMessage(id, updates) {
-    const map = new Map(messageMap.value);
-    const existing = map.get(id);
+    const existing = messageMap.value.get(id);
     if (existing) {
-      map.set(id, { ...existing, ...updates });
-      messageMap.value = map;
-      if (updates.message !== void 0) {
-        const store = new Map(messageStore.value);
-        store.set(String(id), { raw: updates.message });
-        messageStore.value = store;
-      }
+      updateSignalMap(messageMap, (map) => map.set(id, { ...existing, ...updates }));
     }
   }
   function getMessageById(id) {
@@ -627,25 +596,15 @@
     updateMessage(id, { is_deleted: true });
   }
   function clearMessages() {
-    r(() => {
-      messageMap.value = /* @__PURE__ */ new Map();
-      messageStore.value = /* @__PURE__ */ new Map();
-    });
+    messageMap.value = /* @__PURE__ */ new Map();
   }
   function setMessages(newMessages) {
-    r(() => {
-      const map = /* @__PURE__ */ new Map();
-      const store = /* @__PURE__ */ new Map();
-      for (const msg of newMessages) {
-        map.set(msg.id, msg);
-        store.set(String(msg.id), { raw: msg.message });
-      }
-      messageMap.value = map;
-      messageStore.value = store;
-    });
+    const map = /* @__PURE__ */ new Map();
+    for (const msg of newMessages) {
+      map.set(msg.id, msg);
+    }
+    messageMap.value = map;
   }
-  const prependMessages = addMessagesBatch;
-  const appendMessages = addMessagesBatch;
   async function loadMessageContext(messageId) {
     isLoadingHistory.value = true;
     try {
@@ -716,10 +675,8 @@
     addMessage,
     addMessagesBatch,
     addOptimisticMessage,
-    appendMessages,
     browsePosition,
     cancelReplyOrEdit,
-    cleanupExpiredDrafts,
     clearBrowsePosition,
     clearDraft,
     clearMessages,
@@ -731,6 +688,7 @@
     getFirstUnreadId,
     getMessageById,
     getMessageGrouping,
+    getRawMessage,
     hasUnreadMessages,
     historyFullyLoaded,
     historyNewestId,
@@ -751,7 +709,6 @@
     markSentMessageAsRead,
     messageIds,
     messageMap,
-    messageStore,
     newMessageIds,
     onlineCount,
     onlineUsers,
@@ -759,7 +716,6 @@
     pendingMention,
     pendingReadId,
     pendingScrollToBottom,
-    prependMessages,
     removeOptimisticMessage,
     replyingTo,
     retryMessage,
@@ -1079,7 +1035,6 @@
   }
   async function sendMessage$1(content) {
     try {
-      const { userInfo } = await __vitePreload(async () => { const { userInfo } = await Promise.resolve().then(() => user);return { userInfo }},false             ?__VITE_PRELOAD__:void 0);
       const formhash = userInfo.value.formhash;
       const params = new URLSearchParams();
       params.append("message", content);
@@ -1133,7 +1088,6 @@
     return res.json();
   }
   async function toggleReaction(messageId, emoji) {
-    const { userInfo } = await __vitePreload(async () => { const { userInfo } = await Promise.resolve().then(() => user);return { userInfo }},false             ?__VITE_PRELOAD__:void 0);
     const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}/reactions`, {
       method: "POST",
       headers: {
@@ -2878,7 +2832,7 @@
       showContextMenu(e.clientX, e.clientY, String(messageId), imageUrl, bmoCode);
     }, [messageId]);
     const triggerReply = q$2(() => {
-      const rawContent = (messageStore.peek().get(String(messageId))?.raw || messageText || "").trim();
+      const rawContent = (getRawMessage(messageId) || messageText || "").trim();
       const text = stripQuotes(escapeHTML(rawContent)).replace(/\[img\].*?\[\/img\]/gi, "[图片]").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
       setReplyTo({
         id: String(messageId),
@@ -3289,14 +3243,9 @@
         const u = data.user;
         if (u && u.id != null) {
           const uid = String(u.id);
-          const isActive = !!u.active;
-          const newOnlineUsers = new Map(onlineUsers.value);
-          if (isActive) {
-            newOnlineUsers.set(uid, true);
-          } else {
-            newOnlineUsers.delete(uid);
-          }
-          onlineUsers.value = newOnlineUsers;
+          updateSignalMap(onlineUsers, (map) => {
+            u.active ? map.set(uid, true) : map.delete(uid);
+          });
         }
         break;
       }
@@ -3304,26 +3253,17 @@
         const typingUserId = String(data.user?.id);
         if (typingUserId === String(userInfo.value.id)) return;
         if (blockedUsers.value.has(typingUserId)) return;
-        typingUsers.value = new Map(typingUsers.value).set(
-          typingUserId,
-          data.user.name || data.user.nickname
-        );
+        updateSignalMap(typingUsers, (map) => map.set(typingUserId, data.user.name || data.user.nickname));
         setTimeout(() => {
-          const current = typingUsers.value;
-          if (current.has(typingUserId)) {
-            const next = new Map(current);
-            next.delete(typingUserId);
-            typingUsers.value = next;
+          if (typingUsers.value.has(typingUserId)) {
+            updateSignalMap(typingUsers, (map) => map.delete(typingUserId));
           }
         }, 1e4);
         break;
       }
-      case "typing_stop": {
-        const newTyping = new Map(typingUsers.value);
-        newTyping.delete(String(data.user?.id));
-        typingUsers.value = newTyping;
+      case "typing_stop":
+        updateSignalMap(typingUsers, (map) => map.delete(String(data.user?.id)));
         break;
-      }
       case "reaction_add":
         updateReactionUI(data.payload.message_id, data.payload.reaction, "add");
         break;
@@ -3657,7 +3597,7 @@
           historyOldestId.value = minId;
           const filtered = newMessages.filter((m) => !blockedUsers.value.has(String(m.uid)));
           isRestoringScroll.current = true;
-          prependMessages(filtered);
+          addMessagesBatch(filtered);
           syncPresenceSubscriptions();
         }
       } catch (e) {
@@ -3679,7 +3619,7 @@
           (m) => !existingIds.has(m.id) && !blockedUsers.value.has(String(m.uid))
         );
         if (filteredNewMessages.length > 0) {
-          appendMessages(filteredNewMessages);
+          addMessagesBatch(filteredNewMessages);
           const maxId = Math.max(...filteredNewMessages.map((m) => m.id));
           historyNewestId.value = maxId;
           if (newMessages.length < LIMIT) {
@@ -3848,7 +3788,7 @@
           const recentMessages = await fetchRecentMessages(50);
           if (recentMessages.length > 0) {
             const filtered = recentMessages.filter((m) => !blockedUsers.value.has(String(m.uid)));
-            appendMessages(filtered);
+            addMessagesBatch(filtered);
             if (filtered.length > 0) {
               historyOldestId.value = filtered[0].id;
               historyNewestId.value = filtered[filtered.length - 1].id;
@@ -4870,7 +4810,7 @@
           });
         }
       }
-      cleanupExpiredDrafts();
+      loadDraft();
     }, []);
     y$2(() => {
       const msg = editingMessage.value;
@@ -6552,19 +6492,19 @@ ${content}`;
       const targetId2 = contextMenuTargetId.value;
       if (!targetId2) return;
       hideContextMenu();
-      const msgData = messageStore.value.get(targetId2);
+      const raw = getRawMessage(targetId2);
       const messageEl = document.getElementById(`db-${targetId2}`);
-      if (!msgData || !messageEl) return;
+      if (!raw || !messageEl) return;
       const uid = messageEl.dataset.uid || "";
       const user = messageEl.querySelector(".nickname a")?.textContent?.trim() || "";
       const avatar = messageEl.querySelector(".avatar")?.src || "";
-      const text = stripQuotes(decodeHTML(msgData.raw)).replace(/\[img\].*?\[\/img\]/gi, "[图片]").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+      const text = stripQuotes(decodeHTML(raw)).replace(/\[img\].*?\[\/img\]/gi, "[图片]").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
       setReplyTo({
         id: targetId2,
         uid,
         user,
         text,
-        raw: msgData.raw,
+        raw,
         avatar
       });
     }, []);
@@ -6594,9 +6534,9 @@ ${content}`;
       const targetId2 = contextMenuTargetId.value;
       if (!targetId2) return;
       hideContextMenu();
-      const msgData = messageStore.value.get(targetId2);
-      if (!msgData) return;
-      const plainText = decodeHTML(msgData.raw).replace(/\[.*?\]/g, "").trim();
+      const raw = getRawMessage(targetId2);
+      if (!raw) return;
+      const plainText = decodeHTML(raw).replace(/\[.*?\]/g, "").trim();
       try {
         await navigator.clipboard.writeText(plainText);
       } catch (e) {

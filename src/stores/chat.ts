@@ -1,189 +1,14 @@
 import { signal, computed, batch } from '@preact/signals';
 import type { Message, Conversation } from '@/types';
-import { MESSAGE_GROUP_TIME_GAP, BACKEND_URL } from '@/utils/constants';
-import { getAuthHeaders } from './user';
+import { MESSAGE_GROUP_TIME_GAP } from '@/utils/constants';
+import { updateSignalMap, updateSignalSet } from '@/utils/signalMap';
 
-// ============================================================================
-// Browse Position (formerly browsePosition.ts)
-// ============================================================================
-
-const BROWSE_POSITION_KEY = 'dollars_browse_position';
-
-export interface BrowsePosition {
-    anchorMessageId: number;
-    timestamp: number;
-}
-
-export const browsePosition = signal<BrowsePosition | null>(null);
-
-/**
- * 保存浏览位置到 localStorage
- */
-export function saveBrowsePosition(anchorMessageId: number): void {
-    const position: BrowsePosition = {
-        anchorMessageId,
-        timestamp: Date.now(),
-    };
-    browsePosition.value = position;
-    localStorage.setItem(BROWSE_POSITION_KEY, JSON.stringify(position));
-}
-
-/**
- * 从 localStorage 加载浏览位置
- */
-export function loadBrowsePosition(): BrowsePosition | null {
-    try {
-        const saved = localStorage.getItem(BROWSE_POSITION_KEY);
-        if (!saved) return null;
-
-        const position = JSON.parse(saved) as BrowsePosition;
-
-        // 检查是否过期 (24小时)
-        const MAX_AGE = 24 * 60 * 60 * 1000;
-        if (Date.now() - position.timestamp > MAX_AGE) {
-            clearBrowsePosition();
-            return null;
-        }
-
-        browsePosition.value = position;
-        return position;
-    } catch {
-        return null;
-    }
-}
-
-/**
- * 清除浏览位置
- */
-export function clearBrowsePosition(): void {
-    browsePosition.value = null;
-    localStorage.removeItem(BROWSE_POSITION_KEY);
-}
-
-/**
- * 判断是否应该恢复浏览位置
- * @param unreadCount 当前未读消息数量
- * @returns 是否应该恢复浏览位置（未读数 > 阈值）
- */
-export function shouldRestoreBrowsePosition(unreadCount: number): boolean {
-    const THRESHOLD = 5;
-    return unreadCount > THRESHOLD;
-}
-
-// ============================================================================
-// Drafts (formerly drafts.ts)
-// ============================================================================
-
-const DRAFT_KEY_PREFIX = 'dollars_draft_';
-const DRAFT_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 天过期
-
-export interface ReplyInfo {
-    id: string;
-    uid: string;
-    user: string;
-    avatar: string;
-    text: string;
-    raw: string;
-}
-
-export interface Draft {
-    content: string;
-    replyTo: ReplyInfo | null;
-    timestamp: number;
-}
-
-// 当前草稿 signal
-export const currentDraft = signal<Draft | null>(null);
-
-/**
- * 获取草稿的 localStorage key
- * 现在只使用一个主草稿键，因为回复信息也保存在草稿中
- */
-function getDraftKey(): string {
-    return `${DRAFT_KEY_PREFIX}main`;
-}
-
-/**
- * 保存草稿到 localStorage
- */
-export function saveDraft(content: string, replyTo: ReplyInfo | null = null): void {
-    if (!content.trim() && !replyTo) {
-        // 内容为空且没有回复，删除草稿
-        clearDraft();
-        return;
-    }
-
-    const draft: Draft = {
-        content,
-        replyTo,
-        timestamp: Date.now(),
-    };
-
-    const key = getDraftKey();
-    localStorage.setItem(key, JSON.stringify(draft));
-    currentDraft.value = draft;
-}
-
-/**
- * 从 localStorage 加载草稿
- */
-export function loadDraft(): Draft | null {
-    try {
-        const key = getDraftKey();
-        const saved = localStorage.getItem(key);
-
-        if (!saved) return null;
-
-        const draft = JSON.parse(saved) as Draft;
-
-        // 检查是否过期
-        if (Date.now() - draft.timestamp > DRAFT_EXPIRY) {
-            clearDraft();
-            return null;
-        }
-
-        currentDraft.value = draft;
-        return draft;
-    } catch {
-        return null;
-    }
-}
-
-/**
- * 清除草稿
- */
-export function clearDraft(): void {
-    const key = getDraftKey();
-    localStorage.removeItem(key);
-    currentDraft.value = null;
-}
-
-/**
- * 清除过期草稿
- */
-export function cleanupExpiredDrafts(): void {
-    const draft = loadDraft();
-    // loadDraft already handles expiry cleanup
-    if (!draft) {
-        clearDraft();
-    }
-}
-
-/**
- * 获取当前草稿（如果存在）
- */
-export function getAllDrafts(): Draft[] {
-    const draft = loadDraft();
-    return draft ? [draft] : [];
-}
-
-/**
- * 检查是否有草稿
- */
-export function hasDraft(): boolean {
-    const draft = loadDraft();
-    return draft !== null && (draft.content.trim().length > 0 || draft.replyTo !== null);
-}
+// Re-exports from extracted modules (preserves existing import paths)
+export { browsePosition, saveBrowsePosition, loadBrowsePosition, clearBrowsePosition, shouldRestoreBrowsePosition } from './browsePosition';
+export type { BrowsePosition } from './browsePosition';
+export { currentDraft, saveDraft, loadDraft, clearDraft } from './drafts';
+export type { ReplyInfo, Draft } from './drafts';
+export { lastReadId, pendingReadId, isReadStateSyncing, hasUnreadMessages, unreadCount, loadReadState, updateReadState, markSentMessageAsRead, getFirstUnreadId } from './readState';
 
 // ============================================================================
 // Core Chat State
@@ -198,7 +23,13 @@ function getCurrentUserId(): string {
 
 // 消息存储
 export const messageMap = signal<Map<number, Message>>(new Map());
-export const messageStore = signal<Map<string, { raw: string }>>(new Map());
+
+/**
+ * 获取消息原始内容 (替代已移除的 messageStore)
+ */
+export function getRawMessage(id: number | string): string | undefined {
+    return messageMap.value.get(Number(id))?.message;
+}
 
 export const messageIds = computed<number[]>(() => {
     const map = messageMap.value;
@@ -276,166 +107,6 @@ export const wsConnected = signal(false);
 export const onlineUsers = signal<Map<string, { name: string; avatar: string }>>(new Map());
 export const onlineCount = signal(0);
 export const typingUsers = signal<Map<string, string>>(new Map());
-
-// ============================================================================
-// Read State (formerly readState.ts)
-// ============================================================================
-
-export const lastReadId = signal<number | null>(null);
-export const pendingReadId = signal<number | null>(null);
-export const isReadStateSyncing = signal<boolean>(false);
-
-export const hasUnreadMessages = computed(() => {
-    const readId = lastReadId.value;
-    if (!readId) return false;
-    const newestId = historyNewestId.value;
-    return newestId !== null && newestId > readId;
-});
-
-export const unreadCount = computed(() => {
-    const readId = lastReadId.value;
-    if (!readId) return 0;
-    const ids = messageIds.value;
-    return ids.filter(id => id > readId).length;
-});
-
-function getReadStateUserId(): number | null {
-    const uid = (window as any).CHOBITS_UID;
-    return uid ? Number(uid) : null;
-}
-
-/**
- * 从后端加载已读状态
- */
-export async function loadReadState(): Promise<number | null> {
-    try {
-        const userId = getReadStateUserId();
-        if (!userId) {
-            console.warn('Cannot load read state: user not logged in');
-            return null;
-        }
-
-        isReadStateSyncing.value = true;
-        const response = await fetch(`${BACKEND_URL}/api/messages/read?user_id=${userId}`, {
-            headers: getAuthHeaders(),
-            credentials: 'include',
-        });
-
-        if (!response.ok) return null;
-
-        const data = await response.json();
-        if (data.status && typeof data.last_read_id === 'number') {
-            // 取本地和远程的最大值
-            const remoteId = data.last_read_id;
-            const localId = lastReadId.value || 0;
-            const effectiveId = Math.max(remoteId, localId);
-            lastReadId.value = effectiveId;
-
-            // 如果本地值更大，推送到后端
-            if (localId > remoteId) {
-                syncReadStateToBackend(localId);
-            }
-
-            return effectiveId;
-        }
-        return null;
-    } catch (e) {
-        console.error('Failed to load read state:', e);
-        return null;
-    } finally {
-        isReadStateSyncing.value = false;
-    }
-}
-
-/**
- * 更新已读状态 (只增不减)
- */
-export function updateReadState(messageId: number): void {
-    const current = lastReadId.value;
-    if (current !== null && messageId <= current) return;
-
-    lastReadId.value = messageId;
-    pendingReadId.value = messageId;
-    debouncedSyncToBackend();
-}
-
-/**
- * 防抖同步到后端 (500ms)
- */
-let syncTimer: number | null = null;
-function debouncedSyncToBackend(): void {
-    if (syncTimer) clearTimeout(syncTimer);
-    syncTimer = window.setTimeout(() => {
-        const pending = pendingReadId.value;
-        if (pending !== null) {
-            syncReadStateToBackend(pending);
-            pendingReadId.value = null;
-        }
-    }, 500);
-}
-
-/**
- * 同步已读状态到后端
- */
-async function syncReadStateToBackend(messageId: number): Promise<void> {
-    try {
-        const userId = getReadStateUserId();
-        if (!userId) {
-            console.warn('Cannot sync read state: user not logged in');
-            return;
-        }
-
-        const response = await fetch(`${BACKEND_URL}/api/messages/read`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...getAuthHeaders(),
-            },
-            credentials: 'include',
-            body: JSON.stringify({ user_id: userId, last_read_id: messageId }),
-        });
-
-        if (!response.ok) {
-            // 网络错误时保留 pendingReadId，等待重试
-            pendingReadId.value = messageId;
-            return;
-        }
-
-        const data = await response.json();
-        // 后端返回实际生效的值 (可能因并发更高)
-        if (data.status && typeof data.effective_last_read_id === 'number') {
-            const effective = data.effective_last_read_id;
-            if (effective > (lastReadId.value || 0)) {
-                lastReadId.value = effective;
-            }
-        }
-    } catch (e) {
-        console.error('Failed to sync read state:', e);
-        // 网络错误时保留 pendingReadId，等待重试
-        pendingReadId.value = messageId;
-    }
-}
-
-/**
- * 处理自己发送的消息
- */
-export function markSentMessageAsRead(messageId: number): void {
-    updateReadState(messageId);
-}
-
-/**
- * 获取第一条未读消息 ID
- */
-export function getFirstUnreadId(): number | null {
-    const readId = lastReadId.value;
-    if (!readId) return null;
-
-    const ids = messageIds.peek();
-    for (const id of ids) {
-        if (id > readId) return id;
-    }
-    return null;
-}
 
 // ============================================================================
 // Message Grouping
@@ -527,21 +198,10 @@ export function addMessage(msg: Message, tempId?: string) {
         map.set(confirmedMsg.id, confirmedMsg);
         messageMap.value = map;
 
-        const store = new Map(messageStore.value);
-        store.set(String(confirmedMsg.id), { raw: confirmedMsg.message });
-        messageStore.value = store;
-
         // 添加到新消息集合以触发入场动画 (只对非替换消息触发)
         if (!replacedOptimistic) {
-            const newIds = new Set(newMessageIds.value);
-            newIds.add(confirmedMsg.id);
-            newMessageIds.value = newIds;
-
-            setTimeout(() => {
-                const ids = new Set(newMessageIds.value);
-                ids.delete(confirmedMsg.id);
-                newMessageIds.value = ids;
-            }, 350);
+            updateSignalSet(newMessageIds, s => s.add(confirmedMsg.id));
+            setTimeout(() => updateSignalSet(newMessageIds, s => s.delete(confirmedMsg.id)), 350);
         }
 
         pendingScrollToBottom.value = true;
@@ -581,20 +241,9 @@ export function addOptimisticMessage(
         map.set(tempId, optimisticMsg);
         messageMap.value = map;
 
-        const store = new Map(messageStore.value);
-        store.set(String(tempId), { raw: content });
-        messageStore.value = store;
-
         // 添加入场动画
-        const newIds = new Set(newMessageIds.value);
-        newIds.add(tempId);
-        newMessageIds.value = newIds;
-
-        setTimeout(() => {
-            const ids = new Set(newMessageIds.value);
-            ids.delete(tempId);
-            newMessageIds.value = ids;
-        }, 350);
+        updateSignalSet(newMessageIds, s => s.add(tempId));
+        setTimeout(() => updateSignalSet(newMessageIds, s => s.delete(tempId)), 350);
 
         // 强制滚动到底部（自己发送的消息）
         manualScrollToBottom.value++;
@@ -614,11 +263,9 @@ export function addOptimisticMessage(
  * 标记消息为发送失败
  */
 export function markMessageFailed(tempId: number) {
-    const map = new Map(messageMap.value);
-    const msg = map.get(tempId);
+    const msg = messageMap.value.get(tempId);
     if (msg && msg.state === 'sending') {
-        map.set(tempId, { ...msg, state: 'failed' });
-        messageMap.value = map;
+        updateSignalMap(messageMap, map => map.set(tempId, { ...msg, state: 'failed' }));
     }
 }
 
@@ -633,32 +280,21 @@ export function removeOptimisticMessage(tempId: number) {
         pendingTimeouts.delete(tempId);
     }
 
-    batch(() => {
-        const map = new Map(messageMap.value);
-        map.delete(tempId);
-        messageMap.value = map;
-
-        const store = new Map(messageStore.value);
-        store.delete(String(tempId));
-        messageStore.value = store;
-    });
+    updateSignalMap(messageMap, map => map.delete(tempId));
 }
 
 /**
  * 重试发送失败的消息
  */
 export function retryMessage(tempId: number): { content: string; stableKey: string } | null {
-    const map = messageMap.value;
-    const msg = map.get(tempId);
+    const msg = messageMap.value.get(tempId);
     if (!msg || msg.state !== 'failed') return null;
 
     const content = msg.message;
     const stableKey = msg.stableKey || `temp-${Math.random().toString(36).slice(2)}`;
 
     // 更新状态为 sending
-    const newMap = new Map(map);
-    newMap.set(tempId, { ...msg, state: 'sending' });
-    messageMap.value = newMap;
+    updateSignalMap(messageMap, map => map.set(tempId, { ...msg, state: 'sending' }));
 
     // 重新设置超时检测
     const timeoutId = setTimeout(() => {
@@ -676,41 +312,26 @@ export function retryMessage(tempId: number): { content: string; stableKey: stri
 export function addMessagesBatch(newMessages: Message[]) {
     if (newMessages.length === 0) return;
 
-    batch(() => {
-        const map = new Map(messageMap.value);
-        const store = new Map(messageStore.value);
+    const map = new Map(messageMap.value);
 
-        for (const msg of newMessages) {
-            // 只有当消息不存在或更新时间更新时才覆盖
-            const existing = map.get(msg.id);
-            if (!existing || (msg.edited_at && msg.edited_at > (existing.edited_at || 0))) {
-                map.set(msg.id, msg);
-                store.set(String(msg.id), { raw: msg.message });
-            }
+    for (const msg of newMessages) {
+        // 只有当消息不存在或更新时间更新时才覆盖
+        const existing = map.get(msg.id);
+        if (!existing || (msg.edited_at && msg.edited_at > (existing.edited_at || 0))) {
+            map.set(msg.id, msg);
         }
+    }
 
-        messageMap.value = map;
-        messageStore.value = store;
-    });
+    messageMap.value = map;
 }
 
 /**
  * 更新消息 (优化版：直接更新 Map 中的消息)
  */
 export function updateMessage(id: number, updates: Partial<Message>) {
-    const map = new Map(messageMap.value);
-    const existing = map.get(id);
-
+    const existing = messageMap.value.get(id);
     if (existing) {
-        map.set(id, { ...existing, ...updates });
-        messageMap.value = map;
-
-        // 如果更新了消息内容，同步更新 messageStore
-        if (updates.message !== undefined) {
-            const store = new Map(messageStore.value);
-            store.set(String(id), { raw: updates.message });
-            messageStore.value = store;
-        }
+        updateSignalMap(messageMap, map => map.set(id, { ...existing, ...updates }));
     }
 }
 
@@ -732,33 +353,20 @@ export function deleteMessage(id: number) {
  * 清空消息
  */
 export function clearMessages() {
-    batch(() => {
-        messageMap.value = new Map();
-        messageStore.value = new Map();
-    });
+    messageMap.value = new Map();
 }
 
 /**
  * 设置消息列表 (API 初始加载时使用)
  */
 export function setMessages(newMessages: Message[]) {
-    batch(() => {
-        const map = new Map<number, Message>();
-        const store = new Map<string, { raw: string }>();
-
-        for (const msg of newMessages) {
-            map.set(msg.id, msg);
-            store.set(String(msg.id), { raw: msg.message });
-        }
-
-        messageMap.value = map;
-        messageStore.value = store;
-    });
+    const map = new Map<number, Message>();
+    for (const msg of newMessages) {
+        map.set(msg.id, msg);
+    }
+    messageMap.value = map;
 }
 
-// 别名导出，保持 API 兼容性
-export const prependMessages = addMessagesBatch;
-export const appendMessages = addMessagesBatch;
 
 /**
  * 加载消息上下文 (用于跳转)

@@ -2,7 +2,7 @@ import { useMemo, useRef, useEffect, useCallback, useState } from 'preact/hooks'
 import { isMobile } from '@/utils/format';
 import { memo } from '@/utils/memo';
 import { DollarsBlurHash } from '@/utils/blurhash';
-import { messageStore, setReplyTo, newMessageIds, retryMessage } from '@/stores/chat';
+import { getRawMessage, setReplyTo, newMessageIds, retryMessage } from '@/stores/chat';
 import { settings } from '@/stores/user';
 import type { Message } from '@/types';
 import { processBBCode, renderReplyQuote, stripQuotes } from '@/utils/bbcode';
@@ -316,7 +316,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
 
     // 触发回复
     const triggerReply = useCallback(() => {
-        const rawContent = (messageStore.peek().get(String(messageId))?.raw || messageText || '').trim();
+        const rawContent = (getRawMessage(messageId) || messageText || '').trim();
         const text = stripQuotes(escapeHTML(rawContent))
             .replace(/\[img\].*?\[\/img\]/gi, '[图片]')
             .replace(/\n/g, ' ')

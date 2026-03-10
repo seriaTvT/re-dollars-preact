@@ -121,7 +121,7 @@ html[data-theme="dark"] #dollars-chat-root.disable-blur {
   z-index: var(--dollars-z-index-base);
   display: flex;
   flex-direction: column;
-  border-radius: 20px;
+  border-radius: 15px;
   /* 简化背景 - 移除液态璃璃效果以提升性能 */
   background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);

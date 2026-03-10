@@ -1,5 +1,5 @@
 import { BACKEND_URL, BGM_APP_ID, BGM_CALLBACK_URL } from './constants';
-import { getAuthHeaders } from '@/stores/user';
+import { getAuthHeaders, userInfo } from '@/stores/user';
 import { getChiiApp } from '@/utils/globals';
 import type { Message } from '@/types';
 
@@ -88,7 +88,6 @@ export async function fetchMessageContext(messageId: number, before = 30, after 
  */
 export async function sendMessage(content: string): Promise<{ status: boolean; message?: Message; error?: string }> {
     try {
-        const { userInfo } = await import('@/stores/user');
         const formhash = userInfo.value.formhash;
 
         const params = new URLSearchParams();
@@ -164,8 +163,6 @@ export async function deleteMessage(messageId: number): Promise<{ status: boolea
  * 切换表情反应
  */
 export async function toggleReaction(messageId: number, emoji: string): Promise<{ status: boolean; action?: 'add' | 'remove' }> {
-    const { userInfo } = await import('@/stores/user');
-
     const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}/reactions`, {
         method: 'POST',
         headers: {

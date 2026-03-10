@@ -10,7 +10,7 @@ import { TypingIndicator } from './TypingIndicator';
 import { SmileyPanel } from './SmileyPanel';
 import { TextFormatter } from './TextFormatter';
 import { MentionCompleter } from './MentionCompleter';
-import { saveDraft, loadDraft, clearDraft, cleanupExpiredDrafts, type ReplyInfo } from '@/stores/chat';
+import { saveDraft, loadDraft, clearDraft, type ReplyInfo } from '@/stores/chat';
 
 export function ChatInput() {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -308,8 +308,8 @@ export function ChatInput() {
             }
         }
 
-        // 清理过期草稿
-        cleanupExpiredDrafts();
+        // 清理过期草稿（loadDraft internally handles expiry）
+        loadDraft();
     }, []);
 
     // Populate textarea when entering edit mode
