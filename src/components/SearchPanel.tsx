@@ -275,15 +275,11 @@ export function SearchPanel() {
                     ))}
 
                     {isLoading.value && (
-                        <div style={{ textAlign: 'center', padding: '10px', color: 'var(--dollars-text-placeholder)' }}>
-                            搜索中...
-                        </div>
+                        <div class="search-status-msg">搜索中...</div>
                     )}
 
                     {!isLoading.value && results.value.length === 0 && searchQuery.value && (
-                        <div style={{ textAlign: 'center', padding: '20px', color: 'var(--dollars-text-placeholder)' }}>
-                            未找到相关消息
-                        </div>
+                        <div class="search-status-msg">未找到相关消息</div>
                     )}
                 </div>
             )}

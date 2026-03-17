@@ -118,7 +118,8 @@ export function FloatingUI() {
     const bottomBtnBottom = inputAreaHeight.value + 20;
     const mentionBtnBottom = bottomBtnBottom + 50;
 
-    const showMentionBtn = unreadJumpList.value.length > 0;
+    const jumpList = unreadJumpList.value;
+    const showMentionBtn = jumpList.length > 0;
     const scrollBtnClasses = `nav-btn ${showScrollBottomBtn.value ? 'visible' : ''} mode-${scrollButtonMode.value}`;
     // 使用 lastReadId 计算未读数量
     const currentUnreadCount = unreadCount.value;
@@ -145,9 +146,9 @@ export function FloatingUI() {
                     <path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
                     <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28" />
                 </svg>
-                {unreadJumpList.value.length > 0 && (
+                {showMentionBtn && (
                     <div id="dollars-mention-badge" class="nav-btn-badge">
-                        {unreadJumpList.value.length > 99 ? '99+' : unreadJumpList.value.length}
+                        {jumpList.length > 99 ? '99+' : jumpList.length}
                     </div>
                 )}
             </div>
