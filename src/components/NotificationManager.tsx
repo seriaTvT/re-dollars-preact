@@ -228,7 +228,7 @@ function NotificationItem({ notification, onView, onDismiss }: NotificationItemP
             <div class="content">
                 <strong class="un-widget-title">
                     {escapeHTML(nickname)}{' '}
-                    <span style={{ fontWeight: 'normal', color: '#999', fontSize: '11px' }}>
+                    <span style={{ fontWeight: 'normal', color: 'var(--dollars-text-placeholder)', fontSize: '11px' }}>
                         {typeLabel}
                     </span>
                 </strong>

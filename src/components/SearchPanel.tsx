@@ -275,13 +275,13 @@ export function SearchPanel() {
                     ))}
 
                     {isLoading.value && (
-                        <div style={{ textAlign: 'center', padding: '10px', color: '#999' }}>
+                        <div style={{ textAlign: 'center', padding: '10px', color: 'var(--dollars-text-placeholder)' }}>
                             搜索中...
                         </div>
                     )}
 
                     {!isLoading.value && results.value.length === 0 && searchQuery.value && (
-                        <div style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
+                        <div style={{ textAlign: 'center', padding: '20px', color: 'var(--dollars-text-placeholder)' }}>
                             未找到相关消息
                         </div>
                     )}

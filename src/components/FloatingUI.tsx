@@ -146,23 +146,7 @@ export function FloatingUI() {
                     <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28" />
                 </svg>
                 {unreadJumpList.value.length > 0 && (
-                    <div id="dollars-mention-badge" style={{
-                        display: 'block',
-                        position: 'absolute',
-                        top: '-5px',
-                        right: '-5px',
-                        minWidth: '18px',
-                        height: '18px',
-                        borderRadius: '9px',
-                        backgroundColor: 'var(--primary-color)',
-                        color: '#fff',
-                        fontSize: '11px',
-                        fontWeight: 700,
-                        lineHeight: '18px',
-                        textAlign: 'center',
-                        padding: '0 5px',
-                        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-                    }}>
+                    <div id="dollars-mention-badge" class="nav-btn-badge">
                         {unreadJumpList.value.length > 99 ? '99+' : unreadJumpList.value.length}
                     </div>
                 )}
@@ -179,7 +163,7 @@ export function FloatingUI() {
                     <path d="M12 5v14m-7-7l7 7 7-7" />
                 </svg>
                 {currentUnreadCount > 0 && (
-                    <div id="dollars-unread-badge" style={{ display: 'block' }}>
+                    <div id="dollars-unread-badge" class="nav-btn-badge">
                         {currentUnreadCount > 99 ? '99+' : currentUnreadCount}
                     </div>
                 )}

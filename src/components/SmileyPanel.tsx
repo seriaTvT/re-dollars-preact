@@ -262,7 +262,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                         </li>
                     ))
                 ) : (
-                    <p style={{ width: '100%', textAlign: 'center', color: '#888', fontSize: '12px', marginTop: '20px', padding: '0 10px' }}>
+                    <p style={{ width: '100%', textAlign: 'center', color: 'var(--dollars-icon-color-secondary)', fontSize: '12px', marginTop: '20px', padding: '0 10px' }}>
                         上传或右键图片收藏
                         <br />
                         (存储于Chii云端)
