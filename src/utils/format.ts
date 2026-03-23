@@ -47,6 +47,15 @@ export const formatDate = (ts: number, fmt: 'time' | 'key' | 'full' | 'label' = 
 };
 
 /**
+ * 判断某用户最后发言时间是否为今天（用于在线状态显示）
+ */
+export const isActiveToday = (lastMessageTime: string | null | undefined): boolean => {
+    if (!lastMessageTime) return false;
+    const ts = new Date(lastMessageTime).getTime() / 1000;
+    return formatDate(ts, 'label') === '今天';
+};
+
+/**
  * 移除所有 BBCode 标签
  */
 export const stripBBCode = (t: string): string =>

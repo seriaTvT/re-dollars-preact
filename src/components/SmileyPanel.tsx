@@ -244,11 +244,11 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                         <li key={url} class="smiley-item favorite-item">
                             <a
                                 href="#"
-                                data-smiley={`[emoji]${escapeHTML(url)}[/emoji]`}
-                                title={`[emoji]${url}[/emoji]`}
+                                data-smiley={`[sticker]${escapeHTML(url)}[/sticker]`}
+                                title={`[sticker]${url}[/sticker]`}
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    handleSelect(`[emoji]${url}[/emoji]`);
+                                    handleSelect(`[sticker]${url}[/sticker]`);
                                 }}
                                 style={{ backgroundImage: `url('${url}')` }}
                             />
@@ -274,8 +274,11 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
         smileys = generateSmileyCodes(activeTab);
     }
 
+    const activeRange = smileyRanges.find(r => r.name === activeTab);
+    const isLargeTab = activeRange?.isLarge ?? false;
+
     return (
-        <div id="dollars-smiles-floating" class={`open ${isSmileyPanelClosing.value ? 'closing' : ''}`}>
+        <div id="dollars-smiles-floating" class={`open ${isSmileyPanelClosing.value ? 'closing' : ''} ${isLargeTab ? 'large-smiley-mode' : ''}`}>
             {/* Tabs */}
             <div id="dollars-smiles-tabs">
                 {smileyRanges.map((range) => {

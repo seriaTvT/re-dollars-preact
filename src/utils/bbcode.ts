@@ -105,12 +105,12 @@ export function processBBCode(
         </div>`;
     });
 
-    // 自定义表情
-    html = html.replace(/\[emoji\]([\s\S]+?)\[\/emoji\]/gi, (m, src) => {
+    // 自定义表情（兼容 [emoji] 和 [sticker] 两种标签）
+    html = html.replace(/\[(?:emoji|sticker)\]([\s\S]+?)\[\/(?:emoji|sticker)\]/gi, (m, src) => {
         if (!/^https?:\/\/[^\s<>"']+$/i.test(src)) return escapeHTML(m);
         const isCommunityEmoji = src.includes('/emojis/');
         const className = isCommunityEmoji ? 'smiley' : 'custom-emoji';
-        return `<img src="${src}" class="${className}" alt="emoji" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer">`;
+        return `<img src="${src}" class="${className}" alt="sticker" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer">`;
     });
 
     // 音频
@@ -167,6 +167,18 @@ export function processBBCode(
 
     // 用户提及
     html = html.replace(/\[user=(.+?)\]([\s\S]+?)\[\/user\]/gi, '<a href="/user/$1" target="_blank" class="user-mention">@$2</a>');
+
+    // Musume 表情（动图，大尺寸）
+    html = html.replace(/\(musume_(\d+)\)/g, (match, p1, offset, str) => {
+        const before = str.slice(0, offset);
+        if (before.lastIndexOf('<') > before.lastIndexOf('>')) return match;
+
+        const num = parseInt(p1, 10);
+        if (num < 1 || num > 96) return match;
+
+        const src = `/img/smiles/musume/musume_${String(num).padStart(2, '0')}.gif`;
+        return `<img src="${src}" class="smiley smiley-musume" alt="${match}">`;
+    });
 
     // BGM 表情
     html = html.replace(/\(bgm(\d+)\)/g, (match, p1, offset, str) => {

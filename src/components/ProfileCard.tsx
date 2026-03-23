@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { profileCardUserId, profileCardAnchor, hideProfileCard, toggleSearch, isProfileCardClosing } from '@/stores/ui';
 import { searchQuery } from '@/stores/chat';
 import { fetchUserProfile } from '@/utils/api';
-import { getAvatarUrl, formatDate } from '@/utils/format';
+import { getAvatarUrl, formatDate, isActiveToday } from '@/utils/format';
 import { SVGIcons } from '@/utils/constants';
 import type { UserProfile } from '@/types';
 
@@ -56,6 +56,8 @@ export function ProfileCard() {
         card.style.left = `${left}px`;
     }, [userId, anchor, profile]);
 
+    const cleanupRef = useRef<(() => void) | null>(null);
+
     // 点击外部关闭
     useEffect(() => {
         if (!userId) return;
@@ -76,8 +78,7 @@ export function ProfileCard() {
             document.addEventListener('click', handleClickOutside);
             document.addEventListener('touchend', handleClickOutside);
 
-            // 存储清理函数
-            (window as any).__dollarsProfileCardCleanup = () => {
+            cleanupRef.current = () => {
                 document.removeEventListener('click', handleClickOutside);
                 document.removeEventListener('touchend', handleClickOutside);
             };
@@ -85,14 +86,18 @@ export function ProfileCard() {
 
         return () => {
             clearTimeout(timeoutId);
-            if ((window as any).__dollarsProfileCardCleanup) {
-                (window as any).__dollarsProfileCardCleanup();
-                delete (window as any).__dollarsProfileCardCleanup;
-            }
+            cleanupRef.current?.();
+            cleanupRef.current = null;
         };
     }, [userId, anchor]);
 
     if (!userId) return null;
+
+    const active = isActiveToday(profile?.stats?.last_message_time);
+    const lastActiveText = !loading && profile?.stats?.last_message_time ? (() => {
+        const ts = new Date(profile.stats!.last_message_time).getTime() / 1000;
+        return `最近活跃：${formatDate(ts, 'label')} ${formatDate(ts, 'time')}`;
+    })() : null;
 
     const handleHistory = () => {
         if (profile) {
@@ -121,17 +126,22 @@ export function ProfileCard() {
                 <div class="dollars-profile-top-row">
                     <div class="dollars-profile-identity">
                         <img
-                            class="dollars-profile-avatar"
-                            src={profile ? getAvatarUrl(profile.avatar, 'l') : ''}
-                            alt="avatar"
+                            class={`dollars-profile-avatar ${active ? 'active' : ''}`}
+                            src={profile ? getAvatarUrl(profile.avatar, 'l') : undefined}
+                            alt={profile?.nickname ?? userId ?? ''}
                         />
                         <div class="dollars-profile-names">
-                            <div class="dollars-profile-nickname">
-                                {profile ? profile.nickname : 'Loading...'}
-                            </div>
-                            <div class="dollars-profile-username">
-                                @{profile ? profile.username : userId}
-                            </div>
+                            {loading ? (
+                                <>
+                                    <div class="dollars-profile-skel dollars-profile-skel-name" />
+                                    <div class="dollars-profile-skel dollars-profile-skel-user" />
+                                </>
+                            ) : (
+                                <>
+                                    <div class="dollars-profile-nickname">{profile?.nickname}</div>
+                                    <div class="dollars-profile-username">@{profile?.username ?? userId}</div>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -151,20 +161,16 @@ export function ProfileCard() {
                     </div>
                 </div>
 
-                <div class="dollars-profile-sign">
-                    {profile?.sign || '这个人很懒，什么都没有写...'}
-                </div>
+                {loading ? (
+                    <div class="dollars-profile-skel dollars-profile-skel-sign" />
+                ) : (
+                    <div class="dollars-profile-sign">
+                        {profile?.sign || '这个人很懒，什么都没有写...'}
+                    </div>
+                )}
 
-                <div class={`dollars-profile-footer ${(!loading && profile?.stats?.last_message_time && formatDate(new Date(profile.stats.last_message_time).getTime() / 1000, 'label') === '今天') ? 'active' : ''}`}>
-                    {loading ? '加载中...' : (
-                        profile?.stats?.last_message_time ? (() => {
-                            const date = new Date(profile.stats.last_message_time);
-                            const ts = date.getTime() / 1000;
-                            const label = formatDate(ts, 'label');
-                            const time = formatDate(ts, 'time');
-                            return `最近活跃: ${label} ${time}`;
-                        })() : '暂无发言记录'
-                    )}
+                <div class={`dollars-profile-footer ${active ? 'active' : ''}`}>
+                    {loading ? '加载中...' : (lastActiveText ?? '暂无发言记录')}
                 </div>
             </div>
         </div>

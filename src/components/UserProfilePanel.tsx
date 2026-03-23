@@ -11,7 +11,7 @@ import {
 } from '@/stores/ui';
 import { searchQuery, pendingJumpToMessage, toggleChat } from '@/stores/chat';
 import { fetchUserProfile, fetchGalleryMedia } from '@/utils/api';
-import { getAvatarUrl, formatDate } from '@/utils/format';
+import { getAvatarUrl, formatDate, isActiveToday } from '@/utils/format';
 import { SVGIcons } from '@/utils/constants';
 import type { UserProfile } from '@/types';
 
@@ -40,16 +40,16 @@ export function UserProfilePanel() {
             return;
         }
 
-        const loadProfile = async () => {
-            setLoading(true);
-            const data = await fetchUserProfile(userId);
-            if (data) {
-                setProfile(data);
-            }
-            setLoading(false);
-        };
+        let stale = false;
+        setLoading(true);
 
-        loadProfile();
+        fetchUserProfile(userId).then(data => {
+            if (stale) return;
+            if (data) setProfile(data);
+            setLoading(false);
+        });
+
+        return () => { stale = true; };
     }, [userId]);
 
     // Load user's shared media
@@ -59,9 +59,11 @@ export function UserProfilePanel() {
             return;
         }
 
-        const loadMedia = async () => {
-            setMediaLoading(true);
-            const result = await fetchGalleryMedia(0, 6, profile.id);
+        let stale = false;
+        setMediaLoading(true);
+
+        fetchGalleryMedia(0, 6, profile.id).then(result => {
+            if (stale) return;
             setMedia(result.items.map(item => ({
                 url: item.url,
                 thumbnailUrl: item.thumbnailUrl,
@@ -72,9 +74,9 @@ export function UserProfilePanel() {
                 timestamp: item.timestamp,
             })));
             setMediaLoading(false);
-        };
+        });
 
-        loadMedia();
+        return () => { stale = true; };
     }, [profile?.id]);
 
     if (!isUserProfilePanelOpen.value) return null;
@@ -93,19 +95,16 @@ export function UserProfilePanel() {
         }
     };
 
-    const isActive = !loading && profile?.stats?.last_message_time &&
-        formatDate(new Date(profile.stats.last_message_time).getTime() / 1000, 'label') === '今天';
+    const isActive = !loading && isActiveToday(profile?.stats?.last_message_time);
 
     const isNarrow = isNarrowLayout.value;
 
-    // Format last active text
-    const lastActiveText = profile?.stats?.last_message_time ? (() => {
-        const date = new Date(profile.stats!.last_message_time);
-        const ts = date.getTime() / 1000;
-        const label = formatDate(ts, 'label');
-        const time = formatDate(ts, 'time');
-        return `${label} ${time}`;
-    })() : null;
+    const lastMsgTs = profile?.stats?.last_message_time
+        ? new Date(profile.stats.last_message_time).getTime() / 1000
+        : null;
+    const lastActiveText = lastMsgTs
+        ? `${formatDate(lastMsgTs, 'label')} ${formatDate(lastMsgTs, 'time')}`
+        : null;
 
     return (
         <div
@@ -118,6 +117,7 @@ export function UserProfilePanel() {
                     <button
                         class="header-btn dollars-back-btn"
                         title="返回"
+                        aria-label="返回"
                         onClick={hideUserProfile}
                     />
                     <span class="uprofile-card-title">用户资料</span>
@@ -128,8 +128,8 @@ export function UserProfilePanel() {
             <div class="uprofile-banner">
                 <img
                     class="uprofile-avatar"
-                    src={profile ? getAvatarUrl(profile.avatar, 'l') : ''}
-                    alt="avatar"
+                    src={profile ? getAvatarUrl(profile.avatar, 'l') : undefined}
+                    alt={profile?.nickname ?? userId ?? ''}
                 />
             </div>
 
@@ -139,6 +139,7 @@ export function UserProfilePanel() {
                     <div class="uprofile-skeleton-wrap">
                         <div class="uprofile-skeleton uprofile-skeleton-name" />
                         <div class="uprofile-skeleton uprofile-skeleton-username" />
+                        <div class="uprofile-skeleton uprofile-skeleton-stats" />
                         <div class="uprofile-skeleton uprofile-skeleton-actions" />
                         <div class="uprofile-skeleton uprofile-skeleton-row" />
                         <div class="uprofile-skeleton uprofile-skeleton-row" />
@@ -149,68 +150,73 @@ export function UserProfilePanel() {
                         <div class="uprofile-name-section">
                             <div class="uprofile-nickname">
                                 {profile?.nickname ?? userId}
-                                {isActive && <span class="uprofile-status-dot active" />}
+                                {isActive && <span class="uprofile-status-dot active" aria-label="在线" role="img" />}
                             </div>
                             <div class="uprofile-username">
                                 @{profile?.username ?? userId}
                             </div>
-                            {lastActiveText && (
+                            {lastActiveText && !isActive && (
                                 <div class="uprofile-last-active">
-                                    {isActive ? '在线' : `最近活跃 ${lastActiveText}`}
+                                    最近活跃 {lastActiveText}
                                 </div>
                             )}
                         </div>
+
+                        {/* 数据统计 */}
+                        {profile?.stats && (
+                            <div class="uprofile-stats-row">
+                                <div class="uprofile-stat">
+                                    <span class="uprofile-stat-num">{profile.stats.message_count.toLocaleString()}</span>
+                                    <span class="uprofile-stat-label">条消息</span>
+                                </div>
+                                <div class="uprofile-stat-divider" />
+                                <div class="uprofile-stat">
+                                    <span class="uprofile-stat-num">{profile.stats.average_messages_per_day.toFixed(1)}</span>
+                                    <span class="uprofile-stat-label">条/天</span>
+                                </div>
+                            </div>
+                        )}
 
                         {/* 操作按钮（紧跟名称区） */}
                         {profile && (
                             <div class="uprofile-actions">
                                 <button class="uprofile-action-btn" onClick={handleHistory}>
-                                    <span dangerouslySetInnerHTML={{ __html: SVGIcons.history }} />
+                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.history }} />
                                     搜索发言
                                 </button>
                                 <button class="uprofile-action-btn" onClick={handleHomepage}>
-                                    <span dangerouslySetInnerHTML={{ __html: SVGIcons.home }} />
+                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.home }} />
                                     主页
                                 </button>
                             </div>
                         )}
 
                         {/* 信息行 */}
-                        <div class="uprofile-info-section">
-                            {profile?.sign && (
-                                <div class="uprofile-info-row">
-                                    <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.pen }} />
-                                    <div class="uprofile-info-content">
-                                        <div class="uprofile-info-label">个性签名</div>
-                                        <div class="uprofile-info-value">{profile.sign}</div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {profile?.stats && (
-                                <div class="uprofile-info-row">
-                                    <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.reply }} />
-                                    <div class="uprofile-info-content">
-                                        <div class="uprofile-info-label">发言统计</div>
-                                        <div class="uprofile-info-value">
-                                            {profile.stats.message_count.toLocaleString()} 条消息 · 日均 {profile.stats.average_messages_per_day.toFixed(1)}
+                        {(profile?.sign || profile?.stats?.first_message_time) && (
+                            <div class="uprofile-info-section">
+                                {profile.sign && (
+                                    <div class="uprofile-info-row">
+                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.pen }} />
+                                        <div class="uprofile-info-content">
+                                            <div class="uprofile-info-label">个性签名</div>
+                                            <div class="uprofile-info-value uprofile-sign-value">{profile.sign}</div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {profile?.stats?.first_message_time && (
-                                <div class="uprofile-info-row">
-                                    <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.calendar }} />
-                                    <div class="uprofile-info-content">
-                                        <div class="uprofile-info-label">首次发言</div>
-                                        <div class="uprofile-info-value">
-                                            {formatDate(new Date(profile.stats!.first_message_time).getTime() / 1000, 'full')}
+                                {profile.stats?.first_message_time && (
+                                    <div class="uprofile-info-row">
+                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.calendar }} />
+                                        <div class="uprofile-info-content">
+                                            <div class="uprofile-info-label">首次发言</div>
+                                            <div class="uprofile-info-value">
+                                                {formatDate(new Date(profile.stats.first_message_time).getTime() / 1000, 'full')}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        )}
 
                         {/* 共享媒体 */}
                         {!mediaLoading && media.length > 0 && (
@@ -226,7 +232,7 @@ export function UserProfilePanel() {
                                         const currentItem = imageItems[index];
                                         if (!currentItem) return null;
                                         return (
-                                            <div class="gallery-photo-capsule" onClick={(e) => {
+                                            <button class="gallery-photo-capsule" aria-label={`跳转到 ${currentItem.nickname} 的消息`} onClick={(e) => {
                                                 e.stopPropagation();
                                                 hideUserProfile();
                                                 pendingJumpToMessage.value = currentItem.message_id;
@@ -238,35 +244,36 @@ export function UserProfilePanel() {
                                                     <span class="capsule-nickname">{currentItem.nickname}</span>
                                                     <span class="capsule-date">{formatDate(currentItem.timestamp, 'full')}</span>
                                                 </div>
-                                            </div>
+                                            </button>
                                         );
                                     }}
                                 >
                                     <div class="uprofile-media-grid">
-                                        {media.map((item, idx) => (
+                                        {media.map((item) => (
                                             <div
                                                 class="uprofile-media-item"
-                                                key={item.message_id + item.url + idx}
+                                                key={`${item.message_id}-${item.url}`}
                                             >
                                                 {item.type === 'video' ? (
-                                                    <div
-                                                        style={{ width: '100%', height: '100%' }}
+                                                    <button
+                                                        class="uprofile-media-video-btn"
+                                                        aria-label={`播放 ${item.nickname} 分享的视频`}
                                                         onClick={() => window.open(item.url, '_blank')}
                                                     >
                                                         <img
                                                             src={item.thumbnailUrl}
-                                                            alt=""
+                                                            alt={`${item.nickname} 分享的视频`}
                                                             loading="lazy"
                                                         />
-                                                        <div class="uprofile-media-video-badge">
+                                                        <div class="uprofile-media-video-badge" aria-hidden="true">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                                                         </div>
-                                                    </div>
+                                                    </button>
                                                 ) : (
                                                     <PhotoView src={item.url} width={800} height={600}>
                                                         <img
                                                             src={item.thumbnailUrl}
-                                                            alt=""
+                                                            alt={`${item.nickname} 分享的图片`}
                                                             loading="lazy"
                                                             onError={(e) => {
                                                                 const target = e.currentTarget;

@@ -273,7 +273,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     const isSticker = useMemo(() => {
         if (isDeleted) return false;
         const raw = (messageText || '').trim();
-        return /^(\[img\][^\[]+\[\/img\]|\[emoji\][^\[]+\[\/emoji\])$/i.test(raw) && !replyToId;
+        return /^(\[img\][^\[]+\[\/img\]|\[(?:emoji|sticker)\][^\[]+\[\/(?:emoji|sticker)\]|\(musume_\d+\))$/i.test(raw) && !replyToId;
     }, [messageText, isDeleted, replyToId]);
 
     // 时间戳

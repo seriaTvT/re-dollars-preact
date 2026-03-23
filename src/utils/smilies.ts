@@ -3,6 +3,12 @@ export interface SmileyRange {
     start?: number;
     end?: number;
     path?: (id: number) => string;
+    /** 表情代码前缀，默认 'bgm'，musume 系列为 'musume_' */
+    codePrefix?: string;
+    /** 是否为大尺寸动图表情（如 musume 系列） */
+    isLarge?: boolean;
+    /** 代码数字部分的补零位数，如 2 表示补零到两位 */
+    codePad?: number;
 }
 
 // 表情范围配置 - 统一定义
@@ -38,29 +44,42 @@ export const smileyRanges: SmileyRange[] = [
             return `/img/smiles/tv_500/bgm_${id}.${ext}`;
         }
     },
+    {
+        name: '娘',
+        start: 1,
+        end: 96,
+        codePrefix: 'musume_',
+        codePad: 2,
+        isLarge: true,
+        path: (id: number) => `/img/smiles/musume/musume_${String(id).padStart(2, '0')}.gif`
+    },
     { name: 'BMO' },
     { name: '收藏' }
 ];
 
-// 不包含收藏的表情范围（用于 ReactionPicker）
-export const smileyRangesWithoutFavorites = smileyRanges.filter(r => r.name !== '收藏');
+// 不包含收藏和大尺寸表情的范围（用于 ReactionPicker）
+export const smileyRangesWithoutFavorites = smileyRanges.filter(r => r.name !== '收藏' && !r.isLarge);
 
 // 获取表情 URL
 export function getSmileyUrl(code: string | number): string | null {
-    let id: number;
     if (typeof code === 'string') {
-        const match = code.match(/\(bgm(\d+)\)/);
-        if (!match) return null;
-        id = parseInt(match[1], 10);
-    } else {
-        id = code;
+        // 尝试匹配 musume 格式: (musume_XX)
+        const musumeMatch = code.match(/\(musume_(\d+)\)/);
+        if (musumeMatch) {
+            const id = parseInt(musumeMatch[1], 10);
+            const range = smileyRanges.find(r => r.codePrefix === 'musume_' && r.start && r.end && id >= r.start && id <= r.end);
+            return range?.path?.(id) ?? null;
+        }
+        // 标准 bgm 格式: (bgmXX)
+        const bgmMatch = code.match(/\(bgm(\d+)\)/);
+        if (!bgmMatch) return null;
+        const id = parseInt(bgmMatch[1], 10);
+        const range = smileyRanges.find(r => !r.codePrefix && r.start && r.end && id >= r.start && id <= r.end);
+        return range?.path?.(id) ?? null;
     }
-
-    const range = smileyRanges.find(r => r.start && r.end && id >= r.start && id <= r.end);
-    if (range && range.path) {
-        return range.path(id);
-    }
-    return null;
+    // 数字 id 仍按 bgm 系列查找
+    const range = smileyRanges.find(r => !r.codePrefix && r.start && r.end && code >= r.start && code <= r.end);
+    return range?.path?.(code) ?? null;
 }
 
 // 生成表情代码列表
@@ -68,9 +87,11 @@ export function generateSmileyCodes(groupName: string): string[] {
     const range = smileyRanges.find(r => r.name === groupName);
     if (!range || !range.start || !range.end) return [];
 
+    const prefix = range.codePrefix || 'bgm';
     const codes: string[] = [];
     for (let i = range.start; i <= range.end; i++) {
-        codes.push(`(bgm${i})`);
+        const num = range.codePad ? String(i).padStart(range.codePad, '0') : String(i);
+        codes.push(`(${prefix}${num})`);
     }
     return codes;
 }

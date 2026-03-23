@@ -24,14 +24,14 @@
   --dollars-glass-border: rgba(255, 255, 255, 0.3);
   --dollars-glass-highlight: rgba(255, 255, 255, 0.3);
   /* Glass Surface Variables */
-  --dollars-glass-bg: rgba(255, 255, 255, 0.25);
-  --dollars-glass-blur: blur(12px) saturate(1.8) brightness(1.05);
+  --dollars-glass-bg: rgba(255, 255, 255, 0.55);
+  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.03);
   --dollars-glass-shadow:
-    0 8px 32px 0 rgba(31, 38, 135, 0.15),
-    0 2px 16px 0 rgba(31, 38, 135, 0.08),
+    0 8px 32px 0 rgba(31, 38, 135, 0.12),
+    0 2px 16px 0 rgba(31, 38, 135, 0.06),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
     inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
-  --dollars-glass-border-color: rgba(255, 255, 255, 0.35);
+  --dollars-glass-border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* 只在窗口可见时加载背景图片 */
@@ -53,13 +53,13 @@ html[data-theme="dark"] {
   --dollars-glass-border: rgba(255, 255, 255, 0.1);
   --dollars-glass-highlight: rgba(255, 255, 255, 0.1);
   /* Glass Surface Variables - Dark Mode */
-  --dollars-glass-bg: rgba(255, 255, 255, 0.08);
-  --dollars-glass-blur: blur(12px) saturate(1.8) brightness(1.15);
+  --dollars-glass-bg: rgba(30, 30, 30, 0.65);
+  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.1);
   --dollars-glass-shadow:
     0 8px 32px 0 rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1px 0 0 rgba(255, 255, 255, 0.08);
-  --dollars-glass-border-color: rgba(255, 255, 255, 0.15);
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
+  --dollars-glass-border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* Disable Blur Override */
@@ -1396,12 +1396,27 @@ html[data-theme="dark"] .chat-message.self .bubble-tail {
   border-radius: 8px;
 }
 
+/* Musume 系列表情 - 动图大尺寸 */
+.bubble img.smiley-musume {
+  width: 80px;
+  height: 80px;
+  image-rendering: auto;
+  vertical-align: bottom;
+}
+
 .bubble.sticker-mode .custom-emoji {
   max-width: 150px;
   max-height: 150px;
   border-radius: 8px;
   margin: 2px 0;
   display: block;
+}
+
+.bubble.sticker-mode .smiley-musume {
+  width: 120px;
+  height: 120px;
+  display: block;
+  margin: 2px 0;
 }
 
 .bubble .image-container {
@@ -1973,6 +1988,13 @@ html[data-theme="dark"] #dollars-smiles-floating {
   padding: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   background-color: transparent;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+#dollars-smiles-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .smiley-tab-btn {
@@ -1983,6 +2005,7 @@ html[data-theme="dark"] #dollars-smiles-floating {
   cursor: pointer;
   color: var(--primary-color);
   font-size: 13px;
+  flex-shrink: 0;
   transition: background-color var(--transition-speed), color var(--transition-speed);
   image-rendering: pixelated;
 }
@@ -2085,6 +2108,16 @@ html[data-theme="dark"] .smiley-item.favorite-item a {
 
 .smiley-item.favorite-item:hover .remove-favorite-btn {
   opacity: 1;
+}
+
+/* Musume 大尺寸表情模式 */
+#dollars-smiles-floating.large-smiley-mode {
+  --item-size: 56px;
+  --icon-size: 48px;
+}
+
+#dollars-smiles-floating.large-smiley-mode .smiley-item a {
+  image-rendering: auto;
 }
 
 /* =========================================
@@ -2612,8 +2645,10 @@ span.text_mask {
   width: 280px;
   padding: 0;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
   color: var(--dollars-text);
   opacity: 0;
   transform: scale(0.95) translateY(5px);
@@ -2622,12 +2657,7 @@ span.text_mask {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--dollars-border);
-}
-
-html[data-theme=dark] #dollars-profile-card {
-  background: rgba(45, 45, 45, 0.95);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--dollars-glass-border-color);
 }
 
 @keyframes dollars-profile-slide-up {
@@ -2647,13 +2677,16 @@ html[data-theme=dark] #dollars-profile-card {
   transform: scale(1) translateY(0);
   pointer-events: auto;
   transition: none;
-  animation: dollars-profile-slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: dollars-profile-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dollars-profile-banner {
   height: 60px;
   width: 100%;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%, color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%, color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);
   position: relative;
 }
 
@@ -2661,28 +2694,14 @@ html[data-theme=dark] #dollars-profile-card {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
+  background-image: var(--dollars-bg-pattern-url);
   background-size: 300px;
-  opacity: 1;
+  opacity: 0.6;
   mix-blend-mode: overlay;
 }
 
-html[data-theme=dark] .dollars-profile-banner {
-  background: transparent;
-}
-
 html[data-theme=dark] .dollars-profile-banner::before {
-  mix-blend-mode: normal;
-  background: linear-gradient(160deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color), transparent 40%) 100%);
-  -webkit-mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
-  mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
-  -webkit-mask-repeat: repeat;
-  mask-repeat: repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: 300px;
-  mask-size: 300px;
-  opacity: 0.25;
+  opacity: 0.2;
 }
 
 .dollars-profile-body {
@@ -2718,8 +2737,14 @@ html[data-theme=dark] .dollars-profile-banner::before {
   border: 3px solid var(--dollars-bg);
   background-color: var(--dollars-bg);
   object-fit: cover;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 8px var(--dollars-shadow);
   flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.dollars-profile-avatar.active {
+  border-color: var(--dollars-color-online);
+  box-shadow: 0 0 0 2px var(--dollars-bg), 0 0 0 4px var(--dollars-color-online);
 }
 
 .dollars-profile-names {
@@ -2729,8 +2754,8 @@ html[data-theme=dark] .dollars-profile-banner::before {
 }
 
 .dollars-profile-nickname {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--dollars-text);
   line-height: 1.2;
   white-space: nowrap;
@@ -2752,25 +2777,26 @@ html[data-theme=dark] .dollars-profile-banner::before {
 }
 
 .dollars-profile-btn {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: transparent;
   border: 1px solid var(--dollars-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--dollars-text-secondary) !important;
+  color: var(--dollars-text-secondary);
   transition: all 0.2s;
   cursor: pointer;
+  position: relative;
 }
 
 .dollars-profile-btn:hover {
   background: var(--primary-color);
-  color: #fff !important;
+  color: var(--dollars-bg);
   border-color: var(--primary-color);
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px var(--dollars-shadow);
 }
 
 .dollars-profile-btn svg {
@@ -2781,15 +2807,40 @@ html[data-theme=dark] .dollars-profile-banner::before {
 
 .dollars-profile-sign {
   font-size: 12px;
-  line-height: 1.5;
-  color: var(--dollars-text);
-  opacity: 0.85;
+  line-height: 1.6;
+  color: var(--dollars-text-secondary);
   margin-bottom: 12px;
-  background: none;
-  border: none;
-  padding: 0;
-  font-style: normal;
+  padding: 6px 10px;
+  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);
+  background: color-mix(in srgb, var(--primary-color), transparent 92%);
+  border-radius: 0 6px 6px 0;
   word-wrap: break-word;
+}
+
+/* ProfileCard 骨架屏 */
+.dollars-profile-skel {
+  background: linear-gradient(90deg, var(--dollars-border) 25%, transparent 50%, var(--dollars-border) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+.dollars-profile-skel-name {
+  width: 120px;
+  height: 16px;
+  margin-bottom: 5px;
+}
+
+.dollars-profile-skel-user {
+  width: 80px;
+  height: 12px;
+}
+
+.dollars-profile-skel-sign {
+  width: 100%;
+  height: 36px;
+  margin-bottom: 12px;
+  border-radius: 6px;
 }
 
 .dollars-profile-footer {
@@ -3517,6 +3568,28 @@ html[data-theme="dark"] .mention-item.active {
 /* =========================================
    User Profile Panel — Keyframes
    ========================================= */
+@keyframes uprofile-dot-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@keyframes uprofile-stat-num-in {
+  from {
+    opacity: 0;
+    transform: scale(0.75) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 @keyframes uprofile-fade-up {
   from {
     opacity: 0;
@@ -3540,6 +3613,49 @@ html[data-theme="dark"] .mention-item.active {
 }
 
 /* uprofile-shimmer → reuses skeleton-wave (identical keyframes) */
+
+@media (prefers-reduced-motion: reduce) {
+  .uprofile-avatar,
+  .uprofile-name-section,
+  .uprofile-stats-row,
+  .uprofile-actions,
+  .uprofile-info-section,
+  .uprofile-media-section,
+  .uprofile-stat-num,
+  .uprofile-stat:nth-child(3) .uprofile-stat-num {
+    animation: none;
+  }
+
+  .uprofile-status-dot.active::after {
+    display: none;
+  }
+
+  .uprofile-action-btn,
+  .uprofile-action-btn:active {
+    transition: none;
+    transform: none;
+  }
+
+  .uprofile-info-row {
+    transition: none;
+  }
+
+  .uprofile-media-item img {
+    transition: none;
+  }
+
+  #dollars-user-profile-panel.narrow,
+  #dollars-user-profile-panel.narrow.visible,
+  #dollars-user-profile-panel.narrow.closing {
+    transition: none;
+  }
+
+  #dollars-user-profile-panel.wide,
+  #dollars-user-profile-panel.wide.visible,
+  #dollars-user-profile-panel.wide.closing {
+    transition: none;
+  }
+}
 
 /* =========================================
    User Profile Panel (Telegram-style)
@@ -3577,15 +3693,11 @@ html[data-theme="dark"] .mention-item.active {
   z-index: 101;
   border-radius: 16px;
   border: 1px solid var(--dollars-border);
-  box-shadow: 0 8px 40px -8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 40px -8px var(--dollars-shadow);
   opacity: 0;
   transform: scale(0.96) translateY(8px);
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
-}
-
-html[data-theme=dark] #dollars-user-profile-panel.wide {
-  box-shadow: 0 8px 40px -8px rgba(0, 0, 0, 0.6);
 }
 
 #dollars-user-profile-panel.wide.visible {
@@ -3621,7 +3733,10 @@ html[data-theme=dark] #dollars-user-profile-panel.wide {
 .uprofile-banner {
   height: 120px;
   flex-shrink: 0;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%, color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%, color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);
   position: relative;
   display: flex;
   align-items: flex-end;
@@ -3632,26 +3747,14 @@ html[data-theme=dark] #dollars-user-profile-panel.wide {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
+  background-image: var(--dollars-bg-pattern-url);
   background-size: 300px;
-  opacity: 1;
+  opacity: 0.6;
   mix-blend-mode: overlay;
 }
 
-html[data-theme=dark] .uprofile-banner {
-  background: transparent;
-}
-
 html[data-theme=dark] .uprofile-banner::before {
-  mix-blend-mode: normal;
-  background: linear-gradient(160deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color), transparent 40%) 100%);
-  -webkit-mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
-  mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
-  -webkit-mask-repeat: repeat;
-  mask-repeat: repeat;
-  -webkit-mask-size: 300px;
-  mask-size: 300px;
-  opacity: 0.25;
+  opacity: 0.2;
 }
 
 .uprofile-avatar {
@@ -3661,12 +3764,12 @@ html[data-theme=dark] .uprofile-banner::before {
   border: 3px solid var(--dollars-bg);
   background-color: var(--dollars-bg);
   object-fit: cover;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px var(--dollars-shadow);
   position: relative;
   z-index: 1;
   transform: translateY(44px);
   flex-shrink: 0;
-  animation: uprofile-avatar-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: uprofile-avatar-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Scrollable content area */
@@ -3705,10 +3808,15 @@ html[data-theme=dark] .uprofile-banner::before {
   height: 14px;
 }
 
+.uprofile-skeleton-stats {
+  width: 100%;
+  height: 52px;
+  border-radius: 10px;
+}
+
 .uprofile-skeleton-actions {
   width: 100%;
   height: 40px;
-  margin-top: 8px;
   border-radius: 10px;
 }
 
@@ -3748,6 +3856,17 @@ html[data-theme=dark] .uprofile-banner::before {
   background-color: var(--dollars-color-online);
   flex-shrink: 0;
   box-shadow: 0 0 0 2px var(--dollars-bg);
+  position: relative;
+}
+
+.uprofile-status-dot.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--dollars-color-online);
+  animation: uprofile-dot-ring 2.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  pointer-events: none;
 }
 
 .uprofile-username {
@@ -3763,11 +3882,59 @@ html[data-theme=dark] .uprofile-banner::before {
   margin-top: 2px;
 }
 
+/* Stats pills — between name and actions */
+.uprofile-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: color-mix(in srgb, var(--primary-color), transparent 92%);
+  border: 1px solid color-mix(in srgb, var(--primary-color), transparent 80%);
+  border-radius: 12px;
+  padding: 10px 8px;
+  animation: uprofile-fade-up 0.3s ease 0.18s both;
+}
+
+.uprofile-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.uprofile-stat-num {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+  letter-spacing: -0.3px;
+  display: inline-block;
+  animation: uprofile-stat-num-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.uprofile-stat:nth-child(3) .uprofile-stat-num {
+  animation-delay: 0.36s;
+}
+
+.uprofile-stat-label {
+  font-size: 11px;
+  color: var(--dollars-text-placeholder);
+  line-height: 1;
+}
+
+.uprofile-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: color-mix(in srgb, var(--primary-color), transparent 70%);
+  flex-shrink: 0;
+}
+
 /* Action buttons — horizontal row below name */
 .uprofile-actions {
   display: flex;
   gap: 8px;
-  animation: uprofile-fade-up 0.3s ease 0.18s both;
+  animation: uprofile-fade-up 0.3s ease 0.26s both;
 }
 
 .uprofile-action-btn {
@@ -3783,14 +3950,24 @@ html[data-theme=dark] .uprofile-banner::before {
   color: var(--dollars-text);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.1s cubic-bezier(0.25, 1, 0.5, 1);
   white-space: nowrap;
 }
 
 .uprofile-action-btn:hover {
   background: var(--primary-color);
-  color: #fff;
+  color: var(--dollars-bg);
   border-color: var(--primary-color);
+}
+
+.uprofile-action-btn:active {
+  transform: scale(0.96);
+  transition-duration: 0.05s;
+}
+
+.uprofile-action-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 .uprofile-action-btn span {
@@ -3811,14 +3988,20 @@ html[data-theme=dark] .uprofile-banner::before {
   flex-direction: column;
   border-top: 1px solid var(--dollars-border);
   padding-top: 12px;
-  animation: uprofile-fade-up 0.3s ease 0.26s both;
+  animation: uprofile-fade-up 0.3s ease 0.34s both;
 }
 
 .uprofile-info-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 10px 4px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  transition: background-color 0.15s;
+}
+
+.uprofile-info-row:hover {
+  background: var(--dollars-bg-hover);
 }
 
 .uprofile-info-row + .uprofile-info-row {
@@ -3846,11 +4029,19 @@ html[data-theme=dark] .uprofile-banner::before {
   word-break: break-word;
 }
 
+.uprofile-sign-value {
+  padding: 4px 8px;
+  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);
+  background: color-mix(in srgb, var(--primary-color), transparent 92%);
+  border-radius: 0 6px 6px 0;
+  color: var(--dollars-text-secondary);
+}
+
 /* Shared media section */
 .uprofile-media-section {
   border-top: 1px solid var(--dollars-border);
   padding-top: 12px;
-  animation: uprofile-fade-up 0.3s ease 0.34s both;
+  animation: uprofile-fade-up 0.3s ease 0.42s both;
 }
 
 .uprofile-media-header {
@@ -3887,11 +4078,22 @@ html[data-theme=dark] .uprofile-banner::before {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.15s;
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .uprofile-media-item:hover img {
   transform: scale(1.05);
+}
+
+.uprofile-media-video-btn {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
 }
 
 .uprofile-media-video-badge {
@@ -5242,6 +5444,10 @@ html[data-theme='dark'] #dollars-card::before {
    Gallery Photo View Overlay
    ========================================= */
 .gallery-photo-capsule {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  text-align: left;
   position: absolute;
   bottom: 40px;
   left: 50%;
