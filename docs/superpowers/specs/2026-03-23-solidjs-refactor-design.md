@@ -10,11 +10,12 @@
 - **Styling**: Single global CSS file (5,500 lines)
 - **Build output**: 462 KB raw / 100 KB gzip (`minify: false`)
 - **Dependencies**: preact, @preact/signals, react-photo-view
-- **Codebase**: ~15,600 lines across 24 components, 8 stores, 4 hooks, 12 utils
+- **Codebase**: ~10,100 lines TypeScript/TSX + ~5,500 lines CSS = ~15,600 total
+  - 24 components, 8 stores, 4 hooks, 12 utils
 
 ## Target State
 
-- **Framework**: Solid.js 1.9+
+- **Framework**: Solid.js ^1.9 (Solid 2.0 is out of scope)
 - **Styling**: CSS Modules + CSS Custom Properties design token system
 - **Build output**: ~240-280 KB raw / ~55-70 KB gzip (target: **~50% reduction**)
 - **Dependencies**: solid-js (single runtime dependency)
@@ -25,7 +26,7 @@
 
 | Layer | Current | After |
 |-------|---------|-------|
-| Framework | Preact 10 + @preact/signals | Solid.js 1.9+ |
+| Framework | Preact 10 + @preact/signals | Solid.js ^1.9 (Solid 2.0 is out of scope) |
 | Styling | Global index.css (5500 lines) | CSS Modules + design tokens |
 | Build | Vite + @preact/preset-vite | Vite + vite-plugin-solid |
 | Image viewer | react-photo-view (~30KB) | Native `<dialog>` + CSS (~3-5KB) |
@@ -50,10 +51,13 @@ src/
 │   ├── createSwipeGesture.ts   # Swipe gesture
 │   └── createLongPress.ts      # Long press detection
 ├── stores/                     # Solid stores (reactive state)
-│   ├── chat.ts                 # Messages, conversations
-│   ├── ui.ts                   # Panels, layout state
-│   ├── user.ts                 # User, auth, settings
-│   └── presence.ts             # Online users, typing (extracted from chat)
+│   ├── chat.ts                 # Messages, conversations, optimistic sends
+│   ├── ui.ts                   # Panels, layout state, browse position (absorbs browsePosition.ts)
+│   ├── user.ts                 # User, auth, settings, favorites (absorbs favorites.ts)
+│   ├── presence.ts             # Online users, typing (extracted from chat)
+│   ├── drafts.ts               # Draft auto-save/restore (retained)
+│   ├── readState.ts            # Unread tracking per conversation (retained)
+│   └── extensions.ts           # Extension conversation state (retained from extensionConversations.ts)
 ├── components/                 # UI components (directory per component)
 │   ├── ChatWindow/
 │   │   ├── ChatWindow.tsx
@@ -252,7 +256,59 @@ const [currentUser, setCurrentUser] = createStore<UserState>({
 });
 ```
 
-## 5. Component Decomposition
+### Store Migration Map
+
+| Current store | Target | Notes |
+|---|---|---|
+| `chat.ts` | `chat.ts` | Presence signals extracted to `presence.ts` |
+| `ui.ts` | `ui.ts` | Absorbs `browsePosition.ts` (scroll position is UI state) |
+| `user.ts` | `user.ts` | Absorbs `favorites.ts` (user-scoped preference) |
+| `browsePosition.ts` | merged into `ui.ts` | — |
+| `drafts.ts` | `drafts.ts` | Retained as-is, ported to Solid signals |
+| `readState.ts` | `readState.ts` | Retained as-is, ported to Solid signals |
+| `favorites.ts` | merged into `user.ts` | — |
+| `extensionConversations.ts` | `extensions.ts` | Retained, renamed for clarity |
+| *(new)* | `presence.ts` | Extracted from `chat.ts`; owns `wsConnected` |
+
+### WebSocket / Presence Ownership
+
+`createWebSocket.ts` is a stateless primitive — it manages the connection lifecycle (connect, reconnect, heartbeat) and exposes an `onMessage` callback. It does NOT own any state signals.
+
+Connection state ownership: `presence.ts` owns `wsConnected`. The WebSocket primitive calls `presenceHandlers.connected(true/false)` on open/close events, which updates the signal in `presence.ts`. This avoids circular dependencies — the primitive depends on nothing, stores depend on the primitive's callbacks.
+
+## 5. Extension API Migration
+
+The current `extensionAPI.ts` exposes Preact Signals and components to third-party scripts. This API surface must change with the Solid migration.
+
+### Strategy: Wrapper-based compatibility
+
+```ts
+// extensionAPI.ts — provides a framework-agnostic public API
+
+export const extensionAPI = {
+  // Read-only accessors (no framework types exposed)
+  getConversations: () => [...extensionConversations()],
+  onConversationUpdate: (cb: (convs: Conversation[]) => void) => {
+    // createEffect internally, return dispose function
+    const dispose = createRoot(d => {
+      createEffect(() => cb([...extensionConversations()]));
+      return d;
+    });
+    return dispose;
+  },
+
+  // Actions
+  addConversation: (conv: Conversation) => { /* ... */ },
+  removeConversation: (id: string) => { /* ... */ },
+};
+```
+
+Key decisions:
+- **No Solid.js types in the public API** — extensions receive plain objects and callback-based subscriptions
+- **Breaking change is acceptable** — extensions must update their integration, since the old Preact Signal `.value` pattern cannot be preserved
+- **Dispose pattern** — all subscriptions return a cleanup function
+
+## 6. Component Decomposition
 
 ### ChatBody (754 lines) → MessageList + VirtualScroll
 
@@ -314,7 +370,7 @@ const MessageItem = (props: MessageItemProps) => {
 };
 ```
 
-## 6. Feature Parity Checklist
+## 7. Feature Parity Checklist
 
 All existing features must be retained 1:1:
 
@@ -337,7 +393,7 @@ All existing features must be retained 1:1:
 - [ ] Conversation list / sidebar
 - [ ] Extension API compatibility
 
-## 7. Build Configuration
+## 8. Build Configuration
 
 ### vite.config.ts
 
@@ -376,11 +432,13 @@ export default defineConfig({
 
 ### Size Budget
 
+> **Note**: The largest single savings (~150-180 KB) comes from enabling terser minification, which is achievable without any framework change. The Solid.js migration is motivated primarily by **architecture and reactivity benefits** (fine-grained updates, no VDOM, cleaner component model). The size benefit of the framework swap itself is modest (~8-12 KB).
+
 | Optimization | Est. savings | Notes |
 |---|---|---|
-| Preact+Signals → Solid.js | ~8-12 KB | Smaller runtime, no VDOM |
+| Enable terser minify | ~150-180 KB | Currently `minify: false` — **largest single win, framework-independent** |
 | Remove react-photo-view | ~30 KB | Self-implemented ~3-5 KB |
-| Enable terser minify | ~150-180 KB | Currently `minify: false` — largest single win |
+| Preact+Signals → Solid.js | ~8-12 KB | Smaller runtime, no VDOM |
 | CSS Modules tree-shake | ~5-10 KB | Unused global styles eliminated |
 | drop_console | ~2-3 KB | Remove debug output |
 | Constant inlining + dead code | ~3-5 KB | Terser constant folding |
@@ -404,7 +462,20 @@ export default defineConfig({
 
 From 3 runtime dependencies to **1**.
 
-## 8. Build Verification
+## 9. CSS Injection Mechanism
+
+Userscripts cannot reference external CSS files — all styles must be injected via JavaScript.
+
+**Approach**: Vite with `cssCodeSplit: false` collects all CSS (including CSS Modules output) into a single CSS string. The current `main.tsx` already has an `injectStyles()` function that creates a `<style>` element and inserts it into `<head>`. This pattern is retained:
+
+1. Vite bundles all `.module.css` imports into a single CSS output
+2. With `assetsInlineLimit: 100000`, the CSS is embedded as a string in the JS bundle
+3. `main.tsx` injects it as a `<style>` tag at runtime, before mounting the app
+4. CSS Modules' hashed class names prevent collision with host page styles
+
+No additional plugins are needed — the existing Vite IIFE + inline asset pipeline handles this natively.
+
+## 10. Build Verification
 
 Post-build validation:
 
