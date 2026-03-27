@@ -3,6 +3,7 @@ export interface SmileyRange {
     start?: number;
     end?: number;
     path?: (id: number) => string;
+    tabIconId?: number;
     /** 表情代码前缀，默认 'bgm'，musume 系列为 'musume_' */
     codePrefix?: string;
     /** 是否为大尺寸动图表情（如 musume 系列） */
@@ -45,13 +46,24 @@ export const smileyRanges: SmileyRange[] = [
         }
     },
     {
-        name: '娘',
+        name: 'Musume',
         start: 1,
         end: 96,
         codePrefix: 'musume_',
         codePad: 2,
+        tabIconId: 3,
         isLarge: true,
         path: (id: number) => `/img/smiles/musume/musume_${String(id).padStart(2, '0')}.gif`
+    },
+    {
+        name: 'Blake',
+        start: 1,
+        end: 96,
+        codePrefix: 'blake_',
+        codePad: 2,
+        tabIconId: 3,
+        isLarge: true,
+        path: (id: number) => `/img/smiles/blake/blake_${String(id).padStart(2, '0')}.gif`
     },
     { name: 'BMO' },
     { name: '收藏' }
@@ -63,11 +75,12 @@ export const smileyRangesWithoutFavorites = smileyRanges.filter(r => r.name !== 
 // 获取表情 URL
 export function getSmileyUrl(code: string | number): string | null {
     if (typeof code === 'string') {
-        // 尝试匹配 musume 格式: (musume_XX)
-        const musumeMatch = code.match(/\(musume_(\d+)\)/);
-        if (musumeMatch) {
-            const id = parseInt(musumeMatch[1], 10);
-            const range = smileyRanges.find(r => r.codePrefix === 'musume_' && r.start && r.end && id >= r.start && id <= r.end);
+        // 尝试匹配大尺寸表情格式: (musume_XX) / (blake_XX)
+        const largeSmileyMatch = code.match(/\(((?:musume_|blake_))(\d+)\)/);
+        if (largeSmileyMatch) {
+            const [, prefix, rawId] = largeSmileyMatch;
+            const id = parseInt(rawId, 10);
+            const range = smileyRanges.find(r => r.codePrefix === prefix && r.start && r.end && id >= r.start && id <= r.end);
             return range?.path?.(id) ?? null;
         }
         // 标准 bgm 格式: (bgmXX)
@@ -85,7 +98,7 @@ export function getSmileyUrl(code: string | number): string | null {
 // 生成表情代码列表
 export function generateSmileyCodes(groupName: string): string[] {
     const range = smileyRanges.find(r => r.name === groupName);
-    if (!range || !range.start || !range.end) return [];
+    if (!range || range.start == null || range.end == null) return [];
 
     const prefix = range.codePrefix || 'bgm';
     const codes: string[] = [];

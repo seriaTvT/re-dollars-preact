@@ -49,7 +49,6 @@ export interface Reaction {
 export interface ImageMeta {
     width: number;
     height: number;
-    blurhash?: string;
 }
 
 export interface LinkPreview {

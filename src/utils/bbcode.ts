@@ -1,4 +1,4 @@
-import { escapeHTML, calculateImageStyle, getAvatarUrl } from './format';
+import { escapeHTML, calculateImageStyle, getAvatarUrl, getThumbnailUrl } from './format';
 import { settings } from '@/stores/user';
 import { SMILIES } from './smilies';
 
@@ -51,7 +51,7 @@ function generatePreviewCardHTML(
 
 export function processBBCode(
     text: string,
-    imageMeta: Record<string, { width?: number; height?: number; blurhash?: string; placeholder?: string }> = {},
+    imageMeta: Record<string, { width?: number; height?: number }> = {},
     options: {
         previewsCollector?: string[];
         replyToId?: number;
@@ -81,7 +81,7 @@ export function processBBCode(
     // 遮罩
     html = html.replace(/\[mask\]([\s\S]+?)\[\/mask\]/gi, '<span class="text_mask"><span class="inner">$1</span></span>');
 
-    // 遮罩内的图片 - 特殊处理：显示 blurhash，点击后加载
+    // 遮罩内的图片
     html = html.replace(/<span class="text_mask"><span class="inner">\[img\]([\s\S]+?)\[\/img\]<\/span><\/span>/gi, (m, src) => {
         const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
         if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
@@ -92,15 +92,11 @@ export function processBBCode(
 
         const meta = imageMeta[cleanSrc];
         const imageStyle = calculateImageStyle(meta);
-        const hasBlurhash = meta && (meta.placeholder || meta.blurhash);
+        const thumbSrc = getThumbnailUrl(cleanSrc);
 
-        const blurhashCanvasHTML = hasBlurhash
-            ? `<canvas class="blurhash-canvas" data-blurhash="${meta.placeholder || meta.blurhash}"></canvas>`
-            : `<div style="background-color: var(--bgm-bg-odd); width:100%; height:100%;"></div>`;
-
-        // 遮罩图片始终使用占位符模式
+        // 遮罩图片使用缩略图预览
         return `<div class="image-container image-placeholder image-masked" style="${imageStyle}" data-iw="${meta?.width || ''}" data-ih="${meta?.height || ''}" data-src="${cleanSrc}">
-            ${blurhashCanvasHTML}
+            <img src="${thumbSrc}" data-full-src="${cleanSrc}" class="full-image is-loaded" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">
             <div class="image-load-hint">显示图片</div>
         </div>`;
     });
@@ -144,40 +140,36 @@ export function processBBCode(
 
         const meta = imageMeta[cleanSrc];
         const imageStyle = calculateImageStyle(meta);
-        const hasBlurhash = meta && (meta.placeholder || meta.blurhash);
         const shouldLoadImage = settings.value.loadImages;
+        const thumbSrc = getThumbnailUrl(cleanSrc);
 
-        const blurhashCanvasHTML = hasBlurhash
-            ? `<canvas class="blurhash-canvas" data-blurhash="${meta.placeholder || meta.blurhash}"></canvas>`
-            : `<div style="background-color: var(--bgm-bg-odd); width:100%; height:100%;"></div>`;
-
-        // 如果不自动加载图片，只显示 blurhash 占位符，点击后加载
+        // 如果不自动加载图片，使用缩略图代替占位
         if (!shouldLoadImage) {
-            return `<div class="image-container image-placeholder" style="${imageStyle}" data-iw="${meta?.width || ''}" data-ih="${meta?.height || ''}" data-src="${cleanSrc}">
-                ${blurhashCanvasHTML}
-                <div class="image-load-hint">点击加载图片</div>
+            return `<div class="image-container image-placeholder" style="${imageStyle}" data-iw="${meta?.width || ''}" data-ih="${meta?.height || ''}">
+                <img src="${thumbSrc}" data-full-src="${cleanSrc}" class="full-image is-loaded" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">
             </div>`;
         }
 
         return `<div class="image-container" style="${imageStyle}" data-iw="${meta?.width || ''}" data-ih="${meta?.height || ''}">
-            ${blurhashCanvasHTML}
-            <img src="${cleanSrc}" class="full-image" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+            <img src="${cleanSrc}" data-full-src="${cleanSrc}" class="full-image" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">
         </div>`;
     });
 
     // 用户提及
     html = html.replace(/\[user=(.+?)\]([\s\S]+?)\[\/user\]/gi, '<a href="/user/$1" target="_blank" class="user-mention">@$2</a>');
 
-    // Musume 表情（动图，大尺寸）
-    html = html.replace(/\(musume_(\d+)\)/g, (match, p1, offset, str) => {
+    // 大尺寸表情（动图）
+    html = html.replace(/\(((?:musume_|blake_))(\d+)\)/g, (match, prefix, p1, offset, str) => {
         const before = str.slice(0, offset);
         if (before.lastIndexOf('<') > before.lastIndexOf('>')) return match;
 
         const num = parseInt(p1, 10);
         if (num < 1 || num > 96) return match;
 
-        const src = `/img/smiles/musume/musume_${String(num).padStart(2, '0')}.gif`;
-        return `<img src="${src}" class="smiley smiley-musume" alt="${match}">`;
+        const folder = prefix === 'blake_' ? 'blake' : 'musume';
+        const src = `/img/smiles/${folder}/${prefix}${String(num).padStart(2, '0')}.gif`;
+        const className = prefix === 'blake_' ? 'smiley-blake' : 'smiley-musume';
+        return `<img src="${src}" class="smiley ${className}" alt="${match}">`;
     });
 
     // BGM 表情

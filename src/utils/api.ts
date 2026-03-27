@@ -252,7 +252,6 @@ export async function uploadFile(file: File): Promise<{
     url?: string;
     width?: number;
     height?: number;
-    placeholder?: string;
     error?: string;
 }> {
     const isVideo = file.type.startsWith('video/') || file.type.startsWith('audio/');

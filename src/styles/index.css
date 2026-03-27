@@ -116,10 +116,6 @@ html[data-theme="dark"] #dollars-chat-root.disable-blur {
   right: 20px;
   width: 400px;
   height: 550px;
-  min-width: 320px;
-  min-height: 400px;
-  max-width: 90vw;
-  max-height: 85vh;
   z-index: var(--dollars-z-index-base);
   display: flex;
   flex-direction: column;
@@ -531,6 +527,7 @@ html[data-theme="dark"] #dollars-chat-root[data-bg-mode="tint"] #dollars-main-ch
   justify-content: space-between;
   padding: 2px 15px;
   cursor: move;
+  touch-action: none;
   flex-shrink: 0;
 
   /* Absolute positioning for glass effect overlay */
@@ -1396,8 +1393,9 @@ html[data-theme="dark"] .chat-message.self .bubble-tail {
   border-radius: 8px;
 }
 
-/* Musume 系列表情 - 动图大尺寸 */
-.bubble img.smiley-musume {
+/* 大尺寸动图表情 */
+.bubble img.smiley-musume,
+.bubble img.smiley-blake {
   width: 80px;
   height: 80px;
   image-rendering: auto;
@@ -1412,7 +1410,8 @@ html[data-theme="dark"] .chat-message.self .bubble-tail {
   display: block;
 }
 
-.bubble.sticker-mode .smiley-musume {
+.bubble.sticker-mode .smiley-musume,
+.bubble.sticker-mode .smiley-blake {
   width: 120px;
   height: 120px;
   display: block;
@@ -1450,29 +1449,15 @@ html[data-theme="dark"] .chat-message.self .bubble-tail {
   border-radius: 8px;
 }
 
-.bubble .blurhash-canvas {
-  width: 100%;
-  height: 100%;
-  grid-area: 1/1;
-  z-index: 1;
-  transition: opacity 0.3s ease-out;
-}
-
-.bubble .image-container.is-loaded .blurhash-canvas {
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* 图片占位符样式 (关闭默认加载图片时) */
 .bubble .image-container.image-placeholder {
-  cursor: pointer;
+  cursor: default;
 }
 
 .bubble .image-container.image-placeholder .image-load-hint {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  right: 10px;
+  bottom: 10px;
   z-index: 3;
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
@@ -1488,6 +1473,19 @@ html[data-theme="dark"] .chat-message.self .bubble-tail {
 
 .bubble .image-container.image-placeholder:hover .image-load-hint {
   background: rgba(0, 0, 0, 0.7);
+}
+
+.bubble .image-container.image-masked .full-image {
+  filter: blur(24px) brightness(0.45);
+  transform: scale(1.08);
+}
+
+.bubble .image-container.image-masked {
+  cursor: default;
+}
+
+.bubble .image-container.image-masked .image-load-hint {
+  background: rgba(0, 0, 0, 0.68);
 }
 
 /* =========================================
@@ -3011,6 +3009,7 @@ html[data-theme="dark"] .chat-header .header-btn:hover {
   height: 20px;
   cursor: nw-resize;
   z-index: 10003;
+  touch-action: none;
   background-color: var(--dollars-icon-color-secondary);
   -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M10 2L2 10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M14 6L6 14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
   mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M10 2L2 10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M14 6L6 14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');

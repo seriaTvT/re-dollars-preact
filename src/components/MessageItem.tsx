@@ -1,7 +1,6 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'preact/hooks';
 import { isMobile } from '@/utils/format';
 import { memo } from '@/utils/memo';
-import { DollarsBlurHash } from '@/utils/blurhash';
 import { getRawMessage, setReplyTo, newMessageIds, retryMessage } from '@/stores/chat';
 import { settings } from '@/stores/user';
 import type { Message } from '@/types';
@@ -107,42 +106,6 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
 
             markMessageAsSeenIfNotified(messageId);
 
-            // 渲染 Blurhash
-            const placeholders = el.querySelectorAll('.blurhash-canvas:not(.is-rendered)');
-            placeholders.forEach((canvas: Element) => {
-                const canvasEl = canvas as HTMLCanvasElement;
-                const blurhash = canvasEl.dataset.blurhash;
-                if (!blurhash) return;
-
-                canvasEl.classList.add('is-rendered');
-                try {
-                    const wrapper = canvasEl.closest('.image-container, .image-placeholder');
-                    const rect = wrapper ? wrapper.getBoundingClientRect() : null;
-                    const targetW = Math.max(1, Math.round(rect?.width || 32));
-                    const targetH = Math.max(1, Math.round(rect?.height || 32));
-                    const srcW = 32, srcH = 32;
-
-                    const pixels = DollarsBlurHash.decode(blurhash, srcW, srcH);
-                    const tmp = document.createElement('canvas');
-                    tmp.width = srcW;
-                    tmp.height = srcH;
-                    const ctx = tmp.getContext('2d');
-                    if (ctx) {
-                        ctx.putImageData(new ImageData(pixels, srcW, srcH), 0, 0);
-                        const destCtx = canvasEl.getContext('2d');
-                        if (destCtx) {
-                            canvasEl.width = targetW;
-                            canvasEl.height = targetH;
-                            destCtx.imageSmoothingEnabled = true;
-                            destCtx.imageSmoothingQuality = 'high';
-                            destCtx.drawImage(tmp, 0, 0, srcW, srcH, 0, 0, targetW, targetH);
-                        }
-                    }
-                } catch (e) {
-                    canvasEl.style.backgroundColor = 'var(--dollars-bg)';
-                }
-            });
-
             // 处理图片加载状态
             const imgs = el.querySelectorAll('.full-image');
             imgs.forEach((img: Element) => {
@@ -204,8 +167,9 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
                 e.preventDefault();
                 e.stopPropagation();
                 const allImgs = el.querySelectorAll('.full-image');
-                const imageUrls = Array.from(allImgs).map(i => (i as HTMLImageElement).src);
-                const index = imageUrls.indexOf(img.src);
+                const imageUrls = Array.from(allImgs).map(i => (i as HTMLImageElement).dataset.fullSrc || (i as HTMLImageElement).src);
+                const currentUrl = img.dataset.fullSrc || img.src;
+                const index = imageUrls.indexOf(currentUrl);
                 showImageViewer(imageUrls, Math.max(0, index));
             };
             img.addEventListener('click', handler);
@@ -213,44 +177,18 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
             handlers.push({ el: img, fn: handler });
         };
 
-        // 处理占位符点击加载图片
+        // 处理缩略图占位点击查看原图
         const placeholders = el.querySelectorAll('.image-placeholder[data-src]');
         placeholders.forEach((placeholder) => {
             const container = placeholder as HTMLElement;
+            if (container.classList.contains('image-masked')) return;
             const handler = (e: Event) => {
                 e.preventDefault();
                 e.stopPropagation();
-
-                const src = container.dataset.src;
-                if (!src) return;
-
-                const hint = container.querySelector('.image-load-hint');
-                if (hint) hint.remove();
-
-                const img = document.createElement('img');
-                img.src = src;
-                img.className = 'full-image';
-                img.alt = 'image';
-                img.loading = 'lazy';
-                img.decoding = 'async';
-                img.referrerPolicy = 'no-referrer';
-
-                img.onload = () => {
-                    img.classList.add('is-loaded');
-                    container.classList.add('is-loaded');
-                    container.classList.remove('image-placeholder');
-                    addImageViewerHandler(img);
-                };
-
-                img.onerror = () => {
-                    img.src = '/img/no_img.gif';
-                    img.classList.add('is-loaded', 'load-failed');
-                    container.classList.add('is-loaded');
-                    container.classList.remove('image-placeholder');
-                };
-
-                container.appendChild(img);
-                container.removeEventListener('click', handler);
+                const img = container.querySelector('.full-image') as HTMLImageElement | null;
+                if (!img) return;
+                const fullSrc = img.dataset.fullSrc || container.dataset.src || img.src;
+                showImageViewer([fullSrc], 0);
             };
             container.addEventListener('click', handler);
             handlers.push({ el: container, fn: handler });
@@ -273,7 +211,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     const isSticker = useMemo(() => {
         if (isDeleted) return false;
         const raw = (messageText || '').trim();
-        return /^(\[img\][^\[]+\[\/img\]|\[(?:emoji|sticker)\][^\[]+\[\/(?:emoji|sticker)\]|\(musume_\d+\))$/i.test(raw) && !replyToId;
+        return /^(\[img\][^\[]+\[\/img\]|\[(?:emoji|sticker)\][^\[]+\[\/(?:emoji|sticker)\]|\((?:musume|blake)_\d+\))$/i.test(raw) && !replyToId;
     }, [messageText, isDeleted, replyToId]);
 
     // 时间戳

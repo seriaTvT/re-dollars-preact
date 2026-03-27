@@ -6,6 +6,7 @@ import { sendMessage as apiSendMessage, editMessage as apiEditMessage, uploadFil
 import { sendTypingStart, sendTypingStop, sendPendingMessage } from '@/hooks/useWebSocket';
 import { SVGIcons } from '@/utils/constants';
 import { escapeHTML, getAvatarUrl } from '@/utils/format';
+import { transformMentions } from '@/utils/mentions';
 import { TypingIndicator } from './TypingIndicator';
 import { SmileyPanel } from './SmileyPanel';
 import { TextFormatter } from './TextFormatter';
@@ -18,7 +19,7 @@ export function ChatInput() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isSending, setIsSending] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
-    const [previewMedia, setPreviewMedia] = useState<Array<{ type: 'image' | 'video'; url: string; width?: number; height?: number; placeholder?: string }>>([]);
+    const [previewMedia, setPreviewMedia] = useState<Array<{ type: 'image' | 'video'; url: string; width?: number; height?: number }>>([]);
     const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isTypingRef = useRef(false);
     const attachLongPressRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -107,8 +108,7 @@ export function ChatInput() {
                         type,
                         url,
                         width: meta.width,
-                        height: meta.height,
-                        placeholder: meta.blurhash
+                        height: meta.height
                     };
                 }
                 return { type, url };
@@ -229,56 +229,6 @@ export function ChatInput() {
         }
     }, [pendingMention.value]);
 
-    // Transform @username mentions to [user=uid]nickname[/user]
-    // Skips content inside [code] blocks
-    const transformMentions = async (text: string) => {
-        // 提取 [code] 块，用占位符替换
-        const codeBlocks: string[] = [];
-        let processedText = text.replace(/\[code\]([\s\S]*?)\[\/code\]/gi, (match) => {
-            codeBlocks.push(match);
-            return `\x00CODE_BLOCK_${codeBlocks.length - 1}\x00`;
-        });
-
-        const mentionRegex = /(^|\s)@([\p{L}\p{N}_']{1,30})/gu;
-        const matches = [...processedText.matchAll(mentionRegex)];
-        if (matches.length === 0) {
-            // 恢复 code 块
-            codeBlocks.forEach((block, i) => {
-                processedText = processedText.replace(`\x00CODE_BLOCK_${i}\x00`, block);
-            });
-            return processedText;
-        }
-
-        const usernamesToLookup = [...new Set(matches.map(match => match[2]))].filter(u => u !== 'Bangumi娘');
-        if (usernamesToLookup.length === 0) {
-            // 恢复 code 块
-            codeBlocks.forEach((block, i) => {
-                processedText = processedText.replace(`\x00CODE_BLOCK_${i}\x00`, block);
-            });
-            return processedText;
-        }
-
-        const userDataMap = await lookupUsersByName(usernamesToLookup);
-        const replacementMap = new Map();
-        for (const username in userDataMap) {
-            const data = userDataMap[username];
-            if (data?.id && data?.nickname) {
-                replacementMap.set(username, `[user=${data.id}]${data.nickname}[/user]`);
-            }
-        }
-
-        processedText = processedText.replace(mentionRegex, (match, prefix, username) =>
-            replacementMap.has(username) ? `${prefix}${replacementMap.get(username)}` : match
-        );
-
-        // 恢复 code 块
-        codeBlocks.forEach((block, i) => {
-            processedText = processedText.replace(`\x00CODE_BLOCK_${i}\x00`, block);
-        });
-
-        return processedText;
-    };
-
     // 加载草稿（初始化时）
     useEffect(() => {
         const textarea = textareaRef.current;
@@ -343,7 +293,7 @@ export function ChatInput() {
                     finalContent = `${editingMessage.value.hiddenQuote}\n${content}`;
                 }
 
-                finalContent = await transformMentions(finalContent);
+                finalContent = await transformMentions(finalContent, lookupUsersByName);
 
                 const result = await apiEditMessage(Number(editingMessage.value.id), finalContent);
                 if (!result.status) {
@@ -359,8 +309,7 @@ export function ChatInput() {
                         if (media.type === 'image' && media.width && media.height) {
                             imageMeta[media.url] = {
                                 width: media.width,
-                                height: media.height,
-                                blurhash: media.placeholder
+                                height: media.height
                             };
                         }
                     }
@@ -379,16 +328,15 @@ export function ChatInput() {
                 }
 
                 // Transform mentions first to ensure optimistic message matches server message
-                const transformedContent = await transformMentions(finalContent);
+                const transformedContent = await transformMentions(finalContent, lookupUsersByName);
 
                 // 从预览媒体中获取图片尺寸信息 (使用上传返回的尺寸)
-                const imageMeta: Record<string, { width: number; height: number; blurhash?: string }> = {};
+                const imageMeta: Record<string, { width: number; height: number }> = {};
                 for (const media of previewMedia) {
                     if (media.type === 'image' && media.width && media.height) {
                         imageMeta[media.url] = {
                             width: media.width,
-                            height: media.height,
-                            blurhash: media.placeholder
+                            height: media.height
                         };
                     }
                 }
@@ -574,8 +522,7 @@ export function ChatInput() {
                             type: 'image',
                             url: result.url!,
                             width: clientWidth,
-                            height: clientHeight,
-                            placeholder: result.placeholder
+                            height: clientHeight
                         }]);
                     }
 

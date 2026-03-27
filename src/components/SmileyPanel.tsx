@@ -290,7 +290,8 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                         // Bmoji lib will replace this span with an image.
                         textContent = <span class="bmo" data-code="(bmoCgASACIBLgCg)" style={{ verticalAlign: 'middle' }}></span>;
                     } else if (range.path && range.start) {
-                        textContent = <img src={range.path(range.start)} alt={range.name} style={{ width: '21px', height: '21px', verticalAlign: 'middle' }} />;
+                        const iconId = range.tabIconId ?? range.start;
+                        textContent = <img src={range.path(iconId)} alt={range.name} style={{ width: '21px', height: '21px', verticalAlign: 'middle' }} />;
                     }
 
                     return (

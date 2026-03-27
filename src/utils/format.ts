@@ -121,6 +121,21 @@ export const calculateImageStyle = (meta?: { width?: number; height?: number }):
     return `aspect-ratio: 1 / 1; width: 200px; max-width: 100%;`;
 };
 
+export const getThumbnailUrl = (url: string): string => {
+    if (!url || typeof url !== 'string') return url;
+
+    try {
+        const parsed = new URL(url);
+        if (parsed.hostname !== 'lsky.ry.mk') return url;
+        if (!parsed.pathname.startsWith('/i/') || parsed.pathname.startsWith('/i/thumbs/')) return url;
+
+        parsed.pathname = `/i/thumbs/${parsed.pathname.slice('/i/'.length)}`;
+        return parsed.toString();
+    } catch {
+        return url;
+    }
+};
+
 
 
 export const generateReactionTooltip = (users: Array<{ id?: number | string; user_id?: number | string; nickname: string }>): string => {
