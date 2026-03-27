@@ -2,6 +2,7 @@ import { signal, computed, batch } from '@preact/signals';
 import type { Message, Conversation } from '@/types';
 import { MESSAGE_GROUP_TIME_GAP } from '@/utils/constants';
 import { updateSignalMap, updateSignalSet } from '@/utils/signalMap';
+import { saveChatOpenState } from '@/utils/windowState';
 
 // Re-exports from extracted modules (preserves existing import paths)
 export { browsePosition, saveBrowsePosition, loadBrowsePosition, clearBrowsePosition, shouldRestoreBrowsePosition } from './browsePosition';
@@ -413,7 +414,7 @@ export function toggleChat(open?: boolean, skipSave = false) {
 
     // 保存状态（除非明确跳过）
     if (!skipSave) {
-        localStorage.setItem('dollars.isChatOpen', JSON.stringify(newState));
+        saveChatOpenState(newState);
     }
 }
 
@@ -446,7 +447,6 @@ export function cancelReplyOrEdit() {
  */
 export function setActiveConversation(conversationId: string) {
     activeConversationId.value = conversationId;
-    localStorage.setItem('dollars.activeConversationId', conversationId);
 
     // 清除扩展项的激活状态并调用 onDeactivate 回调
     // 使用动态导入避免循环依赖

@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { loadWindowState, saveMaximizedState, saveMobileChatViewState } from '@/utils/windowState';
 
 // UI 状态
 export const isMobileViewport = signal(window.innerWidth <= 768);
@@ -165,20 +166,20 @@ export function toggleSearch(active?: boolean) {
 // 切换最大化
 export function toggleMaximize() {
     isMaximized.value = !isMaximized.value;
-    
+
     import('@/stores/user').then(({ settings }) => {
         if (settings.value.rememberOpenState) {
-            localStorage.setItem('dollars.isMaximized', JSON.stringify(isMaximized.value));
+            saveMaximizedState(isMaximized.value);
         }
     });
 }
 
 export function setMobileChatView(active: boolean) {
     mobileChatViewActive.value = active;
-    
+
     import('@/stores/user').then(({ settings }) => {
         if (settings.value.rememberOpenState) {
-            localStorage.setItem('dollars.mobileChatViewActive', JSON.stringify(active));
+            saveMobileChatViewState(active);
         }
     });
 }
@@ -201,7 +202,7 @@ export function checkNarrowLayout(width: number) {
     if (!hasInitializedLayout) {
         hasInitializedLayout = true;
         // 只有在没有保存状态时才设置默认值
-        const savedMobileChatView = localStorage.getItem('dollars.mobileChatViewActive');
+        const savedMobileChatView = loadWindowState().mobileChatViewActive;
         if (savedMobileChatView === null) {
             if (isNowNarrow) {
                 mobileChatViewActive.value = true;

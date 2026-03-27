@@ -14,6 +14,7 @@ import { ImageViewer } from './components/ImageViewer';
 import { NotificationManager, loadNotifications } from './components/NotificationManager';
 import { initWebSocket } from '@/hooks/useWebSocket';
 import { signal } from '@preact/signals';
+import { loadWindowState } from '@/utils/windowState';
 
 // 标记设置是否已加载完成
 export const settingsLoaded = signal(false);
@@ -44,20 +45,12 @@ export function App() {
 
             // 恢复窗口状态（如果启用了记忆状态）
             if (settings.value.rememberOpenState) {
-                try {
-                    // 恢复窗口打开状态
-                    const savedChatOpen = localStorage.getItem('dollars.isChatOpen');
-                    if (savedChatOpen !== null) {
-                        isChatOpen.value = JSON.parse(savedChatOpen);
-                    }
-
-                    // 恢复最大化状态
-                    const savedMaximized = localStorage.getItem('dollars.isMaximized');
-                    if (savedMaximized !== null) {
-                        isMaximized.value = JSON.parse(savedMaximized);
-                    }
-                } catch (e) {
-                    // 忽略错误
+                const savedState = loadWindowState();
+                if (savedState.isChatOpen !== null) {
+                    isChatOpen.value = savedState.isChatOpen;
+                }
+                if (savedState.isMaximized !== null) {
+                    isMaximized.value = savedState.isMaximized;
                 }
             }
 

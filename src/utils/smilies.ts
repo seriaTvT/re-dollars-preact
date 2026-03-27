@@ -58,7 +58,7 @@ export const smileyRanges: SmileyRange[] = [
     {
         name: 'Blake',
         start: 1,
-        end: 96,
+        end: 98,
         codePrefix: 'blake_',
         codePad: 2,
         tabIconId: 3,

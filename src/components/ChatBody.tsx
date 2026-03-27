@@ -34,7 +34,7 @@ import {
     loadBrowsePosition,
     clearBrowsePosition
 } from '@/stores/chat';
-import { toggleSearch } from '@/stores/ui';
+import { toggleSearch, showUserProfile } from '@/stores/ui';
 import { blockedUsers } from '@/stores/user';
 import { inputAreaHeight } from '@/stores/ui';
 import { MessageItem } from './MessageItem';
@@ -106,8 +106,8 @@ export function ChatBody() {
         // 同步到全局信号 (供 WebSocket 使用)
         isAtBottom.value = atBottom;
 
-        // 只有在非程序滚动和非加载中时更新吸附状态
-        if (!isProgrammaticScroll.current && !isLoadingRef.current) {
+        // 只有在非程序滚动时更新吸附状态（用户的滚动意图始终优先）
+        if (!isProgrammaticScroll.current) {
             isStickingToBottom.current = atBottom;
         }
 
@@ -648,7 +648,20 @@ export function ChatBody() {
         const handleClick = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
 
-            // 1. 话题标签点击 - 打开搜索并填入 tag
+            // 1. 用户提及点击 - 打开用户资料面板
+            const mention = target.closest('a.user-mention') as HTMLAnchorElement | null;
+            if (mention) {
+                e.preventDefault();
+                e.stopPropagation();
+                const href = mention.getAttribute('href') || '';
+                const match = href.match(/^\/user\/(.+)$/);
+                if (match) {
+                    showUserProfile(match[1]);
+                }
+                return;
+            }
+
+            // 2. 话题标签点击 - 打开搜索并填入 tag
             if (target.classList.contains('chat-tag')) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -660,7 +673,7 @@ export function ChatBody() {
                 return;
             }
 
-            // 2. 查找最近的引用块
+            // 3. 查找最近的引用块
             const quote = target.closest('.chat-quote[data-jump-to-id]');
             if (quote) {
                 e.preventDefault();
@@ -716,9 +729,11 @@ export function ChatBody() {
         if (!listEl) return;
 
         const observer = new ResizeObserver(() => {
-            // 只有在吸附状态下且不在程序滚动中时才自动滚动到底部
-            if (isStickingToBottom.current && !isProgrammaticScroll.current && bodyRef.current) {
-                bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+            if (!isStickingToBottom.current || isProgrammaticScroll.current || !bodyRef.current) return;
+            // 双重检查：ref 说吸附 + 实际位置确实在底部附近，才自动滚动
+            const { scrollTop, scrollHeight, clientHeight } = bodyRef.current;
+            if (scrollHeight - scrollTop - clientHeight < 150) {
+                bodyRef.current.scrollTop = scrollHeight;
             }
         });
 

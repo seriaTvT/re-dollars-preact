@@ -78,6 +78,53 @@
     sig.value = next;
   }
 
+  const CHAT_OPEN_KEY = "dollars.isChatOpen";
+  const MAXIMIZED_KEY = "dollars.isMaximized";
+  const MOBILE_CHAT_VIEW_KEY = "dollars.mobileChatViewActive";
+  const CHAT_POSITION_KEY = "dollarsChatPosition";
+  function readBoolean(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw === null ? null : JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+  function loadWindowState() {
+    return {
+      isChatOpen: readBoolean(CHAT_OPEN_KEY),
+      isMaximized: readBoolean(MAXIMIZED_KEY),
+      mobileChatViewActive: readBoolean(MOBILE_CHAT_VIEW_KEY),
+      position: loadWindowPosition()
+    };
+  }
+  function saveChatOpenState(isOpen) {
+    localStorage.setItem(CHAT_OPEN_KEY, JSON.stringify(isOpen));
+  }
+  function saveMaximizedState(isMaximized) {
+    localStorage.setItem(MAXIMIZED_KEY, JSON.stringify(isMaximized));
+  }
+  function saveMobileChatViewState(active) {
+    localStorage.setItem(MOBILE_CHAT_VIEW_KEY, JSON.stringify(active));
+  }
+  function saveWindowPosition(position) {
+    localStorage.setItem(CHAT_POSITION_KEY, JSON.stringify(position));
+  }
+  function loadWindowPosition() {
+    try {
+      const raw = localStorage.getItem(CHAT_POSITION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+  function clearWindowState() {
+    localStorage.removeItem(CHAT_OPEN_KEY);
+    localStorage.removeItem(MAXIMIZED_KEY);
+    localStorage.removeItem(MOBILE_CHAT_VIEW_KEY);
+    localStorage.removeItem(CHAT_POSITION_KEY);
+  }
+
   const BROWSE_POSITION_KEY = "dollars_browse_position";
   const browsePosition = d$1(null);
   function saveBrowsePosition(anchorMessageId) {
@@ -631,7 +678,7 @@
     const newState = open ?? !isChatOpen.value;
     isChatOpen.value = newState;
     if (!skipSave) {
-      localStorage.setItem("dollars.isChatOpen", JSON.stringify(newState));
+      saveChatOpenState(newState);
     }
   }
   function setReplyTo(data) {
@@ -648,7 +695,6 @@
   }
   function setActiveConversation(conversationId) {
     activeConversationId.value = conversationId;
-    localStorage.setItem("dollars.activeConversationId", conversationId);
     __vitePreload(async () => { const {activeExtensionId, extensionConversations} = await Promise.resolve().then(() => extensionConversations$1);return { activeExtensionId, extensionConversations }},false             ?__VITE_PRELOAD__:void 0).then(({ activeExtensionId, extensionConversations }) => {
       if (activeExtensionId.value !== null) {
         const activeExt = extensionConversations.value.find(
@@ -863,7 +909,7 @@
     isMaximized.value = !isMaximized.value;
     __vitePreload(async () => { const {settings} = await Promise.resolve().then(() => user);return { settings }},false             ?__VITE_PRELOAD__:void 0).then(({ settings }) => {
       if (settings.value.rememberOpenState) {
-        localStorage.setItem("dollars.isMaximized", JSON.stringify(isMaximized.value));
+        saveMaximizedState(isMaximized.value);
       }
     });
   }
@@ -871,7 +917,7 @@
     mobileChatViewActive.value = active;
     __vitePreload(async () => { const {settings} = await Promise.resolve().then(() => user);return { settings }},false             ?__VITE_PRELOAD__:void 0).then(({ settings }) => {
       if (settings.value.rememberOpenState) {
-        localStorage.setItem("dollars.mobileChatViewActive", JSON.stringify(active));
+        saveMobileChatViewState(active);
       }
     });
   }
@@ -885,7 +931,7 @@
     isNarrowLayout.value = isNowNarrow;
     if (!hasInitializedLayout) {
       hasInitializedLayout = true;
-      const savedMobileChatView = localStorage.getItem("dollars.mobileChatViewActive");
+      const savedMobileChatView = loadWindowState().mobileChatViewActive;
       if (savedMobileChatView === null) {
         if (isNowNarrow) {
           mobileChatViewActive.value = true;
@@ -1459,15 +1505,12 @@
   }
   function handleRememberOpenStateChange() {
     if (!settings.value.rememberOpenState) {
-      localStorage.removeItem("dollars.isChatOpen");
-      localStorage.removeItem("dollars.isMaximized");
-      localStorage.removeItem("dollars.mobileChatViewActive");
-      localStorage.removeItem("dollarsChatPosition");
+      clearWindowState();
     } else {
-      localStorage.setItem("dollars.isChatOpen", JSON.stringify(isChatOpen.value));
+      saveChatOpenState(isChatOpen.value);
       __vitePreload(async () => { const {isMaximized, mobileChatViewActive} = await Promise.resolve().then(() => ui);return { isMaximized, mobileChatViewActive }},false             ?__VITE_PRELOAD__:void 0).then(({ isMaximized, mobileChatViewActive }) => {
-        localStorage.setItem("dollars.isMaximized", JSON.stringify(isMaximized.value));
-        localStorage.setItem("dollars.mobileChatViewActive", JSON.stringify(mobileChatViewActive.value));
+        saveMaximizedState(isMaximized.value);
+        saveMobileChatViewState(mobileChatViewActive.value);
       }).catch(() => {
       });
     }
@@ -1869,7 +1912,7 @@
     {
       name: "Blake",
       start: 1,
-      end: 96,
+      end: 98,
       codePrefix: "blake_",
       codePad: 2,
       tabIconId: 3,
@@ -2018,7 +2061,7 @@
       const before = str.slice(0, offset);
       if (before.lastIndexOf("<") > before.lastIndexOf(">")) return match;
       const num = parseInt(p1, 10);
-      if (num < 1 || num > 96) return match;
+      if (num < 1 || num > 98) return match;
       const folder = prefix === "blake_" ? "blake" : "musume";
       const src = `/img/smiles/${folder}/${prefix}${String(num).padStart(2, "0")}.gif`;
       const className = prefix === "blake_" ? "smiley-blake" : "smiley-musume";
@@ -3992,6 +4035,16 @@
     }
   }
 
+  function loadSavedBmoItems() {
+    try {
+      const bmoji = window.Bmoji;
+      const savedBmo = bmoji?.savedBmo?.list?.() || JSON.parse(localStorage.getItem("chii_saved_bmo") || "[]");
+      return Array.isArray(savedBmo) ? savedBmo.filter((item) => !!item?.code) : [];
+    } catch {
+      return [];
+    }
+  }
+
   function SmileyPanel({ onSelect }) {
     const [activeTab, setActiveTab] = d$2("TV");
     const [bmoItems, setBmoItems] = d$2([]);
@@ -3999,15 +4052,7 @@
     const contentRef = A$2(null);
     y$2(() => {
       if (activeTab === "BMO") {
-        try {
-          const bmoji = window.Bmoji;
-          const savedBmo = bmoji?.savedBmo?.list?.() || JSON.parse(localStorage.getItem("chii_saved_bmo") || "[]");
-          if (Array.isArray(savedBmo)) {
-            setBmoItems(savedBmo.filter((item) => item && item.code));
-          }
-        } catch (e) {
-          setBmoItems([]);
-        }
+        setBmoItems(loadSavedBmoItems());
       }
     }, [activeTab]);
     y$2(() => {
@@ -5983,14 +6028,14 @@ ${content}`;
     ] });
   }
 
-  function saveWindowPosition(element) {
+  function persistWindowPosition(element) {
     if (!settings.value.rememberOpenState) return;
-    localStorage.setItem("dollarsChatPosition", JSON.stringify({
+    saveWindowPosition({
       x: element.offsetLeft,
       y: element.offsetTop,
       width: element.offsetWidth,
       height: element.offsetHeight
-    }));
+    });
   }
   function ChatWindow({ skipEntryAnimation = false }) {
     const windowRef = A$2(null);
@@ -6059,21 +6104,18 @@ ${content}`;
       document.removeEventListener("touchmove", handleDragMove);
       document.removeEventListener("touchend", handleDragEnd);
       if (windowRef.current) {
-        saveWindowPosition(windowRef.current);
+        persistWindowPosition(windowRef.current);
       }
     };
     y$2(() => {
       if (isMobileViewport.value || isMaximized.value || !settings.value.rememberOpenState) return;
-      try {
-        const saved = localStorage.getItem("dollarsChatPosition");
-        if (saved && windowRef.current) {
-          const { x, y, width, height } = JSON.parse(saved);
-          windowRef.current.style.left = `${x}px`;
-          windowRef.current.style.top = `${y}px`;
-          if (width) windowRef.current.style.width = `${width}px`;
-          if (height) windowRef.current.style.height = `${height}px`;
-        }
-      } catch (e) {
+      const saved = loadWindowPosition();
+      if (saved && windowRef.current) {
+        const { x, y, width, height } = saved;
+        windowRef.current.style.left = `${x}px`;
+        windowRef.current.style.top = `${y}px`;
+        if (width) windowRef.current.style.width = `${width}px`;
+        if (height) windowRef.current.style.height = `${height}px`;
       }
     }, []);
     y$2(() => {
@@ -6188,7 +6230,7 @@ ${content}`;
       document.removeEventListener("touchmove", handleResizeMove);
       document.removeEventListener("touchend", handleResizeEnd);
       if (windowRef.current) {
-        saveWindowPosition(windowRef.current);
+        persistWindowPosition(windowRef.current);
       }
     };
     const className = [
@@ -6257,15 +6299,7 @@ ${content}`;
     const containerRef = A$2(null);
     y$2(() => {
       if (activeTab === "BMO") {
-        try {
-          const bmoji = window.Bmoji;
-          const savedBmo = bmoji?.savedBmo?.list?.() || JSON.parse(localStorage.getItem("chii_saved_bmo") || "[]");
-          if (Array.isArray(savedBmo)) {
-            setBmoItems(savedBmo.filter((item) => item && item.code));
-          }
-        } catch (e) {
-          setBmoItems([]);
-        }
+        setBmoItems(loadSavedBmoItems());
       }
     }, [activeTab]);
     y$2(() => {
@@ -6918,16 +6952,12 @@ ${content}`;
         applyAllSettings();
         settingsLoaded.value = true;
         if (settings.value.rememberOpenState) {
-          try {
-            const savedChatOpen = localStorage.getItem("dollars.isChatOpen");
-            if (savedChatOpen !== null) {
-              isChatOpen.value = JSON.parse(savedChatOpen);
-            }
-            const savedMaximized = localStorage.getItem("dollars.isMaximized");
-            if (savedMaximized !== null) {
-              isMaximized.value = JSON.parse(savedMaximized);
-            }
-          } catch (e) {
+          const savedState = loadWindowState();
+          if (savedState.isChatOpen !== null) {
+            isChatOpen.value = savedState.isChatOpen;
+          }
+          if (savedState.isMaximized !== null) {
+            isMaximized.value = savedState.isMaximized;
           }
         }
         const notifType = settings.value.notificationType;

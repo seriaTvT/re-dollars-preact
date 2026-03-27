@@ -10,21 +10,22 @@ import { UserProfilePanel } from './UserProfilePanel';
 import { FloatingUI } from './FloatingUI';
 import { Sidebar } from './Sidebar';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { loadWindowPosition, saveWindowPosition } from '@/utils/windowState';
 
 interface ChatWindowProps {
     skipEntryAnimation?: boolean;
 }
 
 // 辅助函数：保存窗口位置和大小（仅在启用记忆状态时）
-function saveWindowPosition(element: HTMLDivElement) {
+function persistWindowPosition(element: HTMLDivElement) {
     if (!settings.value.rememberOpenState) return;
 
-    localStorage.setItem('dollarsChatPosition', JSON.stringify({
+    saveWindowPosition({
         x: element.offsetLeft,
         y: element.offsetTop,
         width: element.offsetWidth,
         height: element.offsetHeight
-    }));
+    });
 }
 
 export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
@@ -45,6 +46,15 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
         }
     }, []);
 
+    // 从 Mouse 或 Touch 事件中提取坐标
+    const getPointer = (e: MouseEvent | TouchEvent) => {
+        if ('touches' in e) {
+            const t = e.touches[0] || (e as TouchEvent).changedTouches[0];
+            return { x: t.clientX, y: t.clientY };
+        }
+        return { x: (e as MouseEvent).clientX, y: (e as MouseEvent).clientY };
+    };
+
     // 拖拽状态
     const dragState = useRef({
         isDragging: false,
@@ -55,29 +65,34 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
     });
 
     // 处理拖拽开始
-    const handleDragStart = (e: MouseEvent) => {
+    const handleDragStart = (e: MouseEvent | TouchEvent) => {
         if (isMobileViewport.value || isMaximized.value) return;
         const target = e.target as HTMLElement;
         if (!target.closest('.chat-header') || target.closest('button')) return;
 
         e.preventDefault();
+        const { x, y } = getPointer(e);
         dragState.current = {
             isDragging: true,
-            startX: e.clientX,
-            startY: e.clientY,
+            startX: x,
+            startY: y,
             initialLeft: windowRef.current?.offsetLeft || 0,
             initialTop: windowRef.current?.offsetTop || 0,
         };
 
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('mouseup', handleDragEnd);
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
     };
 
-    const handleDragMove = (e: MouseEvent) => {
+    const handleDragMove = (e: MouseEvent | TouchEvent) => {
         if (!dragState.current.isDragging || !windowRef.current) return;
+        e.preventDefault();
 
-        const dx = e.clientX - dragState.current.startX;
-        const dy = e.clientY - dragState.current.startY;
+        const { x, y } = getPointer(e);
+        const dx = x - dragState.current.startX;
+        const dy = y - dragState.current.startY;
 
         const width = windowRef.current.offsetWidth;
         const height = windowRef.current.offsetHeight;
@@ -96,10 +111,12 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
         dragState.current.isDragging = false;
         document.removeEventListener('mousemove', handleDragMove);
         document.removeEventListener('mouseup', handleDragEnd);
+        document.removeEventListener('touchmove', handleDragMove);
+        document.removeEventListener('touchend', handleDragEnd);
 
         // 保存位置和大小
         if (windowRef.current) {
-            saveWindowPosition(windowRef.current);
+            persistWindowPosition(windowRef.current);
         }
     };
 
@@ -107,17 +124,13 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
     useEffect(() => {
         if (isMobileViewport.value || isMaximized.value || !settings.value.rememberOpenState) return;
 
-        try {
-            const saved = localStorage.getItem('dollarsChatPosition');
-            if (saved && windowRef.current) {
-                const { x, y, width, height } = JSON.parse(saved);
-                windowRef.current.style.left = `${x}px`;
-                windowRef.current.style.top = `${y}px`;
-                if (width) windowRef.current.style.width = `${width}px`;
-                if (height) windowRef.current.style.height = `${height}px`;
-            }
-        } catch (e) {
-            // 忽略
+        const saved = loadWindowPosition();
+        if (saved && windowRef.current) {
+            const { x, y, width, height } = saved;
+            windowRef.current.style.left = `${x}px`;
+            windowRef.current.style.top = `${y}px`;
+            if (width) windowRef.current.style.width = `${width}px`;
+            if (height) windowRef.current.style.height = `${height}px`;
         }
     }, []);
 
@@ -204,18 +217,19 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
     });
 
     // 处理调整大小开始
-    const handleResizeStart = (e: MouseEvent) => {
+    const handleResizeStart = (e: MouseEvent | TouchEvent) => {
         if (isMobileViewport.value || isMaximized.value) return;
         e.preventDefault();
         e.stopPropagation(); // 防止触发拖拽
 
         if (!windowRef.current) return;
         const rect = windowRef.current.getBoundingClientRect();
+        const { x, y } = getPointer(e);
 
         resizeState.current = {
             isResizing: true,
-            startX: e.clientX,
-            startY: e.clientY,
+            startX: x,
+            startY: y,
             initialWidth: rect.width,
             initialHeight: rect.height,
             initialLeft: rect.left,
@@ -224,36 +238,54 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
 
         document.addEventListener('mousemove', handleResizeMove);
         document.addEventListener('mouseup', handleResizeEnd);
+        document.addEventListener('touchmove', handleResizeMove, { passive: false });
+        document.addEventListener('touchend', handleResizeEnd);
     };
 
-    const handleResizeMove = (e: MouseEvent) => {
+    const handleResizeMove = (e: MouseEvent | TouchEvent) => {
         if (!resizeState.current.isResizing || !windowRef.current) return;
+        e.preventDefault();
+
+        const { x, y } = getPointer(e);
 
         // 向左上方调整大小：
         // 宽度增加 = startX - currentX
         // 高度增加 = startY - currentY
-        const dx = resizeState.current.startX - e.clientX;
-        const dy = resizeState.current.startY - e.clientY;
+        const dx = resizeState.current.startX - x;
+        const dy = resizeState.current.startY - y;
 
-        const newWidth = Math.max(320, resizeState.current.initialWidth + dx);
-        const newHeight = Math.max(400, resizeState.current.initialHeight + dy);
+        // 计算新位置，确保不超出窗口边界
+        let newWidth = Math.max(280, resizeState.current.initialWidth + dx);
+        let newHeight = Math.max(200, resizeState.current.initialHeight + dy);
+        let newLeft = resizeState.current.initialLeft - (newWidth - resizeState.current.initialWidth);
+        let newTop = resizeState.current.initialTop - (newHeight - resizeState.current.initialHeight);
+
+        // 限制 top/left 不超出视口
+        if (newTop < 0) {
+            newHeight += newTop; // 减少超出的部分
+            newTop = 0;
+        }
+        if (newLeft < 0) {
+            newWidth += newLeft;
+            newLeft = 0;
+        }
 
         windowRef.current.style.width = `${newWidth}px`;
         windowRef.current.style.height = `${newHeight}px`;
-
-        // 更新位置
-        windowRef.current.style.left = `${resizeState.current.initialLeft - (newWidth - resizeState.current.initialWidth)}px`;
-        windowRef.current.style.top = `${resizeState.current.initialTop - (newHeight - resizeState.current.initialHeight)}px`;
+        windowRef.current.style.left = `${newLeft}px`;
+        windowRef.current.style.top = `${newTop}px`;
     };
 
     const handleResizeEnd = () => {
         resizeState.current.isResizing = false;
         document.removeEventListener('mousemove', handleResizeMove);
         document.removeEventListener('mouseup', handleResizeEnd);
+        document.removeEventListener('touchmove', handleResizeMove);
+        document.removeEventListener('touchend', handleResizeEnd);
 
         // 保存位置和大小
         if (windowRef.current) {
-            saveWindowPosition(windowRef.current);
+            persistWindowPosition(windowRef.current);
         }
     };
 
@@ -295,11 +327,13 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
             ref={windowRef}
             class={className}
             onMouseDown={handleDragStart}
+            onTouchStart={handleDragStart}
         >
             <div
                 id="dollars-resize-handle"
                 title="调整窗口大小"
                 onMouseDown={handleResizeStart}
+                onTouchStart={handleResizeStart}
             ></div>
             <ChatHeader />
             <div id="dollars-content-panes">

@@ -3,6 +3,7 @@ import { isChatOpen } from '@/stores/chat';
 import { performLogin, performLogout } from '@/utils/api';
 import type { Settings } from '@/types';
 import { getChiiLib } from '@/utils/globals';
+import { clearWindowState, saveChatOpenState, saveMaximizedState, saveMobileChatViewState } from '@/utils/windowState';
 
 interface SettingsConfigItem {
     key: keyof Settings | 'auth_control_group';
@@ -112,21 +113,14 @@ function applyGlassBlur() {
 function handleRememberOpenStateChange() {
     // 如果关闭了记忆状态，清除所有保存的窗口状态
     if (!settings.value.rememberOpenState) {
-        localStorage.removeItem('dollars.isChatOpen');
-        localStorage.removeItem('dollars.isMaximized');
-        localStorage.removeItem('dollars.mobileChatViewActive');
-        localStorage.removeItem('dollarsChatPosition');
+        clearWindowState();
     } else {
         // 如果开启了记忆状态，保存当前所有窗口状态
-        localStorage.setItem('dollars.isChatOpen', JSON.stringify(isChatOpen.value));
-
-        // 导入 UI 状态
+        saveChatOpenState(isChatOpen.value);
         import('@/stores/ui').then(({ isMaximized, mobileChatViewActive }) => {
-            localStorage.setItem('dollars.isMaximized', JSON.stringify(isMaximized.value));
-            localStorage.setItem('dollars.mobileChatViewActive', JSON.stringify(mobileChatViewActive.value));
-        }).catch(() => {
-            // 忽略错误
-        });
+            saveMaximizedState(isMaximized.value);
+            saveMobileChatViewState(mobileChatViewActive.value);
+        }).catch(() => {});
     }
 }
 

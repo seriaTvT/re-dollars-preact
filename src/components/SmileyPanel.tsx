@@ -5,12 +5,7 @@ import { SVGIcons, BACKEND_URL } from '@/utils/constants';
 import { favorites, initFavorites, addFavorite, removeFavorite } from '@/stores/favorites';
 import { smileyRanges, getSmileyUrl, generateSmileyCodes } from '@/utils/smilies';
 import { escapeHTML } from '@/utils/format';
-
-// BMO 表情项类型
-interface BmoItem {
-    code: string;
-    name?: string;
-}
+import { loadSavedBmoItems, type BmoItem } from '@/utils/bmo';
 
 interface SmileyPanelProps {
     onSelect?: (code: string) => void;
@@ -25,16 +20,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
     // 加载 BMO 表情 - 使用官方 API
     useEffect(() => {
         if (activeTab === 'BMO') {
-            try {
-                const bmoji = (window as any).Bmoji;
-                // 优先使用官方 API
-                const savedBmo = bmoji?.savedBmo?.list?.() || JSON.parse(localStorage.getItem('chii_saved_bmo') || '[]');
-                if (Array.isArray(savedBmo)) {
-                    setBmoItems(savedBmo.filter((item: any) => item && item.code));
-                }
-            } catch (e) {
-                setBmoItems([]);
-            }
+            setBmoItems(loadSavedBmoItems());
         }
     }, [activeTab]);
 

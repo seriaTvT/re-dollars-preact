@@ -164,7 +164,7 @@ export function processBBCode(
         if (before.lastIndexOf('<') > before.lastIndexOf('>')) return match;
 
         const num = parseInt(p1, 10);
-        if (num < 1 || num > 96) return match;
+        if (num < 1 || num > 98) return match;
 
         const folder = prefix === 'blake_' ? 'blake' : 'musume';
         const src = `/img/smiles/${folder}/${prefix}${String(num).padStart(2, '0')}.gif`;
