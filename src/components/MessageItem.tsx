@@ -7,6 +7,7 @@ import type { Message } from '@/types';
 import { processBBCode, renderReplyQuote, stripQuotes } from '@/utils/bbcode';
 import { escapeHTML, formatDate, getAvatarUrl } from '@/utils/format';
 import { showContextMenu, showImageViewer } from '@/stores/ui';
+import { COLLAPSE_THRESHOLD, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import { UserAvatar } from './UserAvatar';
 import { markMessageAsSeenIfNotified } from './NotificationManager';
 import { useSwipeToReply } from '@/hooks/useSwipeToReply';
@@ -39,9 +40,6 @@ function arePropsEqual(prev: MessageItemProps, next: MessageItemProps): boolean 
     );
 }
 
-// 长消息折叠阈值 (字符数)
-const COLLAPSE_THRESHOLD = 500;
-
 export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext }: MessageItemProps) => {
     const messageRef = useRef<HTMLDivElement>(null);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -49,7 +47,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
 
     useEffect(() => {
         if (isNew) {
-            const timer = setTimeout(() => setIsNew(false), 350);
+            const timer = setTimeout(() => setIsNew(false), NEW_MESSAGE_ANIMATION);
             return () => clearTimeout(timer);
         }
     }, [isNew]);

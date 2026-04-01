@@ -1,11 +1,8 @@
 import { useSignal } from '@preact/signals';
 import { useCallback, useRef, useEffect } from 'preact/hooks';
-import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { searchQuery } from '@/stores/chat';
 import { fetchGalleryMedia, lookupUsersByName } from '@/utils/api';
-import { formatDate, getAvatarUrl } from '@/utils/format';
-import { pendingJumpToMessage, toggleChat } from '@/stores/chat';
-import { isSearchActive } from '@/stores/ui';
+import { toggleSearch, showImageViewer } from '@/stores/ui';
 
 interface GalleryItem {
     url: string;
@@ -148,6 +145,15 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
         }
     };
 
+    const imageItems = items.value.filter(item => item.type === 'image');
+    const viewerItems = imageItems.map(item => ({
+        src: item.url,
+        messageId: item.message_id,
+        nickname: item.nickname,
+        avatar: item.avatar,
+        timestamp: item.timestamp,
+    }));
+
     return (
         <div class="gallery-container">
             <div class="gallery-header">
@@ -162,82 +168,59 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
                 </div>
             </div>
 
-            <PhotoProvider
-                brokenElement={<img src="/img/no_img.gif" alt="加载失败" style={{ maxWidth: 200, maxHeight: 200 }} />}
-                overlayRender={(props) => {
-                    const { index } = props;
-                    const imageItems = items.value.filter(item => item.type === 'image');
-                    const currentItem = imageItems[index];
-
-                    if (!currentItem) return null;
-
-                    return (
-                        <div class="gallery-photo-capsule" onClick={(e) => {
-                            e.stopPropagation();
-                            onClose();
-                            // Set jump target and open chat
-                            pendingJumpToMessage.value = currentItem.message_id;
-                            isSearchActive.value = false; // Close search UI if open
-                            toggleChat(true);
-                        }}>
-                            <img src={getAvatarUrl(currentItem.avatar, 's')} alt={currentItem.nickname} class="capsule-avatar" />
-                            <div class="capsule-info">
-                                <span class="capsule-nickname">{currentItem.nickname}</span>
-                                <span class="capsule-date">{formatDate(currentItem.timestamp, 'full')}</span>
-                            </div>
-                        </div>
-                    );
-                }}
-            >
-                <div class="gallery-grid" ref={gridRef} onScroll={handleScroll}>
-                    {items.value.map((item, idx) => (
-                        <div
-                            key={`${item.message_id}-${idx}`}
-                            class="gallery-item"
-                        >
-                            {item.type === 'video' ? (
-                                <div class="video-container" onClick={() => {
-                                    window.open(item.url, '_blank');
-                                }}>
-                                    <img
-                                        src={item.thumbnailUrl || item.url}
-                                        alt="Video thumbnail"
-                                        loading="lazy"
-                                        style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
-                                        onError={(e) => {
-                                            const target = e.currentTarget;
-                                            target.src = '/img/no_img.gif';
-                                            target.onerror = null;
-                                        }}
-                                    />
-                                    <div class="video-overlay">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
-                                            <path d="M8 5v14l11-7z" />
-                                        </svg>
+            <div class="gallery-grid" ref={gridRef} onScroll={handleScroll}>
+                    {items.value.map((item, idx) => {
+                        const imageIndex = imageItems.indexOf(item);
+                        return (
+                            <div
+                                key={`${item.message_id}-${idx}`}
+                                class="gallery-item"
+                            >
+                                {item.type === 'video' ? (
+                                    <div class="video-container" onClick={() => {
+                                        window.open(item.url, '_blank');
+                                    }}>
+                                        <img
+                                            src={item.thumbnailUrl || item.url}
+                                            alt="Video thumbnail"
+                                            loading="lazy"
+                                            style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                                            onError={(e) => {
+                                                const target = e.currentTarget;
+                                                target.src = '/img/no_img.gif';
+                                                target.onerror = null;
+                                            }}
+                                        />
+                                        <div class="video-overlay">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <PhotoView src={item.url} width={800} height={600}>
+                                ) : (
                                     <img
                                         src={item.thumbnailUrl || item.url}
                                         alt=""
                                         loading="lazy"
+                                        style="cursor: pointer;"
+                                        onClick={() => {
+                                            showImageViewer(viewerItems, imageIndex, 'gallery');
+                                        }}
                                         onError={(e) => {
                                             const target = e.currentTarget;
                                             target.src = '/img/no_img.gif';
                                             target.onerror = null;
                                         }}
                                     />
-                                </PhotoView>
-                            )}
-                        </div>
-                    ))}
+                                )}
+                            </div>
+                        );
+                    })}
 
                     {isLoading.value && (
                         <div class="gallery-loading">加载中...</div>
                     )}
                 </div>
-            </PhotoProvider>
         </div>
     );
 }

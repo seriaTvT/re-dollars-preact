@@ -1,5 +1,5 @@
-import { useRef, useCallback, useEffect, useLayoutEffect } from 'preact/hooks';
-import { render } from 'preact';
+import { useRef, useCallback, useEffect, useState } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
 import { signal } from '@preact/signals';
 import { SVGIcons } from '@/utils/constants';
 
@@ -15,9 +15,26 @@ const PORTAL_ID = 'dollars-text-formatter-portal';
 
 export function TextFormatter({ textareaRef }: TextFormatterProps) {
     const containerRef = useRef<HTMLDivElement>(null);
-    const portalRootRef = useRef<HTMLDivElement | null>(null);
+    const [portalRoot, setPortalRoot] = useState<HTMLDivElement | null>(null);
     const linkInputRef = useRef<HTMLInputElement>(null);
     const savedRangeRef = useRef<{ start: number; end: number } | null>(null);
+
+    // Create portal root element once
+    useEffect(() => {
+        let root = document.getElementById(PORTAL_ID) as HTMLDivElement | null;
+        if (!root) {
+            root = document.createElement('div');
+            root.id = PORTAL_ID;
+            document.body.appendChild(root);
+        }
+        setPortalRoot(root);
+
+        return () => {
+            if (root && root.parentNode) {
+                root.parentNode.removeChild(root);
+            }
+        };
+    }, []);
 
     // Check for text selection
     const checkSelection = useCallback(() => {
@@ -250,27 +267,7 @@ export function TextFormatter({ textareaRef }: TextFormatterProps) {
         </div>
     );
 
-    useLayoutEffect(() => {
-        let root = portalRootRef.current;
-        if (!root) {
-            root = document.createElement('div');
-            root.id = PORTAL_ID;
-            document.body.appendChild(root);
-            portalRootRef.current = root;
-        }
-        render(formatterContent, root);
-        // 不在 cleanup 裡 unmount，否則每次 re-render 會銷毀 DOM、清掉 show() 設定的 top/left 與 ref
-        return () => {};
-    });
+    if (!portalRoot) return null;
 
-    useEffect(() => () => {
-        const root = portalRootRef.current;
-        if (root) {
-            render(null, root);
-            if (root.parentNode) root.parentNode.removeChild(root);
-            portalRootRef.current = null;
-        }
-    }, []);
-
-    return null;
+    return createPortal(formatterContent, portalRoot);
 }

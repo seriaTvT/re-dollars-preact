@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from 'preact/hooks';
 import { escapeHTML } from '@/utils/format';
+import { MENTION_DEBOUNCE, MAX_MENTION_RESULTS } from '@/utils/constants';
 
 interface MentionUser {
     id: number;
@@ -54,14 +55,14 @@ export function MentionCompleter({ textareaRef }: MentionCompleterProps) {
         }
 
         // Debounce API call
-        timerRef.current = setTimeout(() => fetchUsers(currentQuery), 300);
+        timerRef.current = setTimeout(() => fetchUsers(currentQuery), MENTION_DEBOUNCE);
     }, [textareaRef, visible]);
 
     // Fetch users from API
     const fetchUsers = async (query: string) => {
         try {
             const res = await fetch(
-                `https://bgm.ry.mk/search/users?q=${encodeURIComponent(query)}&exact=true&limit=10`
+                `https://bgm.ry.mk/search/users?q=${encodeURIComponent(query)}&exact=true&limit=${MAX_MENTION_RESULTS}`
             );
 
             // Check if query changed while fetching

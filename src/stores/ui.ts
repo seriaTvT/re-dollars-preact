@@ -1,6 +1,58 @@
 import { signal } from '@preact/signals';
 import { loadWindowState, saveMaximizedState, saveMobileChatViewState } from '@/utils/windowState';
 
+// Re-export all panel state and functions from the unified panel manager
+export {
+    // Panel open/closing signals
+    isSmileyPanelOpen,
+    isSmileyPanelClosing,
+    isContextMenuOpen,
+    isContextMenuClosing,
+    isReactionPickerOpen,
+    isReactionPickerClosing,
+    isProfileCardClosing,
+    isUserProfilePanelOpen,
+    isUserProfilePanelClosing,
+    isSearchActive,
+    isImageViewerOpen,
+
+    // Panel-specific extra state
+    contextMenuPosition,
+    contextMenuTargetId,
+    contextMenuImageUrl,
+    contextMenuBmoCode,
+    profileCardUserId,
+    profileCardAnchor,
+    userProfilePanelUserId,
+    imageViewerItems,
+    imageViewerImages,
+    imageViewerIndex,
+    imageViewerSource,
+    reactionPickerPosition,
+
+    // Panel functions
+    showContextMenu,
+    hideContextMenu,
+    showReactionPicker,
+    hideReactionPicker,
+    toggleSmileyPanel,
+    showProfileCard,
+    hideProfileCard,
+    showUserProfile,
+    hideUserProfile,
+    showImageViewer,
+    hideImageViewer,
+    toggleSearch,
+
+    // New unified API
+    showPanel,
+    hidePanel,
+    togglePanel,
+    activePanels,
+    closingPanels,
+    type PanelId,
+} from '@/stores/panels';
+
 // UI 状态
 export const isMobileViewport = signal(window.innerWidth <= 768);
 export const isNarrowLayout = signal(false);
@@ -9,159 +61,12 @@ export const isNarrowLayout = signal(false);
 export const isMaximized = signal(false);
 export const mobileChatViewActive = signal(false);
 
-// 面板状态
-export const isSmileyPanelOpen = signal(false);
-export const isSmileyPanelClosing = signal(false);
-export const isContextMenuOpen = signal(false);
-export const isContextMenuClosing = signal(false);
-export const isSearchActive = signal(false);
 export const inputAreaHeight = signal(60); // 默认为 60px
-
-// 上下文菜单
-export const contextMenuPosition = signal({ x: 0, y: 0 });
-export const contextMenuTargetId = signal<string | null>(null);
-export const contextMenuImageUrl = signal<string | null>(null);
-export const contextMenuBmoCode = signal<string | null>(null);
-
-// 用户资料卡
-export const profileCardUserId = signal<string | null>(null);
-export const profileCardAnchor = signal<HTMLElement | null>(null);
-export const isProfileCardClosing = signal(false);
-
-// 用户资料页面（Telegram 风格）
-export const isUserProfilePanelOpen = signal(false);
-export const isUserProfilePanelClosing = signal(false);
-export const userProfilePanelUserId = signal<string | null>(null);
-
-// 图片查看器
-export const isImageViewerOpen = signal(false);
-export const imageViewerImages = signal<string[]>([]);
-export const imageViewerIndex = signal(0);
 
 // 监听窗口大小
 window.addEventListener('resize', () => {
     isMobileViewport.value = window.innerWidth <= 768;
 });
-
-// 显示上下文菜单
-export function showContextMenu(x: number, y: number, targetId: string | null, imageUrl?: string | null, bmoCode?: string | null) {
-    contextMenuPosition.value = { x, y };
-    contextMenuTargetId.value = targetId;
-    contextMenuImageUrl.value = imageUrl ?? null;
-    contextMenuBmoCode.value = bmoCode ?? null;
-    isContextMenuOpen.value = true;
-}
-
-// 隐藏上下文菜单 (带动画)
-export function hideContextMenu() {
-    if (!isContextMenuOpen.value || isContextMenuClosing.value) return;
-    isContextMenuClosing.value = true;
-    // 同时关闭反应选择器
-    hideReactionPicker();
-    setTimeout(() => {
-        isContextMenuOpen.value = false;
-        isContextMenuClosing.value = false;
-        contextMenuTargetId.value = null;
-        contextMenuImageUrl.value = null;
-        contextMenuBmoCode.value = null;
-    }, 150);
-}
-
-// 浮动表情选择器 (ContextMenu 触发)
-export const isReactionPickerOpen = signal(false);
-export const isReactionPickerClosing = signal(false);
-export const reactionPickerPosition = signal({ x: 0, y: 0, width: 280 }); // Default width
-
-export function showReactionPicker(x: number, y: number, width?: number) {
-    reactionPickerPosition.value = { x, y, width: width || 280 };
-    isReactionPickerClosing.value = false;
-    isReactionPickerOpen.value = true;
-}
-
-// 隐藏反应选择器 (带动画)
-export function hideReactionPicker() {
-    if (!isReactionPickerOpen.value || isReactionPickerClosing.value) return;
-    isReactionPickerClosing.value = true;
-    setTimeout(() => {
-        isReactionPickerOpen.value = false;
-        isReactionPickerClosing.value = false;
-    }, 150);
-}
-
-// 切换表情面板 (带动画)
-export function toggleSmileyPanel(open?: boolean) {
-    const shouldOpen = open ?? !isSmileyPanelOpen.value;
-    if (shouldOpen) {
-        isSmileyPanelClosing.value = false;
-        isSmileyPanelOpen.value = true;
-    } else {
-        if (!isSmileyPanelOpen.value || isSmileyPanelClosing.value) return;
-        isSmileyPanelClosing.value = true;
-        setTimeout(() => {
-            isSmileyPanelOpen.value = false;
-            isSmileyPanelClosing.value = false;
-        }, 200);
-    }
-}
-
-// 显示/切换用户资料卡
-export function showProfileCard(userId: string, anchor: HTMLElement) {
-    // 如果点击同一用户的头像，则关闭卡片
-    if (profileCardUserId.value === userId) {
-        hideProfileCard();
-        return;
-    }
-    profileCardUserId.value = userId;
-    profileCardAnchor.value = anchor;
-}
-
-// 隐藏用户资料卡 (带动画)
-export function hideProfileCard() {
-    if (!profileCardUserId.value || isProfileCardClosing.value) return;
-    isProfileCardClosing.value = true;
-    setTimeout(() => {
-        profileCardUserId.value = null;
-        profileCardAnchor.value = null;
-        isProfileCardClosing.value = false;
-    }, 200); // 匹配 CSS 动画时长
-}
-
-// 显示用户资料页面（Telegram 风格）
-export function showUserProfile(userId: string) {
-    userProfilePanelUserId.value = userId;
-    isUserProfilePanelClosing.value = false;
-    isUserProfilePanelOpen.value = true;
-}
-
-// 隐藏用户资料页面 (带动画)
-export function hideUserProfile() {
-    if (!isUserProfilePanelOpen.value || isUserProfilePanelClosing.value) return;
-    isUserProfilePanelClosing.value = true;
-    setTimeout(() => {
-        isUserProfilePanelOpen.value = false;
-        isUserProfilePanelClosing.value = false;
-        userProfilePanelUserId.value = null;
-    }, 250);
-}
-
-// 显示图片查看器
-export function showImageViewer(images: string[], index: number = 0) {
-    imageViewerImages.value = images;
-    imageViewerIndex.value = index;
-    isImageViewerOpen.value = true;
-}
-
-// 隐藏图片查看器
-export function hideImageViewer() {
-    isImageViewerOpen.value = false;
-    imageViewerImages.value = [];
-    imageViewerIndex.value = 0;
-}
-
-// 切换搜索
-export function toggleSearch(active?: boolean) {
-    isSearchActive.value = active ?? !isSearchActive.value;
-}
 
 // 切换最大化
 export function toggleMaximize() {

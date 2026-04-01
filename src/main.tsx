@@ -4,7 +4,6 @@ import { initDollarsAPI } from './extensionAPI';
 import { settings } from './stores/user';
 import { toggleChat, isChatOpen } from './stores/chat';
 import cssContent from '@/styles/index.css?inline';
-import photoViewCss from 'react-photo-view/dist/react-photo-view.css?inline';
 
 // 提前注入样式，避免 FOUC (Flash of Unstyled Content)
 function injectStyles() {
@@ -13,7 +12,7 @@ function injectStyles() {
 
     const style = document.createElement('style');
     style.setAttribute('data-dollars-styles', '');
-    style.textContent = cssContent + '\n' + photoViewCss;
+    style.textContent = cssContent;
     document.head.appendChild(style);
 }
 

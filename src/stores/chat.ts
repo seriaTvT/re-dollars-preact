@@ -1,5 +1,5 @@
 import { signal, computed, batch } from '@preact/signals';
-import type { Message, Conversation } from '@/types';
+import type { Message } from '@/types';
 import { MESSAGE_GROUP_TIME_GAP } from '@/utils/constants';
 import { updateSignalMap, updateSignalSet } from '@/utils/signalMap';
 import { saveChatOpenState } from '@/utils/windowState';
@@ -10,6 +10,7 @@ export type { BrowsePosition } from './browsePosition';
 export { currentDraft, saveDraft, loadDraft, clearDraft } from './drafts';
 export type { ReplyInfo, Draft } from './drafts';
 export { lastReadId, pendingReadId, isReadStateSyncing, hasUnreadMessages, unreadCount, loadReadState, updateReadState, markSentMessageAsRead, getFirstUnreadId } from './readState';
+export { conversations, activeConversationId, setActiveConversation, updateConversationLastMessage } from './conversations';
 
 // ============================================================================
 // Core Chat State
@@ -45,21 +46,8 @@ export const messageIds = computed<number[]>(() => {
     });
 });
 
-// 会话列表
-export const conversations = signal<Conversation[]>([
-    {
-        id: 'dollars',
-        type: 'channel',
-        title: 'Re:Dollars',
-        avatar: 'https://lsky.ry.mk/i/2025/09/06/68bc5540a8c51.webp',
-        lastMessage: { text: '', timestamp: 0 },
-        unreadCount: 0
-    }
-]);
-
 // 初始化时不从 localStorage 恢复，等待 settings 加载后再决定
 export const isChatOpen = signal(false);
-export const activeConversationId = signal('dollars');
 export const isLoadingHistory = signal(false);
 export const historyFullyLoaded = signal(false);
 export const historyOldestId = signal<number | null>(null);
@@ -442,38 +430,3 @@ export function cancelReplyOrEdit() {
     editingMessage.value = null;
 }
 
-/**
- * 设置当前会话
- */
-export function setActiveConversation(conversationId: string) {
-    activeConversationId.value = conversationId;
-
-    // 清除扩展项的激活状态并调用 onDeactivate 回调
-    // 使用动态导入避免循环依赖
-    import('./extensionConversations').then(({ activeExtensionId, extensionConversations }) => {
-        if (activeExtensionId.value !== null) {
-            // 找到当前激活的扩展项并调用其 onDeactivate
-            const activeExt = extensionConversations.value.find(
-                (item: { id: string }) => item.id === activeExtensionId.value
-            );
-            if (activeExt?.onDeactivate) {
-                activeExt.onDeactivate();
-            }
-            activeExtensionId.value = null;
-        }
-    });
-}
-
-/**
- * 更新会话最后消息
- */
-export function updateConversationLastMessage(conversationId: string, text: string, timestamp: number) {
-    const updated = conversations.value.map(conv =>
-        conv.id === conversationId
-            ? { ...conv, lastMessage: { text, timestamp } }
-            : conv
-    );
-    // 按时间排序 (就地排序，避免额外数组分配)
-    updated.sort((a, b) => (b.lastMessage.timestamp || 0) - (a.lastMessage.timestamp || 0));
-    conversations.value = updated;
-}

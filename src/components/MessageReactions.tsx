@@ -3,6 +3,7 @@ import { userInfo } from '@/stores/user';
 import { toggleReaction } from '@/utils/api';
 import { getSmileyUrl } from '@/utils/smilies';
 import { getAvatarUrl, generateReactionTooltip } from '@/utils/format';
+import { MAX_AVATARS_SHOWN } from '@/utils/constants';
 import type { Reaction } from '@/types';
 
 interface MessageReactionsProps {
@@ -35,8 +36,6 @@ interface ReactionItemProps {
     messageId: number;
 }
 
-const MAX_AVATARS_SHOWN = 5;
-
 function ReactionItem({ emoji, users, messageId }: ReactionItemProps) {
     const url = getSmileyUrl(emoji);
     const itemRef = useRef<HTMLDivElement>(null);
@@ -60,65 +59,66 @@ function ReactionItem({ emoji, users, messageId }: ReactionItemProps) {
         const el = itemRef.current;
         if (!el) return;
 
-        // 设置 tooltip 内容
-        const tooltipHtml = generateReactionTooltip(users);
-        el.setAttribute('data-original-title', tooltipHtml);
-
-        // 初始化 jQuery Tooltip (如果存在)
-        // @ts-ignore
-        const $ = window.$;
-        if (typeof $ !== 'undefined' && typeof $.fn.tooltip === 'function') {
-            try {
-                const $el = $(el);
-                // 销毁旧的 tooltip 实例以防止重复
-                try { $el.tooltip('dispose'); } catch (e) { }
-                try { $el.tooltip('destroy'); } catch (e) { }
-
-                $el.tooltip({
-                    container: 'body',
-                    html: true,
-                    placement: 'top',
-                    animation: true,
-                    trigger: 'manual',
-                    template: '<div class="tooltip dollars-tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-                });
-
-                let hideTimeout: any;
-                const scheduleHide = () => {
-                    hideTimeout = setTimeout(() => { $el.tooltip('hide'); }, 300);
-                };
-
-                const mouseEnterHandler = () => {
-                    clearTimeout(hideTimeout);
-                    $el.tooltip('show');
-                    const tooltipData = $el.data('tooltip') || $el.data('bs.tooltip');
-                    if (tooltipData) {
-                        const $tip = tooltipData.$tip || (typeof tooltipData.tip === 'function' ? $(tooltipData.tip()) : null);
-                        if ($tip) {
-                            $tip.off('mouseenter.dollars mouseleave.dollars');
-                            $tip.on('mouseenter.dollars', () => clearTimeout(hideTimeout));
-                            $tip.on('mouseleave.dollars', () => scheduleHide());
-                        }
-                    }
-                };
-
-                const mouseLeaveHandler = () => {
-                    scheduleHide();
-                };
-
-                $el.on('mouseenter', mouseEnterHandler);
-                $el.on('mouseleave', mouseLeaveHandler);
-
-                return () => {
-                    $el.off('mouseenter', mouseEnterHandler);
-                    $el.off('mouseleave', mouseLeaveHandler);
-                    try { $el.tooltip('hide'); } catch (e) { }
-                };
-            } catch (e) {
-                // ignore
-            }
+        const $ = (window as any).$;
+        if (typeof $ === 'undefined' || typeof $.fn?.tooltip !== 'function') {
+            el.setAttribute('title', users.map(u => u.nickname).join('、'));
+            return;
         }
-    }, [users, isBmo]);
+
+        el.setAttribute('data-original-title', generateReactionTooltip(users));
+        el.setAttribute('title', '');
+
+        const $el = $(el);
+        let hideTimeout: ReturnType<typeof setTimeout> | undefined;
+        const getTip = () => {
+            const tooltip = $el.data('bs.tooltip');
+            return tooltip?.$tip || (typeof tooltip?.tip === 'function' ? $(tooltip.tip()) : null);
+        };
+        const clearHideTimeout = () => {
+            if (!hideTimeout) return;
+            clearTimeout(hideTimeout);
+            hideTimeout = undefined;
+        };
+        const scheduleHide = () => {
+            clearHideTimeout();
+            hideTimeout = setTimeout(() => $el.tooltip('hide'), 300);
+        };
+        const syncTooltipHover = () => {
+            const $tip = getTip();
+            if (!$tip?.length) return;
+
+            $tip.off('.dollarsTooltip');
+            $tip.on('mouseenter.dollarsTooltip', clearHideTimeout);
+            $tip.on('mouseleave.dollarsTooltip', scheduleHide);
+            $tip.on('click.dollarsTooltip', (event: Event) => event.stopPropagation());
+        };
+        const handleMouseEnter = () => {
+            clearHideTimeout();
+            $el.tooltip('show');
+            syncTooltipHover();
+        };
+
+        $el.tooltip('destroy');
+        $el.tooltip({
+            container: 'body',
+            html: true,
+            placement: 'top',
+            animation: true,
+            trigger: 'manual',
+            template: '<div class="tooltip dollars-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+        });
+        $el.off('.dollarsTooltip');
+        $el.on('mouseenter.dollarsTooltip', handleMouseEnter);
+        $el.on('mouseleave.dollarsTooltip', scheduleHide);
+
+        return () => {
+            clearHideTimeout();
+            getTip()?.off('.dollarsTooltip');
+            $el.off('.dollarsTooltip');
+            $el.tooltip('hide');
+            $el.tooltip('destroy');
+        };
+    }, [users]);
 
     const handleToggle = async (e: MouseEvent) => {
         e.stopPropagation();
@@ -130,8 +130,6 @@ function ReactionItem({ emoji, users, messageId }: ReactionItemProps) {
             ref={itemRef}
             class={`reaction-item item ${isSelected ? 'selected' : ''}`}
             data-emoji={emoji}
-            data-toggle="tooltip"
-            title="" // Leave title empty as we use data-original-title
             onClick={handleToggle}
         >
             <span
@@ -149,7 +147,7 @@ function ReactionItem({ emoji, users, messageId }: ReactionItemProps) {
                         <img
                             key={u.user_id}
                             class="reaction-avatar"
-                            src={getAvatarUrl(u.avatar!, 's')}
+                            src={getAvatarUrl(u.avatar!, 'l')}
                             alt={u.nickname}
                             style={{ zIndex: MAX_AVATARS_SHOWN - i }}
                         />

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'preact/hooks';
-import { PhotoProvider, PhotoView } from 'react-photo-view';
 import {
     isUserProfilePanelOpen,
     isUserProfilePanelClosing,
@@ -7,9 +6,9 @@ import {
     hideUserProfile,
     toggleSearch,
     isNarrowLayout,
-    isSearchActive,
+    showImageViewer,
 } from '@/stores/ui';
-import { searchQuery, pendingJumpToMessage, toggleChat } from '@/stores/chat';
+import { searchQuery } from '@/stores/chat';
 import { fetchUserProfile, fetchGalleryMedia } from '@/utils/api';
 import { getAvatarUrl, formatDate, isActiveToday } from '@/utils/format';
 import { SVGIcons } from '@/utils/constants';
@@ -27,26 +26,28 @@ interface MediaItem {
 
 export function UserProfilePanel() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [loading, setLoading] = useState(false);
     const [media, setMedia] = useState<MediaItem[]>([]);
     const [mediaLoading, setMediaLoading] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     const userId = userProfilePanelUserId.value;
+    const isOpen = isUserProfilePanelOpen.value;
+    const isClosing = isUserProfilePanelClosing.value;
 
     useEffect(() => {
         if (!userId) {
             setProfile(null);
             setMedia([]);
+            setMediaLoading(false);
             return;
         }
 
         let stale = false;
-        setLoading(true);
+        setProfile(null);
 
         fetchUserProfile(userId).then(data => {
             if (stale) return;
             if (data) setProfile(data);
-            setLoading(false);
         });
 
         return () => { stale = true; };
@@ -56,10 +57,12 @@ export function UserProfilePanel() {
     useEffect(() => {
         if (!profile?.id) {
             setMedia([]);
+            setMediaLoading(false);
             return;
         }
 
         let stale = false;
+        setMedia([]);
         setMediaLoading(true);
 
         fetchGalleryMedia(0, 6, profile.id).then(result => {
@@ -79,7 +82,20 @@ export function UserProfilePanel() {
         return () => { stale = true; };
     }, [profile?.id]);
 
-    if (!isUserProfilePanelOpen.value) return null;
+    useEffect(() => {
+        if (!isOpen || isClosing) {
+            setIsVisible(false);
+            return;
+        }
+
+        const frameId = requestAnimationFrame(() => {
+            setIsVisible(true);
+        });
+
+        return () => cancelAnimationFrame(frameId);
+    }, [isOpen, isClosing]);
+
+    if (!isOpen) return null;
 
     const handleHistory = () => {
         if (profile) {
@@ -95,7 +111,7 @@ export function UserProfilePanel() {
         }
     };
 
-    const isActive = !loading && isActiveToday(profile?.stats?.last_message_time);
+    const isActive = isActiveToday(profile?.stats?.last_message_time);
 
     const isNarrow = isNarrowLayout.value;
 
@@ -105,11 +121,19 @@ export function UserProfilePanel() {
     const lastActiveText = lastMsgTs
         ? `${formatDate(lastMsgTs, 'label')} ${formatDate(lastMsgTs, 'time')}`
         : null;
+    const imageItems = media.filter(item => item.type === 'image');
+    const viewerItems = imageItems.map(item => ({
+        src: item.url,
+        messageId: item.message_id,
+        nickname: item.nickname,
+        avatar: item.avatar,
+        timestamp: item.timestamp,
+    }));
 
     return (
         <div
             id="dollars-user-profile-panel"
-            class={`${isNarrow ? 'narrow' : 'wide'} ${isUserProfilePanelOpen.value && !isUserProfilePanelClosing.value ? 'visible' : ''} ${isUserProfilePanelClosing.value ? 'closing' : ''}`}
+            class={`${isNarrow ? 'narrow' : 'wide'} ${isVisible ? 'visible' : ''} ${isClosing ? 'closing' : ''}`}
         >
             {/* 宽视图卡片标题栏（窄视图由 ChatHeader 接管） */}
             {!isNarrow && (
@@ -135,17 +159,8 @@ export function UserProfilePanel() {
 
             {/* 滚动内容区 */}
             <div class="uprofile-content">
-                {loading ? (
-                    <div class="uprofile-skeleton-wrap">
-                        <div class="uprofile-skeleton uprofile-skeleton-name" />
-                        <div class="uprofile-skeleton uprofile-skeleton-username" />
-                        <div class="uprofile-skeleton uprofile-skeleton-stats" />
-                        <div class="uprofile-skeleton uprofile-skeleton-actions" />
-                        <div class="uprofile-skeleton uprofile-skeleton-row" />
-                        <div class="uprofile-skeleton uprofile-skeleton-row" />
-                    </div>
-                ) : (
-                    <>
+                {profile && (
+                    <div class="uprofile-body">
                         {/* 名称区（居中） */}
                         <div class="uprofile-name-section">
                             <div class="uprofile-nickname">
@@ -224,69 +239,49 @@ export function UserProfilePanel() {
                                 <div class="uprofile-media-header">
                                     <span>媒体</span>
                                 </div>
-                                <PhotoProvider
-                                    brokenElement={<img src="/img/no_img.gif" alt="加载失败" style={{ maxWidth: 200, maxHeight: 200 }} />}
-                                    overlayRender={(props) => {
-                                        const { index } = props;
-                                        const imageItems = media.filter(item => item.type === 'image');
-                                        const currentItem = imageItems[index];
-                                        if (!currentItem) return null;
-                                        return (
-                                            <button class="gallery-photo-capsule" aria-label={`跳转到 ${currentItem.nickname} 的消息`} onClick={(e) => {
-                                                e.stopPropagation();
-                                                hideUserProfile();
-                                                pendingJumpToMessage.value = currentItem.message_id;
-                                                isSearchActive.value = false;
-                                                toggleChat(true);
-                                            }}>
-                                                <img src={getAvatarUrl(currentItem.avatar, 's')} alt={currentItem.nickname} class="capsule-avatar" />
-                                                <div class="capsule-info">
-                                                    <span class="capsule-nickname">{currentItem.nickname}</span>
-                                                    <span class="capsule-date">{formatDate(currentItem.timestamp, 'full')}</span>
-                                                </div>
-                                            </button>
-                                        );
-                                    }}
-                                >
-                                    <div class="uprofile-media-grid">
-                                        {media.map((item) => (
-                                            <div
-                                                class="uprofile-media-item"
-                                                key={`${item.message_id}-${item.url}`}
-                                            >
-                                                {item.type === 'video' ? (
-                                                    <button
-                                                        class="uprofile-media-video-btn"
-                                                        aria-label={`播放 ${item.nickname} 分享的视频`}
-                                                        onClick={() => window.open(item.url, '_blank')}
-                                                    >
-                                                        <img
-                                                            src={item.thumbnailUrl}
-                                                            alt={`${item.nickname} 分享的视频`}
-                                                            loading="lazy"
-                                                        />
-                                                        <div class="uprofile-media-video-badge" aria-hidden="true">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                                        </div>
-                                                    </button>
-                                                ) : (
-                                                    <PhotoView src={item.url} width={800} height={600}>
+                                <div class="uprofile-media-grid">
+                                        {media.map((item) => {
+                                            const imageIndex = imageItems.indexOf(item);
+                                            return (
+                                                <div
+                                                    class="uprofile-media-item"
+                                                    key={`${item.message_id}-${item.url}`}
+                                                >
+                                                    {item.type === 'video' ? (
+                                                        <button
+                                                            class="uprofile-media-video-btn"
+                                                            aria-label={`播放 ${item.nickname} 分享的视频`}
+                                                            onClick={() => window.open(item.url, '_blank')}
+                                                        >
+                                                            <img
+                                                                src={item.thumbnailUrl}
+                                                                alt={`${item.nickname} 分享的视频`}
+                                                                loading="lazy"
+                                                            />
+                                                            <div class="uprofile-media-video-badge" aria-hidden="true">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                                            </div>
+                                                        </button>
+                                                    ) : (
                                                         <img
                                                             src={item.thumbnailUrl}
                                                             alt={`${item.nickname} 分享的图片`}
                                                             loading="lazy"
+                                                            style="cursor: pointer;"
+                                                            onClick={() => {
+                                                                showImageViewer(viewerItems, imageIndex, 'userProfile');
+                                                            }}
                                                             onError={(e) => {
                                                                 const target = e.currentTarget;
                                                                 target.src = '/img/no_img.gif';
                                                                 target.onerror = null;
                                                             }}
                                                         />
-                                                    </PhotoView>
-                                                )}
-                                            </div>
-                                        ))}
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                </PhotoProvider>
                             </div>
                         )}
 
@@ -294,7 +289,7 @@ export function UserProfilePanel() {
                         {!profile?.stats && profile && (
                             <div class="uprofile-empty-hint">暂无发言记录</div>
                         )}
-                    </>
+                    </div>
                 )}
             </div>
         </div>

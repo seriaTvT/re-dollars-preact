@@ -39,7 +39,7 @@ async function syncFavorites() {
             // If we have more items after merge, update
             if (merged.length !== current.length || merged.some(u => !current.includes(u))) {
                 favorites.value = merged;
-                saveFavorites(merged, false);
+                saveToCloud(merged);
             }
         }
     } catch (e) {
@@ -52,7 +52,16 @@ export function addFavorite(url: string) {
     if (!list.includes(url)) {
         const newList = [url, ...list];
         favorites.value = newList;
-        saveFavorites(newList);
+        saveToCloud(newList);
+
+        // Granular backend sync
+        if (userInfo.value.id) {
+            fetch(`${BACKEND_URL}/api/favorites/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userInfo.value.id, image_url: url })
+            }).catch(() => {});
+        }
     }
 }
 
@@ -60,21 +69,20 @@ export function removeFavorite(url: string) {
     const list = favorites.peek();
     const newList = list.filter(u => u !== url);
     favorites.value = newList;
-    saveFavorites(newList);
+    saveToCloud(newList);
+
+    // Granular backend sync
+    if (userInfo.value.id) {
+        fetch(`${BACKEND_URL}/api/favorites/remove`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userInfo.value.id, image_url: url })
+        }).catch(() => {});
+    }
 }
 
-function saveFavorites(list: string[], syncBackend = true) {
-    // Save to cloud
+function saveToCloud(list: string[]) {
     const cloud = getChiiApp().cloud_settings;
     cloud.update({ [FAVORITES_KEY]: JSON.stringify(list) });
     cloud.save();
-
-    // Sync to backend
-    if (syncBackend && userInfo.value.id) {
-        fetch(`${BACKEND_URL}/api/favorites`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ uid: userInfo.value.id, data: list })
-        }).catch(() => {});
-    }
 }

@@ -20,6 +20,7 @@ import { stripQuotes } from '@/utils/bbcode';
 import { decodeHTML } from '@/utils/format';
 import { addFavorite } from '@/stores/favorites';
 import { ReactionPickerFloating } from './ReactionPickerFloating';
+import { onBmoReady } from '@/utils/bmo';
 
 export function ContextMenu() {
     const menuRef = useRef<HTMLDivElement>(null);
@@ -80,13 +81,18 @@ export function ContextMenu() {
 
     // Render BMO emojis when menu opens
     useEffect(() => {
-        if (isContextMenuOpen.value && menuRef.current) {
-            setTimeout(() => {
+        if (!isContextMenuOpen.value) return;
+
+        const renderBmo = () => {
+            requestAnimationFrame(() => {
                 if ((window as any).Bmoji && menuRef.current) {
                     (window as any).Bmoji.renderAll(menuRef.current, { width: 24, height: 24 });
                 }
-            }, 0);
-        }
+            });
+        };
+
+        renderBmo();
+        return onBmoReady(renderBmo);
     }, [isContextMenuOpen.value]);
 
     const handleReaction = useCallback(async (emoji: string) => {

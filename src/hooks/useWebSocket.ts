@@ -1,154 +1,63 @@
 import { useEffect, useCallback } from 'preact/hooks';
-import { WEBSOCKET_URL } from '@/utils/constants';
-import { updateSignalMap } from '@/utils/signalMap';
+import { WEBSOCKET_URL, HEARTBEAT_INTERVAL, RECONNECT_DELAY, CONNECTION_CHECK_INTERVAL } from '@/utils/constants';
+import { wsConnected, isChatOpen } from '@/stores/chat';
+import { userInfo, settings } from '@/stores/user';
 import {
-    wsConnected,
-    onlineUsers,
-    onlineCount,
-    typingUsers,
-    addMessage,
-    updateMessage,
-    deleteMessage,
-    getMessageById,
-    isChatOpen,
-    updateConversationLastMessage,
-    addMessagesBatch,
-    messageIds,
-    messageMap,
-    unreadWhileScrolled,
-    isAtBottom,
-    timelineIsLive,
-    showScrollBottomBtn,
-    markSentMessageAsRead
-} from '@/stores/chat';
-
-import { getUnreadCount, fetchNewerMessages } from '@/utils/api';
-import { userInfo, settings, blockedUsers } from '@/stores/user';
-import { addNotification, markMessageAsSeenIfNotified } from '@/components/NotificationManager';
-import type { Message } from '@/types';
+    handleNewMessages,
+    handleNewPM,
+    handleNotification,
+    handleMessageDelete,
+    handleMessageEdit,
+    handleReadStateUpdate,
+    checkMissedMessages,
+} from './ws/messageHandlers';
+import {
+    syncPresenceSubscriptions as _syncPresence,
+    resetPresence,
+    handleOnlineCountUpdate,
+    handlePresenceResult,
+    handlePresenceUpdate,
+    handleTypingStart,
+    handleTypingStop,
+    sendTypingStart as _sendTypingStart,
+    sendTypingStop as _sendTypingStop,
+} from './ws/presenceHandlers';
+import { handleReactionAdd, handleReactionRemove } from './ws/reactionHandlers';
 
 let ws: WebSocket | null = null;
 let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
 let connectionCheckTimer: ReturnType<typeof setInterval> | null = null;
-let presenceSubscribed = new Set<string>();
-let syncPresenceTimer: ReturnType<typeof setTimeout> | null = null;
 let wsInitialized = false;
 
 /**
- * 标准化消息对象（与原版一致）
+ * 发送 WebSocket 消息的类型 (outgoing)
  */
-function normalizeMessage(msg: any): Message {
-    const normalized = { ...msg };
-    if (normalized.db_id) {
-        normalized.id = normalized.db_id;
-    }
-    if (msg.id && msg.db_id) {
-        normalized.bangumi_id = msg.id;
-    }
-    if (normalized.msg && !normalized.message) {
-        normalized.message = normalized.msg;
-    }
-    return normalized as Message;
-}
+type OutgoingWSMessage =
+    | { type: 'identify'; uid: string }
+    | { type: 'join'; user: { id: string; name: string; avatar: string } }
+    | { type: 'presence'; open: boolean }
+    | { type: 'presence_subscribe'; uids: string[] }
+    | { type: 'presence_unsubscribe'; uids?: string[] }
+    | { type: 'presence_query'; uids: string[] }
+    | { type: 'ping' }
+    | { type: 'ack'; ackId: string }
+    | { type: 'typing_start' }
+    | { type: 'typing_stop' }
+    | { type: 'pending_message'; tempId: string; content: string };
 
-/**
- * 收集可见消息中的用户 ID（用于订阅在线状态）
- */
-function collectUidsForPresence(): string[] {
-    const ids = messageIds.peek();
-    const recentIds = ids.slice(-150);
-    const uids = new Set<string>();
-    const map = messageMap.peek();
-
-    for (const id of recentIds) {
-        const msg = map.get(id);
-        if (msg && msg.uid) {
-            uids.add(String(msg.uid));
-        }
-    }
-
-    return Array.from(uids);
-}
-
-/**
- * 同步在线状态订阅（带防抖）
- */
-export function syncPresenceSubscriptions() {
-    if (syncPresenceTimer) {
-        clearTimeout(syncPresenceTimer);
-    }
-
-    syncPresenceTimer = setTimeout(() => {
-        syncPresenceTimer = null;
-
-        if (!ws || ws.readyState !== WebSocket.OPEN || !isChatOpen.value) {
-            if (presenceSubscribed.size > 0) {
-                sendMessage({ type: 'presence_unsubscribe' });
-                presenceSubscribed.clear();
-            }
-            return;
-        }
-
-        const want = new Set(collectUidsForPresence());
-        const toAdd = [...want].filter(u => !presenceSubscribed.has(u));
-        const toDel = [...presenceSubscribed].filter(u => !want.has(u));
-
-        if (toDel.length) {
-            sendMessage({ type: 'presence_unsubscribe', uids: toDel });
-        }
-        if (toAdd.length) {
-            sendMessage({ type: 'presence_subscribe', uids: toAdd });
-            sendMessage({ type: 'presence_query', uids: toAdd });
-        }
-
-        presenceSubscribed = want;
-    }, 120);
-}
-
-/**
- * 更新反应 UI
- */
-function updateReactionUI(messageId: number, reaction: { user_id: number | string; nickname: string; emoji: string; avatar?: string }, action: 'add' | 'remove') {
-    const msg = getMessageById(messageId);
-    if (!msg) return;
-
-    const reactions = [...(msg.reactions || [])];
-    const reactionUserId = String(reaction.user_id);
-
-    if (action === 'add') {
-        const existingIdx = reactions.findIndex(r => r.emoji === reaction.emoji && String(r.user_id) === reactionUserId);
-        if (existingIdx === -1) {
-            reactions.push({
-                emoji: reaction.emoji,
-                user_id: reaction.user_id as number,
-                nickname: reaction.nickname,
-                avatar: reaction.avatar,
-            });
-        }
-    } else {
-        const idx = reactions.findIndex(r => r.emoji === reaction.emoji && String(r.user_id) === reactionUserId);
-        if (idx !== -1) {
-            reactions.splice(idx, 1);
-        }
-    }
-
-    updateMessage(messageId, { reactions });
-
-    if (action === 'add' && String(reaction.user_id) === String(userInfo.value.id)) {
-        setTimeout(() => {
-            const el = document.querySelector(`#db-${messageId} .reaction-item[data-emoji="${reaction.emoji}"]`);
-            if (el) {
-                el.classList.add('live_selected');
-                setTimeout(() => el.classList.remove('live_selected'), 1000);
-            }
-        }, 10);
+function sendMessage(data: OutgoingWSMessage) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(data));
     }
 }
 
-/**
- * 初始化 WebSocket 连接 (由 App.tsx 在设置加载完成后调用)
- */
+function isConnected(): boolean {
+    return !!ws && ws.readyState === WebSocket.OPEN;
+}
+
+// --- Connection management ---
+
 export function initWebSocket() {
     if (wsInitialized) return;
     wsInitialized = true;
@@ -156,9 +65,6 @@ export function initWebSocket() {
     startConnectionMonitoring();
 }
 
-/**
- * 连接 WebSocket
- */
 function connectWebSocket() {
     if (ws && ws.readyState === WebSocket.OPEN) return;
     if (ws && ws.readyState === WebSocket.CONNECTING) return;
@@ -193,7 +99,7 @@ function connectWebSocket() {
 
         if (isChatOpen.value) {
             sendMessage({ type: 'presence', open: true });
-            setTimeout(syncPresenceSubscriptions, 0);
+            setTimeout(() => syncPresenceSubscriptions(), 0);
         }
     };
 
@@ -209,12 +115,8 @@ function connectWebSocket() {
     ws.onclose = () => {
         wsConnected.value = false;
         stopHeartbeat();
+        resetPresence();
 
-        onlineUsers.value = new Map();
-        typingUsers.value = new Map();
-        presenceSubscribed.clear();
-
-        // 只有在 detail 模式或聊天窗口打开时才重连
         if (settings.value.notificationType === 'detail' || isChatOpen.value) {
             scheduleReconnect();
         }
@@ -243,10 +145,10 @@ function startConnectionMonitoring() {
     if (connectionCheckTimer) return;
     connectionCheckTimer = setInterval(() => {
         const shouldBeConnected = settings.value.notificationType === 'detail' || isChatOpen.value;
-        if (shouldBeConnected && (!ws || ws.readyState !== WebSocket.OPEN)) {
+        if (shouldBeConnected && !isConnected()) {
             connectWebSocket();
         }
-    }, 10000);
+    }, CONNECTION_CHECK_INTERVAL);
 }
 
 function stopConnectionMonitoring() {
@@ -264,7 +166,7 @@ function scheduleReconnect() {
         reconnectTimer = null;
         ws = null;
         connectWebSocket();
-    }, 2000);
+    }, RECONNECT_DELAY);
 }
 
 function startHeartbeat() {
@@ -272,7 +174,7 @@ function startHeartbeat() {
     if (document.hidden) return;
     heartbeatTimer = setInterval(() => {
         sendMessage({ type: 'ping' });
-    }, 25000);
+    }, HEARTBEAT_INTERVAL);
 }
 
 function stopHeartbeat() {
@@ -282,33 +184,53 @@ function stopHeartbeat() {
     }
 }
 
-/**
- * 发送 WebSocket 消息的类型 (outgoing)
- */
-type OutgoingWSMessage =
-    | { type: 'identify'; uid: string }
-    | { type: 'join'; user: { id: string; name: string; avatar: string } }
-    | { type: 'presence'; open: boolean }
-    | { type: 'presence_subscribe'; uids: string[] }
-    | { type: 'presence_unsubscribe'; uids?: string[] }
-    | { type: 'presence_query'; uids: string[] }
-    | { type: 'ping' }
-    | { type: 'ack'; ackId: string }
-    | { type: 'typing_start' }
-    | { type: 'typing_stop' }
-    | { type: 'pending_message'; tempId: string; content: string };
+// --- Message routing ---
 
-/**
- * 发送 WebSocket 消息
- */
-function sendMessage(data: OutgoingWSMessage) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(data));
+function handleWebSocketMessage(data: any) {
+    if (data.ackId) {
+        sendMessage({ type: 'ack', ackId: data.ackId });
+    }
+
+    switch (data.type) {
+        case 'online_count_update': handleOnlineCountUpdate(data); break;
+        case 'presence_result': handlePresenceResult(data); break;
+        case 'presence_update': handlePresenceUpdate(data); break;
+        case 'typing_start': handleTypingStart(data); break;
+        case 'typing_stop': handleTypingStop(data); break;
+        case 'reaction_add': handleReactionAdd(data); break;
+        case 'reaction_remove': handleReactionRemove(data); break;
+        case 'new_messages': handleNewMessages(data); break;
+        case 'new_pm': handleNewPM(data); break;
+        case 'notification': handleNotification(data); break;
+        case 'message_delete': handleMessageDelete(data); break;
+        case 'message_edit': handleMessageEdit(data); break;
+        case 'read_state_update': handleReadStateUpdate(data); break;
+        case 'pong': break;
+    }
+}
+
+// --- Public API (re-exported for consumers) ---
+
+export function syncPresenceSubscriptions() {
+    _syncPresence(sendMessage, isConnected);
+}
+
+export function sendTypingStart() {
+    _sendTypingStart(sendMessage, isConnected);
+}
+
+export function sendTypingStop() {
+    _sendTypingStop(sendMessage, isConnected);
+}
+
+export function sendPendingMessage(tempId: string, content: string) {
+    if (isConnected()) {
+        sendMessage({ type: 'pending_message', tempId, content });
     }
 }
 
 /**
- * WebSocket hook (用于组件中获取连接状态和触发连接)
+ * WebSocket hook
  */
 export function useWebSocket() {
     const connect = useCallback(() => {
@@ -319,7 +241,6 @@ export function useWebSocket() {
         disconnectWebSocket();
     }, []);
 
-    // 页面可见性处理
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.hidden) {
@@ -330,39 +251,22 @@ export function useWebSocket() {
                 startHeartbeat();
                 setTimeout(() => {
                     const shouldConnect = isChatOpen.value || settings.value.notificationType === 'detail';
-                    if (shouldConnect && (!ws || ws.readyState !== WebSocket.OPEN)) {
+                    if (shouldConnect && !isConnected()) {
                         connectWebSocket();
                     }
-
-                    // 检查是否有漏掉的消息
-                    if (isChatOpen.value) {
-                        const ids = messageIds.value;
-                        if (ids.length > 0) {
-                            const lastId = ids[ids.length - 1];
-                            getUnreadCount(lastId, Number(userInfo.value.id)).then(async res => {
-                                if (res && res.count > 0) {
-                                    const newMessages = await fetchNewerMessages(lastId, 100);
-                                    if (newMessages.length > 0) {
-                                        addMessagesBatch(newMessages);
-                                    }
-                                }
-                            });
-                        }
-                    }
+                    checkMissedMessages();
                 }, 100);
             }
         };
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
-
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, []);
 
-    // 聊天窗口打开时连接 (如果还没连接)
     useEffect(() => {
-        if (isChatOpen.value && (!ws || ws.readyState !== WebSocket.OPEN)) {
+        if (isChatOpen.value && !isConnected()) {
             connectWebSocket();
             if (!connectionCheckTimer) {
                 startConnectionMonitoring();
@@ -371,184 +275,4 @@ export function useWebSocket() {
     }, [isChatOpen.value]);
 
     return { connect, disconnect, send: sendMessage, isConnected: wsConnected };
-}
-
-/**
- * 处理 WebSocket 消息
- */
-function handleWebSocketMessage(data: any) {
-    if (data.ackId) {
-        sendMessage({ type: 'ack', ackId: data.ackId });
-    }
-
-    switch (data.type) {
-        case 'online_count_update':
-            onlineCount.value = data.count;
-            break;
-
-        case 'presence_result':
-            if (Array.isArray(data.users)) {
-                const newOnlineUsers = new Map(onlineUsers.value);
-                let changed = false;
-                data.users.forEach(({ id, active }: { id: string; active: boolean }) => {
-                    const uid = String(id);
-                    if (active) {
-                        if (!newOnlineUsers.has(uid)) { newOnlineUsers.set(uid, true as any); changed = true; }
-                    } else {
-                        if (newOnlineUsers.has(uid)) { newOnlineUsers.delete(uid); changed = true; }
-                    }
-                });
-                if (changed) onlineUsers.value = newOnlineUsers;
-            }
-            break;
-
-        case 'presence_update': {
-            const u = data.user;
-            if (u && u.id != null) {
-                const uid = String(u.id);
-                updateSignalMap(onlineUsers, map => {
-                    u.active ? map.set(uid, true as any) : map.delete(uid);
-                });
-            }
-            break;
-        }
-
-        case 'typing_start': {
-            const typingUserId = String(data.user?.id);
-            // 忽略自己和屏蔽用户的输入状态
-            if (typingUserId === String(userInfo.value.id)) return;
-            if (blockedUsers.value.has(typingUserId)) return;
-            updateSignalMap(typingUsers, map => map.set(typingUserId, data.user.name || data.user.nickname));
-            // 10秒后自动清除输入状态（防止 typing_stop 丢失）
-            setTimeout(() => {
-                if (typingUsers.value.has(typingUserId)) {
-                    updateSignalMap(typingUsers, map => map.delete(typingUserId));
-                }
-            }, 10000);
-            break;
-        }
-
-        case 'typing_stop':
-            updateSignalMap(typingUsers, map => map.delete(String(data.user?.id)));
-            break;
-
-        case 'reaction_add':
-            updateReactionUI(data.payload.message_id, data.payload.reaction, 'add');
-            break;
-
-        case 'reaction_remove': {
-            const { message_id, user_id, emoji, nickname } = data.payload;
-            updateReactionUI(message_id, { user_id, nickname: nickname || '', emoji }, 'remove');
-            break;
-        }
-
-        case 'new_messages': {
-            const payload = Array.isArray(data.payload) ? data.payload : [];
-            if (!payload.length) break;
-
-            // 过滤屏蔽用户的消息
-            const filteredPayload = payload.filter(
-                (msg: any) => !blockedUsers.value.has(String(msg.uid))
-            );
-            if (!filteredPayload.length) break;
-
-            const lastMsg = filteredPayload[filteredPayload.length - 1];
-            updateConversationLastMessage(
-                'dollars',
-                lastMsg.msg || lastMsg.message || '',
-                lastMsg.timestamp
-            );
-
-            let newUnreadCount = 0;
-            const currentUserId = String(userInfo.value.id);
-
-            for (const msg of filteredPayload) {
-                const normalizedMsg = normalizeMessage(msg);
-                if (!getMessageById(normalizedMsg.id)) {
-                    // Pass tempId if server provided it (for optimistic message matching)
-                    const tempId = msg.tempId as string | undefined;
-                    addMessage(normalizedMsg, tempId);
-
-                    // 如果是自己发送的消息，自动标记为已读
-                    if (String(normalizedMsg.uid) === currentUserId) {
-                        markSentMessageAsRead(normalizedMsg.id);
-                    } else {
-                        newUnreadCount++;
-                    }
-                }
-            }
-
-            if (newUnreadCount > 0 && timelineIsLive.value && !isAtBottom.value) {
-                unreadWhileScrolled.value += newUnreadCount;
-                showScrollBottomBtn.value = true;
-            }
-            break;
-        }
-
-        case 'new_pm': {
-            const payload = data.payload;
-            if (!payload) break;
-            // 过滤屏蔽用户的私信
-            if (blockedUsers.value.has(String(payload.uid))) break;
-            const normalizedMsg = normalizeMessage(payload);
-            if (!getMessageById(normalizedMsg.id)) {
-                addMessage(normalizedMsg);
-            }
-            break;
-        }
-
-        case 'notification': {
-            const n = data.payload;
-            addNotification(n);
-
-            if (isChatOpen.value && unreadWhileScrolled.value === 0) {
-                const mid = Number(n.message_id || n.message?.id);
-                if (mid) {
-                    setTimeout(() => markMessageAsSeenIfNotified(mid), 100);
-                }
-            }
-            break;
-        }
-
-        case 'message_delete': {
-            const { id } = data.payload;
-            deleteMessage(Number(id));
-            break;
-        }
-
-        case 'message_edit': {
-            const fullMsg = data.payload;
-            updateMessage(fullMsg.id, normalizeMessage(fullMsg));
-            break;
-        }
-
-        case 'pong':
-            break;
-    }
-}
-
-/**
- * 发送输入状态
- */
-export function sendTypingStart() {
-    if (ws && ws.readyState === WebSocket.OPEN && settings.value.sharePresence) {
-        sendMessage({ type: 'typing_start' });
-    }
-}
-
-export function sendTypingStop() {
-    if (ws && ws.readyState === WebSocket.OPEN && settings.value.sharePresence) {
-        sendMessage({ type: 'typing_stop' });
-    }
-}
-
-/**
- * 发送待确认消息信息到后端（用于服务端匹配）
- * @param tempId - 临时消息 ID (stableKey)
- * @param content - 消息内容
- */
-export function sendPendingMessage(tempId: string, content: string) {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        sendMessage({ type: 'pending_message', tempId, content });
-    }
 }

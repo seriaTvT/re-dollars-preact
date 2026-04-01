@@ -11,6 +11,9 @@ import { FloatingUI } from './FloatingUI';
 import { Sidebar } from './Sidebar';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { loadWindowPosition, saveWindowPosition } from '@/utils/windowState';
+import { onBmoReady } from '@/utils/bmo';
+
+const BMO_RENDER_OPTIONS = { width: 21, height: 21 };
 
 interface ChatWindowProps {
     skipEntryAnimation?: boolean;
@@ -301,21 +304,30 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
 
     // BMO 观察器 - 自动渲染新增的 .bmo 元素
     useEffect(() => {
-        const bmoji = (window as any).Bmoji;
         const container = windowRef.current;
-        if (!bmoji || !container) return;
+        if (!container) return;
+        let hasObserved = false;
 
-        // 使用官方 observe API 自动处理新增的 .bmo 元素
-        if (typeof bmoji.observe === 'function') {
-            bmoji.observe(container, { width: 21, height: 21 });
-        }
-        // 初始渲染已存在的元素
-        if (typeof bmoji.renderAll === 'function') {
-            bmoji.renderAll(container, { width: 21, height: 21 });
-        }
+        const renderBmo = () => {
+            const bmoji = (window as any).Bmoji;
+            if (!bmoji || !windowRef.current) return;
+
+            if (!hasObserved && typeof bmoji.observe === 'function') {
+                bmoji.observe(windowRef.current, BMO_RENDER_OPTIONS);
+                hasObserved = true;
+            }
+            if (typeof bmoji.renderAll === 'function') {
+                bmoji.renderAll(windowRef.current, BMO_RENDER_OPTIONS);
+            }
+        };
+
+        renderBmo();
+        const disposeBmoReady = onBmoReady(renderBmo);
 
         return () => {
-            if (typeof bmoji.disconnect === 'function') {
+            disposeBmoReady();
+            const bmoji = (window as any).Bmoji;
+            if (typeof bmoji?.disconnect === 'function') {
                 bmoji.disconnect();
             }
         };

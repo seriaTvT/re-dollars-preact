@@ -15,6 +15,7 @@ import { NotificationManager, loadNotifications } from './components/Notificatio
 import { initWebSocket } from '@/hooks/useWebSocket';
 import { signal } from '@preact/signals';
 import { loadWindowState } from '@/utils/windowState';
+import { ensureBmoji } from '@/utils/bmo';
 
 // 标记设置是否已加载完成
 export const settingsLoaded = signal(false);
@@ -70,14 +71,7 @@ export function App() {
         const dispose = isChatOpen.subscribe((isOpen) => {
             if (isOpen && !hasInitializedRef.current) {
                 hasInitializedRef.current = true;
-
-                // 加载 BMO 表情库 (确保 BMO 表情能在聊天中渲染)
-                if (typeof (window as any).CHOBITS_VER !== 'undefined') {
-                    const bmoScript = document.createElement('script');
-                    bmoScript.src = `/js/lib/bmo/bmo.js?${(window as any).CHOBITS_VER}`;
-                    document.head.appendChild(bmoScript);
-                }
-
+                ensureBmoji();
                 initFavorites();
             }
         });

@@ -1,3 +1,22 @@
+// Re-export shared types
+export type {
+    MessageBase,
+    Reaction,
+    NotificationBase,
+    ImageMeta,
+    LinkPreview,
+    ReplyDetails,
+} from '../../../shared/types';
+
+import type {
+    MessageBase,
+    NotificationBase,
+    Reaction,
+    ImageMeta,
+    LinkPreview,
+    ReplyDetails,
+} from '../../../shared/types';
+
 // 会话类型
 export interface Conversation {
     id: string;
@@ -9,16 +28,10 @@ export interface Conversation {
     unreadCount: number;
 }
 
-// 消息类型
-export interface Message {
+// 消息类型 (extends shared MessageBase with frontend-specific fields)
+export interface Message extends MessageBase {
     id: number;
-    uid: number;
     bangumi_id?: number;
-    nickname: string;
-    avatar: string;
-    message: string;
-    timestamp: number;
-    color?: string;
     reply_to_id?: number;
     reply_details?: ReplyDetails;
     reactions?: Reaction[];
@@ -30,32 +43,6 @@ export interface Message {
     stableKey?: string;
     /** Message sending state for optimistic updates */
     state?: 'sending' | 'sent' | 'failed';
-}
-
-export interface ReplyDetails {
-    uid: number;
-    nickname: string;
-    avatar: string;
-    content: string;
-}
-
-export interface Reaction {
-    emoji: string;
-    user_id: number;
-    nickname: string;
-    avatar?: string;
-}
-
-export interface ImageMeta {
-    width: number;
-    height: number;
-}
-
-export interface LinkPreview {
-    title: string;
-    description?: string;
-    image?: string;
-    url: string;
 }
 
 // 用户资料（ProfileCard / UserProfilePanel 共用）
@@ -84,6 +71,14 @@ export interface UserInfo {
     formhash: string;
 }
 
+export interface ImageViewerItem {
+    src: string;
+    messageId?: number;
+    nickname?: string;
+    avatar?: string;
+    timestamp?: number;
+}
+
 // 设置类型
 export interface Settings {
     showCard: boolean;
@@ -98,11 +93,8 @@ export interface Settings {
     glassBlur: boolean;
 }
 
-// 通知类型
-export interface Notification {
-    id: number;
-    type: 'reply' | 'mention';
-    message_id: number;
+// 通知类型 (extends shared NotificationBase with frontend-specific fields)
+export interface Notification extends NotificationBase {
     message?: Message;
     content?: string;
     nickname?: string;

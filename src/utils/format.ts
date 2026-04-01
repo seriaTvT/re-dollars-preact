@@ -136,14 +136,8 @@ export const getThumbnailUrl = (url: string): string => {
     }
 };
 
-
-
 export const generateReactionTooltip = (users: Array<{ id?: number | string; user_id?: number | string; nickname: string }>): string => {
-    if (!users || users.length === 0) return '';
-    return users.map(u => {
-        // API returns 'user_id' typically, but check both.
-        // Also ensure we handle 0 (system user) correctly though unlikely in reactions.
-        const id = (u.user_id !== undefined && u.user_id !== null) ? u.user_id : u.id;
-        return `<a href="/user/${id}" target="_blank" class="dollars-tooltip-link">${escapeHTML(u.nickname)}</a>`;
-    }).join('、');
+    return users.map(({ id, user_id, nickname }) =>
+        `<a href="/user/${user_id ?? id}" target="_blank" class="dollars-tooltip-link">${escapeHTML(nickname)}</a>`
+    ).join('、');
 };

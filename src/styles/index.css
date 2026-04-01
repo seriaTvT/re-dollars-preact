@@ -480,6 +480,7 @@ html[data-theme="dark"] #dollars-chat-root[data-bg-mode="lines"] #dollars-main-c
   background-color: transparent !important;
   -webkit-mask-image: none !important;
   mask-image: none !important;
+  opacity: 0.25;
 }
 
 html[data-theme="dark"] #dollars-chat-root[data-bg-mode="tint"] #dollars-main-chat::before {
@@ -493,17 +494,8 @@ html[data-theme="dark"] #dollars-chat-root[data-bg-mode="tint"] #dollars-main-ch
   background-position: center, center;
   background-size: 400px, cover;
   background-blend-mode: overlay, normal;
-
   -webkit-mask-image: none;
   mask-image: none;
-}
-
-
-html[data-theme="dark"] #dollars-chat-root[data-bg-mode="lines"] #dollars-main-chat::before {
-  opacity: 0.25;
-}
-
-html[data-theme="dark"] #dollars-chat-root[data-bg-mode="tint"] #dollars-main-chat::before {
   opacity: 0.3;
 }
 
@@ -569,6 +561,8 @@ html[data-theme="dark"] .chat-header {
   display: flex;
   align-items: center;
   padding-left: 5px;
+  gap: 4px;
+  margin-right: 8px;
 }
 
 #dollars-chat-window.is-narrow .chat-header-left-pane {
@@ -731,186 +725,6 @@ html[data-theme="dark"] .chat-header .header-btn:hover {
   transition: opacity 0.05s ease;
 }
 
-/* =========================================
-   Message Skeleton Loading Animation
-   ========================================= */
-.message-skeleton-container {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  gap: 14px;
-  position: absolute;
-  top: 50px;
-  left: 0;
-  right: 0;
-  /* Leave space for chat input area */
-  bottom: 80px;
-  z-index: 10;
-  pointer-events: none;
-  /* Clip excess skeletons that don't fit */
-  overflow: hidden;
-  animation: skeleton-fade-in 0.3s ease-out;
-  /* Gradient fade at bottom to avoid abrupt cutoff */
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
-}
-
-@keyframes skeleton-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-/* Smooth fade-out when loading completes */
-.message-skeleton-container.fading-out {
-  animation: skeleton-fade-out 0.3s ease-out forwards;
-}
-
-@keyframes skeleton-fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-.message-skeleton {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  animation: skeleton-fade-enter 0.4s ease-out backwards;
-}
-
-.message-skeleton.self {
-  flex-direction: row-reverse;
-}
-
-@keyframes skeleton-fade-enter {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-/* 头像骨架 */
-.skeleton-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background-color: color-mix(in srgb, var(--primary-color), var(--dollars-bg) 85%);
-}
-
-html[data-theme="dark"] .skeleton-avatar {
-  background-color: rgba(255, 255, 255, 0.12);
-}
-
-/* 消息内容区域 */
-.skeleton-content {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-width: 70%;
-}
-
-.message-skeleton.self .skeleton-content {
-  align-items: flex-end;
-}
-
-
-
-/* 气泡骨架 */
-.skeleton-bubble {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 16px;
-  border-radius: 18px;
-  background-color: color-mix(in srgb, var(--primary-color), var(--dollars-bg) 90%);
-  min-width: 100px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-html[data-theme="dark"] .skeleton-bubble {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-.message-skeleton.self .skeleton-bubble {
-  background-color: color-mix(in srgb, var(--primary-color), var(--dollars-bg) 75%);
-}
-
-html[data-theme="dark"] .message-skeleton.self .skeleton-bubble {
-  background-color: color-mix(in srgb, var(--primary-color), transparent 70%);
-}
-
-/* 文本行骨架 */
-.skeleton-text {
-  height: 16px;
-  border-radius: 8px;
-  background-color: color-mix(in srgb, var(--primary-color), var(--dollars-bg) 75%);
-  min-width: 50px;
-}
-
-html[data-theme="dark"] .skeleton-text {
-  background-color: rgba(255, 255, 255, 0.12);
-}
-
-.message-skeleton.self .skeleton-text {
-  background-color: color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%);
-}
-
-html[data-theme="dark"] .message-skeleton.self .skeleton-text {
-  background-color: color-mix(in srgb, var(--primary-color), transparent 50%);
-}
-
-/* 波浪闪烁动画 */
-.skeleton-shimmer {
-  position: relative;
-  overflow: hidden;
-}
-
-.skeleton-shimmer::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.6) 50%,
-      transparent 100%);
-  background-size: 200% 100%;
-  animation: skeleton-wave 1.2s ease-in-out infinite;
-}
-
-html[data-theme="dark"] .skeleton-shimmer::after {
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      transparent 100%);
-  background-size: 200% 100%;
-}
-
-@keyframes skeleton-wave {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
-
 
 .chat-list {
   display: flex;
@@ -945,7 +759,6 @@ html[data-theme="dark"] .skeleton-shimmer::after {
   flex-direction: row-reverse;
 }
 
-.chat-message.self .msg-content,
 .chat-message.self .message-content {
   align-items: flex-end;
 }
@@ -1067,8 +880,7 @@ html[data-theme="dark"] .chat-message .avatar {
   transform: scale(0) !important;
 }
 
-.chat-message .message-content,
-.chat-message .msg-content {
+.chat-message .message-content {
   max-width: 75%;
   display: flex;
   flex-direction: column;
@@ -1274,18 +1086,6 @@ html[data-theme="dark"] .bubble-timestamp {
   margin-top: 2px;
 }
 
-.timestamp.outside-right {
-  display: block;
-  text-align: right;
-  width: 100%;
-  padding-right: 2px;
-  align-self: flex-end;
-}
-
-/* 默认隐藏外部时间戳 */
-.chat-message:not(.temp-message) .timestamp:not(.outside-right) {
-  display: none;
-}
 
 /* =========================================
    Bubble Tail (气泡尾巴)
@@ -1855,8 +1655,7 @@ html[data-theme="dark"] .chat-textarea {
   gap: 4px;
 }
 
-.action-btn,
-.dollars-icon-btn {
+.action-btn {
   flex-shrink: 0;
   width: 38px;
   height: 38px;
@@ -1873,14 +1672,12 @@ html[data-theme="dark"] .chat-textarea {
   background-position: center;
 }
 
-.action-btn:hover,
-.dollars-icon-btn:hover {
+.action-btn:hover {
   background-color: var(--dollars-glass-highlight);
   transform: scale(1.1);
 }
 
-.action-btn:active,
-.dollars-icon-btn:active {
+.action-btn:active {
   transform: scale(0.95);
 }
 
@@ -1894,13 +1691,17 @@ html[data-theme="dark"] .chat-textarea {
   height: 38px;
   border: none;
   background: var(--primary-color);
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" /><path d="M6.5 12h14.5" /></svg>');
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  transition: transform 0.2s, filter 0.2s;
+  transition: background-color .2s, filter .2s;
   box-shadow: 0 0 10px color-mix(in srgb, var(--primary-color), transparent 20%);
 }
 
@@ -2569,34 +2370,8 @@ html[data-theme=dark] #dollars-typing-indicator {
   color: #fff;
 }
 
-/* =========================================
-   Highlight Animation
-   ========================================= */
-@keyframes dollars-pulse-focus {
-  0% {
-    background-color: transparent;
-    box-shadow: 0 0 0 0 transparent;
-    transform: scale(1);
-  }
 
-  15% {
-    background-color: color-mix(in srgb, var(--primary-color), transparent 85%);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary-color), transparent 80%);
-    border-radius: 12px;
-    transform: scale(1.01);
-  }
 
-  100% {
-    background-color: transparent;
-    box-shadow: 0 0 0 0 transparent;
-    transform: scale(1);
-  }
-}
-
-.chat-message.mention-highlight {
-  animation: dollars-pulse-focus 4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  position: relative;
-}
 
 /* =========================================
    Text Mask (Spoiler)
@@ -2816,6 +2591,16 @@ html[data-theme=dark] .dollars-profile-banner::before {
 }
 
 /* ProfileCard 骨架屏 */
+@keyframes skeleton-wave {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .dollars-profile-skel {
   background: linear-gradient(90deg, var(--dollars-border) 25%, transparent 50%, var(--dollars-border) 75%);
   background-size: 200% 100%;
@@ -2869,24 +2654,6 @@ html[data-theme=dark] .dollars-profile-banner::before {
    Resize Handle & Loader (Added)
    ========================================= */
 
-/* Online Status Dot in Header */
-.online-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background-color: var(--dollars-color-online);
-  border-radius: 50%;
-  margin-right: 4px;
-}
-
-/* Chat Header Left Pane */
-.chat-header-left-pane {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-right: 8px;
-}
-
 /* =========================================
    Restored Original Button Styles
    ========================================= */
@@ -2935,22 +2702,7 @@ html[data-theme=dark] .dollars-profile-banner::before {
   display: none !important;
 }
 
-/* Send Button */
-.send-btn {
-  background-color: var(--primary-color);
-  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" /><path d="M6.5 12h14.5" /></svg>');
-  background-size: 20px;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: background-color .2s, filter .2s;
-  box-shadow: 0 0 10px color-mix(in srgb, var(--primary-color), transparent 20%);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-}
-
+/* Send Button SVG hidden (using background-image instead) */
 .send-btn svg {
   display: none !important;
 }
@@ -2976,10 +2728,6 @@ html[data-theme=dark] .dollars-profile-banner::before {
   transition: background-color .2s ease;
   border: none;
   background: transparent;
-}
-
-html[data-theme="dark"] .chat-header .header-btn:hover {
-  background-color: rgba(255, 255, 255, .08);
 }
 
 /* Back Button */
@@ -3212,11 +2960,6 @@ html[data-theme="dark"] .chat-header .header-btn:hover {
   z-index: 95;
 }
 
-/* Telegram-style: 跳转到未读消息模式 */
-#dollars-scroll-bottom-btn.mode-to-unread {
-  background-color: var(--primary-color);
-  color: #fff;
-}
 
 /* Scroll to Mention Button (like Telegram) */
 #dollars-scroll-mention-btn {
@@ -3386,14 +3129,6 @@ html[data-theme="dark"] .mention-item.active {
 /* =========================================
    Link Previews
    ========================================= */
-.dollars-link-previews {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-
 .dollars-preview-card {
   background-color: var(--dollars-bg);
   border: 1px solid var(--dollars-border);
@@ -3468,16 +3203,6 @@ html[data-theme="dark"] .mention-item.active {
   text-overflow: ellipsis;
 }
 
-.dollars-preview-card .subtitle {
-  font-size: 12px;
-  color: var(--dollars-text-secondary);
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 2px;
-}
-
 .dollars-preview-card .info {
   font-size: 12px;
   color: var(--dollars-text-secondary);
@@ -3505,130 +3230,11 @@ html[data-theme="dark"] .mention-item.active {
   gap: 5px;
 }
 
-.dollars-preview-card .rank {
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.dollars-preview-card .score,
-.dollars-preview-card .stat {
-  font-weight: 700;
-  color: var(--dollars-text);
-}
-
-.dollars-preview-card .total {
-  color: var(--dollars-text-placeholder);
-}
-
-.dollars-preview-card .rateInfo img.favicon {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-}
-
-.dollars-preview-placeholder {
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--dollars-text-secondary);
-  background-color: var(--dollars-bg);
-  border: 1px dashed var(--dollars-border);
-  border-radius: 15px;
-  padding: 8px;
-  box-sizing: border-box;
-  transition: background-color .3s;
-  min-width: 0;
-  width: 300px;
-  max-width: 100% !important;
-}
-
-.dollars-preview-placeholder.is-loading {
-  cursor: wait;
-  background: linear-gradient(-45deg, var(--dollars-bg) 25%, var(--dollars-bg-hover) 50%, var(--dollars-bg) 75%);
-  background-size: 400% 400%;
-  animation: 1.5s infinite gradient-scroll;
-}
-
-@keyframes gradient-scroll {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
 
 /* =========================================
    User Profile Panel — Keyframes
    ========================================= */
-@keyframes uprofile-dot-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.55;
-  }
-  100% {
-    transform: scale(2.8);
-    opacity: 0;
-  }
-}
-
-@keyframes uprofile-stat-num-in {
-  from {
-    opacity: 0;
-    transform: scale(0.75) translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes uprofile-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes uprofile-avatar-in {
-  from {
-    opacity: 0;
-    transform: translateY(44px) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(44px) scale(1);
-  }
-}
-
-/* uprofile-shimmer → reuses skeleton-wave (identical keyframes) */
-
 @media (prefers-reduced-motion: reduce) {
-  .uprofile-avatar,
-  .uprofile-name-section,
-  .uprofile-stats-row,
-  .uprofile-actions,
-  .uprofile-info-section,
-  .uprofile-media-section,
-  .uprofile-stat-num,
-  .uprofile-stat:nth-child(3) .uprofile-stat-num {
-    animation: none;
-  }
-
-  .uprofile-status-dot.active::after {
-    display: none;
-  }
-
   .uprofile-action-btn,
   .uprofile-action-btn:active {
     transition: none;
@@ -3672,7 +3278,7 @@ html[data-theme="dark"] .mention-item.active {
 #dollars-user-profile-panel.narrow {
   inset: 0;
   transform: translateX(100%);
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 #dollars-user-profile-panel.narrow.visible {
@@ -3694,21 +3300,20 @@ html[data-theme="dark"] .mention-item.active {
   border: 1px solid var(--dollars-border);
   box-shadow: 0 8px 40px -8px var(--dollars-shadow);
   opacity: 0;
-  transform: scale(0.96) translateY(8px);
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(4px);
+  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
   pointer-events: none;
 }
 
 #dollars-user-profile-panel.wide.visible {
   opacity: 1;
-  transform: scale(1) translateY(0);
+  transform: translateY(0);
   pointer-events: auto;
 }
 
 #dollars-user-profile-panel.wide.closing {
   opacity: 0;
-  transform: scale(0.96) translateY(8px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(4px);
   pointer-events: none;
 }
 
@@ -3768,7 +3373,6 @@ html[data-theme=dark] .uprofile-banner::before {
   z-index: 1;
   transform: translateY(44px);
   flex-shrink: 0;
-  animation: uprofile-avatar-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Scrollable content area */
@@ -3781,48 +3385,10 @@ html[data-theme=dark] .uprofile-banner::before {
   gap: 16px;
 }
 
-/* Skeleton loading */
-.uprofile-skeleton-wrap {
+.uprofile-body {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-}
-
-.uprofile-skeleton {
-  background: linear-gradient(90deg, var(--dollars-border) 25%, transparent 50%, var(--dollars-border) 75%);
-  background-size: 200% 100%;
-  animation: skeleton-wave 1.5s ease-in-out infinite;
-  border-radius: 6px;
-}
-
-.uprofile-skeleton-name {
-  width: 140px;
-  height: 22px;
-}
-
-.uprofile-skeleton-username {
-  width: 100px;
-  height: 14px;
-}
-
-.uprofile-skeleton-stats {
-  width: 100%;
-  height: 52px;
-  border-radius: 10px;
-}
-
-.uprofile-skeleton-actions {
-  width: 100%;
-  height: 40px;
-  border-radius: 10px;
-}
-
-.uprofile-skeleton-row {
-  width: 100%;
-  height: 48px;
-  border-radius: 10px;
+  gap: 16px;
 }
 
 /* Name section — centered */
@@ -3831,7 +3397,6 @@ html[data-theme=dark] .uprofile-banner::before {
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  animation: uprofile-fade-up 0.3s ease 0.1s both;
 }
 
 .uprofile-nickname {
@@ -3859,13 +3424,7 @@ html[data-theme=dark] .uprofile-banner::before {
 }
 
 .uprofile-status-dot.active::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--dollars-color-online);
-  animation: uprofile-dot-ring 2.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
-  pointer-events: none;
+  content: none;
 }
 
 .uprofile-username {
@@ -3891,7 +3450,6 @@ html[data-theme=dark] .uprofile-banner::before {
   border: 1px solid color-mix(in srgb, var(--primary-color), transparent 80%);
   border-radius: 12px;
   padding: 10px 8px;
-  animation: uprofile-fade-up 0.3s ease 0.18s both;
 }
 
 .uprofile-stat {
@@ -3909,11 +3467,6 @@ html[data-theme=dark] .uprofile-banner::before {
   line-height: 1;
   letter-spacing: -0.3px;
   display: inline-block;
-  animation: uprofile-stat-num-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
-}
-
-.uprofile-stat:nth-child(3) .uprofile-stat-num {
-  animation-delay: 0.36s;
 }
 
 .uprofile-stat-label {
@@ -3933,7 +3486,6 @@ html[data-theme=dark] .uprofile-banner::before {
 .uprofile-actions {
   display: flex;
   gap: 8px;
-  animation: uprofile-fade-up 0.3s ease 0.26s both;
 }
 
 .uprofile-action-btn {
@@ -3949,7 +3501,7 @@ html[data-theme=dark] .uprofile-banner::before {
   color: var(--dollars-text);
   font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s, border-color 0.15s, transform 0.1s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: background-color 0.14s ease-out, color 0.14s ease-out, border-color 0.14s ease-out;
   white-space: nowrap;
 }
 
@@ -3957,11 +3509,6 @@ html[data-theme=dark] .uprofile-banner::before {
   background: var(--primary-color);
   color: var(--dollars-bg);
   border-color: var(--primary-color);
-}
-
-.uprofile-action-btn:active {
-  transform: scale(0.96);
-  transition-duration: 0.05s;
 }
 
 .uprofile-action-btn:focus-visible {
@@ -3987,7 +3534,6 @@ html[data-theme=dark] .uprofile-banner::before {
   flex-direction: column;
   border-top: 1px solid var(--dollars-border);
   padding-top: 12px;
-  animation: uprofile-fade-up 0.3s ease 0.34s both;
 }
 
 .uprofile-info-row {
@@ -4040,7 +3586,6 @@ html[data-theme=dark] .uprofile-banner::before {
 .uprofile-media-section {
   border-top: 1px solid var(--dollars-border);
   padding-top: 12px;
-  animation: uprofile-fade-up 0.3s ease 0.42s both;
 }
 
 .uprofile-media-header {
@@ -4077,11 +3622,11 @@ html[data-theme=dark] .uprofile-banner::before {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.16s ease-out;
 }
 
 .uprofile-media-item:hover img {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .uprofile-media-video-btn {
@@ -4417,88 +3962,6 @@ html[data-theme=dark] .uprofile-banner::before {
   color: var(--dollars-text-secondary);
 }
 
-/* Gallery Viewer */
-#dollars-search-ui .gallery-viewer {
-  position: fixed;
-  top: 40px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  animation: dollars-fade-in 0.2s ease;
-}
-
-@keyframes dollars-fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-#dollars-search-ui .gallery-viewer-content {
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#dollars-search-ui .gallery-viewer-media {
-  width: 100%;
-  max-width: 90vw;
-  max-height: 80vh;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.gallery-viewer-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 8px 16px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-}
-
-.gallery-viewer-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-}
-
-.gallery-viewer-nickname {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.gallery-viewer-time {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-}
-
-.gallery-viewer-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-}
-
-.gallery-viewer-close:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 /* Tooltip Styles from Legacy Script */
 .dollars-tooltip {
   pointer-events: auto !important;
@@ -4656,31 +4119,6 @@ html[data-theme=dark] .uprofile-banner::before {
     opacity: 1;
     transform: scale(1) rotate(0deg);
   }
-}
-
-/* Reaction Emoji Pop Animation */
-@keyframes dollars-reaction-pop {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-
-  50% {
-    transform: scale(1.3);
-  }
-
-  70% {
-    transform: scale(0.9);
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.reaction-item.just-added {
-  animation: dollars-reaction-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* =========================================
@@ -4982,22 +4420,6 @@ html[data-theme="dark"] #dollars-chat-root .likes_grid .item {
   animation: dollars-date-slide 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Typing Indicator Dots Animation */
-@keyframes dollars-typing-dot {
-
-  0%,
-  60%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.5;
-  }
-
-  30% {
-    transform: translateY(-4px);
-    opacity: 1;
-  }
-}
-
 /* Scroll Bottom Button Bounce In */
 @keyframes dollars-btn-bounce-in {
   0% {
@@ -5019,47 +4441,13 @@ html[data-theme="dark"] #dollars-chat-root .likes_grid .item {
   animation: dollars-btn-bounce-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Input Focus Glow Animation - Removed per user request */
-/*@keyframes dollars-focus-glow {
-
-  0%,
-  100% {
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color), transparent 70%);
-  }
-
-  50% {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary-color), transparent 80%);
-  }
-}
-
-.chat-input-area:focus-within {
-  animation: dollars-focus-glow 2s ease-in-out infinite;
-}*/
 
 /* Link Preview Card Entrance */
 .dollars-preview-card {
   animation: dollars-item-slide-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Avatar Hover Effect - Removed per user request */
-/*.chat-message .avatar {
-  transition: box-shadow 0.3s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 
-.chat-message .avatar:hover {
-  transform: scale(1.08);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}*/
-
-/* Bubble Hover Lift Effect - Removed per user request */
-/*.chat-message .bubble {
-  transition: background 0.3s ease, transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.chat-message:hover .bubble {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(16, 35, 47, 0.12);
-}*/
 
 /* Quote Hover Animation */
 .chat-quote {
@@ -5280,6 +4668,16 @@ html[data-theme=dark] .un-widget-message {
 
 /* (moved to .nav-btn-badge above) */
 
+@keyframes dollars-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 /* Browse Position Separator - 上次浏览位置 bar */
 .browse-separator {
   display: block;
@@ -5432,72 +4830,4 @@ html[data-theme='dark'] #dollars-card::before {
   text-align: center;
   display: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-/* Image Viewer Override */
-.PhotoView-Portal {
-  z-index: var(--dollars-z-index-modal) !important;
-}
-
-/* =========================================
-   Gallery Photo View Overlay
-   ========================================= */
-.gallery-photo-capsule {
-  appearance: none;
-  -webkit-appearance: none;
-  font: inherit;
-  text-align: left;
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 8px 16px;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  cursor: pointer;
-  z-index: 1000;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: background-color 0.2s, transform 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  max-width: 80%;
-}
-
-.gallery-photo-capsule:hover {
-  background: rgba(0, 0, 0, 0.8);
-  transform: translateX(-50%) scale(1.02);
-}
-
-.gallery-photo-capsule:active {
-  transform: translateX(-50%) scale(0.98);
-}
-
-.capsule-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.capsule-info {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.capsule-nickname {
-  font-size: 13px;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.capsule-date {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
 }
