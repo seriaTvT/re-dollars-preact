@@ -5,6 +5,7 @@ node_modules/
 
 # Testing
 coverage/
+Bangumi-website-resources/
 
 # Production
 # dist/ is intentionally NOT ignored to allow direct installation from GitHub

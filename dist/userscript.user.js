@@ -14,57 +14,27 @@
 (function () {
   'use strict';
 
-  var n$1,l$3,u$3,t$2,i$2,r$2,o$2,e$2,f$3,c$2,s$3,a$3,p$3={},v$2=[],y$2=/acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i,w$2=Array.isArray;function d$3(n,l){for(var u in l)n[u]=l[u];return n}function g$2(n){n&&n.parentNode&&n.parentNode.removeChild(n);}function _$3(l,u,t){var i,r,o,e={};for(o in u)"key"==o?i=u[o]:"ref"==o?r=u[o]:e[o]=u[o];if(arguments.length>2&&(e.children=arguments.length>3?n$1.call(arguments,2):t),"function"==typeof l&&null!=l.defaultProps)for(o in l.defaultProps) void 0===e[o]&&(e[o]=l.defaultProps[o]);return m$1(l,e,i,r,null)}function m$1(n,t,i,r,o){var e={type:n,props:t,key:i,ref:r,__k:null,__:null,__b:0,__e:null,__c:null,constructor:void 0,__v:null==o?++u$3:o,__i:-1,__u:0};return null==o&&null!=l$3.vnode&&l$3.vnode(e),e}function k$1(n){return n.children}function x(n,l){this.props=n,this.context=l;}function S(n,l){if(null==l)return n.__?S(n.__,n.__i+1):null;for(var u;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e)return u.__e;return "function"==typeof n.type?S(n):null}function C$1(n){var l,u;if(null!=(n=n.__)&&null!=n.__c){for(n.__e=n.__c.base=null,l=0;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e){n.__e=n.__c.base=u.__e;break}return C$1(n)}}function M(n){(!n.__d&&(n.__d=true)&&i$2.push(n)&&!$$1.__r++||r$2!=l$3.debounceRendering)&&((r$2=l$3.debounceRendering)||o$2)($$1);}function $$1(){for(var n,u,t,r,o,f,c,s=1;i$2.length;)i$2.length>s&&i$2.sort(e$2),n=i$2.shift(),s=i$2.length,n.__d&&(t=void 0,r=void 0,o=(r=(u=n).__v).__e,f=[],c=[],u.__P&&((t=d$3({},r)).__v=r.__v+1,l$3.vnode&&l$3.vnode(t),O(u.__P,t,r,u.__n,u.__P.namespaceURI,32&r.__u?[o]:null,f,null==o?S(r):o,!!(32&r.__u),c),t.__v=r.__v,t.__.__k[t.__i]=t,N$1(f,t,c),r.__e=r.__=null,t.__e!=o&&C$1(t)));$$1.__r=0;}function I(n,l,u,t,i,r,o,e,f,c,s){var a,h,y,w,d,g,_,m=t&&t.__k||v$2,b=l.length;for(f=P$1(u,l,m,f,b),a=0;a<b;a++)null!=(y=u.__k[a])&&(h=-1==y.__i?p$3:m[y.__i]||p$3,y.__i=a,g=O(n,y,h,i,r,o,e,f,c,s),w=y.__e,y.ref&&h.ref!=y.ref&&(h.ref&&B$2(h.ref,null,y),s.push(y.ref,y.__c||w,y)),null==d&&null!=w&&(d=w),(_=!!(4&y.__u))||h.__k===y.__k?f=A$1(y,f,n,_):"function"==typeof y.type&&void 0!==g?f=g:w&&(f=w.nextSibling),y.__u&=-7);return u.__e=d,f}function P$1(n,l,u,t,i){var r,o,e,f,c,s=u.length,a=s,h=0;for(n.__k=new Array(i),r=0;r<i;r++)null!=(o=l[r])&&"boolean"!=typeof o&&"function"!=typeof o?("string"==typeof o||"number"==typeof o||"bigint"==typeof o||o.constructor==String?o=n.__k[r]=m$1(null,o,null,null,null):w$2(o)?o=n.__k[r]=m$1(k$1,{children:o},null,null,null):null==o.constructor&&o.__b>0?o=n.__k[r]=m$1(o.type,o.props,o.key,o.ref?o.ref:null,o.__v):n.__k[r]=o,f=r+h,o.__=n,o.__b=n.__b+1,e=null,-1!=(c=o.__i=L(o,u,f,a))&&(a--,(e=u[c])&&(e.__u|=2)),null==e||null==e.__v?(-1==c&&(i>s?h--:i<s&&h++),"function"!=typeof o.type&&(o.__u|=4)):c!=f&&(c==f-1?h--:c==f+1?h++:(c>f?h--:h++,o.__u|=4))):n.__k[r]=null;if(a)for(r=0;r<s;r++)null!=(e=u[r])&&0==(2&e.__u)&&(e.__e==t&&(t=S(e)),D$1(e,e));return t}function A$1(n,l,u,t){var i,r;if("function"==typeof n.type){for(i=n.__k,r=0;i&&r<i.length;r++)i[r]&&(i[r].__=n,l=A$1(i[r],l,u,t));return l}n.__e!=l&&(t&&(l&&n.type&&!l.parentNode&&(l=S(n)),u.insertBefore(n.__e,l||null)),l=n.__e);do{l=l&&l.nextSibling;}while(null!=l&&8==l.nodeType);return l}function H$1(n,l){return l=l||[],null==n||"boolean"==typeof n||(w$2(n)?n.some(function(n){H$1(n,l);}):l.push(n)),l}function L(n,l,u,t){var i,r,o,e=n.key,f=n.type,c=l[u],s=null!=c&&0==(2&c.__u);if(null===c&&null==e||s&&e==c.key&&f==c.type)return u;if(t>(s?1:0))for(i=u-1,r=u+1;i>=0||r<l.length;)if(null!=(c=l[o=i>=0?i--:r++])&&0==(2&c.__u)&&e==c.key&&f==c.type)return o;return  -1}function T$2(n,l,u){"-"==l[0]?n.setProperty(l,null==u?"":u):n[l]=null==u?"":"number"!=typeof u||y$2.test(l)?u:u+"px";}function j$2(n,l,u,t,i){var r,o;n:if("style"==l)if("string"==typeof u)n.style.cssText=u;else {if("string"==typeof t&&(n.style.cssText=t=""),t)for(l in t)u&&l in u||T$2(n.style,l,"");if(u)for(l in u)t&&u[l]==t[l]||T$2(n.style,l,u[l]);}else if("o"==l[0]&&"n"==l[1])r=l!=(l=l.replace(f$3,"$1")),o=l.toLowerCase(),l=o in n||"onFocusOut"==l||"onFocusIn"==l?o.slice(2):l.slice(2),n.l||(n.l={}),n.l[l+r]=u,u?t?u.u=t.u:(u.u=c$2,n.addEventListener(l,r?a$3:s$3,r)):n.removeEventListener(l,r?a$3:s$3,r);else {if("http://www.w3.org/2000/svg"==i)l=l.replace(/xlink(H|:h)/,"h").replace(/sName$/,"s");else if("width"!=l&&"height"!=l&&"href"!=l&&"list"!=l&&"form"!=l&&"tabIndex"!=l&&"download"!=l&&"rowSpan"!=l&&"colSpan"!=l&&"role"!=l&&"popover"!=l&&l in n)try{n[l]=null==u?"":u;break n}catch(n){}"function"==typeof u||(null==u||false===u&&"-"!=l[4]?n.removeAttribute(l):n.setAttribute(l,"popover"==l&&1==u?"":u));}}function F$1(n){return function(u){if(this.l){var t=this.l[u.type+n];if(null==u.t)u.t=c$2++;else if(u.t<t.u)return;return t(l$3.event?l$3.event(u):u)}}}function O(n,u,t,i,r,o,e,f,c,s){var a,h,p,v,y,_,m,b,S,C,M,$,P,A,H,L,T,j=u.type;if(null!=u.constructor)return null;128&t.__u&&(c=!!(32&t.__u),o=[f=u.__e=t.__e]),(a=l$3.__b)&&a(u);n:if("function"==typeof j)try{if(b=u.props,S="prototype"in j&&j.prototype.render,C=(a=j.contextType)&&i[a.__c],M=a?C?C.props.value:a.__:i,t.__c?m=(h=u.__c=t.__c).__=h.__E:(S?u.__c=h=new j(b,M):(u.__c=h=new x(b,M),h.constructor=j,h.render=E$2),C&&C.sub(h),h.state||(h.state={}),h.__n=i,p=h.__d=!0,h.__h=[],h._sb=[]),S&&null==h.__s&&(h.__s=h.state),S&&null!=j.getDerivedStateFromProps&&(h.__s==h.state&&(h.__s=d$3({},h.__s)),d$3(h.__s,j.getDerivedStateFromProps(b,h.__s))),v=h.props,y=h.state,h.__v=u,p)S&&null==j.getDerivedStateFromProps&&null!=h.componentWillMount&&h.componentWillMount(),S&&null!=h.componentDidMount&&h.__h.push(h.componentDidMount);else {if(S&&null==j.getDerivedStateFromProps&&b!==v&&null!=h.componentWillReceiveProps&&h.componentWillReceiveProps(b,M),u.__v==t.__v||!h.__e&&null!=h.shouldComponentUpdate&&!1===h.shouldComponentUpdate(b,h.__s,M)){for(u.__v!=t.__v&&(h.props=b,h.state=h.__s,h.__d=!1),u.__e=t.__e,u.__k=t.__k,u.__k.some(function(n){n&&(n.__=u);}),$=0;$<h._sb.length;$++)h.__h.push(h._sb[$]);h._sb=[],h.__h.length&&e.push(h);break n}null!=h.componentWillUpdate&&h.componentWillUpdate(b,h.__s,M),S&&null!=h.componentDidUpdate&&h.__h.push(function(){h.componentDidUpdate(v,y,_);});}if(h.context=M,h.props=b,h.__P=n,h.__e=!1,P=l$3.__r,A=0,S){for(h.state=h.__s,h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),H=0;H<h._sb.length;H++)h.__h.push(h._sb[H]);h._sb=[];}else do{h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),h.state=h.__s;}while(h.__d&&++A<25);h.state=h.__s,null!=h.getChildContext&&(i=d$3(d$3({},i),h.getChildContext())),S&&!p&&null!=h.getSnapshotBeforeUpdate&&(_=h.getSnapshotBeforeUpdate(v,y)),L=a,null!=a&&a.type===k$1&&null==a.key&&(L=V$1(a.props.children)),f=I(n,w$2(L)?L:[L],u,t,i,r,o,e,f,c,s),h.base=u.__e,u.__u&=-161,h.__h.length&&e.push(h),m&&(h.__E=h.__=null);}catch(n){if(u.__v=null,c||null!=o)if(n.then){for(u.__u|=c?160:128;f&&8==f.nodeType&&f.nextSibling;)f=f.nextSibling;o[o.indexOf(f)]=null,u.__e=f;}else {for(T=o.length;T--;)g$2(o[T]);z$1(u);}else u.__e=t.__e,u.__k=t.__k,n.then||z$1(u);l$3.__e(n,u,t);}else null==o&&u.__v==t.__v?(u.__k=t.__k,u.__e=t.__e):f=u.__e=q$2(t.__e,u,t,i,r,o,e,c,s);return (a=l$3.diffed)&&a(u),128&u.__u?void 0:f}function z$1(n){n&&n.__c&&(n.__c.__e=true),n&&n.__k&&n.__k.forEach(z$1);}function N$1(n,u,t){for(var i=0;i<t.length;i++)B$2(t[i],t[++i],t[++i]);l$3.__c&&l$3.__c(u,n),n.some(function(u){try{n=u.__h,u.__h=[],n.some(function(n){n.call(u);});}catch(n){l$3.__e(n,u.__v);}});}function V$1(n){return "object"!=typeof n||null==n||n.__b&&n.__b>0?n:w$2(n)?n.map(V$1):d$3({},n)}function q$2(u,t,i,r,o,e,f,c,s){var a,h,v,y,d,_,m,b=i.props||p$3,k=t.props,x=t.type;if("svg"==x?o="http://www.w3.org/2000/svg":"math"==x?o="http://www.w3.org/1998/Math/MathML":o||(o="http://www.w3.org/1999/xhtml"),null!=e)for(a=0;a<e.length;a++)if((d=e[a])&&"setAttribute"in d==!!x&&(x?d.localName==x:3==d.nodeType)){u=d,e[a]=null;break}if(null==u){if(null==x)return document.createTextNode(k);u=document.createElementNS(o,x,k.is&&k),c&&(l$3.__m&&l$3.__m(t,e),c=false),e=null;}if(null==x)b===k||c&&u.data==k||(u.data=k);else {if(e=e&&n$1.call(u.childNodes),!c&&null!=e)for(b={},a=0;a<u.attributes.length;a++)b[(d=u.attributes[a]).name]=d.value;for(a in b)if(d=b[a],"children"==a);else if("dangerouslySetInnerHTML"==a)v=d;else if(!(a in k)){if("value"==a&&"defaultValue"in k||"checked"==a&&"defaultChecked"in k)continue;j$2(u,a,null,d,o);}for(a in k)d=k[a],"children"==a?y=d:"dangerouslySetInnerHTML"==a?h=d:"value"==a?_=d:"checked"==a?m=d:c&&"function"!=typeof d||b[a]===d||j$2(u,a,d,b[a],o);if(h)c||v&&(h.__html==v.__html||h.__html==u.innerHTML)||(u.innerHTML=h.__html),t.__k=[];else if(v&&(u.innerHTML=""),I("template"==t.type?u.content:u,w$2(y)?y:[y],t,i,r,"foreignObject"==x?"http://www.w3.org/1999/xhtml":o,e,f,e?e[0]:i.__k&&S(i,0),c,s),null!=e)for(a=e.length;a--;)g$2(e[a]);c||(a="value","progress"==x&&null==_?u.removeAttribute("value"):null!=_&&(_!==u[a]||"progress"==x&&!_||"option"==x&&_!=b[a])&&j$2(u,a,_,b[a],o),a="checked",null!=m&&m!=u[a]&&j$2(u,a,m,b[a],o));}return u}function B$2(n,u,t){try{if("function"==typeof n){var i="function"==typeof n.__u;i&&n.__u(),i&&null==u||(n.__u=n(u));}else n.current=u;}catch(n){l$3.__e(n,t);}}function D$1(n,u,t){var i,r;if(l$3.unmount&&l$3.unmount(n),(i=n.ref)&&(i.current&&i.current!=n.__e||B$2(i,null,u)),null!=(i=n.__c)){if(i.componentWillUnmount)try{i.componentWillUnmount();}catch(n){l$3.__e(n,u);}i.base=i.__P=null;}if(i=n.__k)for(r=0;r<i.length;r++)i[r]&&D$1(i[r],u,t||"function"!=typeof n.type);t||g$2(n.__e),n.__c=n.__=n.__e=void 0;}function E$2(n,l,u){return this.constructor(n,u)}function G$1(u,t,i){var r,o,e,f;t==document&&(t=document.documentElement),l$3.__&&l$3.__(u,t),o=(r="function"=="undefined")?null:t.__k,e=[],f=[],O(t,u=(t).__k=_$3(k$1,null,[u]),o||p$3,p$3,t.namespaceURI,o?null:t.firstChild?n$1.call(t.childNodes):null,e,o?o.__e:t.firstChild,r,f),N$1(e,u,f);}n$1=v$2.slice,l$3={__e:function(n,l,u,t){for(var i,r,o;l=l.__;)if((i=l.__c)&&!i.__)try{if((r=i.constructor)&&null!=r.getDerivedStateFromError&&(i.setState(r.getDerivedStateFromError(n)),o=i.__d),null!=i.componentDidCatch&&(i.componentDidCatch(n,t||{}),o=i.__d),o)return i.__E=i}catch(l){n=l;}throw n}},u$3=0,t$2=function(n){return null!=n&&null==n.constructor},x.prototype.setState=function(n,l){var u;u=null!=this.__s&&this.__s!=this.state?this.__s:this.__s=d$3({},this.state),"function"==typeof n&&(n=n(d$3({},u),this.props)),n&&d$3(u,n),null!=n&&this.__v&&(l&&this._sb.push(l),M(this));},x.prototype.forceUpdate=function(n){this.__v&&(this.__e=true,n&&this.__h.push(n),M(this));},x.prototype.render=k$1,i$2=[],o$2="function"==typeof Promise?Promise.prototype.then.bind(Promise.resolve()):setTimeout,e$2=function(n,l){return n.__v.__b-l.__v.__b},$$1.__r=0,f$3=/(PointerCapture)$|Capture$/i,c$2=0,s$3=F$1(false),a$3=F$1(true);
+  var n$1,l$3,u$3,t$2,i$2,r$2,o$2,e$2,f$3,c$2,s$3,a$3,p$3={},v$2=[],y$2=/acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i,w$2=Array.isArray;function d$3(n,l){for(var u in l)n[u]=l[u];return n}function g$1(n){n&&n.parentNode&&n.parentNode.removeChild(n);}function _$3(l,u,t){var i,r,o,e={};for(o in u)"key"==o?i=u[o]:"ref"==o?r=u[o]:e[o]=u[o];if(arguments.length>2&&(e.children=arguments.length>3?n$1.call(arguments,2):t),"function"==typeof l&&null!=l.defaultProps)for(o in l.defaultProps) void 0===e[o]&&(e[o]=l.defaultProps[o]);return m$1(l,e,i,r,null)}function m$1(n,t,i,r,o){var e={type:n,props:t,key:i,ref:r,__k:null,__:null,__b:0,__e:null,__c:null,constructor:void 0,__v:null==o?++u$3:o,__i:-1,__u:0};return null==o&&null!=l$3.vnode&&l$3.vnode(e),e}function k$1(n){return n.children}function x(n,l){this.props=n,this.context=l;}function S(n,l){if(null==l)return n.__?S(n.__,n.__i+1):null;for(var u;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e)return u.__e;return "function"==typeof n.type?S(n):null}function C$1(n){var l,u;if(null!=(n=n.__)&&null!=n.__c){for(n.__e=n.__c.base=null,l=0;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e){n.__e=n.__c.base=u.__e;break}return C$1(n)}}function M(n){(!n.__d&&(n.__d=true)&&i$2.push(n)&&!$.__r++||r$2!=l$3.debounceRendering)&&((r$2=l$3.debounceRendering)||o$2)($);}function $(){for(var n,u,t,r,o,f,c,s=1;i$2.length;)i$2.length>s&&i$2.sort(e$2),n=i$2.shift(),s=i$2.length,n.__d&&(t=void 0,r=void 0,o=(r=(u=n).__v).__e,f=[],c=[],u.__P&&((t=d$3({},r)).__v=r.__v+1,l$3.vnode&&l$3.vnode(t),O(u.__P,t,r,u.__n,u.__P.namespaceURI,32&r.__u?[o]:null,f,null==o?S(r):o,!!(32&r.__u),c),t.__v=r.__v,t.__.__k[t.__i]=t,N(f,t,c),r.__e=r.__=null,t.__e!=o&&C$1(t)));$.__r=0;}function I(n,l,u,t,i,r,o,e,f,c,s){var a,h,y,w,d,g,_,m=t&&t.__k||v$2,b=l.length;for(f=P(u,l,m,f,b),a=0;a<b;a++)null!=(y=u.__k[a])&&(h=-1==y.__i?p$3:m[y.__i]||p$3,y.__i=a,g=O(n,y,h,i,r,o,e,f,c,s),w=y.__e,y.ref&&h.ref!=y.ref&&(h.ref&&B$1(h.ref,null,y),s.push(y.ref,y.__c||w,y)),null==d&&null!=w&&(d=w),(_=!!(4&y.__u))||h.__k===y.__k?f=A$1(y,f,n,_):"function"==typeof y.type&&void 0!==g?f=g:w&&(f=w.nextSibling),y.__u&=-7);return u.__e=d,f}function P(n,l,u,t,i){var r,o,e,f,c,s=u.length,a=s,h=0;for(n.__k=new Array(i),r=0;r<i;r++)null!=(o=l[r])&&"boolean"!=typeof o&&"function"!=typeof o?("string"==typeof o||"number"==typeof o||"bigint"==typeof o||o.constructor==String?o=n.__k[r]=m$1(null,o,null,null,null):w$2(o)?o=n.__k[r]=m$1(k$1,{children:o},null,null,null):null==o.constructor&&o.__b>0?o=n.__k[r]=m$1(o.type,o.props,o.key,o.ref?o.ref:null,o.__v):n.__k[r]=o,f=r+h,o.__=n,o.__b=n.__b+1,e=null,-1!=(c=o.__i=L(o,u,f,a))&&(a--,(e=u[c])&&(e.__u|=2)),null==e||null==e.__v?(-1==c&&(i>s?h--:i<s&&h++),"function"!=typeof o.type&&(o.__u|=4)):c!=f&&(c==f-1?h--:c==f+1?h++:(c>f?h--:h++,o.__u|=4))):n.__k[r]=null;if(a)for(r=0;r<s;r++)null!=(e=u[r])&&0==(2&e.__u)&&(e.__e==t&&(t=S(e)),D$1(e,e));return t}function A$1(n,l,u,t){var i,r;if("function"==typeof n.type){for(i=n.__k,r=0;i&&r<i.length;r++)i[r]&&(i[r].__=n,l=A$1(i[r],l,u,t));return l}n.__e!=l&&(t&&(l&&n.type&&!l.parentNode&&(l=S(n)),u.insertBefore(n.__e,l||null)),l=n.__e);do{l=l&&l.nextSibling;}while(null!=l&&8==l.nodeType);return l}function L(n,l,u,t){var i,r,o,e=n.key,f=n.type,c=l[u],s=null!=c&&0==(2&c.__u);if(null===c&&null==e||s&&e==c.key&&f==c.type)return u;if(t>(s?1:0))for(i=u-1,r=u+1;i>=0||r<l.length;)if(null!=(c=l[o=i>=0?i--:r++])&&0==(2&c.__u)&&e==c.key&&f==c.type)return o;return  -1}function T$1(n,l,u){"-"==l[0]?n.setProperty(l,null==u?"":u):n[l]=null==u?"":"number"!=typeof u||y$2.test(l)?u:u+"px";}function j$1(n,l,u,t,i){var r,o;n:if("style"==l)if("string"==typeof u)n.style.cssText=u;else {if("string"==typeof t&&(n.style.cssText=t=""),t)for(l in t)u&&l in u||T$1(n.style,l,"");if(u)for(l in u)t&&u[l]==t[l]||T$1(n.style,l,u[l]);}else if("o"==l[0]&&"n"==l[1])r=l!=(l=l.replace(f$3,"$1")),o=l.toLowerCase(),l=o in n||"onFocusOut"==l||"onFocusIn"==l?o.slice(2):l.slice(2),n.l||(n.l={}),n.l[l+r]=u,u?t?u.u=t.u:(u.u=c$2,n.addEventListener(l,r?a$3:s$3,r)):n.removeEventListener(l,r?a$3:s$3,r);else {if("http://www.w3.org/2000/svg"==i)l=l.replace(/xlink(H|:h)/,"h").replace(/sName$/,"s");else if("width"!=l&&"height"!=l&&"href"!=l&&"list"!=l&&"form"!=l&&"tabIndex"!=l&&"download"!=l&&"rowSpan"!=l&&"colSpan"!=l&&"role"!=l&&"popover"!=l&&l in n)try{n[l]=null==u?"":u;break n}catch(n){}"function"==typeof u||(null==u||false===u&&"-"!=l[4]?n.removeAttribute(l):n.setAttribute(l,"popover"==l&&1==u?"":u));}}function F(n){return function(u){if(this.l){var t=this.l[u.type+n];if(null==u.t)u.t=c$2++;else if(u.t<t.u)return;return t(l$3.event?l$3.event(u):u)}}}function O(n,u,t,i,r,o,e,f,c,s){var a,h,p,v,y,_,m,b,S,C,M,$,P,A,H,L,T,j=u.type;if(null!=u.constructor)return null;128&t.__u&&(c=!!(32&t.__u),o=[f=u.__e=t.__e]),(a=l$3.__b)&&a(u);n:if("function"==typeof j)try{if(b=u.props,S="prototype"in j&&j.prototype.render,C=(a=j.contextType)&&i[a.__c],M=a?C?C.props.value:a.__:i,t.__c?m=(h=u.__c=t.__c).__=h.__E:(S?u.__c=h=new j(b,M):(u.__c=h=new x(b,M),h.constructor=j,h.render=E$1),C&&C.sub(h),h.state||(h.state={}),h.__n=i,p=h.__d=!0,h.__h=[],h._sb=[]),S&&null==h.__s&&(h.__s=h.state),S&&null!=j.getDerivedStateFromProps&&(h.__s==h.state&&(h.__s=d$3({},h.__s)),d$3(h.__s,j.getDerivedStateFromProps(b,h.__s))),v=h.props,y=h.state,h.__v=u,p)S&&null==j.getDerivedStateFromProps&&null!=h.componentWillMount&&h.componentWillMount(),S&&null!=h.componentDidMount&&h.__h.push(h.componentDidMount);else {if(S&&null==j.getDerivedStateFromProps&&b!==v&&null!=h.componentWillReceiveProps&&h.componentWillReceiveProps(b,M),u.__v==t.__v||!h.__e&&null!=h.shouldComponentUpdate&&!1===h.shouldComponentUpdate(b,h.__s,M)){for(u.__v!=t.__v&&(h.props=b,h.state=h.__s,h.__d=!1),u.__e=t.__e,u.__k=t.__k,u.__k.some(function(n){n&&(n.__=u);}),$=0;$<h._sb.length;$++)h.__h.push(h._sb[$]);h._sb=[],h.__h.length&&e.push(h);break n}null!=h.componentWillUpdate&&h.componentWillUpdate(b,h.__s,M),S&&null!=h.componentDidUpdate&&h.__h.push(function(){h.componentDidUpdate(v,y,_);});}if(h.context=M,h.props=b,h.__P=n,h.__e=!1,P=l$3.__r,A=0,S){for(h.state=h.__s,h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),H=0;H<h._sb.length;H++)h.__h.push(h._sb[H]);h._sb=[];}else do{h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),h.state=h.__s;}while(h.__d&&++A<25);h.state=h.__s,null!=h.getChildContext&&(i=d$3(d$3({},i),h.getChildContext())),S&&!p&&null!=h.getSnapshotBeforeUpdate&&(_=h.getSnapshotBeforeUpdate(v,y)),L=a,null!=a&&a.type===k$1&&null==a.key&&(L=V(a.props.children)),f=I(n,w$2(L)?L:[L],u,t,i,r,o,e,f,c,s),h.base=u.__e,u.__u&=-161,h.__h.length&&e.push(h),m&&(h.__E=h.__=null);}catch(n){if(u.__v=null,c||null!=o)if(n.then){for(u.__u|=c?160:128;f&&8==f.nodeType&&f.nextSibling;)f=f.nextSibling;o[o.indexOf(f)]=null,u.__e=f;}else {for(T=o.length;T--;)g$1(o[T]);z$1(u);}else u.__e=t.__e,u.__k=t.__k,n.then||z$1(u);l$3.__e(n,u,t);}else null==o&&u.__v==t.__v?(u.__k=t.__k,u.__e=t.__e):f=u.__e=q$1(t.__e,u,t,i,r,o,e,c,s);return (a=l$3.diffed)&&a(u),128&u.__u?void 0:f}function z$1(n){n&&n.__c&&(n.__c.__e=true),n&&n.__k&&n.__k.forEach(z$1);}function N(n,u,t){for(var i=0;i<t.length;i++)B$1(t[i],t[++i],t[++i]);l$3.__c&&l$3.__c(u,n),n.some(function(u){try{n=u.__h,u.__h=[],n.some(function(n){n.call(u);});}catch(n){l$3.__e(n,u.__v);}});}function V(n){return "object"!=typeof n||null==n||n.__b&&n.__b>0?n:w$2(n)?n.map(V):d$3({},n)}function q$1(u,t,i,r,o,e,f,c,s){var a,h,v,y,d,_,m,b=i.props||p$3,k=t.props,x=t.type;if("svg"==x?o="http://www.w3.org/2000/svg":"math"==x?o="http://www.w3.org/1998/Math/MathML":o||(o="http://www.w3.org/1999/xhtml"),null!=e)for(a=0;a<e.length;a++)if((d=e[a])&&"setAttribute"in d==!!x&&(x?d.localName==x:3==d.nodeType)){u=d,e[a]=null;break}if(null==u){if(null==x)return document.createTextNode(k);u=document.createElementNS(o,x,k.is&&k),c&&(l$3.__m&&l$3.__m(t,e),c=false),e=null;}if(null==x)b===k||c&&u.data==k||(u.data=k);else {if(e=e&&n$1.call(u.childNodes),!c&&null!=e)for(b={},a=0;a<u.attributes.length;a++)b[(d=u.attributes[a]).name]=d.value;for(a in b)if(d=b[a],"children"==a);else if("dangerouslySetInnerHTML"==a)v=d;else if(!(a in k)){if("value"==a&&"defaultValue"in k||"checked"==a&&"defaultChecked"in k)continue;j$1(u,a,null,d,o);}for(a in k)d=k[a],"children"==a?y=d:"dangerouslySetInnerHTML"==a?h=d:"value"==a?_=d:"checked"==a?m=d:c&&"function"!=typeof d||b[a]===d||j$1(u,a,d,b[a],o);if(h)c||v&&(h.__html==v.__html||h.__html==u.innerHTML)||(u.innerHTML=h.__html),t.__k=[];else if(v&&(u.innerHTML=""),I("template"==t.type?u.content:u,w$2(y)?y:[y],t,i,r,"foreignObject"==x?"http://www.w3.org/1999/xhtml":o,e,f,e?e[0]:i.__k&&S(i,0),c,s),null!=e)for(a=e.length;a--;)g$1(e[a]);c||(a="value","progress"==x&&null==_?u.removeAttribute("value"):null!=_&&(_!==u[a]||"progress"==x&&!_||"option"==x&&_!=b[a])&&j$1(u,a,_,b[a],o),a="checked",null!=m&&m!=u[a]&&j$1(u,a,m,b[a],o));}return u}function B$1(n,u,t){try{if("function"==typeof n){var i="function"==typeof n.__u;i&&n.__u(),i&&null==u||(n.__u=n(u));}else n.current=u;}catch(n){l$3.__e(n,t);}}function D$1(n,u,t){var i,r;if(l$3.unmount&&l$3.unmount(n),(i=n.ref)&&(i.current&&i.current!=n.__e||B$1(i,null,u)),null!=(i=n.__c)){if(i.componentWillUnmount)try{i.componentWillUnmount();}catch(n){l$3.__e(n,u);}i.base=i.__P=null;}if(i=n.__k)for(r=0;r<i.length;r++)i[r]&&D$1(i[r],u,t||"function"!=typeof n.type);t||g$1(n.__e),n.__c=n.__=n.__e=void 0;}function E$1(n,l,u){return this.constructor(n,u)}function G(u,t,i){var r,o,e,f;t==document&&(t=document.documentElement),l$3.__&&l$3.__(u,t),o=(r="function"=="undefined")?null:t.__k,e=[],f=[],O(t,u=(t).__k=_$3(k$1,null,[u]),o||p$3,p$3,t.namespaceURI,o?null:t.firstChild?n$1.call(t.childNodes):null,e,o?o.__e:t.firstChild,r,f),N(e,u,f);}n$1=v$2.slice,l$3={__e:function(n,l,u,t){for(var i,r,o;l=l.__;)if((i=l.__c)&&!i.__)try{if((r=i.constructor)&&null!=r.getDerivedStateFromError&&(i.setState(r.getDerivedStateFromError(n)),o=i.__d),null!=i.componentDidCatch&&(i.componentDidCatch(n,t||{}),o=i.__d),o)return i.__E=i}catch(l){n=l;}throw n}},u$3=0,t$2=function(n){return null!=n&&null==n.constructor},x.prototype.setState=function(n,l){var u;u=null!=this.__s&&this.__s!=this.state?this.__s:this.__s=d$3({},this.state),"function"==typeof n&&(n=n(d$3({},u),this.props)),n&&d$3(u,n),null!=n&&this.__v&&(l&&this._sb.push(l),M(this));},x.prototype.forceUpdate=function(n){this.__v&&(this.__e=true,n&&this.__h.push(n),M(this));},x.prototype.render=k$1,i$2=[],o$2="function"==typeof Promise?Promise.prototype.then.bind(Promise.resolve()):setTimeout,e$2=function(n,l){return n.__v.__b-l.__v.__b},$.__r=0,f$3=/(PointerCapture)$|Capture$/i,c$2=0,s$3=F(false),a$3=F(true);
 
   var f$2=0;function u$2(e,t,n,o,i,u){t||(t={});var a,c,p=t;if("ref"in p)for(c in p={},t)"ref"==c?a=t[c]:p[c]=t[c];var l={type:e,props:p,key:n,ref:a,__k:null,__:null,__b:0,__e:null,__c:null,constructor:void 0,__v:--f$2,__i:-1,__u:0,__source:i,__self:u};if("function"==typeof e&&(a=e.defaultProps))for(c in a) void 0===p[c]&&(p[c]=a[c]);return l$3.vnode&&l$3.vnode(l),l}
 
-  var t$1,r$1,u$1,i$1,o$1=0,f$1=[],c$1=l$3,e$1=c$1.__b,a$2=c$1.__r,v$1=c$1.diffed,l$2=c$1.__c,m=c$1.unmount,s$2=c$1.__;function p$2(n,t){c$1.__h&&c$1.__h(r$1,n,o$1||t),o$1=0;var u=r$1.__H||(r$1.__H={__:[],__h:[]});return n>=u.__.length&&u.__.push({}),u.__[n]}function d$2(n){return o$1=1,h$2(D,n)}function h$2(n,u,i){var o=p$2(t$1++,2);if(o.t=n,!o.__c&&(o.__=[i?i(u):D(void 0,u),function(n){var t=o.__N?o.__N[0]:o.__[0],r=o.t(t,n);t!==r&&(o.__N=[r,o.__[1]],o.__c.setState({}));}],o.__c=r$1,!r$1.__f)){var f=function(n,t,r){if(!o.__c.__H)return  true;var u=o.__c.__H.__.filter(function(n){return !!n.__c});if(u.every(function(n){return !n.__N}))return !c||c.call(this,n,t,r);var i=o.__c.props!==n;return u.forEach(function(n){if(n.__N){var t=n.__[0];n.__=n.__N,n.__N=void 0,t!==n.__[0]&&(i=true);}}),c&&c.call(this,n,t,r)||i};r$1.__f=true;var c=r$1.shouldComponentUpdate,e=r$1.componentWillUpdate;r$1.componentWillUpdate=function(n,t,r){if(this.__e){var u=c;c=void 0,f(n,t,r),c=u;}e&&e.call(this,n,t,r);},r$1.shouldComponentUpdate=f;}return o.__N||o.__}function y$1(n,u){var i=p$2(t$1++,3);!c$1.__s&&C(i.__H,u)&&(i.__=n,i.u=u,r$1.__H.__h.push(i));}function _$2(n,u){var i=p$2(t$1++,4);!c$1.__s&&C(i.__H,u)&&(i.__=n,i.u=u,r$1.__h.push(i));}function A(n){return o$1=5,T$1(function(){return {current:n}},[])}function T$1(n,r){var u=p$2(t$1++,7);return C(u.__H,r)&&(u.__=n(),u.__H=r,u.__h=n),u.__}function q$1(n,t){return o$1=8,T$1(function(){return n},t)}function j$1(){for(var n;n=f$1.shift();)if(n.__P&&n.__H)try{n.__H.__h.forEach(z),n.__H.__h.forEach(B$1),n.__H.__h=[];}catch(t){n.__H.__h=[],c$1.__e(t,n.__v);}}c$1.__b=function(n){r$1=null,e$1&&e$1(n);},c$1.__=function(n,t){n&&t.__k&&t.__k.__m&&(n.__m=t.__k.__m),s$2&&s$2(n,t);},c$1.__r=function(n){a$2&&a$2(n),t$1=0;var i=(r$1=n.__c).__H;i&&(u$1===r$1?(i.__h=[],r$1.__h=[],i.__.forEach(function(n){n.__N&&(n.__=n.__N),n.u=n.__N=void 0;})):(i.__h.forEach(z),i.__h.forEach(B$1),i.__h=[],t$1=0)),u$1=r$1;},c$1.diffed=function(n){v$1&&v$1(n);var t=n.__c;t&&t.__H&&(t.__H.__h.length&&(1!==f$1.push(t)&&i$1===c$1.requestAnimationFrame||((i$1=c$1.requestAnimationFrame)||w$1)(j$1)),t.__H.__.forEach(function(n){n.u&&(n.__H=n.u),n.u=void 0;})),u$1=r$1=null;},c$1.__c=function(n,t){t.some(function(n){try{n.__h.forEach(z),n.__h=n.__h.filter(function(n){return !n.__||B$1(n)});}catch(r){t.some(function(n){n.__h&&(n.__h=[]);}),t=[],c$1.__e(r,n.__v);}}),l$2&&l$2(n,t);},c$1.unmount=function(n){m&&m(n);var t,r=n.__c;r&&r.__H&&(r.__H.__.forEach(function(n){try{z(n);}catch(n){t=n;}}),r.__H=void 0,t&&c$1.__e(t,r.__v));};var k="function"==typeof requestAnimationFrame;function w$1(n){var t,r=function(){clearTimeout(u),k&&cancelAnimationFrame(t),setTimeout(n);},u=setTimeout(r,35);k&&(t=requestAnimationFrame(r));}function z(n){var t=r$1,u=n.__c;"function"==typeof u&&(n.__c=void 0,u()),r$1=t;}function B$1(n){var t=r$1;n.__c=n.__(),r$1=t;}function C(n,t){return !n||n.length!==t.length||t.some(function(t,r){return t!==n[r]})}function D(n,t){return "function"==typeof t?t(n):t}
+  var t$1,r$1,u$1,i$1,o$1=0,f$1=[],c$1=l$3,e$1=c$1.__b,a$2=c$1.__r,v$1=c$1.diffed,l$2=c$1.__c,m=c$1.unmount,s$2=c$1.__;function p$2(n,t){c$1.__h&&c$1.__h(r$1,n,o$1||t),o$1=0;var u=r$1.__H||(r$1.__H={__:[],__h:[]});return n>=u.__.length&&u.__.push({}),u.__[n]}function d$2(n){return o$1=1,h$2(D,n)}function h$2(n,u,i){var o=p$2(t$1++,2);if(o.t=n,!o.__c&&(o.__=[D(void 0,u),function(n){var t=o.__N?o.__N[0]:o.__[0],r=o.t(t,n);t!==r&&(o.__N=[r,o.__[1]],o.__c.setState({}));}],o.__c=r$1,!r$1.__f)){var f=function(n,t,r){if(!o.__c.__H)return  true;var u=o.__c.__H.__.filter(function(n){return !!n.__c});if(u.every(function(n){return !n.__N}))return !c||c.call(this,n,t,r);var i=o.__c.props!==n;return u.forEach(function(n){if(n.__N){var t=n.__[0];n.__=n.__N,n.__N=void 0,t!==n.__[0]&&(i=true);}}),c&&c.call(this,n,t,r)||i};r$1.__f=true;var c=r$1.shouldComponentUpdate,e=r$1.componentWillUpdate;r$1.componentWillUpdate=function(n,t,r){if(this.__e){var u=c;c=void 0,f(n,t,r),c=u;}e&&e.call(this,n,t,r);},r$1.shouldComponentUpdate=f;}return o.__N||o.__}function y$1(n,u){var i=p$2(t$1++,3);!c$1.__s&&C(i.__H,u)&&(i.__=n,i.u=u,r$1.__H.__h.push(i));}function _$2(n,u){var i=p$2(t$1++,4);!c$1.__s&&C(i.__H,u)&&(i.__=n,i.u=u,r$1.__h.push(i));}function A(n){return o$1=5,T(function(){return {current:n}},[])}function T(n,r){var u=p$2(t$1++,7);return C(u.__H,r)&&(u.__=n(),u.__H=r,u.__h=n),u.__}function q(n,t){return o$1=8,T(function(){return n},t)}function j(){for(var n;n=f$1.shift();)if(n.__P&&n.__H)try{n.__H.__h.forEach(z),n.__H.__h.forEach(B),n.__H.__h=[];}catch(t){n.__H.__h=[],c$1.__e(t,n.__v);}}c$1.__b=function(n){r$1=null,e$1&&e$1(n);},c$1.__=function(n,t){n&&t.__k&&t.__k.__m&&(n.__m=t.__k.__m),s$2&&s$2(n,t);},c$1.__r=function(n){a$2&&a$2(n),t$1=0;var i=(r$1=n.__c).__H;i&&(u$1===r$1?(i.__h=[],r$1.__h=[],i.__.forEach(function(n){n.__N&&(n.__=n.__N),n.u=n.__N=void 0;})):(i.__h.forEach(z),i.__h.forEach(B),i.__h=[],t$1=0)),u$1=r$1;},c$1.diffed=function(n){v$1&&v$1(n);var t=n.__c;t&&t.__H&&(t.__H.__h.length&&(1!==f$1.push(t)&&i$1===c$1.requestAnimationFrame||((i$1=c$1.requestAnimationFrame)||w$1)(j)),t.__H.__.forEach(function(n){n.u&&(n.__H=n.u),n.u=void 0;})),u$1=r$1=null;},c$1.__c=function(n,t){t.some(function(n){try{n.__h.forEach(z),n.__h=n.__h.filter(function(n){return !n.__||B(n)});}catch(r){t.some(function(n){n.__h&&(n.__h=[]);}),t=[],c$1.__e(r,n.__v);}}),l$2&&l$2(n,t);},c$1.unmount=function(n){m&&m(n);var t,r=n.__c;r&&r.__H&&(r.__H.__.forEach(function(n){try{z(n);}catch(n){t=n;}}),r.__H=void 0,t&&c$1.__e(t,r.__v));};var k="function"==typeof requestAnimationFrame;function w$1(n){var t,r=function(){clearTimeout(u),k&&cancelAnimationFrame(t),setTimeout(n);},u=setTimeout(r,35);k&&(t=requestAnimationFrame(r));}function z(n){var t=r$1,u=n.__c;"function"==typeof u&&(n.__c=void 0,u()),r$1=t;}function B(n){var t=r$1;n.__c=n.__(),r$1=t;}function C(n,t){return !n||n.length!==t.length||t.some(function(t,r){return t!==n[r]})}function D(n,t){return "function"==typeof t?t(n):t}
 
   const __vitePreload = (m)=>m();
 
-  var i=Symbol.for("preact-signals");function t(){if(!(s$1>1)){var i,t=false;while(void 0!==h$1){var r=h$1;h$1=void 0;f++;while(void 0!==r){var o=r.o;r.o=void 0;r.f&=-3;if(!(8&r.f)&&c(r))try{r.c();}catch(r){if(!t){i=r;t=true;}}r=o;}}f=0;s$1--;if(t)throw i}else s$1--;}function r(i){if(s$1>0)return i();s$1++;try{return i()}finally{t();}}var o=void 0;function n(i){var t=o;o=void 0;try{return i()}finally{o=t;}}var h$1=void 0,s$1=0,f=0,v=0;function e(i){if(void 0!==o){var t=i.n;if(void 0===t||t.t!==o){t={i:0,S:i,p:o.s,n:void 0,t:o,e:void 0,x:void 0,r:t};if(void 0!==o.s)o.s.n=t;o.s=t;i.n=t;if(32&o.f)i.S(t);return t}else if(-1===t.i){t.i=0;if(void 0!==t.n){t.n.p=t.p;if(void 0!==t.p)t.p.n=t.n;t.p=o.s;t.n=void 0;o.s.n=t;o.s=t;}return t}}}function u(i,t){this.v=i;this.i=0;this.n=void 0;this.t=void 0;this.W=null==t?void 0:t.watched;this.Z=null==t?void 0:t.unwatched;this.name=null==t?void 0:t.name;}u.prototype.brand=i;u.prototype.h=function(){return  true};u.prototype.S=function(i){var t=this,r=this.t;if(r!==i&&void 0===i.e){i.x=r;this.t=i;if(void 0!==r)r.e=i;else n(function(){var i;null==(i=t.W)||i.call(t);});}};u.prototype.U=function(i){var t=this;if(void 0!==this.t){var r=i.e,o=i.x;if(void 0!==r){r.x=o;i.e=void 0;}if(void 0!==o){o.e=r;i.x=void 0;}if(i===this.t){this.t=o;if(void 0===o)n(function(){var i;null==(i=t.Z)||i.call(t);});}}};u.prototype.subscribe=function(i){var t=this;return E$1(function(){var r=t.value,n=o;o=void 0;try{i(r);}finally{o=n;}},{name:"sub"})};u.prototype.valueOf=function(){return this.value};u.prototype.toString=function(){return this.value+""};u.prototype.toJSON=function(){return this.value};u.prototype.peek=function(){var i=o;o=void 0;try{return this.value}finally{o=i;}};Object.defineProperty(u.prototype,"value",{get:function(){var i=e(this);if(void 0!==i)i.i=this.i;return this.v},set:function(i){if(i!==this.v){if(f>100)throw new Error("Cycle detected");this.v=i;this.i++;v++;s$1++;try{for(var r=this.t;void 0!==r;r=r.x)r.t.N();}finally{t();}}}});function d$1(i,t){return new u(i,t)}function c(i){for(var t=i.s;void 0!==t;t=t.n)if(t.S.i!==t.i||!t.S.h()||t.S.i!==t.i)return  true;return  false}function a$1(i){for(var t=i.s;void 0!==t;t=t.n){var r=t.S.n;if(void 0!==r)t.r=r;t.S.n=t;t.i=-1;if(void 0===t.n){i.s=t;break}}}function l$1(i){var t=i.s,r=void 0;while(void 0!==t){var o=t.p;if(-1===t.i){t.S.U(t);if(void 0!==o)o.n=t.n;if(void 0!==t.n)t.n.p=o;}else r=t;t.S.n=t.r;if(void 0!==t.r)t.r=void 0;t=o;}i.s=r;}function y(i,t){u.call(this,void 0);this.x=i;this.s=void 0;this.g=v-1;this.f=4;this.W=null==t?void 0:t.watched;this.Z=null==t?void 0:t.unwatched;this.name=null==t?void 0:t.name;}y.prototype=new u;y.prototype.h=function(){this.f&=-3;if(1&this.f)return  false;if(32==(36&this.f))return  true;this.f&=-5;if(this.g===v)return  true;this.g=v;this.f|=1;if(this.i>0&&!c(this)){this.f&=-2;return  true}var i=o;try{a$1(this);o=this;var t=this.x();if(16&this.f||this.v!==t||0===this.i){this.v=t;this.f&=-17;this.i++;}}catch(i){this.v=i;this.f|=16;this.i++;}o=i;l$1(this);this.f&=-2;return  true};y.prototype.S=function(i){if(void 0===this.t){this.f|=36;for(var t=this.s;void 0!==t;t=t.n)t.S.S(t);}u.prototype.S.call(this,i);};y.prototype.U=function(i){if(void 0!==this.t){u.prototype.U.call(this,i);if(void 0===this.t){this.f&=-33;for(var t=this.s;void 0!==t;t=t.n)t.S.U(t);}}};y.prototype.N=function(){if(!(2&this.f)){this.f|=6;for(var i=this.t;void 0!==i;i=i.x)i.t.N();}};Object.defineProperty(y.prototype,"value",{get:function(){if(1&this.f)throw new Error("Cycle detected");var i=e(this);this.h();if(void 0!==i)i.i=this.i;if(16&this.f)throw this.v;return this.v}});function w(i,t){return new y(i,t)}function _$1(i){var r=i.u;i.u=void 0;if("function"==typeof r){s$1++;var n=o;o=void 0;try{r();}catch(t){i.f&=-2;i.f|=8;b(i);throw t}finally{o=n;t();}}}function b(i){for(var t=i.s;void 0!==t;t=t.n)t.S.U(t);i.x=void 0;i.s=void 0;_$1(i);}function g$1(i){if(o!==this)throw new Error("Out-of-order effect");l$1(this);o=i;this.f&=-2;if(8&this.f)b(this);t();}function p$1(i,t){this.x=i;this.u=void 0;this.s=void 0;this.o=void 0;this.f=32;this.name=null==t?void 0:t.name;}p$1.prototype.c=function(){var i=this.S();try{if(8&this.f)return;if(void 0===this.x)return;var t=this.x();if("function"==typeof t)this.u=t;}finally{i();}};p$1.prototype.S=function(){if(1&this.f)throw new Error("Cycle detected");this.f|=1;this.f&=-9;_$1(this);a$1(this);s$1++;var i=o;o=this;return g$1.bind(this,i)};p$1.prototype.N=function(){if(!(2&this.f)){this.f|=2;this.o=h$1;h$1=this;}};p$1.prototype.d=function(){this.f|=8;if(!(1&this.f))b(this);};p$1.prototype.dispose=function(){this.d();};function E$1(i,t){var r=new p$1(i,t);try{r.c();}catch(i){r.d();throw i}var o=r.d.bind(r);o[Symbol.dispose]=o;return o}
+  var i=Symbol.for("preact-signals");function t(){if(!(s$1>1)){var i,t=false;while(void 0!==h$1){var r=h$1;h$1=void 0;f++;while(void 0!==r){var o=r.o;r.o=void 0;r.f&=-3;if(!(8&r.f)&&c(r))try{r.c();}catch(r){if(!t){i=r;t=true;}}r=o;}}f=0;s$1--;if(t)throw i}else s$1--;}function r(i){if(s$1>0)return i();s$1++;try{return i()}finally{t();}}var o=void 0;function n(i){var t=o;o=void 0;try{return i()}finally{o=t;}}var h$1=void 0,s$1=0,f=0,v=0;function e(i){if(void 0!==o){var t=i.n;if(void 0===t||t.t!==o){t={i:0,S:i,p:o.s,n:void 0,t:o,e:void 0,x:void 0,r:t};if(void 0!==o.s)o.s.n=t;o.s=t;i.n=t;if(32&o.f)i.S(t);return t}else if(-1===t.i){t.i=0;if(void 0!==t.n){t.n.p=t.p;if(void 0!==t.p)t.p.n=t.n;t.p=o.s;t.n=void 0;o.s.n=t;o.s=t;}return t}}}function u(i,t){this.v=i;this.i=0;this.n=void 0;this.t=void 0;this.W=null==t?void 0:t.watched;this.Z=null==t?void 0:t.unwatched;this.name=null==t?void 0:t.name;}u.prototype.brand=i;u.prototype.h=function(){return  true};u.prototype.S=function(i){var t=this,r=this.t;if(r!==i&&void 0===i.e){i.x=r;this.t=i;if(void 0!==r)r.e=i;else n(function(){var i;null==(i=t.W)||i.call(t);});}};u.prototype.U=function(i){var t=this;if(void 0!==this.t){var r=i.e,o=i.x;if(void 0!==r){r.x=o;i.e=void 0;}if(void 0!==o){o.e=r;i.x=void 0;}if(i===this.t){this.t=o;if(void 0===o)n(function(){var i;null==(i=t.Z)||i.call(t);});}}};u.prototype.subscribe=function(i){var t=this;return E(function(){var r=t.value,n=o;o=void 0;try{i(r);}finally{o=n;}},{name:"sub"})};u.prototype.valueOf=function(){return this.value};u.prototype.toString=function(){return this.value+""};u.prototype.toJSON=function(){return this.value};u.prototype.peek=function(){var i=o;o=void 0;try{return this.value}finally{o=i;}};Object.defineProperty(u.prototype,"value",{get:function(){var i=e(this);if(void 0!==i)i.i=this.i;return this.v},set:function(i){if(i!==this.v){if(f>100)throw new Error("Cycle detected");this.v=i;this.i++;v++;s$1++;try{for(var r=this.t;void 0!==r;r=r.x)r.t.N();}finally{t();}}}});function d$1(i,t){return new u(i,t)}function c(i){for(var t=i.s;void 0!==t;t=t.n)if(t.S.i!==t.i||!t.S.h()||t.S.i!==t.i)return  true;return  false}function a$1(i){for(var t=i.s;void 0!==t;t=t.n){var r=t.S.n;if(void 0!==r)t.r=r;t.S.n=t;t.i=-1;if(void 0===t.n){i.s=t;break}}}function l$1(i){var t=i.s,r=void 0;while(void 0!==t){var o=t.p;if(-1===t.i){t.S.U(t);if(void 0!==o)o.n=t.n;if(void 0!==t.n)t.n.p=o;}else r=t;t.S.n=t.r;if(void 0!==t.r)t.r=void 0;t=o;}i.s=r;}function y(i,t){u.call(this,void 0);this.x=i;this.s=void 0;this.g=v-1;this.f=4;this.W=null==t?void 0:t.watched;this.Z=null==t?void 0:t.unwatched;this.name=null==t?void 0:t.name;}y.prototype=new u;y.prototype.h=function(){this.f&=-3;if(1&this.f)return  false;if(32==(36&this.f))return  true;this.f&=-5;if(this.g===v)return  true;this.g=v;this.f|=1;if(this.i>0&&!c(this)){this.f&=-2;return  true}var i=o;try{a$1(this);o=this;var t=this.x();if(16&this.f||this.v!==t||0===this.i){this.v=t;this.f&=-17;this.i++;}}catch(i){this.v=i;this.f|=16;this.i++;}o=i;l$1(this);this.f&=-2;return  true};y.prototype.S=function(i){if(void 0===this.t){this.f|=36;for(var t=this.s;void 0!==t;t=t.n)t.S.S(t);}u.prototype.S.call(this,i);};y.prototype.U=function(i){if(void 0!==this.t){u.prototype.U.call(this,i);if(void 0===this.t){this.f&=-33;for(var t=this.s;void 0!==t;t=t.n)t.S.U(t);}}};y.prototype.N=function(){if(!(2&this.f)){this.f|=6;for(var i=this.t;void 0!==i;i=i.x)i.t.N();}};Object.defineProperty(y.prototype,"value",{get:function(){if(1&this.f)throw new Error("Cycle detected");var i=e(this);this.h();if(void 0!==i)i.i=this.i;if(16&this.f)throw this.v;return this.v}});function w(i,t){return new y(i,t)}function _$1(i){var r=i.u;i.u=void 0;if("function"==typeof r){s$1++;var n=o;o=void 0;try{r();}catch(t){i.f&=-2;i.f|=8;b(i);throw t}finally{o=n;t();}}}function b(i){for(var t=i.s;void 0!==t;t=t.n)t.S.U(t);i.x=void 0;i.s=void 0;_$1(i);}function g(i){if(o!==this)throw new Error("Out-of-order effect");l$1(this);o=i;this.f&=-2;if(8&this.f)b(this);t();}function p$1(i,t){this.x=i;this.u=void 0;this.s=void 0;this.o=void 0;this.f=32;this.name=null==t?void 0:t.name;}p$1.prototype.c=function(){var i=this.S();try{if(8&this.f)return;if(void 0===this.x)return;var t=this.x();if("function"==typeof t)this.u=t;}finally{i();}};p$1.prototype.S=function(){if(1&this.f)throw new Error("Cycle detected");this.f|=1;this.f&=-9;_$1(this);a$1(this);s$1++;var i=o;o=this;return g.bind(this,i)};p$1.prototype.N=function(){if(!(2&this.f)){this.f|=2;this.o=h$1;h$1=this;}};p$1.prototype.d=function(){this.f|=8;if(!(1&this.f))b(this);};p$1.prototype.dispose=function(){this.d();};function E(i,t){var r=new p$1(i,t);try{r.c();}catch(i){r.d();throw i}var o=r.d.bind(r);o[Symbol.dispose]=o;return o}
 
-  var s;function l(i,n){l$3[i]=n.bind(null,l$3[i]||function(){});}function d(i){if(s)s();s=i&&i.S();}function h(i){var r=this,f=i.data,o=useSignal(f);o.value=f;var e=T$1(function(){var i=r.__v;while(i=i.__)if(i.__c){i.__c.__$f|=4;break}r.__$u.c=function(){var i,t=r.__$u.S(),f=e.value;t();if(t$2(f)||3!==(null==(i=r.base)?void 0:i.nodeType)){r.__$f|=1;r.setState({});}else r.base.data=f;};return w(function(){var i=o.value.value;return 0===i?0:true===i?"":i||""})},[]);return e.value}h.displayName="_st";Object.defineProperties(u.prototype,{constructor:{configurable:true,value:void 0},type:{configurable:true,value:h},props:{configurable:true,get:function(){return {data:this}}},__b:{configurable:true,value:1}});l("__b",function(i,r){if("string"==typeof r.type){var n,t=r.props;for(var f in t)if("children"!==f){var o=t[f];if(o instanceof u){if(!n)r.__np=n={};n[f]=o;t[f]=o.peek();}}}i(r);});l("__r",function(i,r){d();var n,t=r.__c;if(t){t.__$f&=-2;if(void 0===(n=t.__$u))t.__$u=n=function(i){var r;E$1(function(){r=this;});r.c=function(){t.__$f|=1;t.setState({});};return r}();}d(n);i(r);});l("__e",function(i,r,n,t){d();i(r,n,t);});l("diffed",function(i,r){d();var n;if("string"==typeof r.type&&(n=r.__e)){var t=r.__np,f=r.props;if(t){var o=n.U;if(o)for(var e in o){var u=o[e];if(void 0!==u&&!(e in t)){u.d();o[e]=void 0;}}else n.U=o={};for(var a in t){var c=o[a],s=t[a];if(void 0===c){c=p(n,a,s,f);o[a]=c;}else c.o(s,f);}}}i(r);});function p(i,r,n,t){var f=r in i&&void 0===i.ownerSVGElement,o=d$1(n);return {o:function(i,r){o.value=i;t=r;},d:E$1(function(){var n=o.value.value;if(t[r]!==n){t[r]=n;if(f)i[r]=n;else if(n)i.setAttribute(r,n);else i.removeAttribute(r);}})}}l("unmount",function(i,r){if("string"==typeof r.type){var n=r.__e;if(n){var t=n.U;if(t){n.U=void 0;for(var f in t){var o=t[f];if(o)o.d();}}}}else {var e=r.__c;if(e){var u=e.__$u;if(u){e.__$u=void 0;u.d();}}}i(r);});l("__h",function(i,r,n,t){if(t<3||9===t)r.__$f|=2;i(r,n,t);});x.prototype.shouldComponentUpdate=function(i,r){var n=this.__$u,t=n&&void 0!==n.s;for(var f in r)return  true;if(this.__f||"boolean"==typeof this.u&&true===this.u){if(!(t||2&this.__$f||4&this.__$f))return  true;if(1&this.__$f)return  true}else {if(!(t||4&this.__$f))return  true;if(3&this.__$f)return  true}for(var o in i)if("__source"!==o&&i[o]!==this.props[o])return  true;for(var e in this.props)if(!(e in i))return  true;return  false};function useSignal(i){return T$1(function(){return d$1(i)},[])}
-
-  const _ = "http://www.w3.org/2000/svg";
-  const a = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
-  const s24 = (c) => `<svg xmlns="${_}" width="24" height="24" viewBox="0 0 24 24" ${a}>${c}</svg>`;
-  const s20 = (c) => `<svg xmlns="${_}" width="20" height="20" viewBox="0 0 24 24" ${a}>${c}</svg>`;
-  const SVGIcons = {
-    spoiler: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828"/><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87"/><path d="M3 3l18 18"/>'),
-    bold: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 5h6a3.5 3.5 0 0 1 0 7h-6z"/><path d="M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7"/>'),
-    italic: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 5l6 0"/><path d="M7 19l6 0"/><path d="M14 5l-4 14"/>'),
-    underline: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 5v5a5 5 0 0 0 10 0v-5"/><path d="M5 19h14"/>'),
-    strike: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0"/><path d="M16 6.5a4 2 0 0 0 -4 -1.5h-1a3.5 3.5 0 0 0 0 7h2a3.5 3.5 0 0 1 0 7h-1.5a4 2 0 0 1 -4 -1.5"/>'),
-    code: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 8l-4 4l4 4"/><path d="M17 8l4 4l-4 4"/><path d="M14 4l-4 16"/>'),
-    link: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 15l6 -6"/><path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"/><path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"/>'),
-    check: s20('<polyline points="20 6 9 17 4 12"/>'),
-    back: s20('<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>'),
-    upload: s24('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'),
-    close: s24('<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'),
-    search: s24('<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>'),
-    send: s24('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>'),
-    emoji: s24('<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>'),
-    arrowLeft: s24('<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>'),
-    star: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>'),
-    bmoPanel: s20('<path d="M12 5l0 14"/><path d="M5 12l14 0"/>'),
-    home: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/>'),
-    history: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/>'),
-    expand: s24('<path d="M6 9l6 6l6 -6"/>'),
-    reply: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12"/><path d="M11 8l-3 3l3 3"/><path d="M16 11h-8"/>'),
-    copy: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666"/><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"/>'),
-    edit: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415"/><path d="M16 5l3 3"/>'),
-    delete: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 15l6 -6"/><path d="M11 9h4v4"/>'),
-    favorite: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 20l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.96 6.053"/><path d="M16 19h6"/><path d="M19 16v6"/>'),
-    calendar: s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/>'),
-    pen: s24('<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>')
-  };
+  var s;function l(i,n){l$3[i]=n.bind(null,l$3[i]||function(){});}function d(i){if(s)s();s=i&&i.S();}function h(i){var r=this,f=i.data,o=useSignal(f);o.value=f;var e=T(function(){var i=r.__v;while(i=i.__)if(i.__c){i.__c.__$f|=4;break}r.__$u.c=function(){var i,t=r.__$u.S(),f=e.value;t();if(t$2(f)||3!==(null==(i=r.base)?void 0:i.nodeType)){r.__$f|=1;r.setState({});}else r.base.data=f;};return w(function(){var i=o.value.value;return 0===i?0:true===i?"":i||""})},[]);return e.value}h.displayName="_st";Object.defineProperties(u.prototype,{constructor:{configurable:true,value:void 0},type:{configurable:true,value:h},props:{configurable:true,get:function(){return {data:this}}},__b:{configurable:true,value:1}});l("__b",function(i,r){if("string"==typeof r.type){var n,t=r.props;for(var f in t)if("children"!==f){var o=t[f];if(o instanceof u){if(!n)r.__np=n={};n[f]=o;t[f]=o.peek();}}}i(r);});l("__r",function(i,r){d();var n,t=r.__c;if(t){t.__$f&=-2;if(void 0===(n=t.__$u))t.__$u=n=function(i){var r;E(function(){r=this;});r.c=function(){t.__$f|=1;t.setState({});};return r}();}d(n);i(r);});l("__e",function(i,r,n,t){d();i(r,n,t);});l("diffed",function(i,r){d();var n;if("string"==typeof r.type&&(n=r.__e)){var t=r.__np,f=r.props;if(t){var o=n.U;if(o)for(var e in o){var u=o[e];if(void 0!==u&&!(e in t)){u.d();o[e]=void 0;}}else n.U=o={};for(var a in t){var c=o[a],s=t[a];if(void 0===c){c=p(n,a,s,f);o[a]=c;}else c.o(s,f);}}}i(r);});function p(i,r,n,t){var f=r in i&&void 0===i.ownerSVGElement,o=d$1(n);return {o:function(i,r){o.value=i;t=r;},d:E(function(){var n=o.value.value;if(t[r]!==n){t[r]=n;if(f)i[r]=n;else if(n)i.setAttribute(r,n);else i.removeAttribute(r);}})}}l("unmount",function(i,r){if("string"==typeof r.type){var n=r.__e;if(n){var t=n.U;if(t){n.U=void 0;for(var f in t){var o=t[f];if(o)o.d();}}}}else {var e=r.__c;if(e){var u=e.__$u;if(u){e.__$u=void 0;u.d();}}}i(r);});l("__h",function(i,r,n,t){if(t<3||9===t)r.__$f|=2;i(r,n,t);});x.prototype.shouldComponentUpdate=function(i,r){var n=this.__$u,t=n&&void 0!==n.s;for(var f in r)return  true;if(this.__f||"boolean"==typeof this.u&&true===this.u){if(!(t||2&this.__$f||4&this.__$f))return  true;if(1&this.__$f)return  true}else {if(!(t||4&this.__$f))return  true;if(3&this.__$f)return  true}for(var o in i)if("__source"!==o&&i[o]!==this.props[o])return  true;for(var e in this.props)if(!(e in i))return  true;return  false};function useSignal(i){return T(function(){return d$1(i)},[])}
 
   const BACKEND_URL = "https://bgmchat.ry.mk";
+  const UPLOAD_BASE_URL = "https://lsky.ry.mk";
   const WEBSOCKET_URL = "wss://bgmchat.ry.mk/ws";
   const BGM_APP_ID = "bgm460268b348b05f082";
   const BGM_CALLBACK_URL = `https://bgmchat.ry.mk/api/auth/callback`;
   const MESSAGE_GROUP_TIME_GAP = 300;
+  const TYPING_STOP_DELAY = 2500;
+  const DRAFT_SAVE_DELAY = 1e3;
+  const SEARCH_DEBOUNCE = 500;
   const MENTION_DEBOUNCE = 300;
   const PRESENCE_SYNC_DELAY = 120;
   const TYPING_AUTO_CLEAR = 1e4;
@@ -74,7 +44,7 @@
   const MAX_DOM_MESSAGES = 100;
   const MAX_MENTION_RESULTS = 10;
   const MAX_AVATARS_SHOWN = 5;
-  const COLLAPSE_THRESHOLD = 500;
+  const COLLAPSE_MAX_HEIGHT = 300;
   const NEW_MESSAGE_ANIMATION = 350;
   const CONTEXT_MENU_REACTIONS = [67, 63, 38, 124, 46, 106].map((n) => `(bgm${n})`);
 
@@ -1127,6 +1097,39 @@
     updateConversationItem
   }, Symbol.toStringTag, { value: 'Module' }));
 
+  const _ = "http://www.w3.org/2000/svg";
+  const a = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+  const s24 = (c) => `<svg xmlns="${_}" width="24" height="24" viewBox="0 0 24 24" ${a}>${c}</svg>`;
+  const s20 = (c) => `<svg xmlns="${_}" width="20" height="20" viewBox="0 0 24 24" ${a}>${c}</svg>`;
+  const iconSpoiler = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828"/><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87"/><path d="M3 3l18 18"/>');
+  const iconBold = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 5h6a3.5 3.5 0 0 1 0 7h-6z"/><path d="M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7"/>');
+  const iconItalic = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 5l6 0"/><path d="M7 19l6 0"/><path d="M14 5l-4 14"/>');
+  const iconUnderline = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 5v5a5 5 0 0 0 10 0v-5"/><path d="M5 19h14"/>');
+  const iconStrike = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0"/><path d="M16 6.5a4 2 0 0 0 -4 -1.5h-1a3.5 3.5 0 0 0 0 7h2a3.5 3.5 0 0 1 0 7h-1.5a4 2 0 0 1 -4 -1.5"/>');
+  const iconCode = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 8l-4 4l4 4"/><path d="M17 8l4 4l-4 4"/><path d="M14 4l-4 16"/>');
+  const iconLink = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 15l6 -6"/><path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"/><path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"/>');
+  const iconCheck = s20('<polyline points="20 6 9 17 4 12"/>');
+  const iconBack = s20('<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>');
+  const iconUpload = s24('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>');
+  const iconClose = s24('<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>');
+  const iconSearch = s24('<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>');
+  const iconSend = s24('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>');
+  const iconEmoji = s24('<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>');
+  const iconArrowLeft = s24('<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>');
+  const iconStar = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>');
+  const iconBmoPanel = s20('<path d="M12 5l0 14"/><path d="M5 12l14 0"/>');
+  const iconHome = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/>');
+  const iconHistory = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/>');
+  const iconExpand = s24('<path d="M6 9l6 6l6 -6"/>');
+  const iconReply = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12"/><path d="M11 8l-3 3l3 3"/><path d="M16 11h-8"/>');
+  const iconCopy = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666"/><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"/>');
+  const iconEdit = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415"/><path d="M16 5l3 3"/>');
+  const iconDelete = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 15l6 -6"/><path d="M11 9h4v4"/>');
+  const iconFavorite = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 20l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.96 6.053"/><path d="M16 19h6"/><path d="M19 16v6"/>');
+  const iconCalendar = s24('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/>');
+  const iconPhoto = s20('<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12"/><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5"/><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"/>');
+  const iconPen = s24('<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>');
+
   const parseMessages = (data) => Array.isArray(data) ? data : data?.messages || data?.results || [];
   async function fetchRecentMessages(limit = 50) {
     const res = await fetch(`${BACKEND_URL}/api/messages?limit=${limit}`);
@@ -1331,18 +1334,18 @@
     return { items: [], hasMore: false, total: 0 };
   }
   const UPLOAD_MAX_IMAGE_SIZE = 50 * 1024 * 1024;
-  const UPLOAD_MAX_VIDEO_SIZE = 500 * 1024 * 1024;
+  const UPLOAD_MAX_FILE_SIZE = 200 * 1024 * 1024;
   const UPLOAD_TIMEOUT_MS = 6e4;
   const UPLOAD_MAX_RETRIES = 1;
   async function uploadFile(file) {
-    const isVideo = file.type.startsWith("video/") || file.type.startsWith("audio/");
-    const maxSize = isVideo ? UPLOAD_MAX_VIDEO_SIZE : UPLOAD_MAX_IMAGE_SIZE;
+    const isImage = file.type.startsWith("image/");
+    const maxSize = isImage ? UPLOAD_MAX_IMAGE_SIZE : UPLOAD_MAX_FILE_SIZE;
     if (file.size > maxSize) {
       const maxMB = Math.round(maxSize / (1024 * 1024));
       return { status: false, error: `文件过大 (${(file.size / (1024 * 1024)).toFixed(1)}MB)，最大支持 ${maxMB}MB` };
     }
-    const fieldName = isVideo ? "video" : "image";
-    const endpoint = isVideo ? `${BACKEND_URL}/api/upload/video` : `${BACKEND_URL}/api/upload`;
+    const fieldName = isImage ? "image" : "file";
+    const endpoint = isImage ? `${UPLOAD_BASE_URL}/api/upload` : `${UPLOAD_BASE_URL}/api/upload/file`;
     let lastError = "上传失败";
     for (let attempt = 0; attempt <= UPLOAD_MAX_RETRIES; attempt++) {
       if (attempt > 0) {
@@ -1355,7 +1358,6 @@
         const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
         const res = await fetch(endpoint, {
           method: "POST",
-          headers: getAuthHeaders(),
           credentials: "include",
           body: formData,
           signal: controller.signal
@@ -1377,17 +1379,14 @@
           if (res.status >= 500) continue;
           return { status: false, error: lastError };
         }
-        if (data.status && data.imageUrl) {
-          data.url = data.imageUrl;
-        }
-        if (data.status && data.videoUrl) {
-          data.url = data.videoUrl;
+        if (data.status && !data.url) {
+          data.url = data.fileUrl || data.imageUrl || data.videoUrl;
         }
         if (data.status && data.url && !data.url.startsWith("http")) {
-          data.url = `${BACKEND_URL}${data.url}`;
+          data.url = `${UPLOAD_BASE_URL}${data.url}`;
         }
         if (!data.status) {
-          return { status: false, error: data.message || "上传处理失败" };
+          return { status: false, error: data.message || data.error || "上传处理失败" };
         }
         return data;
       } catch (e) {
@@ -1744,7 +1743,7 @@
             class: "header-btn",
             title: "返回",
             onClick: hideUserProfile,
-            dangerouslySetInnerHTML: { __html: SVGIcons.arrowLeft }
+            dangerouslySetInnerHTML: { __html: iconArrowLeft }
           }
         ) }),
         /* @__PURE__ */ u$2("div", { class: "title-wrapper", children: /* @__PURE__ */ u$2("div", { class: "header-text-column", children: /* @__PURE__ */ u$2("span", { class: "header-main-title", children: "用户资料" }) }) }),
@@ -1789,7 +1788,7 @@
             title: "返回",
             onClick: handleBack,
             style: { display: isShowingChatView ? "flex" : "none" },
-            dangerouslySetInnerHTML: { __html: SVGIcons.arrowLeft }
+            dangerouslySetInnerHTML: { __html: iconArrowLeft }
           }
         )
       ] }),
@@ -1940,8 +1939,11 @@
       const ref = this.props.ref;
       const updateRef = ref === nextProps.ref;
       if (!updateRef && ref) {
-        const r = ref;
-        r.call ? r(null) : r.current = null;
+        if (typeof ref === "function") {
+          ref(null);
+        } else if (typeof ref === "object" && "current" in ref) {
+          ref.current = null;
+        }
       }
       if (!comparer) return shallowDiffers(this.props, nextProps);
       return !comparer(this.props, nextProps) || !updateRef;
@@ -1957,6 +1959,55 @@
     return Memoed;
   }
 
+  const musumeSmileyIds = [
+    ...Array.from({ length: 96 }, (_, index) => index + 1),
+    ...Array.from({ length: 20 }, (_, index) => index + 99)
+  ];
+  const blakeSmileyIds = Array.from({ length: 118 }, (_, index) => index + 1);
+  const musumeSmileySections = [
+    {
+      name: "情绪反应",
+      ids: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 100, 106, 108, 118]
+    },
+    {
+      name: "动作道具",
+      ids: [43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 101, 102, 103, 99, 107, 112, 109, 110, 111, 113, 114, 115, 116, 117]
+    },
+    {
+      name: "日常状态",
+      ids: [77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 104, 105, 94, 95, 96]
+    },
+    {
+      name: "提示反馈",
+      ids: [1, 2, 3, 4, 5]
+    }
+  ];
+  const blakeSmileySections = [
+    musumeSmileySections[0],
+    musumeSmileySections[1],
+    {
+      name: "得分反馈",
+      ids: [97, 98]
+    },
+    musumeSmileySections[2],
+    musumeSmileySections[3]
+  ];
+  const groupedSmileySections = {
+    Musume: musumeSmileySections,
+    Blake: blakeSmileySections
+  };
+  function getRangeIds(range) {
+    if (range.ids) return range.ids;
+    if (range.start == null || range.end == null) return [];
+    return Array.from({ length: range.end - range.start + 1 }, (_, index) => range.start + index);
+  }
+  function rangeIncludesId(range, id) {
+    return getRangeIds(range).includes(id);
+  }
+  function formatSmileyCode(prefix, id, codePad) {
+    const num = codePad ? String(id).padStart(codePad, "0") : String(id);
+    return `(${prefix}${num})`;
+  }
   const smileyRanges = [
     {
       name: "TV",
@@ -1991,8 +2042,7 @@
     },
     {
       name: "Musume",
-      start: 1,
-      end: 96,
+      ids: musumeSmileyIds,
       codePrefix: "musume_",
       codePad: 2,
       tabIconId: 3,
@@ -2001,8 +2051,7 @@
     },
     {
       name: "Blake",
-      start: 1,
-      end: 98,
+      ids: blakeSmileyIds,
       codePrefix: "blake_",
       codePad: 2,
       tabIconId: 3,
@@ -2019,7 +2068,7 @@
       if (largeSmileyMatch) {
         const [, prefix, rawId] = largeSmileyMatch;
         const id2 = parseInt(rawId, 10);
-        const range3 = smileyRanges.find((r) => r.codePrefix === prefix && r.start && r.end && id2 >= r.start && id2 <= r.end);
+        const range3 = smileyRanges.find((r) => r.codePrefix === prefix && rangeIncludesId(r, id2));
         return range3?.path?.(id2) ?? null;
       }
       const bgmMatch = code.match(/\(bgm(\d+)\)/);
@@ -2033,16 +2082,92 @@
   }
   function generateSmileyCodes(groupName) {
     const range = smileyRanges.find((r) => r.name === groupName);
-    if (!range || range.start == null || range.end == null) return [];
+    if (!range) return [];
     const prefix = range.codePrefix || "bgm";
-    const codes = [];
-    for (let i = range.start; i <= range.end; i++) {
-      const num = range.codePad ? String(i).padStart(range.codePad, "0") : String(i);
-      codes.push(`(${prefix}${num})`);
-    }
-    return codes;
+    const ids = getRangeIds(range);
+    return ids.map((id) => formatSmileyCode(prefix, id, range.codePad));
   }
-  const SMILIES = smileyRanges.filter((r) => r.start && r.end && r.path);
+  function getGroupedSmileyCodes(groupName) {
+    const range = smileyRanges.find((r) => r.name === groupName);
+    const sections = groupedSmileySections[groupName];
+    if (!range || !sections) return [];
+    const prefix = range.codePrefix || "bgm";
+    return sections.map((section) => ({
+      name: section.name,
+      items: section.ids.filter((id) => rangeIncludesId(range, id)).map((id) => ({
+        id,
+        code: formatSmileyCode(prefix, id, range.codePad)
+      }))
+    })).filter((section) => section.items.length > 0);
+  }
+
+  const INLINE_TOKEN_REGEX = /\[(emoji|sticker)\]([\s\S]+?)\[\/\1\]|\(((?:musume_|blake_))(\d+)\)|\(bgm(\d+)\)|\((bmo(?:C|_)[a-zA-Z0-9_-]+)\)/gi;
+  function isValidInlineMediaUrl(src) {
+    return /^https?:\/\/[^\s<>"']+$/i.test(src.trim());
+  }
+  function isInsideHtmlTag(text, index) {
+    const before = text.slice(0, index);
+    return before.lastIndexOf("<") > before.lastIndexOf(">");
+  }
+  function parseInlineTokenMatch(match) {
+    const raw = match[0];
+    const [, customTag, customSrc, largePrefix, , , bmoCode] = match;
+    if (customTag && customSrc) {
+      if (!isValidInlineMediaUrl(customSrc)) return null;
+      const src2 = customSrc.trim();
+      return {
+        raw,
+        type: "custom-image",
+        src: src2,
+        isCommunityEmoji: src2.includes("/emojis/")
+      };
+    }
+    if (bmoCode) {
+      return {
+        raw,
+        type: "bmo",
+        code: raw
+      };
+    }
+    const src = getSmileyUrl(raw);
+    if (!src) return null;
+    return {
+      raw,
+      type: "smiley",
+      variant: largePrefix === "musume_" ? "musume" : largePrefix === "blake_" ? "blake" : "bgm",
+      src
+    };
+  }
+  function collectRenderableInlineTokenRaws(text) {
+    const tokens = [];
+    const matcher = new RegExp(INLINE_TOKEN_REGEX);
+    let match;
+    while ((match = matcher.exec(text)) !== null) {
+      const token = parseInlineTokenMatch(match);
+      if (token) {
+        tokens.push(token.raw);
+      }
+    }
+    return tokens;
+  }
+  function replaceInlineTokens(text, renderMatch, options = {}) {
+    const matcher = new RegExp(INLINE_TOKEN_REGEX);
+    const renderText = options.renderText || ((chunk) => chunk);
+    let lastIndex = 0;
+    let result = "";
+    let match;
+    while ((match = matcher.exec(text)) !== null) {
+      result += renderText(text.slice(lastIndex, match.index));
+      const raw = match[0];
+      if (options.skipInsideHtml && isInsideHtmlTag(text, match.index)) {
+        result += raw;
+      } else {
+        result += renderMatch(parseInlineTokenMatch(match), raw);
+      }
+      lastIndex = match.index + raw.length;
+    }
+    return result + renderText(text.slice(lastIndex));
+  }
 
   function normalizeBangumiUrl(url) {
     try {
@@ -2105,12 +2230,6 @@
             <div class="image-load-hint">显示图片</div>
         </div>`;
     });
-    html = html.replace(/\[(?:emoji|sticker)\]([\s\S]+?)\[\/(?:emoji|sticker)\]/gi, (m, src) => {
-      if (!/^https?:\/\/[^\s<>"']+$/i.test(src)) return escapeHTML(m);
-      const isCommunityEmoji = src.includes("/emojis/");
-      const className = isCommunityEmoji ? "smiley" : "custom-emoji";
-      return `<img src="${src}" class="${className}" alt="sticker" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer">`;
-    });
     html = html.replace(/\[audio\]([\s\S]+?)\[\/audio\]/gi, (m, src) => {
       const cleanSrc = src.replace(/<[^>]*>?/gm, "").trim();
       if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
@@ -2126,6 +2245,15 @@
         return `<a href="${cleanSrc}" target="_blank">[视频]</a>`;
       }
       return `<div class="video-player-container" style="max-width: 100%; margin: 5px 0;"><video controls preload="metadata" style="max-width: 100%; max-height: 400px; border-radius: 8px; background: #000;"><source src="${cleanSrc}" type="video/mp4"><source src="${cleanSrc}" type="video/webm">您的浏览器不支持视频播放。</video></div>`;
+    });
+    html = html.replace(/\[file=(.*?)\]([\s\S]+?)\[\/file\]/gi, (m, label, src) => {
+      const cleanSrc = src.replace(/<[^>]*>?/gm, "").trim();
+      if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
+      const name = escapeHTML((label || "").trim() || "附件");
+      if (options.isInsideQuote) {
+        return `<a href="${cleanSrc}" target="_blank">[附件] ${name}</a>`;
+      }
+      return `<a href="${cleanSrc}" target="_blank" rel="noopener noreferrer" class="chat-file-link" download="${name}">${name}</a>`;
     });
     html = html.replace(/\[img\]([\s\S]+?)\[\/img\]/gi, (m, src) => {
       const cleanSrc = src.replace(/<[^>]*>?/gm, "").trim();
@@ -2147,32 +2275,24 @@
         </div>`;
     });
     html = html.replace(/\[user=(.+?)\]([\s\S]+?)\[\/user\]/gi, '<a href="/user/$1" target="_blank" class="user-mention">@$2</a>');
-    html = html.replace(/\(((?:musume_|blake_))(\d+)\)/g, (match, prefix, p1, offset, str) => {
-      const before = str.slice(0, offset);
-      if (before.lastIndexOf("<") > before.lastIndexOf(">")) return match;
-      const num = parseInt(p1, 10);
-      if (num < 1 || num > 98) return match;
-      const folder = prefix === "blake_" ? "blake" : "musume";
-      const src = `/img/smiles/${folder}/${prefix}${String(num).padStart(2, "0")}.gif`;
-      const className = prefix === "blake_" ? "smiley-blake" : "smiley-musume";
-      return `<img src="${src}" class="smiley ${className}" alt="${match}">`;
-    });
-    html = html.replace(/\(bgm(\d+)\)/g, (match, p1, offset, str) => {
-      const before = str.slice(0, offset);
-      if (before.lastIndexOf("<") > before.lastIndexOf(">")) return match;
-      const num = parseInt(p1, 10);
-      const range = SMILIES.find((r) => num >= r.start && num <= r.end);
-      if (range && range.path) {
-        const src = range.path(num);
-        return `<img src="${src}" class="smiley" alt="${match}" width="21" height="21">`;
+    html = replaceInlineTokens(html, (token, raw) => {
+      if (!token) {
+        return raw.startsWith("[") ? escapeHTML(raw) : raw;
       }
-      return match;
-    });
-    html = html.replace(/\((bmo(?:C|_)[a-zA-Z0-9_-]+)\)/g, (match, _code, offset, str) => {
-      const before = str.slice(0, offset);
-      if (before.lastIndexOf("<") > before.lastIndexOf(">")) return match;
-      return `<span class="bmo" data-code="${match}"></span>`;
-    });
+      switch (token.type) {
+        case "custom-image": {
+          const className = token.isCommunityEmoji ? "smiley" : "custom-emoji";
+          return `<img src="${escapeHTML(token.src)}" class="${className}" alt="sticker" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer">`;
+        }
+        case "smiley": {
+          const className = token.variant === "bgm" ? "smiley" : `smiley ${token.variant === "blake" ? "smiley-blake" : "smiley-musume"}`;
+          const size = token.variant === "bgm" ? ' width="21" height="21"' : "";
+          return `<img src="${escapeHTML(token.src)}" class="${className}" alt="${escapeHTML(token.raw)}"${size}>`;
+        }
+        case "bmo":
+          return `<span class="bmo" data-code="${escapeHTML(token.code)}"></span>`;
+      }
+    }, { skipInsideHtml: true });
     html = html.replace(/\[url=([^\]]+?)\]([\s\S]+?)\[\/url\]/gi, (_, url, label) => {
       const normalizedUrl = normalizeBangumiUrl(url);
       const linkHtml = `<a href="${escapeHTML(normalizedUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
@@ -2212,7 +2332,7 @@
     return html;
   }
   function renderReplyQuote(details, replyToId) {
-    const content = stripQuotes(details.content).substring(0, 80);
+    const content = stripQuotes(details.content).replace(/\[file=.*?\].*?\[\/file\]/gi, "[附件]").substring(0, 80);
     const avatarSrc = getAvatarUrl(details.avatar, "s");
     const imageHTML = details.firstImage ? `<img src="${details.firstImage}" class="quote-thumbnail" loading="lazy">` : "";
     const avatarHTML = details.firstImage ? "" : `<img src="${avatarSrc}" class="quote-avatar" loading="lazy">`;
@@ -2228,7 +2348,7 @@
     const startXRef = A(0);
     const startYRef = A(0);
     const handledRef = A(false);
-    const start = q$1((e) => {
+    const start = q((e) => {
       if (e instanceof MouseEvent && e.button !== 0) return;
       if (e instanceof TouchEvent) {
         startXRef.current = e.touches[0].clientX;
@@ -2245,13 +2365,13 @@
         onLongPress(e);
       }, threshold);
     }, [onLongPress, threshold]);
-    const clear = q$1(() => {
+    const clear = q(() => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
       }
     }, []);
-    const move = q$1((e) => {
+    const move = q((e) => {
       if (!timerRef.current) return;
       const moveThreshold = 10;
       let x = 0, y = 0;
@@ -2266,7 +2386,7 @@
         clear();
       }
     }, [clear]);
-    const end = q$1((e) => {
+    const end = q((e) => {
       clear();
       if (isLongPressRef.current) {
         e.stopPropagation();
@@ -2283,7 +2403,7 @@
       onMouseDown: (e) => start(e),
       onMouseMove: (e) => move(e),
       onMouseUp: (e) => end(e),
-      onMouseLeave: (e) => clear(),
+      onMouseLeave: (_e) => clear(),
       onTouchStart: (e) => {
         e.stopPropagation();
         start(e);
@@ -2396,7 +2516,7 @@
   function NotificationManager() {
     y$1(() => {
     }, []);
-    const handleMarkRead = q$1(async (notif) => {
+    const handleMarkRead = q(async (notif) => {
       removeNotification(notif.id);
       if (userInfo.value.id) {
         try {
@@ -2405,7 +2525,7 @@
         }
       }
     }, []);
-    const handleView = q$1(async (notif) => {
+    const handleView = q(async (notif) => {
       handleMarkRead(notif);
       toggleChat(true);
       const messageId = notif.message_id || notif.message?.id;
@@ -2413,7 +2533,7 @@
         pendingJumpToMessage.value = messageId;
       }
     }, [handleMarkRead]);
-    const handleMarkAllRead = q$1(async () => {
+    const handleMarkAllRead = q(async () => {
       clearAllNotifications();
       if (userInfo.value.id) {
         try {
@@ -2535,7 +2655,7 @@
       isSwiping: false,
       startTime: 0
     });
-    const handleTouchStart = q$1((e) => {
+    const handleTouchStart = q((e) => {
       if (e.touches.length !== 1) return;
       if (e.target.closest(".reaction-item, button")) return;
       swipeState.current = {
@@ -2549,7 +2669,7 @@
         elementRef.current.style.transition = "none";
       }
     }, [elementRef]);
-    const handleTouchMove = q$1((e) => {
+    const handleTouchMove = q((e) => {
       if (!elementRef.current) return;
       const deltaX = e.touches[0].clientX - swipeState.current.startX;
       const deltaY = e.touches[0].clientY - swipeState.current.startY;
@@ -2573,7 +2693,7 @@
         }
       }
     }, [elementRef]);
-    const handleTouchEnd = q$1((e) => {
+    const handleTouchEnd = q((e) => {
       if (!elementRef.current) return;
       elementRef.current.style.transition = "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
       elementRef.current.style.transform = "";
@@ -2739,6 +2859,21 @@
     );
   }
 
+  function hasRichBubbleContent(messageText, hasReplyQuote, hasLinkPreviewCards, hasCollapseToggle) {
+    if (hasReplyQuote || hasLinkPreviewCards || hasCollapseToggle) {
+      return true;
+    }
+    return /\[(?:img|emoji|sticker|audio|video|code|quote)\]|\[file=.*?\]|\((?:musume|blake)_\d+\)/i.test(messageText);
+  }
+  function getBubbleTimestampMode(isGroupedWithNext, editedAt, isDeleted, isSticker, prefersTrailing) {
+    if (isGroupedWithNext && !(editedAt && !isDeleted)) {
+      return "hidden";
+    }
+    if (isSticker) {
+      return "overlay";
+    }
+    return prefersTrailing ? "trailing" : "stacked";
+  }
   function arePropsEqual(prev, next) {
     const prevKey = prev.message.stableKey || prev.message.id;
     const nextKey = next.message.stableKey || next.message.id;
@@ -2746,7 +2881,9 @@
   }
   const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext }) => {
     const messageRef = A(null);
+    const textContentRef = A(null);
     const [isExpanded, setIsExpanded] = d$2(false);
+    const [isCollapsible, setIsCollapsible] = d$2(false);
     const [isNew, setIsNew] = d$2(() => newMessageIds.peek().has(message.id));
     y$1(() => {
       if (isNew) {
@@ -2762,7 +2899,7 @@
     const replyDetails = message.reply_details;
     const imageMeta = message.image_meta;
     const linkPreviews = message.link_previews;
-    const content = T$1(() => {
+    const content = T(() => {
       if (isDeleted) {
         return '<div class="text-content deleted">此消息已撤回</div>';
       }
@@ -2877,16 +3014,75 @@
         });
       };
     }, [content]);
-    const isSticker = T$1(() => {
+    const isSticker = T(() => {
       if (isDeleted) return false;
       const raw = (messageText || "").trim();
       return /^(\[img\][^\[]+\[\/img\]|\[(?:emoji|sticker)\][^\[]+\[\/(?:emoji|sticker)\]|\((?:musume|blake)_\d+\))$/i.test(raw) && !replyToId;
     }, [messageText, isDeleted, replyToId]);
+    const shouldCollapse = isCollapsible && !isExpanded;
+    const hasReplyQuote = !!(replyToId && replyDetails);
+    const hasLinkPreviewCards = settings.value.linkPreview && Object.keys(linkPreviews || {}).length > 0;
+    const prefersTrailingTimestamp = !isDeleted && !hasRichBubbleContent(
+      messageText,
+      hasReplyQuote,
+      hasLinkPreviewCards,
+      isCollapsible
+    );
     const timeText = formatDate(message.timestamp, "time") + (editedAt && !isDeleted ? " (已编辑)" : "");
     const fullTimeText = formatDate(message.timestamp, "full");
+    const timestampMode = getBubbleTimestampMode(
+      !!isGroupedWithNext,
+      editedAt,
+      isDeleted,
+      isSticker,
+      prefersTrailingTimestamp
+    );
+    y$1(() => {
+      const el = textContentRef.current;
+      if (!el || isDeleted || isSticker) {
+        setIsCollapsible(false);
+        return;
+      }
+      let frameId = 0;
+      const imageListeners = [];
+      const resizeObserver = new ResizeObserver(() => {
+        if (frameId) cancelAnimationFrame(frameId);
+        frameId = requestAnimationFrame(measure);
+      });
+      const measure = () => {
+        frameId = 0;
+        const nextCollapsible = el.scrollHeight > COLLAPSE_MAX_HEIGHT + 1;
+        setIsCollapsible((prev) => prev === nextCollapsible ? prev : nextCollapsible);
+      };
+      resizeObserver.observe(el);
+      el.querySelectorAll("img").forEach((node) => {
+        const image = node;
+        const handleChange = () => {
+          if (frameId) cancelAnimationFrame(frameId);
+          frameId = requestAnimationFrame(measure);
+        };
+        image.addEventListener("load", handleChange);
+        image.addEventListener("error", handleChange);
+        imageListeners.push({ image, handleChange });
+      });
+      measure();
+      return () => {
+        if (frameId) cancelAnimationFrame(frameId);
+        resizeObserver.disconnect();
+        imageListeners.forEach(({ image, handleChange }) => {
+          image.removeEventListener("load", handleChange);
+          image.removeEventListener("error", handleChange);
+        });
+      };
+    }, [content, isDeleted, isSticker]);
+    y$1(() => {
+      if (!isCollapsible && isExpanded) {
+        setIsExpanded(false);
+      }
+    }, [isCollapsible, isExpanded]);
     const avatarUrl = getAvatarUrl(message.avatar, "l");
     const nickColor = message.color || "var(--primary-color)";
-    const handleContextMenu = q$1((e) => {
+    const handleContextMenu = q((e) => {
       let imageUrl = null;
       let bmoCode = null;
       const target = e.target;
@@ -2908,9 +3104,9 @@
       e.preventDefault();
       showContextMenu(e.clientX, e.clientY, String(messageId), imageUrl, bmoCode);
     }, [messageId]);
-    const triggerReply = q$1(() => {
+    const triggerReply = q(() => {
       const rawContent = (getRawMessage(messageId) || messageText || "").trim();
-      const text = stripQuotes(escapeHTML(rawContent)).replace(/\[img\].*?\[\/img\]/gi, "[图片]").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+      const text = stripQuotes(escapeHTML(rawContent)).replace(/\[img\].*?\[\/img\]/gi, "[图片]").replace(/\[file=.*?\].*?\[\/file\]/gi, "[附件]").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
       setReplyTo({
         id: String(messageId),
         uid: String(message.uid),
@@ -2922,7 +3118,7 @@
       const textarea = document.querySelector("#dollars-main-chat textarea");
       if (textarea) textarea.focus();
     }, [messageId, messageText, message.uid, message.nickname, message.avatar]);
-    const handleRetry = q$1(async () => {
+    const handleRetry = q(async () => {
       const result = retryMessage(messageId);
       if (result) {
         const [{ sendPendingMessage }, { sendMessage: apiSendMessage }] = await Promise.all([
@@ -2933,7 +3129,7 @@
         apiSendMessage(result.content);
       }
     }, [messageId]);
-    const handleBubbleClick = q$1((e) => {
+    const handleBubbleClick = q((e) => {
       if (message.state === "failed") {
         e.stopPropagation();
         handleRetry();
@@ -2991,36 +3187,49 @@
             /* @__PURE__ */ u$2(
               "div",
               {
-                class: `bubble ${isSticker ? "sticker-mode" : ""}`,
+                class: [
+                  "bubble",
+                  isSticker && "sticker-mode",
+                  timestampMode === "trailing" && "has-trailing-timestamp",
+                  timestampMode === "stacked" && "has-stacked-timestamp"
+                ].filter(Boolean).join(" "),
                 onClick: message.state === "failed" ? handleBubbleClick : void 0,
                 style: message.state === "failed" ? { cursor: "pointer" } : void 0,
                 children: [
                   /* @__PURE__ */ u$2("svg", { viewBox: "0 0 11 20", width: "11", height: "20", class: "bubble-tail", children: /* @__PURE__ */ u$2("use", { href: "#message-tail-filled" }) }),
                   /* @__PURE__ */ u$2("span", { class: "bubble-nickname", style: { "--nick-color": nickColor }, children: message.nickname }),
-                  (() => {
-                    const shouldCollapse = !isDeleted && messageText.length > COLLAPSE_THRESHOLD && !isExpanded;
-                    return /* @__PURE__ */ u$2(k$1, { children: [
-                      /* @__PURE__ */ u$2(
-                        "div",
-                        {
-                          class: `text-content ${shouldCollapse ? "is-collapsed" : ""}`,
-                          dangerouslySetInnerHTML: { __html: content }
-                        }
-                      ),
-                      !isDeleted && messageText.length > COLLAPSE_THRESHOLD && /* @__PURE__ */ u$2(
-                        "button",
-                        {
-                          class: "expand-toggle-btn",
-                          onClick: (e) => {
-                            e.stopPropagation();
-                            setIsExpanded(!isExpanded);
-                          },
-                          children: isExpanded ? "收起" : "展开全文"
-                        }
-                      )
-                    ] });
-                  })(),
-                  /* @__PURE__ */ u$2("span", { class: "bubble-timestamp", title: fullTimeText, children: timeText })
+                  /* @__PURE__ */ u$2(k$1, { children: [
+                    /* @__PURE__ */ u$2(
+                      "div",
+                      {
+                        ref: textContentRef,
+                        class: `text-content ${shouldCollapse ? "is-collapsed" : ""}`,
+                        style: { "--collapse-max-height": `${COLLAPSE_MAX_HEIGHT}px` },
+                        dangerouslySetInnerHTML: { __html: content }
+                      }
+                    ),
+                    isCollapsible && /* @__PURE__ */ u$2(
+                      "button",
+                      {
+                        type: "button",
+                        class: "expand-toggle-btn",
+                        "aria-expanded": isExpanded,
+                        onClick: (e) => {
+                          e.stopPropagation();
+                          setIsExpanded(!isExpanded);
+                        },
+                        children: isExpanded ? "收起" : "展开全文"
+                      }
+                    )
+                  ] }),
+                  timestampMode !== "hidden" && /* @__PURE__ */ u$2(
+                    "span",
+                    {
+                      class: `bubble-timestamp ${timestampMode === "overlay" ? "is-overlay" : timestampMode === "trailing" ? "is-trailing" : "is-stacked"}`,
+                      title: fullTimeText,
+                      children: timeText
+                    }
+                  )
                 ]
               }
             ),
@@ -3077,7 +3286,7 @@
     const hideDateLabelTimer = A(null);
     const scrollAnimationRef = A(null);
     const isProgrammaticScroll = A(false);
-    const smoothScrollTo$1 = q$1((targetTop, duration) => {
+    const smoothScrollTo$1 = q((targetTop, duration) => {
       if (!bodyRef.current) return;
       if (scrollAnimationRef.current) {
         cancelAnimationFrame(scrollAnimationRef.current);
@@ -3085,7 +3294,7 @@
       const animId = smoothScrollTo(bodyRef.current, targetTop, { duration });
       scrollAnimationRef.current = animId;
     }, []);
-    const scrollToBottom = q$1((smooth = true) => {
+    const scrollToBottom = q((smooth = true) => {
       if (!bodyRef.current) return;
       const targetTop = bodyRef.current.scrollHeight;
       if (smooth) {
@@ -3099,7 +3308,7 @@
       }
       isStickingToBottom.current = true;
     }, [smoothScrollTo$1]);
-    const getTopVisibleMessageId = q$1(() => {
+    const getTopVisibleMessageId = q(() => {
       if (!bodyRef.current || !listRef.current) return null;
       const scrollTop = bodyRef.current.scrollTop;
       const topThreshold = scrollTop + 60;
@@ -3107,7 +3316,7 @@
       const topMsg = msgs.find((el) => el.offsetTop + el.offsetHeight > topThreshold);
       return topMsg?.dataset.dbId ? parseInt(topMsg.dataset.dbId, 10) : null;
     }, []);
-    const getBottomVisibleMessageId = q$1(() => {
+    const getBottomVisibleMessageId = q(() => {
       if (!bodyRef.current || !listRef.current) return null;
       const scrollTop = bodyRef.current.scrollTop;
       const clientHeight = bodyRef.current.clientHeight;
@@ -3121,7 +3330,7 @@
       }
       return null;
     }, []);
-    const updateScrollButtonMode = q$1(() => {
+    const updateScrollButtonMode = q(() => {
       if (!bodyRef.current) return;
       if (hasUnreadMessages.value) {
         const firstUnreadId = getFirstUnreadId();
@@ -3170,7 +3379,7 @@
         }, 1e3);
       }
     };
-    const handleScroll = q$1(() => {
+    const handleScroll = q(() => {
       if (!bodyRef.current) return;
       const { scrollTop, scrollHeight, clientHeight } = bodyRef.current;
       const atBottom = scrollHeight - scrollTop - clientHeight < 50;
@@ -3236,7 +3445,7 @@
         }
       }
     }, [pendingScrollToBottom.value, scrollToBottom]);
-    const visibleMessageIds = T$1(() => {
+    const visibleMessageIds = T(() => {
       const allIds = messageIds.value;
       const blocked = blockedUsers.value;
       const filteredIds = allIds.filter((id) => {
@@ -3710,10 +3919,10 @@
     }
   }
   function useWebSocket() {
-    const connect = q$1(() => {
+    const connect = q(() => {
       connectWebSocket();
     }, []);
-    const disconnect = q$1(() => {
+    const disconnect = q(() => {
       disconnectWebSocket();
     }, []);
     y$1(() => {
@@ -3773,7 +3982,7 @@
 
   function useHistoryLoader(refs) {
     const { bodyRef, listRef, isLoadingRef, isStickingToBottom, prevScrollHeight, isRestoringScroll } = refs;
-    const loadHistory = q$1(async () => {
+    const loadHistory = q(async () => {
       if (isLoadingRef.current || historyFullyLoaded.value) return;
       const oldestId = historyOldestId.value;
       if (!oldestId) return;
@@ -3800,7 +4009,7 @@
         isLoadingHistory.value = false;
       }
     }, []);
-    const loadNewerHistory = q$1(async () => {
+    const loadNewerHistory = q(async () => {
       if (isLoadingRef.current || timelineIsLive.value) return;
       const newestId = historyNewestId.value;
       if (!newestId) return;
@@ -3837,7 +4046,7 @@
         }, 100);
       }
     }, []);
-    const jumpToMessage = q$1(async (id) => {
+    const jumpToMessage = q(async (id) => {
       const targetId = String(id);
       const highlightDuration = 800;
       const scrollAndHighlight = (el, hideOverlay = false) => {
@@ -4317,10 +4526,11 @@
     }
   }
 
-  function SmileyPanel({ onSelect }) {
+  function SmileyPanel({ onSelect, textareaRef }) {
     const [activeTab, setActiveTab] = d$2("TV");
     const [bmoItems, setBmoItems] = d$2([]);
     const [isUploading, setIsUploading] = d$2(false);
+    const panelRef = A(null);
     const contentRef = A(null);
     y$1(() => {
       if (activeTab === "BMO") {
@@ -4330,7 +4540,7 @@
     y$1(() => {
       if (!isSmileyPanelOpen.value) return;
       const handleClickOutside = (e) => {
-        const panel = document.getElementById("dollars-smiles-floating");
+        const panel = panelRef.current;
         const trigger = document.getElementById("dollars-emoji-btn");
         if (panel && !panel.contains(e.target) && (!trigger || !trigger.contains(e.target))) {
           toggleSmileyPanel(false);
@@ -4362,31 +4572,20 @@
         }
       });
     }, [isSmileyPanelOpen.value, activeTab, bmoItems]);
-    const handleSelect = q$1((code) => {
-      if (onSelect) {
-        onSelect(code);
-      } else {
-        const textarea = document.querySelector(".chat-textarea");
-        if (textarea) {
-          const start = textarea.selectionStart;
-          const end = textarea.selectionEnd;
-          const value = textarea.value;
-          textarea.value = value.substring(0, start) + code + value.substring(end);
-          textarea.selectionStart = textarea.selectionEnd = start + code.length;
-          textarea.focus();
-          textarea.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-      }
+    const handleSelect = q((code) => {
+      onSelect(code);
       toggleSmileyPanel(false);
     }, [onSelect]);
-    const handleTabClick = q$1((groupName) => {
+    const handleTabClick = q((groupName) => {
       setActiveTab(groupName);
     }, []);
-    const handleOpenBmoPanel = q$1((e) => {
+    const handleOpenBmoPanel = q((e) => {
       e.preventDefault();
       const apiObject = window.BgmBmoQuickPanel;
       if (apiObject && typeof apiObject.open === "function") {
-        const textarea = document.querySelector(".chat-textarea");
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+        textarea.focus();
         apiObject.open(textarea);
         toggleSmileyPanel(false);
       } else {
@@ -4394,8 +4593,8 @@
           window.location.href = "/dev/app/4853";
         }
       }
-    }, []);
-    const handleUploadFavorite = q$1(async (e) => {
+    }, [textareaRef]);
+    const handleUploadFavorite = q(async (e) => {
       e.preventDefault();
       const tempInput = document.createElement("input");
       tempInput.type = "file";
@@ -4409,10 +4608,14 @@
         formData.append("image", file);
         setIsUploading(true);
         try {
-          const res = await fetch(`${BACKEND_URL}/api/upload`, { method: "POST", body: formData });
+          const res = await fetch(`${UPLOAD_BASE_URL}/api/upload`, {
+            method: "POST",
+            credentials: "include",
+            body: formData
+          });
           const result = await res.json();
           if (!res.ok || !result.status) throw new Error(result.message || "上传失败");
-          const imageUrl = result.imageUrl;
+          const imageUrl = result.url || result.imageUrl;
           addFavorite(imageUrl);
         } catch (err) {
           alert(err.message || "上传失败");
@@ -4422,7 +4625,7 @@
       };
       tempInput.click();
     }, []);
-    const handleRemoveFavorite = q$1((e, url) => {
+    const handleRemoveFavorite = q((e, url) => {
       e.preventDefault();
       e.stopPropagation();
       removeFavorite(url);
@@ -4431,6 +4634,7 @@
       return null;
     }
     let smileys = [];
+    let groupedSmileySections = [];
     let specialContent = null;
     if (activeTab === "BMO") {
       specialContent = /* @__PURE__ */ u$2("div", { style: { display: "contents" }, children: [
@@ -4442,7 +4646,7 @@
             title: "打开 BMO 快速拼装面板",
             onClick: handleOpenBmoPanel,
             style: { backgroundImage: "none", display: "flex", alignItems: "center", justifyContent: "center" },
-            dangerouslySetInnerHTML: { __html: SVGIcons.bmoPanel }
+            dangerouslySetInnerHTML: { __html: iconBmoPanel }
           }
         ) }),
         bmoItems.length > 0 ? bmoItems.map((item) => /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
@@ -4473,7 +4677,7 @@
             title: "上传新表情",
             onClick: handleUploadFavorite,
             style: { backgroundImage: "none", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--dollars-text-secondary)" },
-            children: isUploading ? /* @__PURE__ */ u$2("span", { style: { fontSize: "12px" }, children: "..." }) : /* @__PURE__ */ u$2("span", { dangerouslySetInnerHTML: { __html: SVGIcons.upload } })
+            children: isUploading ? /* @__PURE__ */ u$2("span", { style: { fontSize: "12px" }, children: "..." }) : /* @__PURE__ */ u$2("span", { dangerouslySetInnerHTML: { __html: iconUpload } })
           }
         ) }),
         favoritesList.length > 0 ? favoritesList.map((url) => /* @__PURE__ */ u$2("li", { class: "smiley-item favorite-item", children: [
@@ -4505,20 +4709,23 @@
           "(存储于Chii云端)"
         ] })
       ] });
+    } else if (smileyRanges.find((r) => r.name === activeTab)?.isLarge) {
+      groupedSmileySections = getGroupedSmileyCodes(activeTab);
     } else {
       smileys = generateSmileyCodes(activeTab);
     }
     const activeRange = smileyRanges.find((r) => r.name === activeTab);
     const isLargeTab = activeRange?.isLarge ?? false;
-    return /* @__PURE__ */ u$2("div", { id: "dollars-smiles-floating", class: `open ${isSmileyPanelClosing.value ? "closing" : ""} ${isLargeTab ? "large-smiley-mode" : ""}`, children: [
+    return /* @__PURE__ */ u$2("div", { ref: panelRef, id: "dollars-smiles-floating", class: `open ${isSmileyPanelClosing.value ? "closing" : ""} ${isLargeTab ? "large-smiley-mode" : ""}`, children: [
       /* @__PURE__ */ u$2("div", { id: "dollars-smiles-tabs", children: smileyRanges.map((range) => {
         let textContent = range.name;
         if (range.name === "收藏") {
-          textContent = /* @__PURE__ */ u$2("span", { dangerouslySetInnerHTML: { __html: SVGIcons.star }, style: { display: "flex" } });
+          textContent = /* @__PURE__ */ u$2("span", { dangerouslySetInnerHTML: { __html: iconStar }, style: { display: "flex" } });
         } else if (range.name === "BMO") {
           textContent = /* @__PURE__ */ u$2("span", { class: "bmo", "data-code": "(bmoCgASACIBLgCg)", style: { verticalAlign: "middle" } });
-        } else if (range.path && range.start) {
-          const iconId = range.tabIconId ?? range.start;
+        } else if (range.path) {
+          const iconId = range.tabIconId ?? range.ids?.[0] ?? range.start;
+          if (!iconId) return null;
           textContent = /* @__PURE__ */ u$2("img", { src: range.path(iconId), alt: range.name, style: { width: "21px", height: "21px", verticalAlign: "middle" } });
         }
         return /* @__PURE__ */ u$2(
@@ -4533,8 +4740,27 @@
           range.name
         );
       }) }),
-      /* @__PURE__ */ u$2("div", { id: "dollars-smiles-content", ref: contentRef, children: [
+      /* @__PURE__ */ u$2("div", { id: "dollars-smiles-content", ref: contentRef, class: groupedSmileySections.length > 0 ? "grouped-content" : "", children: [
         specialContent,
+        groupedSmileySections.map((section) => /* @__PURE__ */ u$2("section", { class: "smiley-group-section", children: [
+          /* @__PURE__ */ u$2("div", { class: "smiley-group-title", children: section.name }),
+          /* @__PURE__ */ u$2("div", { class: "smiley-group-grid", children: section.items.map(({ code }) => {
+            const url = getSmileyUrl(code);
+            return /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
+              "a",
+              {
+                href: "#",
+                "data-smiley": code,
+                onClick: (e) => {
+                  e.preventDefault();
+                  handleSelect(code);
+                },
+                style: url ? { backgroundImage: `url('${url}')` } : void 0,
+                title: code
+              }
+            ) }, code);
+          }) })
+        ] }, section.name)),
         smileys.map((code) => {
           const url = getSmileyUrl(code);
           return /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
@@ -4555,16 +4781,10 @@
     ] });
   }
 
-  function g(n,t){for(var e in t)n[e]=t[e];return n}function E(n,t){for(var e in n)if("__source"!==e&&!(e in t))return  true;for(var r in t)if("__source"!==r&&n[r]!==t[r])return  true;return  false}function N(n,t){this.props=n,this.context=t;}(N.prototype=new x).isPureReactComponent=true,N.prototype.shouldComponentUpdate=function(n,t){return E(this.props,n)||E(this.state,t)};var T=l$3.__b;l$3.__b=function(n){n.type&&n.type.__f&&n.ref&&(n.props.ref=n.ref,n.ref=null),T&&T(n);};var F=l$3.__e;l$3.__e=function(n,t,e,r){if(n.then)for(var u,o=t;o=o.__;)if((u=o.__c)&&u.__c)return null==t.__e&&(t.__e=e.__e,t.__k=e.__k),u.__c(n,t);F(n,t,e,r);};var U=l$3.unmount;function V(n,t,e){return n&&(n.__c&&n.__c.__H&&(n.__c.__H.__.forEach(function(n){"function"==typeof n.__c&&n.__c();}),n.__c.__H=null),null!=(n=g({},n)).__c&&(n.__c.__P===e&&(n.__c.__P=t),n.__c.__e=true,n.__c=null),n.__k=n.__k&&n.__k.map(function(n){return V(n,t,e)})),n}function W(n,t,e){return n&&e&&(n.__v=null,n.__k=n.__k&&n.__k.map(function(n){return W(n,t,e)}),n.__c&&n.__c.__P===t&&(n.__e&&e.appendChild(n.__e),n.__c.__e=true,n.__c.__P=e)),n}function P(){this.__u=0,this.o=null,this.__b=null;}function j(n){var t=n.__.__c;return t&&t.__a&&t.__a(n)}function B(){this.i=null,this.l=null;}l$3.unmount=function(n){var t=n.__c;t&&t.__R&&t.__R(),t&&32&n.__u&&(n.type=null),U&&U(n);},(P.prototype=new x).__c=function(n,t){var e=t.__c,r=this;null==r.o&&(r.o=[]),r.o.push(e);var u=j(r.__v),o=false,i=function(){o||(o=true,e.__R=null,u?u(l):l());};e.__R=i;var l=function(){if(!--r.__u){if(r.state.__a){var n=r.state.__a;r.__v.__k[0]=W(n,n.__c.__P,n.__c.__O);}var t;for(r.setState({__a:r.__b=null});t=r.o.pop();)t.forceUpdate();}};r.__u++||32&t.__u||r.setState({__a:r.__b=r.__v.__k[0]}),n.then(i,i);},P.prototype.componentWillUnmount=function(){this.o=[];},P.prototype.render=function(n,e){if(this.__b){if(this.__v.__k){var r=document.createElement("div"),o=this.__v.__k[0].__c;this.__v.__k[0]=V(this.__b,r,o.__O=o.__P);}this.__b=null;}var i=e.__a&&_$3(k$1,null,n.fallback);return i&&(i.__u&=-33),[_$3(k$1,null,e.__a?null:n.children),i]};var H=function(n,t,e){if(++e[1]===e[0]&&n.l.delete(t),n.props.revealOrder&&("t"!==n.props.revealOrder[0]||!n.l.size))for(e=n.i;e;){for(;e.length>3;)e.pop()();if(e[1]<e[0])break;n.i=e=e[2];}};function Z(n){return this.getChildContext=function(){return n.context},n.children}function Y(n){var e=this,r=n.h;if(e.componentWillUnmount=function(){G$1(null,e.v),e.v=null,e.h=null;},e.h&&e.h!==r&&e.componentWillUnmount(),!e.v){for(var u=e.__v;null!==u&&!u.__m&&null!==u.__;)u=u.__;e.h=r,e.v={nodeType:1,parentNode:r,childNodes:[],__k:{__m:u.__m},contains:function(){return  true},insertBefore:function(n,t){this.childNodes.push(n),e.h.insertBefore(n,t);},removeChild:function(n){this.childNodes.splice(this.childNodes.indexOf(n)>>>1,1),e.h.removeChild(n);}};}G$1(_$3(Z,{context:e.context},n.__v),e.v);}function $(n,e){var r=_$3(Y,{__v:n,h:e});return r.containerInfo=e,r}(B.prototype=new x).__a=function(n){var t=this,e=j(t.__v),r=t.l.get(n);return r[0]++,function(u){var o=function(){t.props.revealOrder?(r.push(u),H(t,n,r)):u();};e?e(o):o();}},B.prototype.render=function(n){this.i=null,this.l=new Map;var t=H$1(n.children);n.revealOrder&&"b"===n.revealOrder[0]&&t.reverse();for(var e=t.length;e--;)this.l.set(t[e],this.i=[1,0,this.i]);return n.children},B.prototype.componentDidUpdate=B.prototype.componentDidMount=function(){var n=this;this.l.forEach(function(t,e){H(n,e,t);});};var q="undefined"!=typeof Symbol&&Symbol.for&&Symbol.for("react.element")||60103,G=/^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|dominant|fill|flood|font|glyph(?!R)|horiz|image(!S)|letter|lighting|marker(?!H|W|U)|overline|paint|pointer|shape|stop|strikethrough|stroke|text(?!L)|transform|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/,J=/^on(Ani|Tra|Tou|BeforeInp|Compo)/,K=/[A-Z0-9]/g,Q="undefined"!=typeof document,X=function(n){return ("undefined"!=typeof Symbol&&"symbol"==typeof Symbol()?/fil|che|rad/:/fil|che|ra/).test(n)};x.prototype.isReactComponent={},["componentWillMount","componentWillReceiveProps","componentWillUpdate"].forEach(function(t){Object.defineProperty(x.prototype,t,{configurable:true,get:function(){return this["UNSAFE_"+t]},set:function(n){Object.defineProperty(this,t,{configurable:true,writable:true,value:n});}});});var en=l$3.event;function rn(){}function un(){return this.cancelBubble}function on(){return this.defaultPrevented}l$3.event=function(n){return en&&(n=en(n)),n.persist=rn,n.isPropagationStopped=un,n.isDefaultPrevented=on,n.nativeEvent=n};var cn={enumerable:false,configurable:true,get:function(){return this.class}},fn=l$3.vnode;l$3.vnode=function(n){"string"==typeof n.type&&function(n){var t=n.props,e=n.type,u={},o=-1===e.indexOf("-");for(var i in t){var l=t[i];if(!("value"===i&&"defaultValue"in t&&null==l||Q&&"children"===i&&"noscript"===e||"class"===i||"className"===i)){var c=i.toLowerCase();"defaultValue"===i&&"value"in t&&null==t.value?i="value":"download"===i&&true===l?l="":"translate"===c&&"no"===l?l=false:"o"===c[0]&&"n"===c[1]?"ondoubleclick"===c?i="ondblclick":"onchange"!==c||"input"!==e&&"textarea"!==e||X(t.type)?"onfocus"===c?i="onfocusin":"onblur"===c?i="onfocusout":J.test(i)&&(i=c):c=i="oninput":o&&G.test(i)?i=i.replace(K,"-$&").toLowerCase():null===l&&(l=void 0),"oninput"===c&&u[i=c]&&(i="oninputCapture"),u[i]=l;}}"select"==e&&u.multiple&&Array.isArray(u.value)&&(u.value=H$1(t.children).forEach(function(n){n.props.selected=-1!=u.value.indexOf(n.props.value);})),"select"==e&&null!=u.defaultValue&&(u.value=H$1(t.children).forEach(function(n){n.props.selected=u.multiple?-1!=u.defaultValue.indexOf(n.props.value):u.defaultValue==n.props.value;})),t.class&&!t.className?(u.class=t.class,Object.defineProperty(u,"className",cn)):(t.className&&!t.class||t.class&&t.className)&&(u.class=u.className=t.className),n.props=u;}(n),n.$$typeof=q,fn&&fn(n);};var an=l$3.__r;l$3.__r=function(n){an&&an(n),n.__c;};var sn=l$3.diffed;l$3.diffed=function(n){sn&&sn(n);var t=n.props,e=n.__e;null!=e&&"textarea"===n.type&&"value"in t&&t.value!==e.value&&(e.value=null==t.value?"":t.value);};
-
   const formatterVisible = d$1(false);
   const formatterLinkMode = d$1(false);
   const PORTAL_ID = "dollars-text-formatter-portal";
-  function TextFormatter({ textareaRef }) {
-    const containerRef = A(null);
-    const [portalRoot, setPortalRoot] = d$2(null);
-    const linkInputRef = A(null);
-    const savedRangeRef = A(null);
+  function TextFormatter({ editorRef, inputControllerRef }) {
     y$1(() => {
       let root = document.getElementById(PORTAL_ID);
       if (!root) {
@@ -4572,42 +4792,47 @@
         root.id = PORTAL_ID;
         document.body.appendChild(root);
       }
-      setPortalRoot(root);
+      G(/* @__PURE__ */ u$2(TextFormatterLayer, { editorRef, inputControllerRef }), root);
       return () => {
-        if (root && root.parentNode) {
-          root.parentNode.removeChild(root);
-        }
+        G(null, root);
+        root.remove();
       };
-    }, []);
-    const checkSelection = q$1(() => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-      if (document.activeElement !== textarea) {
+    }, [editorRef, inputControllerRef]);
+    return null;
+  }
+  function TextFormatterLayer({ editorRef, inputControllerRef }) {
+    const containerRef = A(null);
+    const linkInputRef = A(null);
+    const savedRangeRef = A(null);
+    const checkSelection = q(() => {
+      const editor = editorRef.current;
+      const controller = inputControllerRef.current;
+      if (!editor || !controller) return;
+      if (document.activeElement !== editor) {
         if (containerRef.current?.contains(document.activeElement)) return;
         if (formatterLinkMode.value) return;
         hide();
         return;
       }
-      if (textarea.selectionStart !== textarea.selectionEnd) {
+      const selection = controller.getSelection();
+      if (selection.start !== selection.end) {
         show();
       } else {
         hide();
       }
-    }, [textareaRef]);
-    const show = q$1(() => {
-      const textarea = textareaRef.current;
+    }, [editorRef, inputControllerRef]);
+    const show = q(() => {
+      const editor = editorRef.current;
+      const controller = inputControllerRef.current;
       const el = containerRef.current;
-      if (!textarea || !el) return;
-      const rect = textarea.getBoundingClientRect();
+      if (!editor || !controller || !el) return;
+      const rect = editor.getBoundingClientRect();
       el.style.top = `${rect.top - 50}px`;
       el.style.left = `${rect.left + rect.width / 2 - el.offsetWidth / 2}px`;
       formatterVisible.value = true;
-      savedRangeRef.current = {
-        start: textarea.selectionStart,
-        end: textarea.selectionEnd
-      };
-    }, [textareaRef]);
-    const hide = q$1(() => {
+      savedRangeRef.current = controller.getSelection();
+    }, [editorRef, inputControllerRef]);
+    const hide = q(() => {
       formatterVisible.value = false;
       setTimeout(() => {
         if (!formatterVisible.value) {
@@ -4618,98 +4843,96 @@
         }
       }, 200);
     }, []);
-    const switchMode = q$1((isLinkMode) => {
+    const switchMode = q((isLinkMode) => {
+      const controller = inputControllerRef.current;
       if (isLinkMode) {
         formatterLinkMode.value = true;
-        savedRangeRef.current = {
-          start: textareaRef.current?.selectionStart || 0,
-          end: textareaRef.current?.selectionEnd || 0
-        };
+        savedRangeRef.current = controller?.getSelection() || { start: 0, end: 0 };
         setTimeout(() => linkInputRef.current?.focus(), 50);
       } else {
         formatterLinkMode.value = false;
         restoreSelection();
       }
-    }, [textareaRef]);
-    const restoreSelection = q$1(() => {
-      const textarea = textareaRef.current;
-      if (textarea && savedRangeRef.current) {
-        textarea.focus();
-        textarea.setSelectionRange(savedRangeRef.current.start, savedRangeRef.current.end);
+    }, [inputControllerRef]);
+    const restoreSelection = q(() => {
+      const controller = inputControllerRef.current;
+      if (controller && savedRangeRef.current) {
+        controller.focus();
+        controller.setSelection(savedRangeRef.current.start, savedRangeRef.current.end);
       }
-    }, [textareaRef]);
-    const applyBBCode = q$1((tag) => {
+    }, [inputControllerRef]);
+    const applyBBCode = q((tag) => {
       restoreSelection();
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = textarea.value;
+      const controller = inputControllerRef.current;
+      if (!controller) return;
+      const { start, end } = controller.getSelection();
+      const text = controller.getValue();
       const selection = text.substring(start, end);
       if (!selection) return;
       const before = text.substring(0, start);
       const after = text.substring(end);
       const newText = `${before}[${tag}]${selection}[/${tag}]${after}`;
-      textarea.value = newText;
-      textarea.setSelectionRange(
-        start + tag.length + 2,
-        end + tag.length + 2
-      );
-      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      controller.setValue(newText, {
+        focus: true,
+        selection: {
+          start: start + tag.length + 2,
+          end: end + tag.length + 2
+        }
+      });
       hide();
-    }, [textareaRef, restoreSelection, hide]);
-    const applyLink = q$1(() => {
+    }, [inputControllerRef, restoreSelection, hide]);
+    const applyLink = q(() => {
       const url = linkInputRef.current?.value.trim();
       if (!url) {
         switchMode(false);
         return;
       }
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-      textarea.focus();
-      if (savedRangeRef.current) {
-        textarea.setSelectionRange(savedRangeRef.current.start, savedRangeRef.current.end);
-      }
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = textarea.value;
+      const controller = inputControllerRef.current;
+      if (!controller) return;
+      const activeSelection = savedRangeRef.current || controller.getSelection();
+      const { start, end } = activeSelection;
+      const text = controller.getValue();
       const selection = text.substring(start, end);
       const before = text.substring(0, start);
       const after = text.substring(end);
       const newText = `${before}[url=${url}]${selection}[/url]${after}`;
-      textarea.value = newText;
-      textarea.setSelectionRange(start, start + newText.length - before.length - after.length);
-      textarea.dispatchEvent(new Event("input", { bubbles: true }));
+      controller.setValue(newText, {
+        focus: true,
+        selection: {
+          start,
+          end: start + newText.length - before.length - after.length
+        }
+      });
       hide();
       if (linkInputRef.current) {
         linkInputRef.current.value = "";
       }
-    }, [textareaRef, switchMode, hide]);
+    }, [inputControllerRef, switchMode, hide]);
     y$1(() => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
+      const editor = editorRef.current;
+      if (!editor) return;
       const handleMouseDown = () => hide();
       const handleMouseUp = () => setTimeout(checkSelection, 10);
       const handleTouchEnd = () => setTimeout(checkSelection, 50);
       const handleKeyUp = () => setTimeout(checkSelection, 10);
       const handleScroll = () => hide();
       const handleResize = () => hide();
-      textarea.addEventListener("mousedown", handleMouseDown);
+      editor.addEventListener("mousedown", handleMouseDown);
       document.addEventListener("mouseup", handleMouseUp);
-      textarea.addEventListener("touchend", handleTouchEnd);
-      textarea.addEventListener("keyup", handleKeyUp);
-      textarea.addEventListener("scroll", handleScroll);
+      editor.addEventListener("touchend", handleTouchEnd);
+      editor.addEventListener("keyup", handleKeyUp);
+      editor.addEventListener("scroll", handleScroll);
       window.addEventListener("resize", handleResize);
       return () => {
-        textarea.removeEventListener("mousedown", handleMouseDown);
+        editor.removeEventListener("mousedown", handleMouseDown);
         document.removeEventListener("mouseup", handleMouseUp);
-        textarea.removeEventListener("touchend", handleTouchEnd);
-        textarea.removeEventListener("keyup", handleKeyUp);
-        textarea.removeEventListener("scroll", handleScroll);
+        editor.removeEventListener("touchend", handleTouchEnd);
+        editor.removeEventListener("keyup", handleKeyUp);
+        editor.removeEventListener("scroll", handleScroll);
         window.removeEventListener("resize", handleResize);
       };
-    }, [textareaRef, checkSelection, hide]);
-    const handleAction = q$1((action) => {
+    }, [editorRef, checkSelection, hide]);
+    const handleAction = q((action) => {
       switch (action) {
         case "b":
         case "i":
@@ -4736,7 +4959,7 @@
         applyLink();
       } else if (e.key === "Escape") {
         switchMode(false);
-        textareaRef.current?.focus();
+        inputControllerRef.current?.focus();
       }
     };
     const className = [
@@ -4752,42 +4975,41 @@
         class: className,
         children: [
           /* @__PURE__ */ u$2("div", { class: "formatter-row main-buttons", children: [
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "防剧透 (Mask)", onClick: () => handleAction("mask"), dangerouslySetInnerHTML: { __html: SVGIcons.spoiler } }),
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "防剧透 (Mask)", onClick: () => handleAction("mask"), dangerouslySetInnerHTML: { __html: iconSpoiler } }),
             /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "加粗", onClick: () => handleAction("b"), dangerouslySetInnerHTML: { __html: SVGIcons.bold } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "斜体", onClick: () => handleAction("i"), dangerouslySetInnerHTML: { __html: SVGIcons.italic } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "下划线", onClick: () => handleAction("u"), dangerouslySetInnerHTML: { __html: SVGIcons.underline } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "删除线", onClick: () => handleAction("s"), dangerouslySetInnerHTML: { __html: SVGIcons.strike } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "等宽代码", onClick: () => handleAction("code"), dangerouslySetInnerHTML: { __html: SVGIcons.code } }),
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "加粗", onClick: () => handleAction("b"), dangerouslySetInnerHTML: { __html: iconBold } }),
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "斜体", onClick: () => handleAction("i"), dangerouslySetInnerHTML: { __html: iconItalic } }),
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "下划线", onClick: () => handleAction("u"), dangerouslySetInnerHTML: { __html: iconUnderline } }),
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "删除线", onClick: () => handleAction("s"), dangerouslySetInnerHTML: { __html: iconStrike } }),
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "等宽代码", onClick: () => handleAction("code"), dangerouslySetInnerHTML: { __html: iconCode } }),
             /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "添加链接", onClick: () => handleAction("link-mode"), dangerouslySetInnerHTML: { __html: SVGIcons.link } })
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "添加链接", onClick: () => handleAction("link-mode"), dangerouslySetInnerHTML: { __html: iconLink } })
           ] }),
           /* @__PURE__ */ u$2("div", { class: "formatter-row formatter-link-input-wrapper", children: [
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "返回", onClick: () => handleAction("cancel-link"), dangerouslySetInnerHTML: { __html: SVGIcons.back } }),
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "返回", onClick: () => handleAction("cancel-link"), dangerouslySetInnerHTML: { __html: iconBack } }),
             /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
             /* @__PURE__ */ u$2("input", { ref: linkInputRef, type: "text", class: "formatter-link-input", placeholder: "输入链接 URL...", autoComplete: "off", onKeyDown: handleLinkKeyDown }),
             /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "确认", onClick: () => handleAction("apply-link"), dangerouslySetInnerHTML: { __html: SVGIcons.check } })
+            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "确认", onClick: () => handleAction("apply-link"), dangerouslySetInnerHTML: { __html: iconCheck } })
           ] })
         ]
       }
     );
-    if (!portalRoot) return null;
-    return $(formatterContent, portalRoot);
+    return formatterContent;
   }
 
-  function MentionCompleter({ textareaRef }) {
+  function MentionCompleter({ editorRef, inputControllerRef }) {
     const containerRef = A(null);
     const [visible, setVisible] = d$2(false);
     const [users, setUsers] = d$2([]);
     const [matchStart, setMatchStart] = d$2(-1);
     const queryRef = A(null);
     const timerRef = A(null);
-    const checkInput = q$1(() => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-      const cursor = textarea.selectionStart;
-      const text = textarea.value.slice(0, cursor);
+    const checkInput = q(() => {
+      const controller = inputControllerRef.current;
+      if (!controller) return;
+      const cursor = controller.getSelection().end;
+      const text = controller.getValue().slice(0, cursor);
       const match = text.match(/(?:^|\s)(@[^\s]*)$/);
       if (!match) {
         hide();
@@ -4806,7 +5028,7 @@
         return;
       }
       timerRef.current = setTimeout(() => fetchUsers(currentQuery), MENTION_DEBOUNCE);
-    }, [textareaRef, visible]);
+    }, [inputControllerRef, visible]);
     const fetchUsers = async (query) => {
       try {
         const res = await fetch(
@@ -4825,29 +5047,24 @@
         hide();
       }
     };
-    const hide = q$1(() => {
+    const hide = q(() => {
       setVisible(false);
       queryRef.current = null;
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
     }, []);
-    const selectUser = q$1((user) => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-      textarea.setRangeText(
-        `@${user.username} `,
-        matchStart,
-        textarea.selectionStart,
-        "end"
-      );
+    const selectUser = q((user) => {
+      const controller = inputControllerRef.current;
+      if (!controller) return;
+      controller.replaceRange(`@${user.username} `, matchStart, controller.getSelection().end, {
+        focus: true
+      });
       hide();
-      textarea.focus();
-      textarea.dispatchEvent(new Event("input", { bubbles: true }));
-    }, [textareaRef, matchStart, hide]);
+    }, [inputControllerRef, matchStart, hide]);
     y$1(() => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
+      const editor = editorRef.current;
+      if (!editor) return;
       const handleInput = () => checkInput();
       const handleBlur = (e) => {
         if (containerRef.current?.contains(e.relatedTarget)) return;
@@ -4859,15 +5076,15 @@
           hide();
         }
       };
-      textarea.addEventListener("input", handleInput);
-      textarea.addEventListener("blur", handleBlur);
-      textarea.addEventListener("keydown", handleKeyDown);
+      editor.addEventListener("input", handleInput);
+      editor.addEventListener("blur", handleBlur);
+      editor.addEventListener("keydown", handleKeyDown);
       return () => {
-        textarea.removeEventListener("input", handleInput);
-        textarea.removeEventListener("blur", handleBlur);
-        textarea.removeEventListener("keydown", handleKeyDown);
+        editor.removeEventListener("input", handleInput);
+        editor.removeEventListener("blur", handleBlur);
+        editor.removeEventListener("keydown", handleKeyDown);
       };
-    }, [textareaRef, checkInput, hide, visible]);
+    }, [editorRef, checkInput, hide, visible]);
     if (!visible || users.length === 0) {
       return null;
     }
@@ -4976,13 +5193,13 @@
     ".flac",
     ".weba"
   ]);
-  function useMediaUpload(textareaRef, handleInput) {
+  function useMediaUpload(inputControllerRef) {
     const fileInputRef = A(null);
     const [isUploading, setIsUploading] = d$2(false);
     const [previewMedia, setPreviewMedia] = d$2([]);
     const attachLongPressRef = A(null);
     const isAttachLongPressRef = A(false);
-    const parseMediaFiles = q$1((text, knownMeta) => {
+    const parseMediaFiles = q((text, knownMeta) => {
       const imgRegex = /\[img\](.*?)\[\/img\]/g;
       const videoRegex = /\[video\](.*?)\[\/video\]/g;
       const media = [];
@@ -5016,10 +5233,10 @@
         });
       });
     }, []);
-    const handleRemoveMedia = q$1((index) => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-      const text = textarea.value;
+    const handleRemoveMedia = q((index) => {
+      const controller = inputControllerRef.current;
+      if (!controller) return;
+      const text = controller.getValue();
       const currentPreviewMedia = previewMedia;
       const media = currentPreviewMedia[index];
       if (!media) return;
@@ -5039,11 +5256,9 @@
         currentMediaIndex++;
         return match;
       });
-      textarea.value = newText;
-      handleInput();
-      textarea.focus();
-    }, [textareaRef, previewMedia, handleInput]);
-    const handleAttachClick = q$1(() => {
+      controller.setValue(newText, { focus: true });
+    }, [inputControllerRef, previewMedia]);
+    const handleAttachClick = q(() => {
       if (isAttachLongPressRef.current) {
         isAttachLongPressRef.current = false;
         return;
@@ -5053,34 +5268,28 @@
         fileInputRef.current.click();
       }
     }, []);
-    const handleAttachTouchStart = q$1(() => {
+    const handleAttachTouchStart = q(() => {
       isAttachLongPressRef.current = false;
       attachLongPressRef.current = setTimeout(() => {
         isAttachLongPressRef.current = true;
         if (navigator.vibrate) navigator.vibrate(50);
         if (fileInputRef.current) {
-          fileInputRef.current.accept = "audio/*";
+          fileInputRef.current.accept = "*/*";
           fileInputRef.current.click();
         }
       }, 500);
     }, []);
-    const handleAttachTouchEnd = q$1(() => {
+    const handleAttachTouchEnd = q(() => {
       if (attachLongPressRef.current) {
         clearTimeout(attachLongPressRef.current);
         attachLongPressRef.current = null;
       }
     }, []);
-    const handleFileUpload = q$1(async (file) => {
+    const handleFileUpload = q(async (file) => {
       const ext = "." + (file.name.split(".").pop() || "").toLowerCase();
       const isImage = file.type.startsWith("image/") || ALLOWED_IMAGE_EXTS.has(ext);
       const isVideo = file.type.startsWith("video/") || ALLOWED_VIDEO_EXTS.has(ext);
       const isAudio = file.type.startsWith("audio/") || ALLOWED_AUDIO_EXTS.has(ext);
-      if (!isImage && !isVideo && !isAudio) {
-        alert(`不支持的文件格式: ${ext || file.type || "未知"}
-支持的图片格式: JPEG, PNG, WebP, GIF, AVIF, BMP, HEIC, TIFF 等
-支持的视频格式: MP4, WebM, MOV, MKV 等`);
-        return;
-      }
       let fileToUpload = file;
       if (!file.type && isImage) {
         const mimeMap = {
@@ -5127,29 +5336,43 @@
       try {
         const result = await uploadFile(fileToUpload);
         if (result.status && result.url) {
-          const textarea = textareaRef.current;
-          if (textarea) {
-            let tag = "img";
-            if (isVideo) {
-              tag = "video";
-            } else if (isAudio) {
-              tag = "audio";
-            }
-            const bbcode = `[${tag}]${result.url}[/${tag}]`;
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const value = textarea.value;
-            textarea.value = value.substring(0, start) + bbcode + value.substring(end);
-            textarea.selectionStart = textarea.selectionEnd = start + bbcode.length;
-            if (tag === "img" && clientWidth && clientHeight) {
-              setPreviewMedia((prev) => [...prev, {
+          const controller = inputControllerRef.current;
+          if (!controller) return;
+          let tag = "img";
+          if (isVideo) {
+            tag = "video";
+          } else if (isAudio) {
+            tag = "audio";
+          } else if (!isImage) {
+            tag = "file";
+          }
+          const safeName = file.name.replace(/[\[\]\r\n]+/g, " ").trim() || "附件";
+          const bbcode = tag === "file" ? `[file=${safeName}]${result.url}[/file]` : `[${tag}]${result.url}[/${tag}]`;
+          controller.insertText(bbcode, { focus: true });
+          if (tag === "img" && clientWidth && clientHeight) {
+            setPreviewMedia((prev) => {
+              const existingIndex = prev.findIndex(
+                (item) => item.type === "image" && item.url === result.url && (!item.width || !item.height)
+              );
+              if (existingIndex >= 0) {
+                const next = [...prev];
+                next[existingIndex] = {
+                  ...next[existingIndex],
+                  width: clientWidth,
+                  height: clientHeight
+                };
+                return next;
+              }
+              if (prev.some((item) => item.type === "image" && item.url === result.url)) {
+                return prev;
+              }
+              return [...prev, {
                 type: "image",
                 url: result.url,
                 width: clientWidth,
                 height: clientHeight
-              }]);
-            }
-            handleInput();
+              }];
+            });
           }
         } else {
           alert(result.error || "上传失败");
@@ -5159,8 +5382,8 @@
       } finally {
         setIsUploading(false);
       }
-    }, [textareaRef, handleInput]);
-    const handleFileChange = q$1(async (e) => {
+    }, [inputControllerRef]);
+    const handleFileChange = q(async (e) => {
       const input = e.target;
       const file = input.files?.[0];
       if (file) {
@@ -5168,10 +5391,9 @@
         input.value = "";
       }
     }, [handleFileUpload]);
-    const handlePaste = q$1(async (e) => {
+    const handlePaste = q(async (e) => {
       const items = [...e.clipboardData?.items || []].filter(
-        (it) => it.kind === "file" && (it.type.startsWith("image/") || it.type.startsWith("video/") || it.type.startsWith("audio/") || it.type === "application/octet-stream" || // Some browsers report this for certain image types
-        it.type === "")
+        (it) => it.kind === "file" && (it.type.startsWith("image/") || it.type.startsWith("video/") || it.type.startsWith("audio/") || it.type === "application/octet-stream" || it.type === "")
       );
       if (items.length > 0) {
         e.preventDefault();
@@ -5181,6 +5403,12 @@
             await handleFileUpload(file);
           }
         }
+        return;
+      }
+      const text = e.clipboardData?.getData("text/plain");
+      if (text) {
+        e.preventDefault();
+        inputControllerRef.current?.insertText(text, { focus: true });
       }
     }, [handleFileUpload]);
     return {
@@ -5199,51 +5427,240 @@
     };
   }
 
+  const RICH_INPUT_TOKEN_ATTR = "data-rich-raw";
+  const BLOCK_TAGS = /* @__PURE__ */ new Set(["DIV", "P", "LI"]);
+  function buildTokenHTML(raw, innerHTML, className) {
+    return `<span class="chat-input-token ${className}" ${RICH_INPUT_TOKEN_ATTR}="${escapeHTML(raw)}" contenteditable="false">${innerHTML}</span>`;
+  }
+  function renderRichInputToken(token) {
+    switch (token.type) {
+      case "custom-image": {
+        const className = token.isCommunityEmoji ? "smiley chat-input-inline-smiley" : "custom-emoji chat-input-inline-sticker";
+        const innerHTML = `<img src="${escapeHTML(token.src)}" class="${className}" alt="${escapeHTML(token.raw)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+        return buildTokenHTML(token.raw, innerHTML, "chat-input-token-image");
+      }
+      case "bmo":
+        return buildTokenHTML(token.raw, `<span class="bmo" data-code="${escapeHTML(token.code)}"></span>`, "chat-input-token-bmo");
+      case "smiley": {
+        let className = "smiley chat-input-inline-smiley";
+        if (token.variant === "musume") {
+          className += " smiley-musume chat-input-inline-large";
+        } else if (token.variant === "blake") {
+          className += " smiley-blake chat-input-inline-large";
+        }
+        const attrs = token.variant === "bgm" ? ' width="21" height="21"' : "";
+        const innerHTML = `<img src="${escapeHTML(token.src)}" class="${className}" alt="${escapeHTML(token.raw)}"${attrs}>`;
+        return buildTokenHTML(token.raw, innerHTML, "chat-input-token-smiley");
+      }
+    }
+  }
+  function collectRenderableRichInputTokens(text) {
+    return collectRenderableInlineTokenRaws(text);
+  }
+  function renderRichInputHTML(text) {
+    return replaceInlineTokens(
+      text,
+      (token, raw) => token ? renderRichInputToken(token) : escapeHTML(raw),
+      { renderText: escapeHTML }
+    );
+  }
+  function isTokenElement(node) {
+    return node instanceof HTMLElement && node.hasAttribute(RICH_INPUT_TOKEN_ATTR);
+  }
+  function isBlockElement(node) {
+    return node instanceof HTMLElement && BLOCK_TAGS.has(node.tagName);
+  }
+  function getNodeRawLength(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent?.length || 0;
+    }
+    if (!(node instanceof HTMLElement)) {
+      return 0;
+    }
+    const raw = node.getAttribute(RICH_INPUT_TOKEN_ATTR);
+    if (raw != null) {
+      return raw.length;
+    }
+    if (node.tagName === "BR") {
+      return 1;
+    }
+    let total = 0;
+    node.childNodes.forEach((child) => {
+      total += getNodeRawLength(child);
+    });
+    return total;
+  }
+  function appendBlockBoundary(parts) {
+    const last = parts[parts.length - 1];
+    if (last?.endsWith("\n")) return;
+    parts.push("\n");
+  }
+  function extractNodeText(node, parts) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      if (node.textContent) {
+        parts.push(node.textContent);
+      }
+      return;
+    }
+    if (!(node instanceof HTMLElement)) {
+      return;
+    }
+    const raw = node.getAttribute(RICH_INPUT_TOKEN_ATTR);
+    if (raw != null) {
+      parts.push(raw);
+      return;
+    }
+    if (node.tagName === "BR") {
+      parts.push("\n");
+      return;
+    }
+    const children = Array.from(node.childNodes);
+    children.forEach((child, index) => {
+      extractNodeText(child, parts);
+      if (isBlockElement(child) && index < children.length - 1) {
+        appendBlockBoundary(parts);
+      }
+    });
+  }
+  function extractRichInputText(root) {
+    const parts = [];
+    const children = Array.from(root.childNodes);
+    children.forEach((child, index) => {
+      extractNodeText(child, parts);
+      if (isBlockElement(child) && index < children.length - 1) {
+        appendBlockBoundary(parts);
+      }
+    });
+    return parts.join("");
+  }
+  function getRawOffset(root, target, offset) {
+    let total = 0;
+    const walk = (node) => {
+      if (node === target) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          total += Math.min(offset, node.textContent?.length || 0);
+          return true;
+        }
+        if (isTokenElement(node)) {
+          total += offset > 0 ? node.getAttribute(RICH_INPUT_TOKEN_ATTR)?.length || 0 : 0;
+          return true;
+        }
+        const limit = Math.min(offset, node.childNodes.length);
+        for (let i = 0; i < limit; i++) {
+          total += getNodeRawLength(node.childNodes[i]);
+        }
+        return true;
+      }
+      if (isTokenElement(node)) {
+        total += node.getAttribute(RICH_INPUT_TOKEN_ATTR)?.length || 0;
+        return false;
+      }
+      if (node.nodeType === Node.TEXT_NODE) {
+        total += node.textContent?.length || 0;
+        return false;
+      }
+      if (node instanceof HTMLElement && node.tagName === "BR") {
+        total += 1;
+        return false;
+      }
+      for (const child of Array.from(node.childNodes)) {
+        if (walk(child)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    walk(root);
+    return total;
+  }
+  function getRichInputSelection(root) {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return null;
+    const range = selection.getRangeAt(0);
+    if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) {
+      return null;
+    }
+    return {
+      start: getRawOffset(root, range.startContainer, range.startOffset),
+      end: getRawOffset(root, range.endContainer, range.endOffset)
+    };
+  }
+  function findDomPosition(node, rawOffset) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return {
+        container: node,
+        offset: Math.min(rawOffset, node.textContent?.length || 0)
+      };
+    }
+    if (isTokenElement(node) || node instanceof HTMLElement && node.tagName === "BR") {
+      const parent = node.parentNode;
+      if (!parent) {
+        return { container: node, offset: 0 };
+      }
+      const index = Array.from(parent.childNodes).indexOf(node);
+      const nodeLength = getNodeRawLength(node);
+      return {
+        container: parent,
+        offset: index + (rawOffset > 0 && nodeLength > 0 ? 1 : 0)
+      };
+    }
+    let remaining = rawOffset;
+    for (const child of Array.from(node.childNodes)) {
+      const childLength = getNodeRawLength(child);
+      if (remaining <= childLength) {
+        return findDomPosition(child, remaining);
+      }
+      remaining -= childLength;
+    }
+    return {
+      container: node,
+      offset: node.childNodes.length
+    };
+  }
+  function setRichInputSelection(root, start, end = start) {
+    const selection = window.getSelection();
+    if (!selection) return;
+    const totalLength = getNodeRawLength(root);
+    const startOffset = Math.max(0, Math.min(start, totalLength));
+    const endOffset = Math.max(0, Math.min(end, totalLength));
+    const startPos = findDomPosition(root, startOffset);
+    const endPos = findDomPosition(root, endOffset);
+    const range = document.createRange();
+    range.setStart(startPos.container, startPos.offset);
+    range.setEnd(endPos.container, endPos.offset);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+  function getRenderedRichInputTokens(root) {
+    return Array.from(root.querySelectorAll(`[${RICH_INPUT_TOKEN_ATTR}]`)).map((node) => node.getAttribute(RICH_INPUT_TOKEN_ATTR) || "");
+  }
+  function needsRichInputNormalization(root, text) {
+    const expectedTokens = collectRenderableRichInputTokens(text);
+    const renderedTokens = getRenderedRichInputTokens(root);
+    if (expectedTokens.length !== renderedTokens.length) {
+      return true;
+    }
+    if (expectedTokens.some((token, index) => token !== renderedTokens[index])) {
+      return true;
+    }
+    return Array.from(root.querySelectorAll("div, p, br")).some(
+      (node) => !node.closest(`[${RICH_INPUT_TOKEN_ATTR}]`)
+    );
+  }
+
+  const MAX_INPUT_HEIGHT = 150;
   function ChatInput() {
-    const textareaRef = A(null);
+    const editorRef = A(null);
+    const textareaProxyRef = A(null);
+    const inputControllerRef = A(null);
     const containerRef = A(null);
+    const inputValueRef = A("");
+    const selectionRef = A({ start: 0, end: 0 });
     const [isSending, setIsSending] = d$2(false);
     const typingTimerRef = A(null);
     const isTypingRef = A(false);
     const draftSaveTimerRef = A(null);
-    const handleInput = q$1(() => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-      parseMediaFiles(textarea.value);
-      textarea.style.height = "auto";
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
-      if (settings.value.sharePresence && !isTypingRef.current) {
-        sendTypingStart();
-        isTypingRef.current = true;
-      }
-      if (typingTimerRef.current) {
-        clearTimeout(typingTimerRef.current);
-      }
-      typingTimerRef.current = setTimeout(() => {
-        if (isTypingRef.current) {
-          sendTypingStop();
-          isTypingRef.current = false;
-        }
-      }, 2500);
-      if (!editingMessage.value) {
-        if (draftSaveTimerRef.current) {
-          clearTimeout(draftSaveTimerRef.current);
-        }
-        draftSaveTimerRef.current = setTimeout(() => {
-          const content = textarea.value.trim();
-          const reply = replyingTo.value;
-          const replyInfo = reply ? {
-            id: reply.id,
-            uid: reply.uid,
-            user: reply.user,
-            avatar: reply.avatar,
-            text: reply.text,
-            raw: reply.raw
-          } : null;
-          saveDraft(content, replyInfo);
-        }, 1e3);
-      }
-    }, []);
+    const isComposingRef = A(false);
     const {
       fileInputRef,
       isUploading,
@@ -5256,63 +5673,283 @@
       handleAttachTouchEnd,
       handleFileChange,
       handlePaste
-    } = useMediaUpload(textareaRef, handleInput);
+    } = useMediaUpload(inputControllerRef);
+    const syncProxyTextarea = q((value = inputValueRef.current, selection = selectionRef.current) => {
+      const proxy = textareaProxyRef.current;
+      if (!proxy) return;
+      proxy.value = value;
+      proxy.selectionStart = selection.start;
+      proxy.selectionEnd = selection.end;
+    }, []);
+    const updateEditorHeight = q(() => {
+      const editor = editorRef.current;
+      if (!editor) return;
+      editor.style.height = "auto";
+      const nextHeight = Math.max(38, Math.min(editor.scrollHeight, MAX_INPUT_HEIGHT));
+      editor.style.height = `${nextHeight}px`;
+      editor.classList.toggle("is-overflowing", editor.scrollHeight > MAX_INPUT_HEIGHT);
+    }, []);
+    const syncRenderedAssetLayout = q(() => {
+      const editor = editorRef.current;
+      if (!editor) return;
+      const images = Array.from(editor.querySelectorAll("img"));
+      if (images.length === 0) {
+        requestAnimationFrame(updateEditorHeight);
+        return;
+      }
+      images.forEach((img) => {
+        if (img.complete) return;
+        const refresh = () => requestAnimationFrame(updateEditorHeight);
+        img.addEventListener("load", refresh, { once: true });
+        img.addEventListener("error", refresh, { once: true });
+      });
+      requestAnimationFrame(updateEditorHeight);
+    }, [updateEditorHeight]);
+    const scheduleDraftSave = q((value) => {
+      if (editingMessage.value) return;
+      if (draftSaveTimerRef.current) {
+        clearTimeout(draftSaveTimerRef.current);
+      }
+      draftSaveTimerRef.current = setTimeout(() => {
+        const content = value.trim();
+        const reply = replyingTo.value;
+        const replyInfo = reply ? {
+          id: reply.id,
+          uid: reply.uid,
+          user: reply.user,
+          avatar: reply.avatar,
+          text: reply.text,
+          raw: reply.raw
+        } : null;
+        saveDraft(content, replyInfo);
+      }, DRAFT_SAVE_DELAY);
+    }, []);
+    const processInputState = q((value, knownMeta, options = {}) => {
+      parseMediaFiles(value, knownMeta);
+      updateEditorHeight();
+      if (options.silent) {
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+        }
+        if (isTypingRef.current) {
+          sendTypingStop();
+          isTypingRef.current = false;
+        }
+        if (draftSaveTimerRef.current) {
+          clearTimeout(draftSaveTimerRef.current);
+        }
+      } else {
+        if (settings.value.sharePresence && !isTypingRef.current) {
+          sendTypingStart();
+          isTypingRef.current = true;
+        }
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+        }
+        typingTimerRef.current = setTimeout(() => {
+          if (isTypingRef.current) {
+            sendTypingStop();
+            isTypingRef.current = false;
+          }
+        }, TYPING_STOP_DELAY);
+        scheduleDraftSave(value);
+      }
+    }, [parseMediaFiles, scheduleDraftSave, updateEditorHeight]);
+    const renderBmoTokens = q((value) => {
+      if (!value.includes("(bmo")) return;
+      const editor = editorRef.current;
+      const bmoji = window.Bmoji;
+      if (!editor || typeof bmoji?.renderAll !== "function") return;
+      requestAnimationFrame(() => {
+        if (editorRef.current === editor) {
+          bmoji.renderAll(editor, { width: 21, height: 21 });
+          requestAnimationFrame(updateEditorHeight);
+        }
+      });
+    }, [updateEditorHeight]);
+    const renderEditorValue = q((value, selection, focus = false) => {
+      const editor = editorRef.current;
+      if (!editor) return;
+      editor.innerHTML = renderRichInputHTML(value);
+      if (focus) {
+        editor.focus();
+      }
+      if (focus || document.activeElement === editor) {
+        setRichInputSelection(editor, selection.start, selection.end);
+      }
+      syncRenderedAssetLayout();
+      renderBmoTokens(value);
+    }, [renderBmoTokens, syncRenderedAssetLayout]);
+    const applyInputValue = q((value, options = {}) => {
+      const selection = options.selection || { start: value.length, end: value.length };
+      inputValueRef.current = value;
+      selectionRef.current = selection;
+      syncProxyTextarea(value, selection);
+      renderEditorValue(value, selection, !!options.focus);
+      processInputState(value, options.knownMeta, options);
+    }, [processInputState, renderEditorValue, syncProxyTextarea]);
+    inputControllerRef.current = {
+      focus: () => editorRef.current?.focus(),
+      getSelection: () => {
+        const editor = editorRef.current;
+        const selection = editor ? getRichInputSelection(editor) : null;
+        if (selection) {
+          selectionRef.current = selection;
+          syncProxyTextarea(inputValueRef.current, selection);
+          return selection;
+        }
+        return selectionRef.current;
+      },
+      getValue: () => inputValueRef.current,
+      insertText: (text, options = {}) => {
+        const currentSelection = inputControllerRef.current?.getSelection() || selectionRef.current;
+        inputControllerRef.current?.replaceRange(text, currentSelection.start, currentSelection.end, options);
+      },
+      replaceRange: (text, start, end, options = {}) => {
+        const currentValue = inputValueRef.current;
+        const nextValue = currentValue.substring(0, start) + text + currentValue.substring(end);
+        const selection = options.selection || {
+          start: start + text.length,
+          end: start + text.length
+        };
+        applyInputValue(nextValue, { ...options, selection });
+      },
+      setSelection: (start, end = start) => {
+        const selection = { start, end };
+        selectionRef.current = selection;
+        syncProxyTextarea(inputValueRef.current, selection);
+        const editor = editorRef.current;
+        if (editor && document.activeElement === editor) {
+          setRichInputSelection(editor, start, end);
+        }
+      },
+      setValue: (value, options = {}) => {
+        applyInputValue(value, options);
+      }
+    };
+    const handleEditorInput = q(() => {
+      const editor = editorRef.current;
+      if (!editor) return;
+      const selection = getRichInputSelection(editor) || selectionRef.current;
+      const value = extractRichInputText(editor);
+      inputValueRef.current = value;
+      selectionRef.current = selection;
+      syncProxyTextarea(value, selection);
+      if (!isComposingRef.current && needsRichInputNormalization(editor, value)) {
+        renderEditorValue(value, selection);
+      }
+      processInputState(value);
+    }, [processInputState, renderEditorValue, syncProxyTextarea]);
+    const handleCompositionStart = q(() => {
+      isComposingRef.current = true;
+    }, []);
+    const handleCompositionEnd = q(() => {
+      isComposingRef.current = false;
+      handleEditorInput();
+    }, [handleEditorInput]);
+    const clearInput = q((focus = false) => {
+      inputControllerRef.current?.setValue("", {
+        focus,
+        silent: true,
+        selection: { start: 0, end: 0 }
+      });
+    }, []);
     y$1(() => {
       const mention = pendingMention.value;
-      if (mention && textareaRef.current) {
-        const { uid, nickname } = mention;
-        const textarea = textareaRef.current;
-        const mentionText = uid === "bot" ? `@${nickname}` : `[user=${uid}]${nickname}[/user]`;
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const value = textarea.value;
-        if (value.length > 0 && !value.endsWith(" ")) {
-          textarea.value = value.substring(0, start) + " " + mentionText + " " + value.substring(end);
-          textarea.selectionStart = textarea.selectionEnd = start + mentionText.length + 2;
-        } else {
-          textarea.value = value.substring(0, start) + mentionText + " " + value.substring(end);
-          textarea.selectionStart = textarea.selectionEnd = start + mentionText.length + 1;
-        }
-        textarea.focus();
-        handleInput();
-        pendingMention.value = null;
-      }
+      const controller = inputControllerRef.current;
+      if (!mention || !controller) return;
+      const { uid, nickname } = mention;
+      const mentionText = uid === "bot" ? `@${nickname}` : `[user=${uid}]${nickname}[/user]`;
+      const { start, end } = controller.getSelection();
+      const value = controller.getValue();
+      const before = value.slice(0, start);
+      const needsLeadingSpace = before.length > 0 && !/\s$/.test(before);
+      const text = `${needsLeadingSpace ? " " : ""}${mentionText} `;
+      controller.replaceRange(text, start, end, { focus: true });
+      pendingMention.value = null;
     }, [pendingMention.value]);
     y$1(() => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
       if (editingMessage.value) return;
       const draft = loadDraft();
-      if (draft) {
-        if (draft.content) {
-          textarea.value = draft.content;
-          setTimeout(() => {
-            handleInput();
-          }, 0);
-        }
-        if (draft.replyTo) {
-          setReplyTo({
-            ...draft.replyTo,
-            raw: draft.replyTo.raw || draft.replyTo.text
-          });
-        }
+      if (draft?.content) {
+        inputControllerRef.current?.setValue(draft.content, {
+          silent: true,
+          selection: { start: draft.content.length, end: draft.content.length }
+        });
+      } else {
+        updateEditorHeight();
       }
-      loadDraft();
+      if (draft?.replyTo) {
+        setReplyTo({
+          ...draft.replyTo,
+          raw: draft.replyTo.raw || draft.replyTo.text
+        });
+      }
     }, []);
     y$1(() => {
       const msg = editingMessage.value;
-      if (msg && textareaRef.current) {
-        textareaRef.current.value = msg.raw;
-        textareaRef.current.focus();
-        handleInput();
-        parseMediaFiles(msg.raw, msg.image_meta);
+      if (msg) {
+        inputControllerRef.current?.setValue(msg.raw, {
+          focus: true,
+          knownMeta: msg.image_meta,
+          silent: true,
+          selection: { start: msg.raw.length, end: msg.raw.length }
+        });
+        return;
       }
-    }, [editingMessage.value]);
+      updateEditorHeight();
+    }, [editingMessage.value, updateEditorHeight]);
+    y$1(() => {
+      const proxy = textareaProxyRef.current;
+      if (!proxy) return;
+      const handleProxyInput = () => {
+        applyInputValue(proxy.value, {
+          selection: {
+            start: proxy.selectionStart,
+            end: proxy.selectionEnd
+          }
+        });
+      };
+      proxy.addEventListener("input", handleProxyInput);
+      return () => proxy.removeEventListener("input", handleProxyInput);
+    }, [applyInputValue]);
+    y$1(() => {
+      const syncSelection = () => {
+        const editor = editorRef.current;
+        if (!editor || document.activeElement !== editor) return;
+        const selection = getRichInputSelection(editor);
+        if (!selection) return;
+        selectionRef.current = selection;
+        syncProxyTextarea(inputValueRef.current, selection);
+      };
+      document.addEventListener("selectionchange", syncSelection);
+      return () => document.removeEventListener("selectionchange", syncSelection);
+    }, [syncProxyTextarea]);
+    y$1(() => {
+      return () => {
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+        }
+        if (draftSaveTimerRef.current) {
+          clearTimeout(draftSaveTimerRef.current);
+        }
+        if (isTypingRef.current) {
+          sendTypingStop();
+        }
+      };
+    }, []);
+    const getImageMeta = () => previewMedia.reduce((meta, media) => {
+      if (media.type === "image" && media.width && media.height) {
+        meta[media.url] = {
+          width: media.width,
+          height: media.height
+        };
+      }
+      return meta;
+    }, {});
     const handleSend = async () => {
-      const textarea = textareaRef.current;
-      if (!textarea || isSending) return;
-      const content = textarea.value.trim();
-      if (!content) return;
+      const content = inputValueRef.current.trim();
+      if (!content || isSending) return;
       setIsSending(true);
       try {
         if (editingMessage.value) {
@@ -5326,17 +5963,8 @@ ${content}`;
           if (!result.status) {
             alert(result.error || "编辑失败");
           } else {
-            textarea.value = "";
-            textarea.style.height = "auto";
-            const imageMeta = {};
-            for (const media of previewMedia) {
-              if (media.type === "image" && media.width && media.height) {
-                imageMeta[media.url] = {
-                  width: media.width,
-                  height: media.height
-                };
-              }
-            }
+            clearInput();
+            const imageMeta = getImageMeta();
             if (Object.keys(imageMeta).length > 0) {
               updateMessage(Number(editingMessage.value.id), { image_meta: imageMeta });
             }
@@ -5349,15 +5977,7 @@ ${content}`;
             finalContent = `[quote=${reply.id}][/quote]${content}`;
           }
           const transformedContent = await transformMentions(finalContent, lookupUsersByName);
-          const imageMeta = {};
-          for (const media of previewMedia) {
-            if (media.type === "image" && media.width && media.height) {
-              imageMeta[media.url] = {
-                width: media.width,
-                height: media.height
-              };
-            }
-          }
+          const imageMeta = getImageMeta();
           const user = userInfo.value;
           const { tempId, stableKey } = addOptimisticMessage(
             transformedContent,
@@ -5367,12 +5987,10 @@ ${content}`;
             Object.keys(imageMeta).length > 0 ? imageMeta : void 0
           );
           sendPendingMessage(stableKey, transformedContent);
-          textarea.value = "";
-          textarea.style.height = "auto";
+          clearInput(true);
           setPreviewMedia([]);
           clearDraft();
           cancelReplyOrEdit();
-          textarea.focus();
           const result = await sendMessage$1(transformedContent);
           if (!result.status) {
             removeOptimisticMessage(tempId);
@@ -5388,21 +6006,14 @@ ${content}`;
     const handleKeyDown = (e) => {
       if (e.key !== "Enter") return;
       const isShortcut = e.ctrlKey || e.metaKey;
-      if (settings.value.sendShortcut === "Enter" && !isShortcut || settings.value.sendShortcut === "CtrlEnter" && isShortcut) {
+      const shouldSend = settings.value.sendShortcut === "Enter" && !isShortcut || settings.value.sendShortcut === "CtrlEnter" && isShortcut;
+      if (shouldSend) {
         e.preventDefault();
         handleSend();
-      } else if (settings.value.sendShortcut === "Enter" && isShortcut) {
-        e.preventDefault();
-        const textarea = textareaRef.current;
-        if (textarea) {
-          const start = textarea.selectionStart;
-          const end = textarea.selectionEnd;
-          const value = textarea.value;
-          textarea.value = value.substring(0, start) + "\n" + value.substring(end);
-          textarea.selectionStart = textarea.selectionEnd = start + 1;
-          handleInput();
-        }
+        return;
       }
+      e.preventDefault();
+      inputControllerRef.current?.insertText("\n", { focus: true });
     };
     y$1(() => {
       if (!containerRef.current) return;
@@ -5417,9 +6028,15 @@ ${content}`;
       return () => observer.disconnect();
     }, []);
     return /* @__PURE__ */ u$2("div", { ref: containerRef, class: "chat-input-container", children: [
-      /* @__PURE__ */ u$2(SmileyPanel, {}),
-      /* @__PURE__ */ u$2(TextFormatter, { textareaRef }),
-      /* @__PURE__ */ u$2(MentionCompleter, { textareaRef }),
+      /* @__PURE__ */ u$2(
+        SmileyPanel,
+        {
+          onSelect: (code) => inputControllerRef.current?.insertText(code, { focus: true }),
+          textareaRef: textareaProxyRef
+        }
+      ),
+      /* @__PURE__ */ u$2(TextFormatter, { editorRef, inputControllerRef }),
+      /* @__PURE__ */ u$2(MentionCompleter, { editorRef, inputControllerRef }),
       /* @__PURE__ */ u$2(TypingIndicator, {}),
       /* @__PURE__ */ u$2("div", { class: "chat-input-area", children: [
         (replyingTo.value || editingMessage.value) && /* @__PURE__ */ u$2("div", { id: "dollars-reply-preview", class: `reply-preview visible`, children: [
@@ -5447,10 +6064,7 @@ ${content}`;
             {
               class: "reply-cancel-btn",
               onClick: () => {
-                if (textareaRef.current) {
-                  textareaRef.current.value = "";
-                  textareaRef.current.style.height = "auto";
-                }
+                clearInput();
                 cancelReplyOrEdit();
               },
               children: "✕"
@@ -5472,28 +6086,44 @@ ${content}`;
               class: "action-btn",
               title: "表情",
               onClick: () => toggleSmileyPanel(),
-              dangerouslySetInnerHTML: { __html: SVGIcons.emoji }
+              dangerouslySetInnerHTML: { __html: iconEmoji }
             }
           ),
-          /* @__PURE__ */ u$2("div", { class: "dollars-input-wrapper", children: /* @__PURE__ */ u$2(
-            "textarea",
-            {
-              ref: textareaRef,
-              class: "chat-textarea",
-              placeholder: "说点什么...",
-              rows: 1,
-              onInput: handleInput,
-              onKeyDown: handleKeyDown,
-              onPaste: handlePaste
-            }
-          ) }),
+          /* @__PURE__ */ u$2("div", { class: "dollars-input-wrapper", children: [
+            /* @__PURE__ */ u$2(
+              "div",
+              {
+                ref: editorRef,
+                class: "chat-textarea chat-rich-editor",
+                contentEditable: true,
+                role: "textbox",
+                "aria-multiline": "true",
+                "data-placeholder": "说点什么...",
+                spellcheck: false,
+                onInput: handleEditorInput,
+                onKeyDown: handleKeyDown,
+                onPaste: handlePaste,
+                onCompositionStart: handleCompositionStart,
+                onCompositionEnd: handleCompositionEnd
+              }
+            ),
+            /* @__PURE__ */ u$2(
+              "textarea",
+              {
+                ref: textareaProxyRef,
+                class: "chat-textarea-proxy",
+                tabIndex: -1,
+                "aria-hidden": "true"
+              }
+            )
+          ] }),
           /* @__PURE__ */ u$2("div", { class: "input-actions", children: [
             /* @__PURE__ */ u$2(
               "button",
               {
                 id: "dollars-attach-btn",
                 class: "action-btn",
-                title: "上传图片/视频（长按上传音频）",
+                title: "上传图片/视频（长按上传文件）",
                 onClick: handleAttachClick,
                 onTouchStart: handleAttachTouchStart,
                 onTouchEnd: handleAttachTouchEnd,
@@ -5501,7 +6131,7 @@ ${content}`;
                 onMouseDown: handleAttachTouchStart,
                 onMouseUp: handleAttachTouchEnd,
                 onMouseLeave: handleAttachTouchEnd,
-                dangerouslySetInnerHTML: { __html: SVGIcons.upload }
+                dangerouslySetInnerHTML: { __html: iconUpload }
               }
             ),
             /* @__PURE__ */ u$2(
@@ -5522,7 +6152,7 @@ ${content}`;
                 onClick: handleSend,
                 onMouseDown: (e) => e.preventDefault(),
                 title: isUploading ? "上传中..." : "发送",
-                dangerouslySetInnerHTML: { __html: SVGIcons.send }
+                dangerouslySetInnerHTML: { __html: iconSend }
               }
             )
           ] })
@@ -5583,7 +6213,7 @@ ${content}`;
       };
       parseUserFilter();
     }, [searchQuery.value]);
-    const loadMore = q$1(async () => {
+    const loadMore = q(async () => {
       if (isLoading.value || !hasMore.value || isResolvingUser.value) return;
       if (targetUid.value === -1) return;
       isLoading.value = true;
@@ -5699,7 +6329,7 @@ ${content}`;
     const searchOffset = A(0);
     const inputRef = A(null);
     const isGalleryMode = useSignal(false);
-    const performSearch = q$1(async (q, isNewSearch = false) => {
+    const performSearch = q(async (q, isNewSearch = false) => {
       if (!q.trim()) {
         results.value = [];
         return;
@@ -5724,7 +6354,7 @@ ${content}`;
         isLoading.value = false;
       }
     }, []);
-    const debouncedSearch = q$1(debounce((q) => performSearch(q, true), 500), []);
+    const debouncedSearch = q(debounce((q) => performSearch(q, true), SEARCH_DEBOUNCE), []);
     y$1(() => {
       if (isSearchActive.value && searchQuery.value) {
         debouncedSearch(searchQuery.value);
@@ -5832,7 +6462,7 @@ ${content}`;
             {
               class: "search-icon",
               style: { display: "flex", alignItems: "center", opacity: 0.5 },
-              dangerouslySetInnerHTML: { __html: SVGIcons.search }
+              dangerouslySetInnerHTML: { __html: iconSearch }
             }
           ),
           /* @__PURE__ */ u$2(
@@ -5851,7 +6481,7 @@ ${content}`;
             {
               class: "search-close-btn",
               onClick: handleClose,
-              dangerouslySetInnerHTML: { __html: SVGIcons.close }
+              dangerouslySetInnerHTML: { __html: iconClose }
             }
           )
         ] }),
@@ -5861,7 +6491,7 @@ ${content}`;
             class: "search-calendar-btn",
             onClick: openDatePicker,
             title: "按日期跳转",
-            dangerouslySetInnerHTML: { __html: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M11 15h1" /><path d="M12 15v3" /></svg>` }
+            dangerouslySetInnerHTML: { __html: iconCalendar }
           }
         ),
         /* @__PURE__ */ u$2(
@@ -5870,7 +6500,7 @@ ${content}`;
             class: `search-gallery-btn ${isGalleryMode.value ? "active" : ""}`,
             onClick: toggleGalleryMode,
             title: "相册模式",
-            dangerouslySetInnerHTML: { __html: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-photo"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" /><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" /></svg>` }
+            dangerouslySetInnerHTML: { __html: iconPhoto }
           }
         )
       ] }),
@@ -6048,24 +6678,24 @@ ${content}`;
             ] }),
             profile && /* @__PURE__ */ u$2("div", { class: "uprofile-actions", children: [
               /* @__PURE__ */ u$2("button", { class: "uprofile-action-btn", onClick: handleHistory, children: [
-                /* @__PURE__ */ u$2("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: SVGIcons.history } }),
+                /* @__PURE__ */ u$2("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconHistory } }),
                 "搜索发言"
               ] }),
               /* @__PURE__ */ u$2("button", { class: "uprofile-action-btn", onClick: handleHomepage, children: [
-                /* @__PURE__ */ u$2("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: SVGIcons.home } }),
+                /* @__PURE__ */ u$2("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconHome } }),
                 "主页"
               ] })
             ] }),
             (profile?.sign || profile?.stats?.first_message_time) && /* @__PURE__ */ u$2("div", { class: "uprofile-info-section", children: [
               profile.sign && /* @__PURE__ */ u$2("div", { class: "uprofile-info-row", children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: SVGIcons.pen } }),
+                /* @__PURE__ */ u$2("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconPen } }),
                 /* @__PURE__ */ u$2("div", { class: "uprofile-info-content", children: [
                   /* @__PURE__ */ u$2("div", { class: "uprofile-info-label", children: "个性签名" }),
                   /* @__PURE__ */ u$2("div", { class: "uprofile-info-value uprofile-sign-value", children: profile.sign })
                 ] })
               ] }),
               profile.stats?.first_message_time && /* @__PURE__ */ u$2("div", { class: "uprofile-info-row", children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: SVGIcons.calendar } }),
+                /* @__PURE__ */ u$2("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconCalendar } }),
                 /* @__PURE__ */ u$2("div", { class: "uprofile-info-content", children: [
                   /* @__PURE__ */ u$2("div", { class: "uprofile-info-label", children: "首次发言" }),
                   /* @__PURE__ */ u$2("div", { class: "uprofile-info-value", children: formatDate(new Date(profile.stats.first_message_time).getTime() / 1e3, "full") })
@@ -6634,7 +7264,7 @@ ${content}`;
       if (isReactionPickerOpen.value && containerRef.current) {
         const el = containerRef.current;
         const rect = el.getBoundingClientRect();
-        let { x: x2, y: y2, width: width2 } = reactionPickerPosition.value;
+        let { x: x2, y: y2 } = reactionPickerPosition.value;
         let hasChanged = false;
         if (x2 + rect.width > window.innerWidth) {
           x2 = Math.max(10, window.innerWidth - rect.width - 10);
@@ -6658,7 +7288,7 @@ ${content}`;
         }
       }
     }, [isReactionPickerOpen.value, reactionPickerPosition.value, activeTab]);
-    const handleReaction = q$1(async (emoji) => {
+    const handleReaction = q(async (emoji) => {
       const targetId = contextMenuTargetId.value;
       if (!targetId) return;
       hideReactionPicker();
@@ -6797,13 +7427,13 @@ ${content}`;
       renderBmo();
       return onBmoReady(renderBmo);
     }, [isContextMenuOpen.value]);
-    const handleReaction = q$1(async (emoji) => {
+    const handleReaction = q(async (emoji) => {
       const targetId2 = contextMenuTargetId.value;
       if (!targetId2) return;
       hideContextMenu();
       await toggleReaction(Number(targetId2), emoji);
     }, []);
-    const handleMoreReactions = q$1((e) => {
+    const handleMoreReactions = q((e) => {
       e.stopPropagation();
       if (isReactionPickerOpen.value) {
         hideReactionPicker();
@@ -6816,7 +7446,7 @@ ${content}`;
         showReactionPicker(rect.left, rect.bottom + 8, rect.width);
       }
     }, []);
-    const handleReply = q$1(() => {
+    const handleReply = q(() => {
       const targetId2 = contextMenuTargetId.value;
       if (!targetId2) return;
       hideContextMenu();
@@ -6826,7 +7456,7 @@ ${content}`;
       const uid = messageEl.dataset.uid || "";
       const user = messageEl.querySelector(".nickname a")?.textContent?.trim() || "";
       const avatar = messageEl.querySelector(".avatar")?.src || "";
-      const text = stripQuotes(decodeHTML(raw)).replace(/\[img\].*?\[\/img\]/gi, "[图片]").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+      const text = stripQuotes(decodeHTML(raw)).replace(/\[img\].*?\[\/img\]/gi, "[图片]").replace(/\[file=.*?\].*?\[\/file\]/gi, "[附件]").replace(/\n/g, " ").replace(/\s+/g, " ").trim();
       setReplyTo({
         id: targetId2,
         uid,
@@ -6836,7 +7466,7 @@ ${content}`;
         avatar
       });
     }, []);
-    const handleEdit = q$1(() => {
+    const handleEdit = q(() => {
       const targetId2 = contextMenuTargetId.value;
       if (!targetId2) return;
       hideContextMenu();
@@ -6858,7 +7488,7 @@ ${content}`;
         image_meta: msg2.image_meta
       });
     }, []);
-    const handleCopy = q$1(async () => {
+    const handleCopy = q(async () => {
       const targetId2 = contextMenuTargetId.value;
       if (!targetId2) return;
       hideContextMenu();
@@ -6870,7 +7500,7 @@ ${content}`;
       } catch (e) {
       }
     }, []);
-    const handleDelete = q$1(async () => {
+    const handleDelete = q(async () => {
       const targetId2 = contextMenuTargetId.value;
       if (!targetId2) return;
       hideContextMenu();
@@ -6882,9 +7512,8 @@ ${content}`;
         alert(result.error || "撤回失败");
       }
     }, []);
-    const handleFavorite = q$1((e) => {
+    const handleFavorite = q((e) => {
       const button = e.currentTarget;
-      button.querySelector("span:not(.context-icon)")?.textContent || "收藏表情";
       if (contextMenuBmoCode.value) {
         const bmoCode = contextMenuBmoCode.value;
         try {
@@ -6957,30 +7586,30 @@ ${content}`;
                   class: `context-menu-reactions-more ${isReactionPickerOpen.value ? "expanded" : ""}`,
                   onClick: handleMoreReactions,
                   title: "更多表情",
-                  dangerouslySetInnerHTML: { __html: SVGIcons.expand }
+                  dangerouslySetInnerHTML: { __html: iconExpand }
                 }
               )
             ] }),
             !isReactionPickerOpen.value && /* @__PURE__ */ u$2("div", { class: "context-menu-items", children: [
               /* @__PURE__ */ u$2("button", { "data-action": "reply", onClick: handleReply, children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: SVGIcons.reply } }),
+                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconReply } }),
                 /* @__PURE__ */ u$2("span", { children: "回复" })
               ] }),
               /* @__PURE__ */ u$2("button", { "data-action": "copy", onClick: handleCopy, children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: SVGIcons.copy } }),
+                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconCopy } }),
                 /* @__PURE__ */ u$2("span", { children: "复制" })
               ] }),
               hasImage && /* @__PURE__ */ u$2("button", { class: "image-action", "data-action": "favorite", onClick: handleFavorite, children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: SVGIcons.favorite } }),
+                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconFavorite } }),
                 /* @__PURE__ */ u$2("span", { children: "收藏表情" })
               ] }),
               isSelf && /* @__PURE__ */ u$2(k$1, { children: [
                 /* @__PURE__ */ u$2("button", { class: "auth-action", "data-action": "edit", onClick: handleEdit, children: [
-                  /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: SVGIcons.edit } }),
+                  /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconEdit } }),
                   /* @__PURE__ */ u$2("span", { children: "编辑" })
                 ] }),
                 /* @__PURE__ */ u$2("button", { class: "auth-action danger", "data-action": "delete", onClick: handleDelete, children: [
-                  /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: SVGIcons.delete } }),
+                  /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconDelete } }),
                   /* @__PURE__ */ u$2("span", { children: "撤回" })
                 ] })
               ] })
@@ -7088,16 +7717,13 @@ ${content}`;
                     alt: profile?.nickname ?? userId ?? ""
                   }
                 ),
-                /* @__PURE__ */ u$2("div", { class: "dollars-profile-names", children: loading ? /* @__PURE__ */ u$2(k$1, { children: [
-                  /* @__PURE__ */ u$2("div", { class: "dollars-profile-skel dollars-profile-skel-name" }),
-                  /* @__PURE__ */ u$2("div", { class: "dollars-profile-skel dollars-profile-skel-user" })
-                ] }) : /* @__PURE__ */ u$2(k$1, { children: [
+                /* @__PURE__ */ u$2("div", { class: "dollars-profile-names", children: [
                   /* @__PURE__ */ u$2("div", { class: "dollars-profile-nickname", children: profile?.nickname }),
                   /* @__PURE__ */ u$2("div", { class: "dollars-profile-username", children: [
                     "@",
                     profile?.username ?? userId
                   ] })
-                ] }) })
+                ] })
               ] }),
               /* @__PURE__ */ u$2("div", { class: "dollars-profile-actions", children: [
                 /* @__PURE__ */ u$2(
@@ -7106,7 +7732,7 @@ ${content}`;
                     class: "dollars-profile-btn",
                     title: "搜索历史发言",
                     onClick: handleHistory,
-                    dangerouslySetInnerHTML: { __html: SVGIcons.history }
+                    dangerouslySetInnerHTML: { __html: iconHistory }
                   }
                 ),
                 /* @__PURE__ */ u$2(
@@ -7115,12 +7741,12 @@ ${content}`;
                     class: "dollars-profile-btn",
                     title: "主页",
                     onClick: handleHomepage,
-                    dangerouslySetInnerHTML: { __html: SVGIcons.home }
+                    dangerouslySetInnerHTML: { __html: iconHome }
                   }
                 )
               ] })
             ] }),
-            loading ? /* @__PURE__ */ u$2("div", { class: "dollars-profile-skel dollars-profile-skel-sign" }) : /* @__PURE__ */ u$2("div", { class: "dollars-profile-sign", children: profile?.sign || "这个人很懒，什么都没有写..." }),
+            /* @__PURE__ */ u$2("div", { class: "dollars-profile-sign", children: profile?.sign || "这个人很懒，什么都没有写..." }),
             /* @__PURE__ */ u$2("div", { class: `dollars-profile-footer ${active ? "active" : ""}`, children: loading ? "加载中..." : lastActiveText ?? "暂无发言记录" })
           ] })
         ]
@@ -7129,26 +7755,21 @@ ${content}`;
   }
 
   function DockButton() {
-    const [portalTarget, setPortalTarget] = d$2(null);
-    const liRef = A(null);
     y$1(() => {
-      const dockContainer = document.querySelector("#dock ul");
       const notifyLink = document.querySelector('#dock a[href*="/notify/all"]');
-      if (!dockContainer || !notifyLink) return;
+      if (!notifyLink) return;
       const parentLi = notifyLink.closest("li");
       if (!parentLi) return;
       const li = document.createElement("li");
       li.className = "chat";
       parentLi.before(li);
-      liRef.current = li;
-      setPortalTarget(li);
+      G(/* @__PURE__ */ u$2(DockButtonContent, {}), li);
       return () => {
+        G(null, li);
         li.remove();
-        liRef.current = null;
       };
     }, []);
-    if (!portalTarget) return null;
-    return $(/* @__PURE__ */ u$2(DockButtonContent, {}), portalTarget);
+    return null;
   }
   const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.05 20.1l-3.05 -6.1l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5l-3.312 9.173" /><path d="M19 16l-2 3h4l-2 3" /></svg>`;
   const svgDataUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svgString)}`;
@@ -7210,7 +7831,7 @@ ${content}`;
     static getDerivedStateFromError(error) {
       return { hasError: true, error };
     }
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(_error, _errorInfo) {
     }
     render() {
       if (this.state.hasError) {
@@ -7260,15 +7881,16 @@ ${content}`;
 .lb-overlay{position:fixed;inset:0;z-index:var(--dollars-z-index-modal,2000);background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;touch-action:none;user-select:none;-webkit-user-select:none}
 .lb-overlay.lb-visible{opacity:1}
 .lb-overlay.lb-closing{opacity:0}
-.lb-img-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;transform-origin:center center;transition:transform .25s ease,opacity .2s ease;will-change:transform;pointer-events:none;-webkit-user-drag:none}
+.lb-img-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
+.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;transform-origin:center center;transition:transform .25s ease,opacity .2s ease;will-change:transform;pointer-events:auto;-webkit-user-drag:none;user-select:auto;-webkit-user-select:auto;-webkit-touch-callout:default}
 .lb-img.lb-dragging{transition:none}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s,opacity .2s;opacity:.7}
-.lb-nav:hover{background:rgba(255,255,255,.3);opacity:1}
+.lb-nav,.lb-close{position:absolute;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
+.lb-nav{top:50%;transform:translateY(-50%);width:44px;height:44px;opacity:.7;transition:background .2s,opacity .2s}
+.lb-nav:hover,.lb-close:hover{background:rgba(255,255,255,.3)}
+.lb-nav:hover{opacity:1}
 .lb-prev{left:12px}
 .lb-next{right:12px}
-.lb-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s;font-size:20px}
-.lb-close:hover{background:rgba(255,255,255,.3)}
+.lb-close{top:12px;right:12px;width:40px;height:40px;font-size:20px}
 .lb-counter{position:absolute;top:16px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:14px;z-index:2;pointer-events:none}
 .lb-capsule{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:min(76vw,340px);padding:7px 12px 7px 9px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(12,12,14,.56);backdrop-filter:blur(12px) saturate(1.1);-webkit-backdrop-filter:blur(12px) saturate(1.1);box-shadow:0 8px 20px rgba(0,0,0,.24);color:#fff;cursor:pointer;z-index:2;transition:background-color .18s ease,border-color .18s ease,transform .18s ease;appearance:none;-webkit-appearance:none;font:inherit;text-align:left}
 .lb-capsule:hover{background:rgba(12,12,14,.68);border-color:rgba(255,255,255,.2);transform:translateX(-50%) scale(1.015)}
@@ -7281,7 +7903,6 @@ ${content}`;
 @media(max-width:600px){.lb-nav{display:none}.lb-img{max-width:100vw;max-height:100vh}.lb-capsule{bottom:18px;max-width:calc(100vw - 28px);padding:7px 11px 7px 9px}}
 `;
     const el = document.createElement("style");
-    el.setAttribute("data-lb-styles", "");
     el.textContent = css;
     document.head.appendChild(el);
   }
@@ -7319,7 +7940,7 @@ ${content}`;
     const visible = isImageViewerOpen.value;
     const total = images.length;
     const currentItem = items[index];
-    const handleCapsuleClick = q$1((e) => {
+    const handleCapsuleClick = q((e) => {
       e.stopPropagation();
       const messageId = currentItem?.messageId;
       if (!messageId) return;
@@ -7333,13 +7954,39 @@ ${content}`;
       pendingJumpToMessage.value = messageId;
       toggleChat(true);
     }, [currentItem?.messageId, source]);
-    const applyTransform = q$1(() => {
+    const applyTransform = q(() => {
       const img = imgRef.current;
       if (img) {
         img.style.transform = `translate3d(${tx.current}px,${ty.current}px,0) scale(${scale.current})`;
       }
     }, []);
-    const resetTransform = q$1(() => {
+    const zoomAtPoint = q((clientX, clientY, nextScale) => {
+      const img = imgRef.current;
+      if (!img) return;
+      const currentScale = scale.current;
+      const clampedScale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+      if (clampedScale <= MIN_SCALE) {
+        scale.current = 1;
+        tx.current = 0;
+        ty.current = 0;
+        img.classList.remove("lb-dragging");
+        applyTransform();
+        return;
+      }
+      const rect = img.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const ratio = clampedScale / currentScale;
+      tx.current += (clientX - centerX) * (1 - ratio);
+      ty.current += (clientY - centerY) * (1 - ratio);
+      scale.current = clampedScale;
+      img.classList.remove("lb-dragging");
+      applyTransform();
+    }, [applyTransform]);
+    const toggleZoomAtPoint = q((clientX, clientY) => {
+      zoomAtPoint(clientX, clientY, scale.current > 1.1 ? 1 : 2.5);
+    }, [zoomAtPoint]);
+    const resetTransform = q(() => {
       scale.current = 1;
       tx.current = 0;
       ty.current = 0;
@@ -7349,7 +7996,7 @@ ${content}`;
         img.style.transform = "";
       }
     }, []);
-    const close = q$1(() => {
+    const close = q(() => {
       if (closing.current) return;
       closing.current = true;
       const overlay = overlayRef.current;
@@ -7362,7 +8009,7 @@ ${content}`;
         closing.current = false;
       }, ANIM_DURATION);
     }, []);
-    const navigate = q$1((dir) => {
+    const navigate = q((dir) => {
       if (total <= 1) return;
       const next = (index + dir + total) % total;
       imageViewerIndex.value = next;
@@ -7409,25 +8056,7 @@ ${content}`;
         const now = Date.now();
         if (now - lastTap.current < DOUBLE_TAP_DELAY) {
           e.preventDefault();
-          if (scale.current > 1.1) {
-            scale.current = 1;
-            tx.current = 0;
-            ty.current = 0;
-            imgRef.current?.classList.remove("lb-dragging");
-            applyTransform();
-          } else {
-            const img = imgRef.current;
-            if (img) {
-              const rect = img.getBoundingClientRect();
-              const cx = rect.left + rect.width / 2;
-              const cy = rect.top + rect.height / 2;
-              scale.current = 2.5;
-              tx.current = (cx - t.clientX) * 1.5;
-              ty.current = (cy - t.clientY) * 1.5;
-              img.classList.remove("lb-dragging");
-            }
-            applyTransform();
-          }
+          toggleZoomAtPoint(t.clientX, t.clientY);
           lastTap.current = 0;
           isDragging.current = false;
           return;
@@ -7505,20 +8134,19 @@ ${content}`;
     const onWheel = (e) => {
       e.preventDefault();
       const delta = e.deltaY > 0 ? 0.9 : 1.1;
-      const newScale = clamp(scale.current * delta, MIN_SCALE, MAX_SCALE);
-      if (newScale === MIN_SCALE) {
-        tx.current = 0;
-        ty.current = 0;
-      }
-      scale.current = newScale;
       imgRef.current?.classList.add("lb-dragging");
-      applyTransform();
+      zoomAtPoint(e.clientX, e.clientY, scale.current * delta);
       setTimeout(() => imgRef.current?.classList.remove("lb-dragging"), 50);
     };
     const onBackdropClick = (e) => {
-      if (e.target === overlayRef.current || e.target?.classList?.contains("lb-img-wrap")) {
+      if (e.target === overlayRef.current) {
         close();
       }
+    };
+    const onImageDoubleClick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleZoomAtPoint(e.clientX, e.clientY);
     };
     return /* @__PURE__ */ u$2(
       "div",
@@ -7555,10 +8183,6 @@ ${content}`;
             "div",
             {
               class: "lb-img-wrap",
-              onTouchStart,
-              onTouchMove,
-              onTouchEnd,
-              onWheel,
               children: /* @__PURE__ */ u$2(
                 "img",
                 {
@@ -7567,6 +8191,11 @@ ${content}`;
                   src,
                   alt: "",
                   draggable: false,
+                  onDblClick: onImageDoubleClick,
+                  onTouchStart,
+                  onTouchMove,
+                  onTouchEnd,
+                  onWheel,
                   onError: (e) => {
                     e.currentTarget.src = "/img/no_img.gif";
                   }
@@ -7714,7 +8343,7 @@ ${content}`;
     });
   }
 
-  const cssContent = "/* =========================================\n   CSS Variables\n   ========================================= */\n:root {\n  --dollars-z-index-base: 90;\n  --dollars-z-index-smiley: 99;\n  --dollars-z-index-context: 95;\n  --dollars-z-index-overlay: 110;\n  --dollars-z-index-modal: 2000;\n  --dollars-bg: #fff;\n  --dollars-bg-hover: rgba(0, 0, 0, 0.04);\n  --dollars-border: rgba(0, 0, 0, 0.08);\n  --dollars-shadow: rgba(0, 0, 0, 0.1);\n  /* Background Variables - 延迟加载，默认为 none */\n  --dollars-bg-pattern: none;\n  --dollars-bg-pattern-url: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  --dollars-text: #333;\n  --dollars-text-secondary: #666;\n  --dollars-text-placeholder: #999;\n  --dollars-icon-color: #555;\n  --dollars-icon-color-secondary: #888;\n  --dollars-color-online: #4CAF50;\n  --dollars-color-danger: #ef4444;\n  --dollars-glass-border: rgba(255, 255, 255, 0.3);\n  --dollars-glass-highlight: rgba(255, 255, 255, 0.3);\n  /* Glass Surface Variables */\n  --dollars-glass-bg: rgba(255, 255, 255, 0.55);\n  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.03);\n  --dollars-glass-shadow:\n    0 8px 32px 0 rgba(31, 38, 135, 0.12),\n    0 2px 16px 0 rgba(31, 38, 135, 0.06),\n    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),\n    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);\n  --dollars-glass-border-color: rgba(255, 255, 255, 0.4);\n}\n\n/* 只在窗口可见时加载背景图片 */\n#dollars-chat-window.visible {\n  --dollars-bg-pattern: var(--dollars-bg-pattern-url);\n}\n\n\nhtml[data-theme=\"dark\"] {\n  --dollars-bg: #1a1a1a;\n  --dollars-bg-hover: rgba(255, 255, 255, 0.08);\n  --dollars-border: rgba(255, 255, 255, 0.12);\n  --dollars-shadow: rgba(0, 0, 0, 0.3);\n  --dollars-text: #e0e0e0;\n  --dollars-text-secondary: #999;\n  --dollars-text-placeholder: #666;\n  --dollars-icon-color: #bbb;\n  --dollars-icon-color-secondary: #bbb;\n  --dollars-glass-border: rgba(255, 255, 255, 0.1);\n  --dollars-glass-highlight: rgba(255, 255, 255, 0.1);\n  /* Glass Surface Variables - Dark Mode */\n  --dollars-glass-bg: rgba(30, 30, 30, 0.65);\n  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.1);\n  --dollars-glass-shadow:\n    0 8px 32px 0 rgba(0, 0, 0, 0.3),\n    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),\n    inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);\n  --dollars-glass-border-color: rgba(255, 255, 255, 0.12);\n}\n\n/* Disable Blur Override */\n#dollars-chat-root.disable-blur {\n  --dollars-glass-blur: none !important;\n  --dollars-glass-bg: rgba(255, 255, 255, 0.95);\n}\n\nhtml[data-theme=\"dark\"] #dollars-chat-root.disable-blur {\n  --dollars-glass-bg: rgba(30, 30, 30, 0.95);\n}\n\n\n/* =========================================\n   Global Scrollbar Style\n   ========================================= */\n#dollars-chat-root *::-webkit-scrollbar {\n  width: 5px;\n  height: 5px;\n}\n\n#dollars-chat-root *::-webkit-scrollbar-track {\n  background: transparent;\n}\n\n#dollars-chat-root *::-webkit-scrollbar-thumb {\n  background: color-mix(in srgb, var(--primary-color), transparent 75%);\n  border-radius: 10px;\n}\n\n#dollars-chat-root *::-webkit-scrollbar-thumb:hover {\n  background: color-mix(in srgb, var(--primary-color), transparent 50%);\n}\n\n#dollars-chat-root * {\n  box-sizing: border-box;\n  scrollbar-width: thin;\n  scrollbar-color: color-mix(in srgb, var(--primary-color), transparent 75%) transparent;\n}\n\n/* =========================================\n   Chat Root Container\n   ========================================= */\n#dollars-chat-root {\n  color: var(--dollars-text);\n}\n\n/* =========================================\n   Chat Window - 液态玻璃效果\n   ========================================= */\n#dollars-chat-window {\n  position: fixed;\n  bottom: 80px;\n  right: 20px;\n  width: 400px;\n  height: 550px;\n  z-index: var(--dollars-z-index-base);\n  display: flex;\n  flex-direction: column;\n  border-radius: 15px;\n  /* 简化背景 - 移除液态璃璃效果以提升性能 */\n  background: rgba(255, 255, 255, 0.85);\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  background-clip: padding-box;\n  overflow: hidden;\n  /* Visibility Toggle */\n  opacity: 0;\n  pointer-events: none;\n  transform: translateY(20px) scale(0.9);\n  transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n#dollars-chat-window.visible {\n  opacity: 1;\n  pointer-events: auto;\n  transform: translateY(0) scale(1);\n}\n\nhtml[data-theme=\"dark\"] #dollars-chat-window {\n  background: rgba(30, 30, 30, 0.9);\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);\n}\n\n#dollars-chat-window.maximized {\n  top: 10px !important;\n  left: 10px !important;\n  right: 10px !important;\n  bottom: 10px !important;\n  width: auto !important;\n  height: auto !important;\n  max-width: none !important;\n  max-height: none !important;\n  border-radius: 12px;\n  transform: none !important;\n  /* Reset transform just in case */\n}\n\n#dollars-chat-window.mobile {\n  /* Use positioning + auto margins for centering, not transform */\n  /* This allows the open/close animation transform to work properly */\n  top: 4vh !important;\n  left: 0 !important;\n  right: 0 !important;\n  bottom: auto !important;\n  width: 95vw !important;\n  height: 92vh !important;\n  max-width: 600px;\n  margin-left: auto !important;\n  margin-right: auto !important;\n  border-radius: 20px;\n}\n\n/* Mobile maximized mode - full screen (must come after .mobile) */\n#dollars-chat-window.mobile.maximized {\n  top: 0px !important;\n  left: 0px !important;\n  right: 0px !important;\n  bottom: 0px !important;\n  width: 100vw !important;\n  height: 100vh !important;\n  /* Fallback for older browsers */\n  height: 100dvh !important;\n  /* Dynamic viewport height for mobile */\n  max-width: none !important;\n  margin-left: 0 !important;\n  margin-right: 0 !important;\n  border-radius: 0;\n  z-index: 98 !important;\n  /* Higher than site dock (z-index: 99) */\n}\n\n/* Ensure the visible state animation works correctly for mobile */\n#dollars-chat-window.mobile.visible {\n  transform: translateY(0) scale(1);\n}\n\n/* =========================================\n   Content Panes Container\n   ========================================= */\n#dollars-content-panes {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\n/* =========================================\n   Sidebar\n   ========================================= */\n#dollars-sidebar {\n  width: 25%;\n  height: 100%;\n  max-width: 320px;\n  display: flex;\n  flex-direction: column;\n  flex-shrink: 0;\n  /* Remove border, use subtle shadow for separation if needed by desktop layout */\n  border-right: none;\n  /* Subtle inner glow for separation */\n  box-shadow: inset -1px 0 0 0 rgba(0, 0, 0, 0.03);\n  background-color: var(--dollars-bg);\n}\n\n#dollars-sidebar-search-container {\n  padding: 8px;\n  padding-top: 48px;\n  border-bottom: 1px solid var(--dollars-border);\n  flex-shrink: 0;\n}\n\n#dollars-sidebar-search-input {\n  display: flex;\n  align-items: center;\n  position: relative;\n  border-radius: 100px;\n  border: 1px solid var(--dollars-border);\n  background-color: var(--dollars-bg);\n  transition: 0.3s ease-in-out;\n  padding: 6px 12px;\n  width: 100%;\n  box-sizing: border-box;\n  font-size: 13px;\n  color: var(--dollars-text);\n}\n\n#dollars-sidebar-search-input:focus {\n  outline: 0;\n  border-color: var(--primary-color);\n  box-shadow: 0 0 10px rgba(240, 145, 153, 0.6);\n}\n\nhtml[data-theme=\"dark\"] #dollars-sidebar-search-input {\n  background-color: #3a3a3a;\n}\n\n#dollars-sidebar-search-input::placeholder {\n  color: var(--dollars-text-placeholder);\n}\n\n#dollars-conversation-list {\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  padding: 4px;\n}\n\n/* Conversation Item */\n.conversation-item {\n  display: flex;\n  align-items: center;\n  padding: 5px 10px;\n  gap: 12px;\n  cursor: pointer;\n  position: relative;\n  border-radius: 15px;\n  transition: background-color 0.2s, box-shadow 0.2s;\n}\n\n.conversation-item:hover {\n  background-color: var(--dollars-bg-hover);\n}\n\n.conversation-item.active {\n  background: color-mix(in srgb, var(--primary-color), #ffffff 30%);\n  color: #fff;\n}\n\nhtml[data-theme=\"dark\"] .conversation-item.active {\n  background: color-mix(in srgb, var(--primary-color), #180518 60%);\n}\n\n.conversation-item.active .dollars-conv-last-message,\n.conversation-item.active .dollars-conv-nickname,\n.conversation-item.active .dollars-conv-timestamp {\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);\n}\n\n.conversation-item .avatar {\n  width: 46px;\n  height: 46px;\n  border-radius: 50%;\n  flex-shrink: 0;\n  object-fit: cover;\n  background-color: #f3f3f3;\n}\n\nhtml[data-theme=\"dark\"] .conversation-item .avatar {\n  background-color: #444;\n}\n\n.conversation-item .dollars-conv-content {\n  flex-grow: 1;\n  overflow: hidden;\n}\n\n.conversation-item .dollars-conv-title {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  font-weight: 700;\n  font-size: 13px;\n}\n\n.conversation-item .dollars-conv-nickname {\n  color: var(--dollars-text);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.conversation-item .dollars-conv-timestamp {\n  font-size: 11px;\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  margin-left: 8px;\n}\n\n.conversation-item .dollars-conv-last-message {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  margin-top: 2px;\n}\n\n.conversation-item .unread-badge {\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  transform: translateY(-50%);\n  background-color: var(--primary-color);\n  color: #fff;\n  font-size: 10px;\n  font-weight: bold;\n  padding: 2px 6px;\n  border-radius: 10px;\n  min-width: 16px;\n  text-align: center;\n}\n\n/* =========================================\n   Narrow Layout (Single View Mode)\n   ========================================= */\n#dollars-chat-window.is-narrow #dollars-sidebar {\n  width: 100%;\n  max-width: none;\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n\n#dollars-chat-window.is-narrow.mobile-chat-active #dollars-sidebar {\n  transform: translateX(-100%);\n}\n\n#dollars-chat-window.is-narrow #dollars-main-chat {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  transform: translateX(100%);\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n\n#dollars-chat-window.is-narrow.mobile-chat-active #dollars-main-chat {\n  transform: translateX(0);\n}\n\n#dollars-chat-window.is-narrow #dollars-content-panes {\n  overflow: hidden;\n}\n\n/* Main chat content area */\n#dollars-main-chat {\n  display: flex;\n  flex-direction: column;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n  background-color: var(--dollars-bg);\n  /* 性能优化: 创建新的 stacking context，防止背景影响内容渲染 */\n  isolation: isolate;\n  z-index: 0;\n}\n\n/* Main Chat Background Effects */\n#dollars-main-chat::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  /* 关键：z-index: -1 确保背景在内容之下 */\n  z-index: -1;\n  pointer-events: none;\n  will-change: opacity;\n  /* GPU 加速 */\n  opacity: 0;\n  /* Default hidden until mode is applied */\n  transition: opacity 0.3s ease;\n}\n\n/* =========================================\n   Background Mode Overrides\n   ========================================= */\n\n/* Mode: Transparent */\n#dollars-chat-root[data-bg-mode=\"transparent\"] #dollars-main-chat::before {\n  display: none !important;\n}\n\n/* Mode: Tint - colored gradient background */\n#dollars-chat-root[data-bg-mode=\"tint\"] #dollars-main-chat::before {\n  background-image:\n    var(--dollars-bg-pattern),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: center, center;\n  background-size: 400px, cover;\n  background-blend-mode: overlay, normal;\n  opacity: 0.65;\n}\n\n/* Mode: Lines - minimal line pattern */\n#dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::before {\n  background-image: none;\n  background-color: color-mix(in srgb, var(--primary-color), #ffffff 94%);\n  opacity: 0.2;\n}\n\n#dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-color: color-mix(in srgb, var(--primary-color), #ffffff 70%);\n  -webkit-mask-image: var(--dollars-bg-pattern);\n  mask-image: var(--dollars-bg-pattern);\n  -webkit-mask-repeat: repeat;\n  mask-repeat: repeat;\n  -webkit-mask-size: 400px;\n  opacity: 0.7;\n  z-index: -1;\n  pointer-events: none;\n}\n\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::after {\n  opacity: 0.1;\n}\n\n/* Dark mode backgrounds */\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::before {\n  background-image: none !important;\n  background-color: transparent !important;\n  -webkit-mask-image: none !important;\n  mask-image: none !important;\n  opacity: 0.25;\n}\n\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"tint\"] #dollars-main-chat::before {\n  background-image:\n    var(--dollars-bg-pattern),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: center, center;\n  background-size: 400px, cover;\n  background-blend-mode: overlay, normal;\n  -webkit-mask-image: none;\n  mask-image: none;\n  opacity: 0.3;\n}\n\n\n\n/* =========================================\n   Chat Header\n   ========================================= */\n.chat-header {\n  /* Glass Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  /* No border to avoid black line issue; use shadow for subtle bottom separation */\n  border-bottom: none;\n  /* Subtle shadow to hint at separation from content */\n  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.02);\n\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 2px 15px;\n  cursor: move;\n  touch-action: none;\n  flex-shrink: 0;\n\n  /* Absolute positioning for glass effect overlay */\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  /* Ensure padding doesn't affect width */\n\n  z-index: 10002;\n}\n\nhtml[data-theme=\"dark\"] .chat-header {\n  background: var(--dollars-bg);\n  border-bottom: none;\n  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.02);\n}\n\n.chat-header .title-wrapper {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-start;\n  min-width: 0;\n  padding: 0 4px;\n  gap: 8px;\n  pointer-events: none;\n}\n\n/* Left pane matches sidebar width */\n.chat-header-left-pane {\n  width: 25%;\n  max-width: 320px;\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  padding-left: 5px;\n  gap: 4px;\n  margin-right: 8px;\n}\n\n#dollars-chat-window.is-narrow .chat-header-left-pane {\n  width: auto;\n  max-width: none;\n}\n\n.header-chat-icon {\n  width: 30px;\n  /* Slightly smaller */\n  height: 30px;\n  border-radius: 50%;\n  object-fit: cover;\n  flex-shrink: 0;\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n  /* Add shadow */\n}\n\n.header-text-column {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  /* Tighten text */\n  min-width: 0;\n  justify-content: center;\n}\n\n.chat-header .title,\n.header-main-title {\n  font-size: 13px;\n  /* Slightly smaller for compactness */\n  font-weight: 700;\n  color: var(--dollars-text);\n  letter-spacing: 0.2px;\n  line-height: 1.2;\n}\n\n.chat-header .online-status {\n  font-size: 10px;\n  /* Smaller status text */\n  color: var(--dollars-text-secondary);\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  opacity: 0.85;\n  line-height: 1.2;\n}\n\n.chat-header .online-dot {\n  width: 6px;\n  height: 6px;\n  background-color: var(--dollars-color-online);\n  border-radius: 50%;\n  flex-shrink: 0;\n}\n\n.chat-header .header-buttons {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n\n.chat-header .header-btn {\n  width: 24px;\n  height: 24px;\n  border: none;\n  background: transparent;\n  border-radius: 4px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: background-color 0.2s;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: 18px;\n}\n\n.chat-header .header-btn:hover {\n  background-color: rgba(0, 0, 0, 0.05);\n}\n\nhtml[data-theme=\"dark\"] .chat-header .header-btn:hover {\n  background-color: rgba(255, 255, 255, 0.08);\n}\n\n/* Restored Header Buttons - using mask-image for theme-aware icons */\n/* 共享属性 */\n#dollars-search-btn,\n#dollars-maximize-btn,\n.chat-header .close-btn {\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  -webkit-mask-size: 18px;\n  mask-size: 18px;\n}\n\n#dollars-search-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg>');\n}\n\n#dollars-maximize-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3\"/></svg>');\n}\n\n#dollars-chat-window.maximized #dollars-maximize-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3\"/></svg>');\n}\n\n.chat-header .close-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>');\n}\n\n.chat-header .header-btn svg {\n  width: 18px;\n  height: 18px;\n}\n\n/* =========================================\n   Chat Body\n   ========================================= */\n.chat-body {\n  /* 性能优化: 启用 contain 隔离渲染 */\n  contain: layout style paint;\n  flex-grow: 1;\n  /* 强制显示滚动条轨道，防止加载时的布局跳动 */\n  overflow-y: scroll;\n  overflow-x: hidden;\n  padding: 10px;\n  padding-top: 50px;\n  /* 使用 padding-bottom 替代 margin-bottom，允许内容滚动到输入框下方以展示磨砂玻璃效果 */\n  padding-bottom: 80px;\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  overscroll-behavior: contain;\n  min-height: 0;\n  overflow-anchor: auto;\n  background: transparent;\n}\n\n\n.chat-body.loading .chat-list {\n  opacity: 0;\n  transition: opacity 0.3s;\n}\n\n/* Hide list completely when loading context/jumping to hide scroll jump */\n.chat-body.context-loading .chat-list {\n  opacity: 0 !important;\n  transition: opacity 0.05s ease;\n}\n\n\n.chat-list {\n  display: flex;\n  flex-direction: column;\n  /* 性能优化: 启用布局和样式隔离 */\n  contain: layout style;\n  transition: opacity 0.3s ease;\n}\n\n/* =========================================\n   Message Item\n   ========================================= */\n.chat-message {\n  position: relative;\n  /* 性能优化: 允许浏览器跳过离屏渲染 */\n  overflow: visible !important;\n  content-visibility: auto;\n  contain-intrinsic-size: 80px;\n  overflow-clip-margin: 5px;\n  display: flex;\n  gap: 8px;\n  margin-bottom: 12px;\n  align-items: flex-start;\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease-out;\n  will-change: transform, opacity;\n  transform-origin: center bottom;\n}\n\n.chat-message.self {\n  flex-direction: row-reverse;\n}\n\n.chat-message.self .message-content {\n  align-items: flex-end;\n}\n\n/* 待发送消息样式 */\n.chat-message.pending {\n  opacity: 0.7;\n}\n\n.chat-message.pending .bubble {\n  animation: pending-pulse 1.5s ease-in-out infinite;\n}\n\n@keyframes pending-pulse {\n\n  0%,\n  100% {\n    opacity: 0.7;\n  }\n\n  50% {\n    opacity: 1;\n  }\n}\n\n/* 发送失败消息样式 */\n.chat-message.failed {\n  opacity: 0.9;\n}\n\n.chat-message.failed .bubble {\n  border: 1px solid rgba(239, 68, 68, 0.5);\n  position: relative;\n}\n\n.chat-message.failed .bubble::after {\n  content: \"发送失败，点击重试\";\n  position: absolute;\n  bottom: -18px;\n  right: 0;\n  font-size: 11px;\n  color: var(--dollars-color-danger);\n  opacity: 0;\n  transition: opacity 0.2s;\n  white-space: nowrap;\n}\n\n.chat-message.failed:hover .bubble::after,\n.chat-message.failed:active .bubble::after {\n  opacity: 1;\n}\n\n.chat-message.is-grouped-with-next {\n  margin-bottom: 2px;\n}\n\n.chat-message.is-grouped-with-prev .avatar {\n  visibility: hidden;\n  height: 0 !important;\n  margin: 0 !important;\n  border: none !important;\n}\n\n/* 隐藏外部昵称 - 始终隐藏，使用气泡内昵称 */\n.chat-message .nickname {\n  display: none !important;\n}\n\n.chat-message .avatar {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  cursor: pointer;\n  flex-shrink: 0;\n  object-fit: cover;\n  background-color: #f3f3f3;\n  transition: box-shadow 0.3s;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\n\nhtml[data-theme=\"dark\"] .chat-message .avatar {\n  background-color: #444;\n}\n\n/* =========================================\n   Avatar Online Status Indicator\n   ========================================= */\n.chat-message::after {\n  content: \"\";\n  position: absolute;\n  width: 8px;\n  height: 8px;\n  background-color: var(--dollars-color-online);\n  border: 2px solid var(--dollars-bg);\n  border-radius: 50%;\n  z-index: 5;\n  top: 23px;\n  left: 23px;\n  pointer-events: none;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);\n  opacity: 0;\n  transform: scale(0);\n  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;\n}\n\n.chat-message:has(.avatar.online)::after {\n  opacity: 1;\n  transform: scale(1);\n}\n\n.chat-message.self::after {\n  left: auto;\n  right: -2px;\n}\n\n.chat-message.is-grouped-with-prev::after {\n  opacity: 0 !important;\n  transform: scale(0) !important;\n}\n\n.chat-message .message-content {\n  max-width: 75%;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n}\n\n/* =========================================\n   Message Highlighting (Focus Mode)\n   ========================================= */\n.chat-list.focus-mode .chat-message:not(.message-highlight) {\n  filter: blur(4px);\n  opacity: 0.6;\n  transition: filter 0.3s ease, opacity 0.3s ease;\n}\n\n.chat-message.message-highlight {\n  position: relative;\n  z-index: 10;\n  transform: scale(1.02);\n  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.chat-message.message-highlight .bubble {\n  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);\n}\n\n/* =========================================\n   Message Bubble\n   ========================================= */\n.chat-message .bubble {\n  display: flow-root;\n  padding: 6px 10px 6px;\n  border-radius: 0 12px 12px 12px;\n  word-wrap: break-word;\n  overflow-wrap: anywhere;\n  /* Ensure long words break */\n  background-color: #fff;\n  box-shadow: 0 1px 2px rgba(16, 35, 47, 0.15);\n  color: var(--dollars-text);\n  font-size: 14px;\n  max-width: min(40dvh, 100%);\n  position: relative;\n  transition: background 0.3s ease;\n}\n\nhtml[data-theme=\"dark\"] .chat-message .bubble {\n  background-color: #212121;\n}\n\n.chat-message.self .bubble {\n  border-radius: 12px 0 12px 12px;\n  background: color-mix(in srgb, var(--primary-color), #ffffff 80%);\n}\n\nhtml[data-theme=\"dark\"] .chat-message.self .bubble {\n  background-color: color-mix(in srgb, var(--primary-color), #180518 60%);\n}\n\n/* 连续消息圆角调整 */\n.chat-message:not(.self).is-grouped-with-prev .bubble {\n  border-top-left-radius: 4px !important;\n}\n\n.chat-message.self.is-grouped-with-prev .bubble {\n  border-top-right-radius: 4px !important;\n}\n\n.bubble.sticker-mode {\n  background: transparent !important;\n  box-shadow: none !important;\n  padding: 0 !important;\n  border: none !important;\n}\n\n/* =========================================\n   气泡内昵称 (Bubble Nickname)\n   ========================================= */\n.bubble-nickname {\n  display: block;\n  width: 100%;\n  font-size: 12px;\n  margin-bottom: 4px;\n  line-height: 1.2;\n  user-select: none;\n  color: var(--nick-color, var(--primary-color));\n}\n\nhtml[data-theme=\"dark\"] .bubble-nickname {\n  color: color-mix(in srgb, var(--nick-color, var(--primary-color)), #fff 60%) !important;\n}\n\n/* 自己发送的消息不显示昵称 */\n.chat-message.self .bubble-nickname {\n  display: none;\n}\n\n/* =========================================\n   Swipe Reply Indicator\n   ========================================= */\n.chat-message .swipe-reply-indicator {\n  position: absolute;\n  left: 100%;\n  top: 50%;\n  transform: translateY(-50%) scale(0.5);\n  margin-left: 10px;\n  opacity: 0;\n  width: 32px;\n  height: 32px;\n  background-color: var(--dollars-icon-color-secondary);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M9 14l-4 -4l4 -4\" /><path d=\"M5 10h11a4 4 0 1 1 0 8h-1\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M9 14l-4 -4l4 -4\" /><path d=\"M5 10h11a4 4 0 1 1 0 8h-1\" /></svg>');\n  -webkit-mask-size: 24px;\n  mask-size: 24px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;\n  pointer-events: none;\n}\n\n/* 连续发言隐藏昵称 */\n.chat-message.is-grouped-with-prev .bubble-nickname {\n  display: none;\n}\n\n/* 贴纸模式隐藏昵称 */\n.bubble.sticker-mode .bubble-nickname {\n  display: none !important;\n}\n\n/* =========================================\n   气泡内时间戳 (Bubble Timestamp)\n   ========================================= */\n.bubble-timestamp {\n  float: right;\n  margin-left: 8px;\n  margin-top: 9px;\n  font-size: 10px;\n  opacity: 0.5;\n  user-select: none;\n  cursor: default;\n  color: var(--dollars-text-secondary);\n  line-height: 1;\n  white-space: nowrap;\n}\n\n/* text-content 恢复为块级元素 */\n.text-content {\n  display: block;\n}\n\nhtml[data-theme=\"dark\"] .bubble-timestamp {\n  color: color-mix(in srgb, var(--primary-color), #fff 60%);\n}\n\n/* 连续消息隐藏气泡内时间戳 */\n.chat-message.is-grouped-with-next .bubble-timestamp {\n  display: none;\n}\n\n/* 但是编辑过的消息始终显示时间戳 */\n.chat-message.is-grouped-with-next.is-edited .bubble-timestamp {\n  display: block;\n  float: none;\n  margin: 4px 0 0 0;\n  text-align: right;\n}\n\n/* 贴纸模式下的时间戳样式 */\n.bubble.sticker-mode .bubble-timestamp {\n  position: absolute;\n  bottom: 4px;\n  right: 4px;\n  background: rgba(0, 0, 0, 0.4);\n  backdrop-filter: blur(4px);\n  -webkit-backdrop-filter: blur(4px);\n  color: rgba(255, 255, 255, 0.9);\n  padding: 1px 6px;\n  border-radius: 10px;\n  font-size: 10px;\n  line-height: 1.2;\n  top: auto;\n  margin: 0;\n  float: none;\n  opacity: 0;\n  transition: opacity 0.2s ease;\n  pointer-events: none;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);\n  z-index: 10;\n}\n\n.chat-message:hover .bubble.sticker-mode .bubble-timestamp {\n  opacity: 1;\n}\n\n/* =========================================\n   外部时间戳 (用于贴纸模式)\n   ========================================= */\n.timestamp {\n  font-size: 10px;\n  color: var(--dollars-text-secondary);\n  margin-top: 2px;\n}\n\n\n/* =========================================\n   Bubble Tail (气泡尾巴)\n   ========================================= */\n.bubble-tail {\n  position: absolute;\n  top: 0;\n  width: 11px;\n  height: 20px;\n  pointer-events: none;\n  z-index: 1;\n}\n\n.chat-message:not(.self) .bubble-tail {\n  left: -9px;\n  top: -1px;\n  color: #fff;\n  transform: scaleY(-1);\n}\n\nhtml[data-theme=\"dark\"] .chat-message:not(.self) .bubble-tail {\n  color: #212121;\n}\n\n.chat-message.self .bubble-tail {\n  right: -9px;\n  top: -1px;\n  transform: scale(-1, -1);\n  color: color-mix(in srgb, var(--primary-color), #ffffff 80%);\n}\n\nhtml[data-theme=\"dark\"] .chat-message.self .bubble-tail {\n  color: color-mix(in srgb, var(--primary-color), #180518 60%) !important;\n}\n\n.chat-message.is-grouped-with-prev .bubble-tail {\n  display: none;\n}\n\n.bubble.sticker-mode .bubble-tail {\n  display: none;\n}\n\n/* =========================================\n   Bubble Content\n   ========================================= */\n.bubble .text-content {\n  display: inline;\n}\n\n.bubble .text-content.deleted {\n  font-style: italic !important;\n  color: var(--dollars-text-secondary) !important;\n}\n\n/* 长消息折叠样式 */\n.bubble .text-content.is-collapsed {\n  display: block !important;\n  max-height: 300px;\n  overflow: hidden;\n  position: relative;\n  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);\n  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);\n}\n\n.expand-toggle-btn {\n  display: block;\n  width: 100%;\n  background: none;\n  border: none;\n  color: var(--primary-color);\n  font-size: 13px;\n  cursor: pointer;\n  padding: 6px 0 2px;\n  text-align: center;\n  opacity: 0.9;\n  transition: opacity 0.2s ease;\n}\n\n.expand-toggle-btn:hover {\n  opacity: 1;\n  text-decoration: underline;\n}\n\n.bubble a {\n  color: #0084b4 !important;\n}\n\n.bubble a:hover {\n  text-decoration: underline;\n}\n\n.bubble img.smiley {\n  display: inline-block;\n  width: 21px;\n  height: 21px;\n  margin: 0 1px;\n  vertical-align: text-bottom;\n  image-rendering: pixelated;\n}\n\n.bubble img.custom-emoji {\n  max-width: 150px;\n  max-height: 150px;\n  border-radius: 8px;\n}\n\n/* 大尺寸动图表情 */\n.bubble img.smiley-musume,\n.bubble img.smiley-blake {\n  width: 80px;\n  height: 80px;\n  image-rendering: auto;\n  vertical-align: bottom;\n}\n\n.bubble.sticker-mode .custom-emoji {\n  max-width: 150px;\n  max-height: 150px;\n  border-radius: 8px;\n  margin: 2px 0;\n  display: block;\n}\n\n.bubble.sticker-mode .smiley-musume,\n.bubble.sticker-mode .smiley-blake {\n  width: 120px;\n  height: 120px;\n  display: block;\n  margin: 2px 0;\n}\n\n.bubble .image-container {\n  position: relative;\n  display: grid;\n  overflow: hidden;\n  border-radius: 8px;\n  cursor: pointer;\n  max-height: 350px;\n}\n\n.bubble .image-container .full-image {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  opacity: 0;\n  grid-area: 1/1;\n  transition: opacity 0.3s ease-out;\n  z-index: 2;\n}\n\n.bubble .image-container .full-image.is-loaded {\n  opacity: 1;\n}\n\n.bubble .image-container .full-image.load-failed {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  background-color: var(--dollars-bg-hover);\n  border-radius: 8px;\n}\n\n/* 图片占位符样式 (关闭默认加载图片时) */\n.bubble .image-container.image-placeholder {\n  cursor: default;\n}\n\n.bubble .image-container.image-placeholder .image-load-hint {\n  position: absolute;\n  right: 10px;\n  bottom: 10px;\n  z-index: 3;\n  background: rgba(0, 0, 0, 0.5);\n  color: #fff;\n  padding: 6px 12px;\n  border-radius: 16px;\n  font-size: 12px;\n  white-space: nowrap;\n  pointer-events: none;\n  backdrop-filter: blur(4px);\n  -webkit-backdrop-filter: blur(4px);\n  transition: opacity 0.2s ease;\n}\n\n.bubble .image-container.image-placeholder:hover .image-load-hint {\n  background: rgba(0, 0, 0, 0.7);\n}\n\n.bubble .image-container.image-masked .full-image {\n  filter: blur(24px) brightness(0.45);\n  transform: scale(1.08);\n}\n\n.bubble .image-container.image-masked {\n  cursor: default;\n}\n\n.bubble .image-container.image-masked .image-load-hint {\n  background: rgba(0, 0, 0, 0.68);\n}\n\n/* =========================================\n   Quote Block\n   ========================================= */\n.chat-quote {\n  padding: 6px 8px;\n  border-left: 3px solid var(--primary-color);\n  background: linear-gradient(#ffffffe6, #ffffffe6), var(--primary-color);\n  border-radius: 4px;\n  margin-bottom: 8px;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  cursor: pointer;\n  max-width: 100%;\n  width: 100%;\n  /* Force full width to wrap timestamp */\n  box-sizing: border-box;\n}\n\nhtml[data-theme=\"dark\"] .chat-quote {\n  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), var(--primary-color);\n}\n\n.chat-quote:hover {\n  opacity: 0.9;\n}\n\n.chat-quote[data-jump-to-id] {\n  cursor: pointer;\n}\n\n.quote-avatar {\n  width: 14px;\n  height: 14px;\n  border-radius: 50%;\n  object-fit: cover;\n  flex-shrink: 0;\n  margin-right: 4px;\n}\n\n.quote-thumbnail {\n  width: 36px;\n  height: 36px;\n  border-radius: 4px;\n  object-fit: cover;\n  margin-bottom: 2px;\n  display: block;\n}\n\n.quote-nickname {\n  font-weight: 700;\n  color: var(--primary-color);\n  font-size: 12px;\n}\n\n.quote-text-wrapper {\n  min-width: 0;\n  flex: 1;\n}\n\n.quote-content {\n  font-size: 12px;\n  color: var(--dollars-text);\n  opacity: 0.8;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  overflow-wrap: break-word;\n}\n\n/* =========================================\n   Chat Input Area - 液态玻璃效果\n   ========================================= */\n.chat-input-container {\n  position: absolute;\n  bottom: 12px;\n  left: 12px;\n  right: 12px;\n  width: auto;\n  z-index: 100;\n  transition: transform 0.2s ease;\n}\n\n.chat-input-container:hover {\n  transform: translateY(-2px);\n}\n\n.chat-input-area {\n  position: relative;\n  /* Glass Surface Effect - consistent with dollars-smiles-floating */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  /* Use shadow-only approach to avoid black border flash on initial load */\n  border: none;\n  box-shadow:\n    var(--dollars-glass-shadow),\n    inset 0 0 0 1px var(--dollars-glass-border-color, rgba(255, 255, 255, 0.35));\n  border-radius: 24px;\n  padding: 6px 8px;\n  transition: box-shadow 0.2s ease;\n}\n\n.reply-preview {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 8px 4px 8px;\n  margin: 0 4px 4px 4px;\n  border-bottom: 1px solid var(--dollars-glass-border);\n  height: 0;\n  opacity: 0;\n  overflow: hidden;\n  transition: height 0.2s ease-out, opacity 0.2s ease-out;\n}\n\n.reply-preview.visible {\n  height: 42px;\n  opacity: 1;\n}\n\n.reply-preview .reply-bar {\n  width: 3px;\n  height: 70%;\n  background-color: var(--primary-color);\n  border-radius: 2px;\n}\n\n.reply-preview .reply-avatar {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n}\n\n.reply-preview .reply-info {\n  flex: 1;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 1.4;\n}\n\n.reply-preview .reply-user {\n  font-weight: 700;\n  color: var(--primary-color);\n}\n\n.reply-preview .reaction-item .num {\n  color: var(--dollars-text-secondary);\n}\n\n@keyframes pop {\n  0% {\n    transform: scale(1);\n  }\n\n  50% {\n    transform: scale(1.4);\n  }\n\n  100% {\n    transform: scale(1);\n  }\n}\n\n.reaction-item.live_selected .emoji {\n  animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);\n}\n\n.reply-preview .reply-text {\n  color: var(--dollars-text-secondary);\n  display: block;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.reply-preview .reply-cancel-btn {\n  background: none;\n  border: none;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  font-size: 20px;\n  padding: 0;\n}\n\n/* Image Preview Strip */\n.image-preview-container {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 8px;\n  margin: 0 4px;\n  border-bottom: 1px solid var(--dollars-glass-border);\n  height: 0;\n  opacity: 0;\n  overflow-x: auto;\n  overflow-y: hidden;\n  transition: height 0.2s ease-out, opacity 0.2s ease-out, padding 0.2s ease-out, margin 0.2s ease-out;\n  scrollbar-width: none;\n}\n\n.image-preview-container.visible {\n  height: 80px;\n  opacity: 1;\n  padding-bottom: 8px;\n  margin-bottom: 4px;\n  margin-top: 4px;\n}\n\n.image-preview-container::-webkit-scrollbar {\n  display: none;\n}\n\n.image-preview-item {\n  position: relative;\n  flex-shrink: 0;\n  width: 64px;\n  height: 64px;\n  border-radius: 8px;\n  overflow: hidden;\n  border: 1px solid var(--dollars-border);\n  background: var(--dollars-bg);\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n}\n\n.preview-image {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.2s;\n}\n\n.image-preview-item:hover .preview-image {\n  transform: scale(1.05);\n}\n\n.preview-remove-btn {\n  position: absolute;\n  top: 2px;\n  right: 2px;\n  width: 18px;\n  height: 18px;\n  background: rgba(0, 0, 0, 0.5);\n  border-radius: 50%;\n  color: #fff;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n  /* Slightly larger X */\n  cursor: pointer;\n  border: none;\n  backdrop-filter: blur(2px);\n  transition: background 0.2s, transform 0.1s;\n  padding: 0;\n  line-height: 1;\n}\n\n.preview-remove-btn:hover {\n  background: rgba(244, 67, 54, 0.9);\n  transform: scale(1.1);\n}\n\n/* Video Preview Styles */\n.video-preview-item {\n  position: relative;\n}\n\n.preview-video {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.2s;\n}\n\n.video-preview-item:hover .preview-video {\n  transform: scale(1.05);\n}\n\n.video-play-overlay {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: 32px;\n  height: 32px;\n  background: rgba(0, 0, 0, 0.6);\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  pointer-events: none;\n  backdrop-filter: blur(2px);\n}\n\n.video-play-overlay svg {\n  margin-left: 2px;\n}\n\n.input-wrapper {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  position: relative;\n}\n\n.dollars-input-wrapper {\n  flex-grow: 1;\n  display: flex;\n  align-items: center;\n  border-radius: 18px;\n  min-width: 0;\n  background-color: rgba(255, 255, 255, 0.25);\n  border: none;\n  /* Very subtle inner shadow for depth */\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);\n  transition: all 0.2s ease;\n  backdrop-filter: blur(5px);\n  padding-left: 0;\n}\n\nhtml[data-theme=\"dark\"] .dollars-input-wrapper {\n  background-color: rgba(0, 0, 0, 0.3);\n}\n\n.dollars-input-wrapper:focus-within {\n  background-color: rgba(255, 255, 255, 0.5);\n  border-color: var(--primary-color);\n  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px color-mix(in srgb, var(--primary-color), transparent 40%) !important;\n}\n\nhtml[data-theme=\"dark\"] .dollars-input-wrapper:focus-within {\n  background-color: rgba(0, 0, 0, 0.5);\n}\n\n.chat-textarea {\n  flex: 1;\n  border: none;\n  outline: none;\n  background: transparent;\n  border-radius: 18px;\n  padding: 8px 14px;\n  resize: none;\n  font-size: 14px;\n  line-height: 1.4;\n  height: 38px;\n  max-height: 150px;\n  color: var(--dollars-text);\n  outline: none;\n  font-family: inherit;\n  box-sizing: border-box;\n}\n\nhtml[data-theme=\"dark\"] .chat-textarea {\n  background: none !important;\n}\n\n.chat-textarea:focus {\n  outline: none;\n  box-shadow: none !important;\n}\n\n.input-actions {\n  display: flex;\n  gap: 4px;\n}\n\n.action-btn {\n  flex-shrink: 0;\n  width: 38px;\n  height: 38px;\n  border: none;\n  border-radius: 50%;\n  background-color: transparent;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);\n  background-repeat: no-repeat;\n  background-position: center;\n}\n\n.action-btn:hover {\n  background-color: var(--dollars-glass-highlight);\n  transform: scale(1.1);\n}\n\n.action-btn:active {\n  transform: scale(0.95);\n}\n\n.action-btn svg {\n  width: 20px;\n  height: 20px;\n}\n\n.send-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background: var(--primary-color);\n  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z\" /><path d=\"M6.5 12h14.5\" /></svg>');\n  background-size: 20px;\n  background-repeat: no-repeat;\n  background-position: center;\n  border-radius: 50%;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: white;\n  transition: background-color .2s, filter .2s;\n  box-shadow: 0 0 10px color-mix(in srgb, var(--primary-color), transparent 20%);\n}\n\n.send-btn:hover {\n  filter: brightness(1.1);\n  transform: scale(1.05);\n}\n\n.send-btn:disabled {\n  background-color: #ccc;\n  cursor: not-allowed;\n  filter: none;\n  box-shadow: none;\n}\n\n.send-btn svg {\n  width: 18px;\n  height: 18px;\n}\n\n/* =========================================\n   Smiley Panel - 液态玻璃效果\n   ========================================= */\n#dollars-smiles-floating {\n  --item-size: 32px;\n  --icon-size: 21px;\n  --item-hover-bg: rgba(255, 255, 255, 0.3);\n  --item-hover-scale: 1.1;\n  --transition-speed: 0.2s;\n  --panel-height: 320px;\n  --border-color: var(--dollars-border);\n\n  position: absolute;\n  bottom: calc(100% + 5px);\n  z-index: var(--dollars-z-index-smiley);\n  height: var(--panel-height);\n  width: 100%;\n  left: 0;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  /* Glass Surface Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  box-sizing: border-box;\n  overflow: hidden;\n  opacity: 0;\n  transform: translateY(10px) scale(0.95);\n  transition: opacity 0.2s, transform 0.2s;\n  pointer-events: none;\n  transform-origin: bottom left;\n}\n\nhtml[data-theme=\"dark\"] #dollars-smiles-floating {\n  --item-hover-bg: rgba(255, 255, 255, 0.1);\n}\n\n@keyframes dollars-panel-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(15px) scale(0.95);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n\n#dollars-smiles-floating.open {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  animation: dollars-panel-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n#dollars-smiles-tabs {\n  display: flex;\n  flex-shrink: 0;\n  padding: 4px;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.2);\n  background-color: transparent;\n  overflow-x: auto;\n  overflow-y: hidden;\n  scrollbar-width: none;\n}\n\n#dollars-smiles-tabs::-webkit-scrollbar {\n  display: none;\n}\n\n.smiley-tab-btn {\n  padding: 4px 12px;\n  border: 1px solid transparent;\n  border-radius: 15px;\n  background: none;\n  cursor: pointer;\n  color: var(--primary-color);\n  font-size: 13px;\n  flex-shrink: 0;\n  transition: background-color var(--transition-speed), color var(--transition-speed);\n  image-rendering: pixelated;\n}\n\n.smiley-tab-btn:hover {\n  background-color: var(--item-hover-bg);\n}\n\n.smiley-tab-btn.active {\n  background-color: transparent;\n  color: var(--primary-color);\n  border-color: var(--dollars-border);\n  font-weight: 700;\n}\n\n#dollars-smiles-content {\n  padding: 8px;\n  overflow-y: auto;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  justify-content: flex-start;\n  overscroll-behavior: contain;\n}\n\n.smiley-item {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  width: var(--item-size);\n  height: var(--item-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n}\n\n.smiley-item a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: var(--icon-size) var(--icon-size);\n  font-size: 0;\n  transition: background-color var(--transition-speed), transform calc(var(--transition-speed) / 2);\n  image-rendering: pixelated;\n}\n\n#dollars-smiles-floating .bmo,\n#dollars-reaction-picker-floating .bmo {\n  vertical-align: middle;\n}\n\n.smiley-item a:hover {\n  background-color: var(--item-hover-bg);\n  transform: scale(var(--item-hover-scale));\n}\n\n\n\n/* Favorites Items: Larger size */\n.smiley-item.favorite-item {\n  width: 64px;\n  height: 64px;\n  border-radius: 8px;\n}\n\n.smiley-item.favorite-item a {\n  background-size: contain;\n  background-color: rgba(0, 0, 0, 0.03);\n}\n\nhtml[data-theme=\"dark\"] .smiley-item.favorite-item a {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n\n.smiley-item.favorite-item .remove-favorite-btn {\n  position: absolute;\n  top: -4px;\n  right: -4px;\n  width: 16px;\n  height: 16px;\n  background: rgba(0, 0, 0, 0.5);\n  color: white;\n  border-radius: 50%;\n  border: none;\n  font-size: 12px;\n  line-height: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: pointer;\n  opacity: 0;\n  transition: opacity 0.2s;\n}\n\n.smiley-item.favorite-item:hover .remove-favorite-btn {\n  opacity: 1;\n}\n\n/* Musume 大尺寸表情模式 */\n#dollars-smiles-floating.large-smiley-mode {\n  --item-size: 56px;\n  --icon-size: 48px;\n}\n\n#dollars-smiles-floating.large-smiley-mode .smiley-item a {\n  image-rendering: auto;\n}\n\n/* =========================================\n   Context Menu - Telegram-style layout\n   ========================================= */\n#dollars-context-menu {\n  position: fixed;\n  z-index: var(--dollars-z-index-overlay);\n  /* Remove container background/border/shadow */\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  min-width: unset;\n  /* Let children define width */\n\n  opacity: 0;\n  transform: scale(0.95);\n  pointer-events: none;\n  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease-out;\n}\n\nhtml[data-theme=\"dark\"] #dollars-context-menu {\n  background: transparent;\n  box-shadow: none;\n}\n\n#dollars-context-menu.visible {\n  opacity: 1;\n  transform: scale(1);\n  pointer-events: auto;\n}\n\n/* has-items-wrapper: reactions + menu items structure */\n#dollars-context-menu.has-items-wrapper {\n  padding: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  /* Gap between reactions and items */\n  align-items: flex-start;\n  /* Prevent stretching, keeping items narrower */\n}\n\n/* Horizontal reactions row - Bubble Style */\n.context-menu-reactions {\n  display: flex;\n  align-items: center;\n  padding: 6px;\n  gap: 4px;\n\n  /* Glass Bubble Styles */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 40px;\n  /* Pill shape */\n}\n\n\n.context-menu-reactions .reaction-item {\n  width: 30px;\n  height: 30px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 50%;\n  /* Circle */\n  cursor: pointer;\n  transition: transform 0.1s ease, background-color 0.15s ease;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\n\n.context-menu-reactions .reaction-item:hover {\n  background-color: var(--dollars-bg-hover);\n  transform: scale(1.15);\n}\n\n.context-menu-reactions .reaction-item:active {\n  transform: scale(0.95);\n}\n\n.context-menu-reactions .reaction-item img {\n  width: 20px;\n  height: 20px;\n  display: block;\n  image-rendering: pixelated;\n}\n\n/* Force BMO emoji size in reactions */\n.context-menu-reactions .reaction-item .bmoji-image,\n.reaction-item .bmoji-image {\n  width: 18px !important;\n  height: 18px !important;\n}\n\n/* More button */\n.context-menu-reactions-more {\n  width: 30px;\n  height: 30px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: none;\n  border-radius: 50%;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  transition: background-color 0.15s ease, transform 0.1s ease;\n  flex-shrink: 0;\n}\n\n.context-menu-reactions-more:hover {\n  background-color: var(--dollars-bg-hover);\n  transform: scale(1.1);\n}\n\n.context-menu-reactions-more:active {\n  transform: scale(0.95);\n}\n\n.context-menu-reactions-more svg {\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s ease;\n}\n\n.context-menu-reactions-more.expanded svg {\n  transform: rotate(180deg);\n}\n\n/* Menu items container - Bubble Style */\n.context-menu-items {\n  padding: 5px 0;\n  min-width: 160px;\n  max-width: 220px;\n  /* Enforce smaller width */\n\n  /* Glass Bubble Styles */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  overflow: hidden;\n}\n\n.context-menu-items button {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  padding: 8px 12px;\n  border: none;\n  background: none;\n  text-align: left;\n  cursor: pointer;\n  color: var(--dollars-text);\n  font-size: 14px;\n  line-height: 20px;\n  transition: background-color 0.1s ease;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.context-menu-items button span:not(.context-icon) {\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.context-icon {\n  width: 20px;\n  height: 20px;\n  margin-right: 10px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  color: var(--dollars-text-secondary);\n}\n\nhtml[data-theme=\"dark\"] .context-icon {\n  color: #aaa;\n}\n\n.context-icon svg {\n  width: 20px;\n  height: 20px;\n}\n\n.context-menu-items button.danger .context-icon {\n  color: #f5222d;\n}\n\n.context-menu-items button:hover {\n  background-color: var(--dollars-bg-hover);\n}\n\n.context-menu-items button.danger {\n  color: #f5222d;\n}\n\n.context-menu-items button.image-action {\n  display: none;\n}\n\n#dollars-context-menu.image-mode .context-menu-items button.image-action {\n  display: flex;\n}\n\n/* =========================================\n   Floating Reaction Picker\n   ========================================= */\n#dollars-reaction-picker-floating {\n  --item-size: 32px;\n  --icon-size: 21px;\n  --item-hover-bg: rgba(255, 255, 255, 0.3);\n  --panel-height: 260px;\n\n  position: fixed;\n  z-index: calc(var(--dollars-z-index-overlay) + 1);\n  /* width is set dynamically via inline style */\n  height: var(--panel-height);\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  overflow: hidden;\n  opacity: 0;\n  transform: translateY(-5px) scale(0.95);\n  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n}\n\nhtml[data-theme=\"dark\"] #dollars-reaction-picker-floating {\n  --item-hover-bg: rgba(255, 255, 255, 0.1);\n}\n\n@keyframes dollars-picker-slide-down {\n  0% {\n    opacity: 0;\n    transform: translateY(-15px) scale(0.95);\n  }\n\n  60% {\n    transform: translateY(3px) scale(1.01);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n\n#dollars-reaction-picker-floating.open {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  animation: dollars-picker-slide-down 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.reaction-picker-tabs {\n  display: flex;\n  flex-shrink: 0;\n  padding: 4px;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.2);\n  background-color: transparent;\n  gap: 2px;\n}\n\n.reaction-picker-tab-btn {\n  padding: 4px 10px;\n  border: 1px solid transparent;\n  border-radius: 12px;\n  background: none;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  font-size: 13px;\n  transition: background-color 0.15s, color 0.15s;\n  image-rendering: pixelated;\n}\n\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn {\n  color: #aaa;\n}\n\n.reaction-picker-tab-btn:hover {\n  background-color: var(--item-hover-bg);\n}\n\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn:hover {\n  background-color: #444;\n}\n\n.reaction-picker-tab-btn.active {\n  background-color: var(--dollars-bg);\n  color: var(--dollars-text);\n  border-color: var(--dollars-border);\n  font-weight: 700;\n}\n\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn.active {\n  background-color: #3a3a3a;\n  color: #eee;\n  border-color: #555;\n}\n\n.reaction-picker-content {\n  padding: 8px;\n  overflow-y: auto;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  justify-content: flex-start;\n  overscroll-behavior: contain;\n}\n\n.reaction-picker-content .smiley-item {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  width: var(--item-size);\n  height: var(--item-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n}\n\n.reaction-picker-content .smiley-item a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: var(--icon-size) var(--icon-size);\n  font-size: 0;\n  transition: background-color 0.15s, transform 0.1s;\n  image-rendering: pixelated;\n}\n\n.reaction-picker-content .smiley-item a:hover {\n  background-color: var(--item-hover-bg);\n  transform: scale(1.1);\n}\n\n\n/* =========================================\n   User Mention\n   ========================================= */\n.user-mention {\n  color: var(--primary-color);\n  font-weight: 500;\n}\n\n.user-mention:hover {\n  text-decoration: underline;\n}\n\n/* =========================================\n   Chat Tags\n   ========================================= */\n.chat-tag {\n  color: var(--primary-color);\n  cursor: pointer;\n  margin-right: 2px;\n  display: inline-block;\n}\n\n.chat-tag:hover {\n  opacity: 0.8;\n}\n\n/* =========================================\n   Floating Date - 液态玻璃效果\n   ========================================= */\n#dollars-floating-date {\n  position: absolute;\n  top: 55px;\n  left: 50%;\n  transform: translateX(-50%);\n  z-index: 10;\n  pointer-events: none;\n  opacity: 0;\n  transition: opacity 0.2s ease;\n  /* Glass Surface Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  color: var(--primary-color);\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  font-weight: 700;\n  text-shadow: none;\n  white-space: nowrap;\n}\n\n#dollars-floating-date.visible {\n  opacity: 1;\n}\n\n/* =========================================\n   Typing Indicator - 液态玻璃效果\n   ========================================= */\n#dollars-typing-indicator {\n  position: absolute;\n  top: -30px;\n  left: 10px;\n  height: auto;\n  /* Glass Surface Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  padding: 4px 10px;\n  border-radius: 12px;\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  font-style: italic;\n  opacity: 0;\n  transition: opacity 0.2s, transform 0.2s;\n  line-height: 1.5;\n  pointer-events: none;\n  transform: translateY(5px);\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n#dollars-typing-indicator.visible {\n  opacity: 1;\n  transform: translateY(0);\n}\n\nhtml[data-theme=dark] #dollars-typing-indicator {\n  color: #fff;\n}\n\n\n\n\n/* =========================================\n   Text Mask (Spoiler)\n   ========================================= */\nspan.text_mask {\n  background-color: #555;\n}\n\n/* =========================================\n   Media Queries\n   ========================================= */\n@media (max-width: 768px) {\n  #dollars-chat-window {\n    width: auto;\n    max-width: calc(100vw - 20px);\n    height: calc(100dvh - 60px);\n    max-height: calc(100dvh - 60px);\n    left: 10px;\n    right: 10px;\n    bottom: 30px;\n    top: auto;\n  }\n\n  .chat-message {\n    content-visibility: visible;\n    contain-intrinsic-size: auto;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n\n  #dollars-chat-window,\n  #dollars-chat-window .chat-header .close-btn,\n  #dollars-chat-window .chat-message,\n  #dollars-chat-window .send-btn {\n    transition: none !important;\n  }\n}\n\n/* 极简版个人资料卡片 (Minimalist Profile Card) */\n#dollars-profile-card {\n  position: fixed;\n  z-index: var(--dollars-z-index-overlay);\n  width: 280px;\n  padding: 0;\n  border-radius: 20px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  color: var(--dollars-text);\n  opacity: 0;\n  transform: scale(0.95) translateY(5px);\n  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n}\n\n@keyframes dollars-profile-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(15px) scale(0.95);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n\n#dollars-profile-card.visible {\n  opacity: 1;\n  transform: scale(1) translateY(0);\n  pointer-events: auto;\n  transition: none;\n  animation: dollars-profile-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);\n}\n\n.dollars-profile-banner {\n  height: 60px;\n  width: 100%;\n  background: linear-gradient(160deg,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);\n  position: relative;\n}\n\n.dollars-profile-banner::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-image: var(--dollars-bg-pattern-url);\n  background-size: 300px;\n  opacity: 0.6;\n  mix-blend-mode: overlay;\n}\n\nhtml[data-theme=dark] .dollars-profile-banner::before {\n  opacity: 0.2;\n}\n\n.dollars-profile-body {\n  padding: 0 20px 15px 20px;\n  position: relative;\n  display: flex;\n  flex-direction: column;\n}\n\n.dollars-profile-top-row {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-end;\n  margin-top: -30px;\n  margin-bottom: 12px;\n  position: relative;\n  z-index: 2;\n}\n\n.dollars-profile-identity {\n  display: flex;\n  align-items: flex-end;\n  gap: 12px;\n  flex-grow: 1;\n  min-width: 0;\n  margin-right: 8px;\n}\n\n.dollars-profile-avatar {\n  width: 64px;\n  height: 64px;\n  border-radius: 50%;\n  border: 3px solid var(--dollars-bg);\n  background-color: var(--dollars-bg);\n  object-fit: cover;\n  box-shadow: 0 4px 8px var(--dollars-shadow);\n  flex-shrink: 0;\n  transition: border-color 0.2s;\n}\n\n.dollars-profile-avatar.active {\n  border-color: var(--dollars-color-online);\n  box-shadow: 0 0 0 2px var(--dollars-bg), 0 0 0 4px var(--dollars-color-online);\n}\n\n.dollars-profile-names {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n\n.dollars-profile-nickname {\n  font-size: 16px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  line-height: 1.2;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.dollars-profile-username {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  font-family: monospace;\n  opacity: 0.7;\n}\n\n.dollars-profile-actions {\n  display: flex;\n  gap: 6px;\n  flex-shrink: 0;\n}\n\n.dollars-profile-btn {\n  width: 36px;\n  height: 36px;\n  border-radius: 50%;\n  background: transparent;\n  border: 1px solid var(--dollars-border);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s;\n  cursor: pointer;\n  position: relative;\n}\n\n.dollars-profile-btn:hover {\n  background: var(--primary-color);\n  color: var(--dollars-bg);\n  border-color: var(--primary-color);\n  transform: translateY(-2px);\n  box-shadow: 0 2px 8px var(--dollars-shadow);\n}\n\n.dollars-profile-btn svg {\n  width: 15px;\n  height: 15px;\n  stroke: currentColor;\n}\n\n.dollars-profile-sign {\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--dollars-text-secondary);\n  margin-bottom: 12px;\n  padding: 6px 10px;\n  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border-radius: 0 6px 6px 0;\n  word-wrap: break-word;\n}\n\n/* ProfileCard 骨架屏 */\n@keyframes skeleton-wave {\n  0% {\n    background-position: 200% 0;\n  }\n\n  100% {\n    background-position: -200% 0;\n  }\n}\n\n.dollars-profile-skel {\n  background: linear-gradient(90deg, var(--dollars-border) 25%, transparent 50%, var(--dollars-border) 75%);\n  background-size: 200% 100%;\n  animation: skeleton-wave 1.5s ease-in-out infinite;\n  border-radius: 6px;\n}\n\n.dollars-profile-skel-name {\n  width: 120px;\n  height: 16px;\n  margin-bottom: 5px;\n}\n\n.dollars-profile-skel-user {\n  width: 80px;\n  height: 12px;\n}\n\n.dollars-profile-skel-sign {\n  width: 100%;\n  height: 36px;\n  margin-bottom: 12px;\n  border-radius: 6px;\n}\n\n.dollars-profile-footer {\n  font-size: 10px;\n  color: var(--dollars-text-placeholder);\n  padding-top: 8px;\n  border-top: 1px solid var(--dollars-border);\n  margin-top: auto;\n  display: flex;\n  align-items: center;\n  gap: 4px;\n}\n\n.dollars-profile-footer::before {\n  content: \"\";\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: var(--dollars-border);\n}\n\n.dollars-profile-footer.active::before {\n  background-color: var(--dollars-color-online);\n}\n\n/* =========================================\n   Resize Handle & Loader (Added)\n   ========================================= */\n\n/* =========================================\n   Restored Original Button Styles\n   ========================================= */\n\n/* Emoji Button */\n#dollars-emoji-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background-color: var(--dollars-icon-color);\n  cursor: pointer;\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z\" /><path d=\"M16 3l-4 4l-4 -4\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z\" /><path d=\"M16 3l-4 4l-4 -4\" /></svg>');\n  -webkit-mask-size: 23px;\n  mask-size: 23px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  border-radius: 50%;\n}\n\n#dollars-emoji-btn svg {\n  display: none !important;\n}\n\n/* Attach Button */\n#dollars-attach-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background-color: var(--dollars-icon-color);\n  cursor: pointer;\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5\" /></svg>');\n  -webkit-mask-size: 23px;\n  mask-size: 23px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  border-radius: 50%;\n}\n\n#dollars-attach-btn svg {\n  display: none !important;\n}\n\n/* Send Button SVG hidden (using background-image instead) */\n.send-btn svg {\n  display: none !important;\n}\n\n/* Header Buttons Container */\n.chat-header .header-buttons,\n.header-buttons {\n  margin-left: auto;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n\n/* Header Button */\n.header-btn {\n  cursor: pointer;\n  width: 24px;\n  height: 24px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 4px;\n  transition: background-color .2s ease;\n  border: none;\n  background: transparent;\n}\n\n/* Back Button */\n#dollars-back-btn,\n.dollars-back-btn {\n  margin-right: 0;\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"/></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n}\n\n#dollars-back-btn svg,\n.dollars-back-btn svg {\n  display: none !important;\n}\n\n/* Resize Handle */\n#dollars-resize-handle {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 20px;\n  height: 20px;\n  cursor: nw-resize;\n  z-index: 10003;\n  touch-action: none;\n  background-color: var(--dollars-icon-color-secondary);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M10 2L2 10\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/><path d=\"M14 6L6 14\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M10 2L2 10\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/><path d=\"M14 6L6 14\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: 5px 5px;\n  mask-position: 5px 5px;\n  -webkit-mask-size: 10px;\n  mask-size: 10px;\n  opacity: .6;\n  transition: opacity .2s ease;\n}\n\n#dollars-resize-handle:hover {\n  opacity: 1;\n}\n\n/* Disable the custom triangle pseudo-element */\n#dollars-resize-handle::after {\n  display: none !important;\n}\n\n#dollars-settings-btn-header {\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n}\n\n/* =========================================\n   Text Formatter (BBCode Toolbar)\n   ========================================= */\n#dollars-text-formatter {\n  position: fixed;\n  z-index: var(--dollars-z-index-context);\n  /* Glass Surface Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 50px;\n  display: flex;\n  flex-direction: column;\n  padding: 4px;\n  opacity: 0;\n  transform: translateY(10px) scale(0.95);\n  pointer-events: none;\n  transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),\n    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n#dollars-text-formatter.visible {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n}\n\n.formatter-row {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n\n.formatter-btn {\n  width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: transparent;\n  border-radius: 50px;\n  cursor: pointer;\n  color: var(--dollars-text);\n  transition: background-color 0.2s;\n}\n\n.formatter-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n\n.formatter-btn.active {\n  color: var(--primary-color);\n}\n\n.formatter-btn svg {\n  width: 18px;\n  height: 18px;\n}\n\n.formatter-divider {\n  width: 1px;\n  height: 18px;\n  background-color: var(--dollars-border);\n  margin: 0 4px;\n}\n\n.formatter-link-input-wrapper {\n  display: none;\n  align-items: center;\n  gap: 4px;\n  padding: 0 2px;\n}\n\n#dollars-text-formatter.link-mode .main-buttons {\n  display: none;\n}\n\n#dollars-text-formatter.link-mode .formatter-link-input-wrapper {\n  display: flex;\n}\n\n.formatter-link-input {\n  background: transparent;\n  border: none;\n  color: var(--dollars-text);\n  font-size: 13px;\n  width: 150px;\n  outline: none;\n  padding: 4px;\n}\n\n.formatter-link-input::placeholder {\n  color: var(--dollars-text-placeholder);\n}\n\n/* =========================================\n   Navigation Group & Buttons\n   ========================================= */\n#dollars-nav-group {\n  position: absolute;\n  bottom: 90px;\n  right: 20px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  z-index: 30;\n  pointer-events: none;\n  transition: transform 0.2s, opacity 0.2s;\n}\n\n#dollars-nav-group.visible {\n  pointer-events: auto;\n}\n\n.nav-btn {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  border: 1px solid var(--dollars-glass-border-color);\n  /* Glass Surface Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  color: var(--primary-color);\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  transform: scale(0.8);\n  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);\n  pointer-events: none;\n}\n\n.nav-btn.visible {\n  opacity: 1;\n  transform: scale(1);\n  pointer-events: auto;\n}\n\n.nav-btn:hover {\n  background: var(--dollars-glass-bg);\n  transform: scale(1.1);\n  box-shadow: var(--dollars-glass-shadow), 0 0 0 2px color-mix(in srgb, var(--primary-color), transparent 70%);\n}\n\n.nav-btn:active {\n  transform: scale(0.95);\n}\n\n.nav-btn svg {\n  width: 24px;\n  height: 24px;\n  stroke-width: 2.5;\n}\n\n/* Specific styling for the scroll bottom button if used standalone */\n#dollars-scroll-bottom-btn {\n  /* It uses .nav-btn class, so base styles apply */\n  /* If it needs specific positioning when NOT in a group, meaningful defaults: */\n  position: absolute;\n  bottom: 80px;\n  right: 20px;\n  z-index: 95;\n}\n\n\n/* Scroll to Mention Button (like Telegram) */\n#dollars-scroll-mention-btn {\n  position: absolute;\n  right: 20px;\n  z-index: 95;\n  /* Position above scroll-bottom-btn with dynamic bottom */\n}\n\n#dollars-scroll-mention-btn svg {\n  transform: rotate(180deg);\n}\n\n/* Shared badge style for nav buttons (unread count, mention count) */\n.nav-btn-badge {\n  position: absolute;\n  top: -5px;\n  right: -5px;\n  min-width: 18px;\n  height: 18px;\n  border-radius: 9px;\n  background-color: var(--primary-color);\n  color: #fff;\n  font-size: 11px;\n  font-weight: 700;\n  line-height: 18px;\n  text-align: center;\n  padding: 0 5px;\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);\n  z-index: 31;\n}\n\n/* =========================================\n   MentionCompleter (@ User Search)\n   ========================================= */\n#dollars-mention-list {\n  position: absolute;\n  bottom: calc(100% + 5px);\n  left: 0;\n  width: 100%;\n  max-height: 220px;\n  overflow-y: auto;\n  border-radius: 18px;\n  display: none;\n  flex-direction: column;\n  z-index: var(--dollars-z-index-smiley);\n  /* Glass Surface Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  gap: 4px;\n  transition: bottom 0.2s ease;\n}\n\n#dollars-mention-list.visible {\n  display: flex;\n  animation: dollars-slide-up 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n@keyframes dollars-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(10px) scale(0.98);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n\n@keyframes dollars-item-slide-in {\n  0% {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n.mention-item {\n  display: flex;\n  align-items: center;\n  padding: 4px 8px;\n  border-radius: 15px;\n  cursor: pointer;\n  transition: background-color 0.2s;\n  gap: 8px;\n  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n\n.mention-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n\n.mention-item:nth-child(2) {\n  animation-delay: 30ms;\n}\n\n.mention-item:nth-child(3) {\n  animation-delay: 60ms;\n}\n\n.mention-item:nth-child(4) {\n  animation-delay: 90ms;\n}\n\n.mention-item:nth-child(5) {\n  animation-delay: 120ms;\n}\n\n.mention-item:nth-child(6) {\n  animation-delay: 150ms;\n}\n\n.mention-item:hover,\n.mention-item.active {\n  background-color: rgba(255, 255, 255, 0.3);\n}\n\nhtml[data-theme=\"dark\"] .mention-item:hover,\nhtml[data-theme=\"dark\"] .mention-item.active {\n  background-color: rgba(255, 255, 255, 0.1);\n}\n\n.mention-item img {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  object-fit: cover;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n}\n\n.mention-item-info {\n  display: flex;\n  align-items: baseline;\n  gap: 6px;\n  overflow: hidden;\n  min-width: 0;\n  line-height: 1.2;\n}\n\n.mention-item-nick {\n  font-size: 12px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.mention-item-user {\n  font-size: 10px;\n  color: var(--dollars-text-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  opacity: 0.8;\n}\n\n/* =========================================\n   Link Previews\n   ========================================= */\n.dollars-preview-card {\n  background-color: var(--dollars-bg);\n  border: 1px solid var(--dollars-border);\n  border-radius: 8px;\n  padding: 10px;\n  display: flex;\n  gap: 12px;\n  text-decoration: none !important;\n  transition: all 0.2s;\n  box-sizing: border-box;\n  max-width: 100% !important;\n  height: 100px;\n  width: 300px;\n  overflow: hidden;\n  position: relative;\n  min-width: 0;\n}\n\n.dollars-preview-card .cover {\n  width: 80px;\n  height: 80px;\n  flex-shrink: 0;\n  border-radius: 6px;\n  background-color: var(--dollars-bg);\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.dollars-preview-card .cover img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  border-radius: 0 !important;\n}\n\n.dollars-preview-card[data-entity-type=character] .cover img,\n.dollars-preview-card[data-entity-type=person] .cover img {\n  object-fit: contain !important;\n}\n\n.dollars-preview-card[data-entity-type=generic] .cover {\n  background-color: var(--dollars-bg);\n  border-radius: 5px;\n}\n\n.dollars-preview-card[data-entity-type=generic] .cover img {\n  object-fit: cover;\n}\n\n.dollars-preview-card .inner {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n}\n\n.dollars-preview-card .title {\n  font-size: 14px;\n  font-weight: bold;\n  color: var(--dollars-text) !important;\n  margin: 0 0 4px 0;\n  line-height: 1.4;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.dollars-preview-card .info {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  margin: 0;\n  line-height: 1.5;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.dollars-preview-card[data-entity-type=generic] .info {\n  margin-top: 4px;\n  margin-bottom: 0;\n}\n\n.dollars-preview-card .rateInfo {\n  margin-top: 6px;\n  font-size: 11px;\n  color: var(--dollars-text-placeholder);\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n\n\n/* =========================================\n   User Profile Panel — Keyframes\n   ========================================= */\n@media (prefers-reduced-motion: reduce) {\n  .uprofile-action-btn,\n  .uprofile-action-btn:active {\n    transition: none;\n    transform: none;\n  }\n\n  .uprofile-info-row {\n    transition: none;\n  }\n\n  .uprofile-media-item img {\n    transition: none;\n  }\n\n  #dollars-user-profile-panel.narrow,\n  #dollars-user-profile-panel.narrow.visible,\n  #dollars-user-profile-panel.narrow.closing {\n    transition: none;\n  }\n\n  #dollars-user-profile-panel.wide,\n  #dollars-user-profile-panel.wide.visible,\n  #dollars-user-profile-panel.wide.closing {\n    transition: none;\n  }\n}\n\n/* =========================================\n   User Profile Panel (Telegram-style)\n   ========================================= */\n#dollars-user-profile-panel {\n  position: absolute;\n  z-index: 100;\n  display: flex;\n  flex-direction: column;\n  background: var(--dollars-bg);\n  overflow: hidden;\n}\n\n/* 窄视图：全屏滑入 */\n#dollars-user-profile-panel.narrow {\n  inset: 0;\n  transform: translateX(100%);\n  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n#dollars-user-profile-panel.narrow.visible {\n  transform: translateX(0);\n}\n\n#dollars-user-profile-panel.narrow.closing {\n  transform: translateX(100%);\n}\n\n/* 宽视图：四边等距卡片 */\n#dollars-user-profile-panel.wide {\n  top: calc(40px + 16px);\n  right: 16px;\n  bottom: 16px;\n  left: 16px;\n  z-index: 101;\n  border-radius: 16px;\n  border: 1px solid var(--dollars-border);\n  box-shadow: 0 8px 40px -8px var(--dollars-shadow);\n  opacity: 0;\n  transform: translateY(4px);\n  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n}\n\n#dollars-user-profile-panel.wide.visible {\n  opacity: 1;\n  transform: translateY(0);\n  pointer-events: auto;\n}\n\n#dollars-user-profile-panel.wide.closing {\n  opacity: 0;\n  transform: translateY(4px);\n  pointer-events: none;\n}\n\n/* 宽视图卡片标题栏 */\n.uprofile-card-header {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 12px 8px 8px;\n  flex-shrink: 0;\n  border-bottom: 1px solid var(--dollars-border);\n}\n\n.uprofile-card-title {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n\n/* Banner with centered avatar */\n.uprofile-banner {\n  height: 120px;\n  flex-shrink: 0;\n  background: linear-gradient(160deg,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);\n  position: relative;\n  display: flex;\n  align-items: flex-end;\n  justify-content: center;\n}\n\n.uprofile-banner::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-image: var(--dollars-bg-pattern-url);\n  background-size: 300px;\n  opacity: 0.6;\n  mix-blend-mode: overlay;\n}\n\nhtml[data-theme=dark] .uprofile-banner::before {\n  opacity: 0.2;\n}\n\n.uprofile-avatar {\n  width: 88px;\n  height: 88px;\n  border-radius: 50%;\n  border: 3px solid var(--dollars-bg);\n  background-color: var(--dollars-bg);\n  object-fit: cover;\n  box-shadow: 0 4px 16px var(--dollars-shadow);\n  position: relative;\n  z-index: 1;\n  transform: translateY(44px);\n  flex-shrink: 0;\n}\n\n/* Scrollable content area */\n.uprofile-content {\n  flex: 1;\n  overflow-y: auto;\n  padding: 52px 20px 24px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n\n.uprofile-body {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n\n/* Name section — centered */\n.uprofile-name-section {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 2px;\n}\n\n.uprofile-nickname {\n  font-size: 20px;\n  font-weight: 800;\n  color: var(--dollars-text);\n  line-height: 1.3;\n  word-break: break-word;\n  text-align: center;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n}\n\n.uprofile-status-dot {\n  display: inline-block;\n  width: 9px;\n  height: 9px;\n  border-radius: 50%;\n  background-color: var(--dollars-color-online);\n  flex-shrink: 0;\n  box-shadow: 0 0 0 2px var(--dollars-bg);\n  position: relative;\n}\n\n.uprofile-status-dot.active::after {\n  content: none;\n}\n\n.uprofile-username {\n  font-size: 13px;\n  color: var(--dollars-text-secondary);\n  font-family: monospace;\n  text-align: center;\n}\n\n.uprofile-last-active {\n  font-size: 12px;\n  color: var(--dollars-text-placeholder);\n  margin-top: 2px;\n}\n\n/* Stats pills — between name and actions */\n.uprofile-stats-row {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0;\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border: 1px solid color-mix(in srgb, var(--primary-color), transparent 80%);\n  border-radius: 12px;\n  padding: 10px 8px;\n}\n\n.uprofile-stat {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 2px;\n}\n\n.uprofile-stat-num {\n  font-size: 17px;\n  font-weight: 700;\n  color: var(--primary-color);\n  line-height: 1;\n  letter-spacing: -0.3px;\n  display: inline-block;\n}\n\n.uprofile-stat-label {\n  font-size: 11px;\n  color: var(--dollars-text-placeholder);\n  line-height: 1;\n}\n\n.uprofile-stat-divider {\n  width: 1px;\n  height: 28px;\n  background: color-mix(in srgb, var(--primary-color), transparent 70%);\n  flex-shrink: 0;\n}\n\n/* Action buttons — horizontal row below name */\n.uprofile-actions {\n  display: flex;\n  gap: 8px;\n}\n\n.uprofile-action-btn {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 10px 12px;\n  border-radius: 10px;\n  background: var(--dollars-glass-bg);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text);\n  font-size: 13px;\n  cursor: pointer;\n  transition: background-color 0.14s ease-out, color 0.14s ease-out, border-color 0.14s ease-out;\n  white-space: nowrap;\n}\n\n.uprofile-action-btn:hover {\n  background: var(--primary-color);\n  color: var(--dollars-bg);\n  border-color: var(--primary-color);\n}\n\n.uprofile-action-btn:focus-visible {\n  outline: 2px solid var(--primary-color);\n  outline-offset: 2px;\n}\n\n.uprofile-action-btn span {\n  display: flex;\n  align-items: center;\n  flex-shrink: 0;\n}\n\n.uprofile-action-btn svg {\n  width: 16px;\n  height: 16px;\n  stroke: currentColor;\n}\n\n/* Info rows — Telegram style */\n.uprofile-info-section {\n  display: flex;\n  flex-direction: column;\n  border-top: 1px solid var(--dollars-border);\n  padding-top: 12px;\n}\n\n.uprofile-info-row {\n  display: flex;\n  align-items: flex-start;\n  gap: 12px;\n  padding: 10px 8px;\n  border-radius: 8px;\n  transition: background-color 0.15s;\n}\n\n.uprofile-info-row:hover {\n  background: var(--dollars-bg-hover);\n}\n\n.uprofile-info-row + .uprofile-info-row {\n  border-top: 1px solid color-mix(in srgb, var(--dollars-border), transparent 50%);\n}\n\n\n.uprofile-info-content {\n  flex: 1;\n  min-width: 0;\n}\n\n.uprofile-info-label {\n  font-size: 11px;\n  color: var(--primary-color);\n  opacity: 0.8;\n  font-weight: 500;\n  margin-bottom: 2px;\n}\n\n.uprofile-info-value {\n  font-size: 13px;\n  color: var(--dollars-text);\n  line-height: 1.5;\n  word-break: break-word;\n}\n\n.uprofile-sign-value {\n  padding: 4px 8px;\n  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border-radius: 0 6px 6px 0;\n  color: var(--dollars-text-secondary);\n}\n\n/* Shared media section */\n.uprofile-media-section {\n  border-top: 1px solid var(--dollars-border);\n  padding-top: 12px;\n}\n\n.uprofile-media-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 10px;\n  padding: 0 4px;\n}\n\n.uprofile-media-header span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n\n.uprofile-media-grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 3px;\n  border-radius: 10px;\n  overflow: hidden;\n}\n\n.uprofile-media-item {\n  position: relative;\n  aspect-ratio: 1;\n  cursor: pointer;\n  overflow: hidden;\n  background: var(--dollars-border);\n}\n\n.uprofile-media-item img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.16s ease-out;\n}\n\n.uprofile-media-item:hover img {\n  transform: scale(1.02);\n}\n\n.uprofile-media-video-btn {\n  display: block;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  border: none;\n  background: none;\n  cursor: pointer;\n  position: relative;\n}\n\n.uprofile-media-video-badge {\n  position: absolute;\n  bottom: 4px;\n  left: 4px;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.uprofile-media-video-badge svg {\n  margin-left: 2px;\n}\n\n/* Empty hint */\n.uprofile-empty-hint {\n  text-align: center;\n  color: var(--dollars-text-placeholder);\n  font-size: 13px;\n  padding: 16px 0;\n}\n\n/* =========================================\n   Search UI\n   ========================================= */\n#dollars-search-ui {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  min-height: 0;\n  gap: 8px;\n  padding: 52px 12px 12px 12px;\n  /* Glass Surface Effect */\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 100;\n}\n\n#dollars-search-ui~.chat-input-container,\n#dollars-user-profile-panel.visible~.chat-input-container {\n  display: none;\n}\n\n\n#dollars-search-ui .search-panel-row {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  opacity: 0.8\n}\n\n#dollars-search-ui .search-calendar-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-left: 5px;\n  width: 35px;\n  height: 35px;\n  border-radius: 50%;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  transition: all 0.2s;\n}\n\n#dollars-search-ui .search-bar {\n  height: 35px;\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  position: relative;\n  border-radius: 100px;\n  border: 1px solid var(--dollars-border);\n  background-color: var(--dollars-bg);\n  transition: all .3s ease-in-out;\n  padding: 0 6px 0 6px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n}\n\n#dollars-search-ui .search-bar:focus-within {\n  border-color: var(--primary-color);\n  box-shadow: 0 0 10px rgba(240, 145, 153, .6);\n}\n\n#dollars-search-ui input {\n  flex-grow: 1;\n  /* Allow input to shrink below default content size */\n  min-width: 0;\n  padding: 6px 0;\n  border: none;\n  border-radius: 0;\n  background-color: transparent;\n  outline: 0;\n  color: var(--dollars-text);\n}\n\n#dollars-search-ui .search-close-btn {\n  flex-shrink: 0;\n  cursor: pointer;\n  font-size: 20px;\n  color: var(--dollars-text-secondary);\n  align-items: center;\n  opacity: 0.5;\n  z-index: 1;\n  display: flex;\n}\n\n#dollars-search-ui .search-icon {\n  flex-shrink: 0;\n}\n\n#dollars-search-ui input[type=search]::-webkit-search-cancel-button,\n#dollars-search-ui input[type=search]::-webkit-search-decoration {\n  -webkit-appearance: none;\n  appearance: none;\n  display: none;\n}\n\n#dollars-search-results {\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n\n.search-status-msg {\n  text-align: center;\n  padding: 20px;\n  color: var(--dollars-text-placeholder);\n}\n\n.search-result-item {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  padding: 8px;\n  border-radius: 8px;\n  cursor: pointer;\n  transition: background-color .2s;\n}\n\n.search-result-item:hover {\n  background-color: var(--dollars-bg-hover);\n}\n\n.search-result-item img {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n}\n\n.search-result-item .dollars-search-content {\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n\n.search-result-item .dollars-search-header {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 12px;\n}\n\n.search-result-item .dollars-search-nickname {\n  font-weight: 700;\n  color: var(--dollars-text);\n}\n\n.search-result-item .dollars-search-timestamp {\n  color: var(--dollars-text-secondary);\n}\n\n.search-result-item .dollars-search-message {\n  font-size: 13px;\n  color: var(--dollars-text-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n/* =========================================\n   Gallery Mode\n   ========================================= */\n#dollars-search-ui .search-gallery-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-left: 5px;\n  width: 35px;\n  height: 35px;\n  border-radius: 50%;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  transition: all 0.2s;\n}\n\n#dollars-search-ui .search-gallery-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n\n#dollars-search-ui .search-gallery-btn.active {\n  background-color: var(--primary-color);\n  color: #fff;\n  border-color: var(--primary-color);\n}\n\n#dollars-search-ui .gallery-container {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  min-height: 0;\n  overflow: hidden;\n}\n\n#dollars-search-ui .gallery-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 8px;\n}\n\n#dollars-search-ui .gallery-title {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n\n#dollars-search-ui .gallery-close-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 50%;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s;\n}\n\n#dollars-search-ui .gallery-close-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n\n#dollars-search-ui .gallery-grid {\n  display: grid;\n  grid-template-columns: repeat(5, 1fr);\n  gap: 4px;\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  align-content: start;\n}\n\n#dollars-search-ui .gallery-item {\n  position: relative;\n  width: 100%;\n  padding-bottom: 100%;\n  cursor: pointer;\n  overflow: hidden;\n  border-radius: 6px;\n  background-color: var(--dollars-bg);\n}\n\n#dollars-search-ui .gallery-item a {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  display: block;\n}\n\n#dollars-search-ui .gallery-item img,\n#dollars-search-ui .gallery-item video {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n#dollars-search-ui .gallery-item .video-overlay {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: rgba(0, 0, 0, 0.3);\n  pointer-events: none;\n}\n\n#dollars-search-ui .gallery-item:hover .video-overlay {\n  background-color: rgba(0, 0, 0, 0.4);\n}\n\n#dollars-search-ui .gallery-loading {\n  grid-column: 1 / -1;\n  text-align: center;\n  padding: 20px;\n  color: var(--dollars-text-secondary);\n}\n\n/* Tooltip Styles from Legacy Script */\n.dollars-tooltip {\n  pointer-events: auto !important;\n}\n\n.dollars-tooltip .tooltip-inner a {\n  color: #eee !important;\n  text-decoration: none !important;\n  transition: color .2s;\n  cursor: pointer;\n}\n\n.dollars-tooltip .tooltip-inner a:hover {\n  color: #fff !important;\n  border-bottom-color: #fff;\n  text-decoration: none !important;\n}\n\n/* =========================================\n   Elegant Animation Keyframes\n   ========================================= */\n\n/* New Message Entrance - Smooth Slide Up */\n@keyframes dollars-message-in {\n  0% {\n    opacity: 0;\n    transform: translateY(16px);\n  }\n\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n/* Exit Animations - Scale Down + Fade */\n@keyframes dollars-scale-out {\n  from {\n    opacity: 1;\n    transform: scale(1);\n  }\n\n  to {\n    opacity: 0;\n    transform: scale(0.95);\n  }\n}\n\n/* Exit Animations - Slide Down + Fade */\n@keyframes dollars-slide-down-out {\n  from {\n    opacity: 1;\n    transform: translateY(0);\n  }\n\n  to {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n}\n\n/* Context Menu Exit */\n#dollars-context-menu.closing {\n  animation: dollars-scale-out 0.15s ease-out forwards;\n  pointer-events: none;\n}\n\n/* Profile Card Exit */\n@keyframes dollars-profile-slide-out {\n  0% {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n\n  100% {\n    opacity: 0;\n    transform: translateY(10px) scale(0.95);\n  }\n}\n\n#dollars-profile-card.closing {\n  animation: dollars-profile-slide-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;\n  pointer-events: none;\n  transition: none;\n}\n\n/* Smiley Panel Exit */\n#dollars-smiles-floating.closing {\n  animation: dollars-slide-down-out 0.2s ease-out forwards;\n  pointer-events: none;\n}\n\n/* Reaction Picker Exit */\n#dollars-reaction-picker-floating.closing {\n  animation: dollars-scale-out 0.15s ease-out forwards;\n  pointer-events: none;\n}\n\n.chat-message.new-message {\n  animation: dollars-message-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;\n  /* Disable CSS transitions during keyframe animation to prevent conflict */\n  /* Note: NOT using !important so pending state can still apply properly */\n  transition: none;\n  /* 确保动画从正确的初始状态开始 */\n  opacity: 0;\n  transform: translateY(16px);\n}\n\n/* When both pending and new-message are applied (optimistic message entry),\n   use pending's opacity so the spinner is visible during entry animation */\n.chat-message.pending.new-message {\n  opacity: 0.75;\n}\n\n/* Pending (Optimistic) Message */\n.chat-message.pending {\n  opacity: 0.7;\n  /* Smooth transition when pending state is removed */\n  transition: opacity 0.25s ease-out !important;\n}\n\n.chat-message.pending .bubble::after {\n  content: '';\n  position: absolute;\n  right: 6px;\n  bottom: 4px;\n  width: 12px;\n  height: 12px;\n  border: 2px solid var(--dollars-text-secondary);\n  border-top-color: transparent;\n  border-radius: 50%;\n  animation: dollars-spin 0.7s ease-in-out infinite, dollars-spinner-fade-in 0.2s ease-out forwards;\n  will-change: transform;\n}\n\n/* Spinner rotation animation */\n@keyframes dollars-spin {\n  from {\n    transform: rotate(0deg);\n  }\n\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n/* Spinner fade-in animation */\n@keyframes dollars-spinner-fade-in {\n  from {\n    opacity: 0;\n    transform: scale(0.5) rotate(0deg);\n  }\n\n  to {\n    opacity: 1;\n    transform: scale(1) rotate(0deg);\n  }\n}\n\n/* =========================================\n   Reaction Container Override\n   ========================================= */\n/* Override official .likes_grid opacity from 0.7 to 1 */\n#dollars-chat-root .likes_grid {\n  opacity: 1;\n}\n\n#dollars-chat-root .likes_grid .item {\n  gap: 3px;\n  background: rgba(255, 255, 255, 0.85);\n}\n\n/* Override dark mode .likes_grid .item background - official is too transparent */\nhtml[data-theme=\"dark\"] #dollars-chat-root .likes_grid .item {\n  background: rgba(255, 255, 255, 0.15);\n}\n\n/* =========================================\n   Reaction Avatar Styles\n   ========================================= */\n.reaction-avatars {\n  display: inline-flex;\n  align-items: center;\n  margin-left: 3px;\n  flex-shrink: 0;\n}\n\n.reaction-avatar {\n  width: 21px;\n  height: 21px;\n  border-radius: 50%;\n  margin-left: -5px;\n  object-fit: cover;\n  background-color: var(--dollars-bg);\n  position: relative;\n  flex-shrink: 0;\n  transition: transform 0.15s ease;\n}\n\n.reaction-avatar:first-child {\n  margin-left: 0;\n}\n\n.reaction-item:hover .reaction-avatar {\n  border-color: #369cf8;\n}\n\n.reaction-item .num.extra {\n  font-size: 10px;\n  margin-left: 2px;\n  color: var(--dollars-text-secondary);\n}\n\n.reaction-item:hover .num.extra {\n  color: #fff;\n}\n\n/* Stagger Fade In for Grid Items */\n@keyframes dollars-stagger-fade {\n  from {\n    opacity: 0;\n    transform: scale(0.85);\n  }\n\n  to {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n\n/* Smiley Panel Items Stagger Animation */\n#dollars-smiles-floating.open .smiley-item,\n#dollars-reaction-picker-floating.open .smiley-item {\n  animation: dollars-stagger-fade 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n\n/* Context Menu Cascade Animation */\n@keyframes dollars-menu-cascade {\n  from {\n    opacity: 0;\n    transform: translateX(-8px);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n#dollars-context-menu.visible .context-menu-items button {\n  animation: dollars-menu-cascade 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(1) {\n  animation-delay: 0ms;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(2) {\n  animation-delay: 25ms;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(3) {\n  animation-delay: 50ms;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(4) {\n  animation-delay: 75ms;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(5) {\n  animation-delay: 100ms;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(6) {\n  animation-delay: 125ms;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(7) {\n  animation-delay: 150ms;\n}\n\n#dollars-context-menu.visible .context-menu-items button:nth-child(8) {\n  animation-delay: 175ms;\n}\n\n/* Context Menu Reactions Bounce Animation */\n@keyframes dollars-reaction-bounce {\n  0% {\n    opacity: 0;\n    transform: scale(0.3) translateY(15px);\n  }\n\n  40% {\n    transform: scale(1.2) translateY(-10px);\n  }\n\n  65% {\n    transform: scale(0.92) translateY(2px);\n  }\n\n  85% {\n    transform: scale(1.05) translateY(-2px);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1) translateY(0);\n  }\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item {\n  animation: dollars-reaction-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(2) {\n  animation-delay: 35ms;\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(3) {\n  animation-delay: 70ms;\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(4) {\n  animation-delay: 105ms;\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(5) {\n  animation-delay: 140ms;\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(6) {\n  animation-delay: 175ms;\n}\n\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(7) {\n  animation-delay: 210ms;\n}\n\n/* Reply Preview Slide Animation */\n.reply-preview.visible {\n  animation: dollars-slide-up 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n/* Search Result Items Stagger */\n.search-result-item {\n  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n\n.search-result-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n\n.search-result-item:nth-child(2) {\n  animation-delay: 30ms;\n}\n\n.search-result-item:nth-child(3) {\n  animation-delay: 60ms;\n}\n\n.search-result-item:nth-child(4) {\n  animation-delay: 90ms;\n}\n\n.search-result-item:nth-child(5) {\n  animation-delay: 120ms;\n}\n\n.search-result-item:nth-child(6) {\n  animation-delay: 150ms;\n}\n\n.search-result-item:nth-child(7) {\n  animation-delay: 180ms;\n}\n\n.search-result-item:nth-child(8) {\n  animation-delay: 210ms;\n}\n\n/* Conversation Item Hover Enhancement */\n.conversation-item {\n  transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n.conversation-item:hover {\n  transform: scale(1.02);\n}\n\n.conversation-item:active {\n  transform: scale(0.98);\n}\n\n/* Button Microinteractions */\n.send-btn {\n  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s, box-shadow 0.2s;\n}\n\n.send-btn:active {\n  transform: scale(0.9) !important;\n}\n\n/* Icon Button Hover Wobble */\n@keyframes dollars-icon-wobble {\n\n  0%,\n  100% {\n    transform: rotate(0deg);\n  }\n\n  25% {\n    transform: rotate(-5deg);\n  }\n\n  75% {\n    transform: rotate(5deg);\n  }\n}\n\n#dollars-emoji-btn:hover,\n#dollars-attach-btn:hover {\n  animation: dollars-icon-wobble 0.4s ease-in-out;\n}\n\n/* Header Button Pulse on Hover */\n.header-btn {\n  transition: background-color 0.2s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n.header-btn:hover {\n  transform: scale(1.1);\n}\n\n.header-btn:active {\n  transform: scale(0.92);\n}\n\n/* Floating Date Slide In */\n@keyframes dollars-date-slide {\n  from {\n    opacity: 0;\n    transform: translateX(-50%) translateY(-10px);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateX(-50%) translateY(0);\n  }\n}\n\n#dollars-floating-date.visible {\n  animation: dollars-date-slide 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n/* Scroll Bottom Button Bounce In */\n@keyframes dollars-btn-bounce-in {\n  0% {\n    opacity: 0;\n    transform: scale(0.5);\n  }\n\n  60% {\n    transform: scale(1.1);\n  }\n\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n\n.nav-btn.visible {\n  animation: dollars-btn-bounce-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n\n\n/* Link Preview Card Entrance */\n.dollars-preview-card {\n  animation: dollars-item-slide-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n\n\n/* Quote Hover Animation */\n.chat-quote {\n  transition: opacity 0.2s, transform 0.15s ease, background 0.2s;\n}\n\n.chat-quote:hover {\n  transform: scale(1.01);\n}\n\n/* Smiley Tab Button Transitions */\n.smiley-tab-btn,\n.reaction-picker-tab-btn {\n  transition: background-color 0.15s, color 0.15s, transform 0.1s;\n}\n\n.smiley-tab-btn:active,\n.reaction-picker-tab-btn:active {\n  transform: scale(0.95);\n}\n\n/* Text Formatter Entrance */\n@keyframes dollars-formatter-in {\n  from {\n    opacity: 0;\n    transform: translateY(8px) scale(0.9);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n\n#dollars-text-formatter.visible {\n  animation: dollars-formatter-in 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n\n/* Formatter Button Interactions */\n.formatter-btn {\n  transition: background-color 0.15s, transform 0.1s, color 0.15s;\n}\n\n.formatter-btn:active {\n  transform: scale(0.9);\n}\n\n/* Respect Reduced Motion Preferences */\n@media (prefers-reduced-motion: reduce) {\n\n  *,\n  *::before,\n  *::after {\n    animation-duration: 0.01ms !important;\n    animation-iteration-count: 1 !important;\n    transition-duration: 0.01ms !important;\n  }\n}\n\n/* =========================================\n   Unified Notifier\n   ========================================= */\n#unified-notifier {\n  position: fixed;\n  bottom: 40px;\n  right: 30px;\n  width: 223px;\n  z-index: 10001;\n  border-radius: 15px;\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  overflow: hidden;\n  transform: translateX(calc(100% + 30px));\n  transition: all .4s ease-in-out;\n  background-color: rgba(254, 254, 254, .9);\n  color: #000;\n  border: 1px solid rgba(0, 0, 0, .1);\n  box-shadow: 0 5px 25px -5px rgba(80, 80, 80, .3);\n  display: flex;\n  flex-direction: column;\n}\n\nhtml[data-theme=dark] #unified-notifier {\n  background-color: rgba(45, 46, 47, .9);\n  color: #e0e0e1;\n  border: 1px solid rgba(255, 255, 255, .15);\n}\n\n#unified-notifier.show {\n  transform: translateX(0);\n}\n\n.un-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 0 15px;\n  height: 32px;\n  font-size: 14px;\n  font-weight: 700;\n  color: var(--primary-color);\n  border-bottom: 1px solid #eee;\n}\n\nhtml[data-theme=dark] .un-header {\n  border-bottom: 1px solid #444;\n}\n\n.un-body {\n  padding: 0;\n  max-height: 400px;\n  overflow-y: auto;\n}\n\n.un-item {\n  display: flex;\n  align-items: flex-start;\n  padding: 10px 15px;\n}\n\n.un-item:not(:last-child) {\n  border-bottom: 1px solid #eee;\n}\n\nhtml[data-theme=dark] .un-item:not(:last-child) {\n  border-bottom: 1px solid #444;\n}\n\n.un-item .avatarNeue {\n  margin-right: 12px;\n  flex-shrink: 0;\n  width: 40px;\n  height: 40px;\n  background-size: cover;\n  border-radius: 50%;\n}\n\n.un-item .content {\n  flex-grow: 1;\n  font-size: 13px;\n  overflow: hidden;\n}\n\n.un-item .actions {\n  margin-top: 8px;\n}\n\n.un-action-btn {\n  cursor: pointer;\n  display: inline-block;\n  padding: 2px 8px;\n  border-radius: 4px;\n  font-size: 12px;\n  text-decoration: none !important;\n  transition: background-color 0.2s;\n}\n\n.un-action-btn.btnRedSmall {\n  background-color: var(--primary-color);\n  color: #fff !important;\n}\n\n.un-action-btn.btnRedSmall:hover {\n  background-color: #369cf8;\n}\n\n.un-action-btn.btnGraySmall {\n  background-color: #eee;\n  color: #666 !important;\n}\n\n.un-action-btn.btnGraySmall:hover {\n  background-color: #ddd;\n}\n\nhtml[data-theme=dark] .un-action-btn.btnGraySmall {\n  background-color: #444;\n  color: #ccc !important;\n}\n\nhtml[data-theme=dark] .un-action-btn.btnGraySmall:hover {\n  background-color: #555;\n}\n\n.un-widget-title {\n  color: #3e3e3e;\n  display: block;\n  margin-bottom: 4px;\n}\n\n.un-widget-message {\n  color: #666;\n  display: block;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin-bottom: 4px;\n}\n\nhtml[data-theme=dark] .un-widget-title {\n  color: #e9e9e9;\n}\n\nhtml[data-theme=dark] .un-widget-message {\n  color: #aaa;\n}\n\n/* Clear all button */\n.un-clear-all {\n  font-size: 12px;\n  color: var(--dollars-text-placeholder) !important;\n  text-decoration: none !important;\n}\n\n.un-clear-all:hover {\n  color: var(--primary-color) !important;\n}\n\n/* (moved to .nav-btn-badge above) */\n\n@keyframes dollars-fade-in {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n\n/* Browse Position Separator - 上次浏览位置 bar */\n.browse-separator {\n  display: block;\n  position: relative;\n  text-align: center;\n  margin: 12px -19px;\n  width: calc(100% + 38px);\n  height: 30px;\n  line-height: 30px;\n  background-color: rgba(var(--primary-color-rgb, 249, 109, 142), 0.1);\n  z-index: 2;\n  pointer-events: none;\n  animation: dollars-fade-in 0.3s ease;\n}\n\n.browse-separator span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--primary-color);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  padding: 0 12px;\n}\n\nhtml[data-theme='dark'] .browse-separator {\n  background-color: rgba(249, 109, 142, 0.15);\n}\n\n/* Unread Separator - 未读消息 bar */\n.unread-separator {\n  display: block;\n  position: relative;\n  text-align: center;\n  margin: 12px -19px;\n  width: calc(100% + 38px);\n  height: 30px;\n  line-height: 30px;\n  background-color: rgba(255, 255, 255, 0.9);\n  z-index: 2;\n  pointer-events: none;\n  animation: dollars-fade-in 0.3s ease;\n}\n\n.unread-separator span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--primary-color);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  padding: 0 12px;\n}\n\nhtml[data-theme='dark'] .unread-separator {\n  background-color: rgba(60, 62, 64, 0.9);\n}\n\n/* =========================================\n   Re:Dollars Homepage Card\n   ========================================= */\n#dollars-card {\n  transition: transform 0.1s ease-out, box-shadow 0.3s ease;\n  transform-style: preserve-3d;\n  perspective: 1000px;\n  border: 1px solid var(--primary-color) !important;\n  background-color: var(--dollars-bg);\n  cursor: pointer;\n}\n\n#dollars-card::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  pointer-events: none;\n  background-image:\n    url('https://lsky.ry.mk/i/2026/01/03/background.svg'),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: 300px, center;\n  background-size: 300px auto, cover;\n  background-blend-mode: overlay, normal;\n  opacity: 1;\n  transition: opacity 0.3s ease, background-position 0.1s ease-out;\n}\n\nhtml[data-theme='dark'] #dollars-card {\n  border: 1px solid var(--primary-color);\n  background: initial;\n}\n\nhtml[data-theme='dark'] #dollars-card::before {\n  background: linear-gradient(160deg,\n      var(--primary-color) 0%,\n      color-mix(in srgb, var(--primary-color), transparent 40%) 100%);\n  -webkit-mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  mask-repeat: repeat;\n  mask-size: 300px;\n  mask-position: 300px;\n}\n\n#dollars-card:hover {\n  transform: scale(1.02);\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);\n}\n\n\n/* =========================================\n   Dock Chat Button - Flashing Animation\n   ========================================= */\n#dock-chat-link {\n  position: relative;\n}\n\n#dock-chat-link.flashing {\n  animation: dock-flash 1s ease-in-out infinite;\n}\n\n@keyframes dock-flash {\n\n  0%,\n  100% {\n    opacity: 1;\n  }\n\n  50% {\n    opacity: 0.3;\n  }\n}\n\n/* Dock notification badge */\n.dock-notif-badge {\n  position: absolute;\n  top: -4px;\n  right: -4px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: 8px;\n  background-color: #f96d8e;\n  color: #fff;\n  font-size: 10px;\n  font-weight: 700;\n  line-height: 16px;\n  text-align: center;\n  display: none;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n}\n";
+  const cssContent = ":root {\n  --dollars-z-index-base: 90;\n  --dollars-z-index-smiley: 99;\n  --dollars-z-index-context: 95;\n  --dollars-z-index-overlay: 110;\n  --dollars-z-index-modal: 2000;\n  --dollars-bg: #fff;\n  --dollars-bg-hover: rgba(0, 0, 0, 0.04);\n  --dollars-border: rgba(0, 0, 0, 0.08);\n  --dollars-shadow: rgba(0, 0, 0, 0.1);\n  --dollars-bg-pattern: none;\n  --dollars-bg-pattern-url: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  --dollars-text: #333;\n  --dollars-text-secondary: #666;\n  --dollars-text-placeholder: #999;\n  --dollars-icon-color: #555;\n  --dollars-icon-color-secondary: #888;\n  --dollars-color-online: #4CAF50;\n  --dollars-color-danger: #ef4444;\n  --dollars-glass-border: rgba(255, 255, 255, 0.3);\n  --dollars-glass-highlight: rgba(255, 255, 255, 0.3);\n  --dollars-glass-bg: rgba(255, 255, 255, 0.55);\n  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.03);\n  --dollars-glass-shadow:\n    0 8px 32px 0 rgba(31, 38, 135, 0.12),\n    0 2px 16px 0 rgba(31, 38, 135, 0.06),\n    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),\n    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);\n  --dollars-glass-border-color: rgba(255, 255, 255, 0.4);\n}\n#dollars-chat-window.visible {\n  --dollars-bg-pattern: var(--dollars-bg-pattern-url);\n}\nhtml[data-theme=\"dark\"] {\n  --dollars-bg: #1a1a1a;\n  --dollars-bg-hover: rgba(255, 255, 255, 0.08);\n  --dollars-border: rgba(255, 255, 255, 0.12);\n  --dollars-shadow: rgba(0, 0, 0, 0.3);\n  --dollars-text: #e0e0e0;\n  --dollars-text-secondary: #999;\n  --dollars-text-placeholder: #666;\n  --dollars-icon-color: #bbb;\n  --dollars-icon-color-secondary: #bbb;\n  --dollars-glass-border: rgba(255, 255, 255, 0.1);\n  --dollars-glass-highlight: rgba(255, 255, 255, 0.1);\n  --dollars-glass-bg: rgba(30, 30, 30, 0.65);\n  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.1);\n  --dollars-glass-shadow:\n    0 8px 32px 0 rgba(0, 0, 0, 0.3),\n    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),\n    inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);\n  --dollars-glass-border-color: rgba(255, 255, 255, 0.12);\n}\n#dollars-chat-root.disable-blur {\n  --dollars-glass-blur: none !important;\n  --dollars-glass-bg: rgba(255, 255, 255, 0.95);\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root.disable-blur {\n  --dollars-glass-bg: rgba(30, 30, 30, 0.95);\n}\n#dollars-chat-root *::-webkit-scrollbar {\n  width: 5px;\n  height: 5px;\n}\n#dollars-chat-root *::-webkit-scrollbar-track {\n  background: transparent;\n}\n#dollars-chat-root *::-webkit-scrollbar-thumb {\n  background: color-mix(in srgb, var(--primary-color), transparent 75%);\n  border-radius: 10px;\n}\n#dollars-chat-root *::-webkit-scrollbar-thumb:hover {\n  background: color-mix(in srgb, var(--primary-color), transparent 50%);\n}\n#dollars-chat-root * {\n  box-sizing: border-box;\n  scrollbar-width: thin;\n  scrollbar-color: color-mix(in srgb, var(--primary-color), transparent 75%) transparent;\n}\n#dollars-chat-root {\n  color: var(--dollars-text);\n}\n#dollars-chat-window {\n  position: fixed;\n  bottom: 80px;\n  right: 20px;\n  width: 400px;\n  height: 550px;\n  z-index: var(--dollars-z-index-base);\n  display: flex;\n  flex-direction: column;\n  border-radius: 15px;\n  background: rgba(255, 255, 255, 0.85);\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  background-clip: padding-box;\n  overflow: hidden;\n  opacity: 0;\n  pointer-events: none;\n  transform: translateY(20px) scale(0.9);\n  transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);\n}\n#dollars-chat-window.visible {\n  opacity: 1;\n  pointer-events: auto;\n  transform: translateY(0) scale(1);\n}\nhtml[data-theme=\"dark\"] #dollars-chat-window {\n  background: rgba(30, 30, 30, 0.9);\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);\n}\n#dollars-chat-window.maximized {\n  top: 10px !important;\n  left: 10px !important;\n  right: 10px !important;\n  bottom: 10px !important;\n  width: auto !important;\n  height: auto !important;\n  max-width: none !important;\n  max-height: none !important;\n  border-radius: 12px;\n  transform: none !important;\n}\n#dollars-chat-window.mobile {\n  top: 4vh !important;\n  left: 0 !important;\n  right: 0 !important;\n  bottom: auto !important;\n  width: 95vw !important;\n  height: 92vh !important;\n  max-width: 600px;\n  margin-left: auto !important;\n  margin-right: auto !important;\n  border-radius: 20px;\n}\n#dollars-chat-window.mobile.maximized {\n  top: 0px !important;\n  left: 0px !important;\n  right: 0px !important;\n  bottom: 0px !important;\n  width: 100vw !important;\n  height: 100vh !important;\n  height: 100dvh !important;\n  max-width: none !important;\n  margin-left: 0 !important;\n  margin-right: 0 !important;\n  border-radius: 0;\n  z-index: 98 !important;\n}\n#dollars-chat-window.mobile.visible {\n  transform: translateY(0) scale(1);\n}\n#dollars-content-panes {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n#dollars-sidebar {\n  width: 25%;\n  height: 100%;\n  max-width: 320px;\n  display: flex;\n  flex-direction: column;\n  flex-shrink: 0;\n  border-right: none;\n  box-shadow: inset -1px 0 0 0 rgba(0, 0, 0, 0.03);\n  background-color: var(--dollars-bg);\n}\n#dollars-sidebar-search-container {\n  padding: 8px;\n  padding-top: 48px;\n  border-bottom: 1px solid var(--dollars-border);\n  flex-shrink: 0;\n}\n#dollars-sidebar-search-input {\n  display: flex;\n  align-items: center;\n  position: relative;\n  border-radius: 100px;\n  border: 1px solid var(--dollars-border);\n  background-color: var(--dollars-bg);\n  transition: 0.3s ease-in-out;\n  padding: 6px 12px;\n  width: 100%;\n  box-sizing: border-box;\n  font-size: 13px;\n  color: var(--dollars-text);\n}\n#dollars-sidebar-search-input:focus {\n  outline: 0;\n  border-color: var(--primary-color);\n  box-shadow: 0 0 10px rgba(240, 145, 153, 0.6);\n}\nhtml[data-theme=\"dark\"] #dollars-sidebar-search-input {\n  background-color: #3a3a3a;\n}\n#dollars-sidebar-search-input::placeholder {\n  color: var(--dollars-text-placeholder);\n}\n#dollars-conversation-list {\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  padding: 4px;\n}\n.conversation-item {\n  display: flex;\n  align-items: center;\n  padding: 5px 10px;\n  gap: 12px;\n  cursor: pointer;\n  position: relative;\n  border-radius: 15px;\n  transition: background-color 0.2s, box-shadow 0.2s;\n}\n.conversation-item:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.conversation-item.active {\n  background: color-mix(in srgb, var(--primary-color), #ffffff 30%);\n  color: #fff;\n}\nhtml[data-theme=\"dark\"] .conversation-item.active {\n  background: color-mix(in srgb, var(--primary-color), #180518 60%);\n}\n.conversation-item.active .dollars-conv-last-message,\n.conversation-item.active .dollars-conv-nickname,\n.conversation-item.active .dollars-conv-timestamp {\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);\n}\n.conversation-item .avatar {\n  width: 46px;\n  height: 46px;\n  border-radius: 50%;\n  flex-shrink: 0;\n  object-fit: cover;\n  background-color: #f3f3f3;\n}\nhtml[data-theme=\"dark\"] .conversation-item .avatar {\n  background-color: #444;\n}\n.conversation-item .dollars-conv-content {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.conversation-item .dollars-conv-title {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  font-weight: 700;\n  font-size: 13px;\n}\n.conversation-item .dollars-conv-nickname {\n  color: var(--dollars-text);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.conversation-item .dollars-conv-timestamp {\n  font-size: 11px;\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  margin-left: 8px;\n}\n.conversation-item .dollars-conv-last-message {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  margin-top: 2px;\n}\n.conversation-item .unread-badge {\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  transform: translateY(-50%);\n  background-color: var(--primary-color);\n  color: #fff;\n  font-size: 10px;\n  font-weight: bold;\n  padding: 2px 6px;\n  border-radius: 10px;\n  min-width: 16px;\n  text-align: center;\n}\n#dollars-chat-window.is-narrow #dollars-sidebar {\n  width: 100%;\n  max-width: none;\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n#dollars-chat-window.is-narrow.mobile-chat-active #dollars-sidebar {\n  transform: translateX(-100%);\n}\n#dollars-chat-window.is-narrow #dollars-main-chat {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  transform: translateX(100%);\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n#dollars-chat-window.is-narrow.mobile-chat-active #dollars-main-chat {\n  transform: translateX(0);\n}\n#dollars-chat-window.is-narrow #dollars-content-panes {\n  overflow: hidden;\n}\n#dollars-main-chat {\n  display: flex;\n  flex-direction: column;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n  background-color: var(--dollars-bg);\n  isolation: isolate;\n  z-index: 0;\n}\n#dollars-main-chat::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  pointer-events: none;\n  will-change: opacity;\n  opacity: 0;\n  transition: opacity 0.3s ease;\n}\n#dollars-chat-root[data-bg-mode=\"transparent\"] #dollars-main-chat::before {\n  display: none !important;\n}\n#dollars-chat-root[data-bg-mode=\"tint\"] #dollars-main-chat::before {\n  background-image:\n    var(--dollars-bg-pattern),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: center, center;\n  background-size: 400px, cover;\n  background-blend-mode: overlay, normal;\n  opacity: 0.65;\n}\n#dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::before {\n  background-image: none;\n  background-color: color-mix(in srgb, var(--primary-color), #ffffff 94%);\n  opacity: 0.2;\n}\n#dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-color: color-mix(in srgb, var(--primary-color), #ffffff 70%);\n  -webkit-mask-image: var(--dollars-bg-pattern);\n  mask-image: var(--dollars-bg-pattern);\n  -webkit-mask-repeat: repeat;\n  mask-repeat: repeat;\n  -webkit-mask-size: 400px;\n  opacity: 0.7;\n  z-index: -1;\n  pointer-events: none;\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::after {\n  opacity: 0.1;\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::before {\n  background-image: none !important;\n  background-color: transparent !important;\n  -webkit-mask-image: none !important;\n  mask-image: none !important;\n  opacity: 0.25;\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"tint\"] #dollars-main-chat::before {\n  background-image:\n    var(--dollars-bg-pattern),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: center, center;\n  background-size: 400px, cover;\n  background-blend-mode: overlay, normal;\n  -webkit-mask-image: none;\n  mask-image: none;\n  opacity: 0.3;\n}\n.chat-header {\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  border-bottom: none;\n  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.02);\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 2px 15px;\n  cursor: move;\n  touch-action: none;\n  flex-shrink: 0;\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  z-index: 10002;\n}\nhtml[data-theme=\"dark\"] .chat-header {\n  background: var(--dollars-bg);\n  border-bottom: none;\n  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.02);\n}\n.chat-header .title-wrapper {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-start;\n  min-width: 0;\n  padding: 0 4px;\n  gap: 8px;\n  pointer-events: none;\n}\n.chat-header-left-pane {\n  width: 25%;\n  max-width: 320px;\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  padding-left: 5px;\n  gap: 4px;\n  margin-right: 8px;\n}\n#dollars-chat-window.is-narrow .chat-header-left-pane {\n  width: auto;\n  max-width: none;\n}\n.header-chat-icon {\n  width: 30px;\n  height: 30px;\n  border-radius: 50%;\n  object-fit: cover;\n  flex-shrink: 0;\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n}\n.header-text-column {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  min-width: 0;\n  justify-content: center;\n}\n.chat-header .title,\n.header-main-title {\n  font-size: 13px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  letter-spacing: 0.2px;\n  line-height: 1.2;\n}\n.chat-header .online-status {\n  font-size: 10px;\n  color: var(--dollars-text-secondary);\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  opacity: 0.85;\n  line-height: 1.2;\n}\n.chat-header .online-dot {\n  width: 6px;\n  height: 6px;\n  background-color: var(--dollars-color-online);\n  border-radius: 50%;\n  flex-shrink: 0;\n}\n.chat-header .header-buttons {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.chat-header .header-btn {\n  width: 24px;\n  height: 24px;\n  border: none;\n  background: transparent;\n  border-radius: 4px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: background-color 0.2s;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: 18px;\n}\n.chat-header .header-btn:hover {\n  background-color: rgba(0, 0, 0, 0.05);\n}\nhtml[data-theme=\"dark\"] .chat-header .header-btn:hover {\n  background-color: rgba(255, 255, 255, 0.08);\n}\n#dollars-search-btn,\n#dollars-maximize-btn,\n.chat-header .close-btn {\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  -webkit-mask-size: 18px;\n  mask-size: 18px;\n}\n#dollars-search-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg>');\n}\n#dollars-maximize-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3\"/></svg>');\n}\n#dollars-chat-window.maximized #dollars-maximize-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3\"/></svg>');\n}\n.chat-header .close-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>');\n}\n.chat-header .header-btn svg {\n  width: 18px;\n  height: 18px;\n}\n.chat-body {\n  contain: layout style paint;\n  flex-grow: 1;\n  overflow-y: scroll;\n  overflow-x: hidden;\n  padding: 10px;\n  padding-top: 50px;\n  padding-bottom: 80px;\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  overscroll-behavior: contain;\n  min-height: 0;\n  overflow-anchor: auto;\n  background: transparent;\n}\n.chat-body.loading .chat-list {\n  opacity: 0;\n  transition: opacity 0.3s;\n}\n.chat-body.context-loading .chat-list {\n  opacity: 0 !important;\n  transition: opacity 0.05s ease;\n}\n.chat-list {\n  display: flex;\n  flex-direction: column;\n  contain: layout style;\n  transition: opacity 0.3s ease;\n}\n.chat-message {\n  position: relative;\n  overflow: visible !important;\n  content-visibility: auto;\n  contain-intrinsic-size: 80px;\n  overflow-clip-margin: 5px;\n  display: flex;\n  gap: 8px;\n  margin-bottom: 12px;\n  align-items: flex-start;\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease-out;\n  will-change: transform, opacity;\n  transform-origin: center bottom;\n}\n.chat-message.self {\n  flex-direction: row-reverse;\n}\n.chat-message.self .message-content {\n  align-items: flex-end;\n}\n.chat-message.pending {\n  opacity: 0.7;\n}\n.chat-message.pending .bubble {\n  animation: pending-pulse 1.5s ease-in-out infinite;\n}\n@keyframes pending-pulse {\n  0%,\n  100% {\n    opacity: 0.7;\n  }\n  50% {\n    opacity: 1;\n  }\n}\n.chat-message.failed {\n  opacity: 0.9;\n}\n.chat-message.failed .bubble {\n  border: 1px solid rgba(239, 68, 68, 0.5);\n  position: relative;\n}\n.chat-message.failed .bubble::after {\n  content: \"发送失败，点击重试\";\n  position: absolute;\n  bottom: -18px;\n  right: 0;\n  font-size: 11px;\n  color: var(--dollars-color-danger);\n  opacity: 0;\n  transition: opacity 0.2s;\n  white-space: nowrap;\n}\n.chat-message.failed:hover .bubble::after,\n.chat-message.failed:active .bubble::after {\n  opacity: 1;\n}\n.chat-message.is-grouped-with-next {\n  margin-bottom: 2px;\n}\n.chat-message.is-grouped-with-prev .avatar {\n  visibility: hidden;\n  height: 0 !important;\n  margin: 0 !important;\n  border: none !important;\n}\n.chat-message .nickname {\n  display: none !important;\n}\n.chat-message .avatar {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  cursor: pointer;\n  flex-shrink: 0;\n  object-fit: cover;\n  background-color: #f3f3f3;\n  transition: box-shadow 0.3s;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\nhtml[data-theme=\"dark\"] .chat-message .avatar {\n  background-color: #444;\n}\n.chat-message::after {\n  content: \"\";\n  position: absolute;\n  width: 8px;\n  height: 8px;\n  background-color: var(--dollars-color-online);\n  border: 2px solid var(--dollars-bg);\n  border-radius: 50%;\n  z-index: 5;\n  top: 23px;\n  left: 23px;\n  pointer-events: none;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);\n  opacity: 0;\n  transform: scale(0);\n  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;\n}\n.chat-message:has(.avatar.online)::after {\n  opacity: 1;\n  transform: scale(1);\n}\n.chat-message.self::after {\n  left: auto;\n  right: -2px;\n}\n.chat-message.is-grouped-with-prev::after {\n  opacity: 0 !important;\n  transform: scale(0) !important;\n}\n.chat-message .message-content {\n  max-width: 75%;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n}\n.chat-list.focus-mode .chat-message:not(.message-highlight) {\n  filter: blur(4px);\n  opacity: 0.6;\n  transition: filter 0.3s ease, opacity 0.3s ease;\n}\n.chat-message.message-highlight {\n  position: relative;\n  z-index: 10;\n  transform: scale(1.02);\n  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n.chat-message.message-highlight .bubble {\n  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);\n}\n.chat-message .bubble {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  padding: 6px 10px 6px;\n  border-radius: 0 12px 12px 12px;\n  word-wrap: break-word;\n  overflow-wrap: anywhere;\n  background-color: #fff;\n  box-shadow: 0 1px 2px rgba(16, 35, 47, 0.15);\n  color: var(--dollars-text);\n  font-size: 14px;\n  max-width: min(40dvh, 100%);\n  position: relative;\n  transition: background 0.3s ease;\n}\nhtml[data-theme=\"dark\"] .chat-message .bubble {\n  background-color: #212121;\n}\n.chat-message.self .bubble {\n  border-radius: 12px 0 12px 12px;\n  background: color-mix(in srgb, var(--primary-color), #ffffff 80%);\n}\nhtml[data-theme=\"dark\"] .chat-message.self .bubble {\n  background-color: color-mix(in srgb, var(--primary-color), #180518 60%);\n}\n.chat-message:not(.self).is-grouped-with-prev .bubble {\n  border-top-left-radius: 4px !important;\n}\n.chat-message.self.is-grouped-with-prev .bubble {\n  border-top-right-radius: 4px !important;\n}\n.bubble.sticker-mode {\n  background: transparent !important;\n  box-shadow: none !important;\n  padding: 0 !important;\n  border: none !important;\n}\n.bubble-nickname {\n  display: block;\n  width: 100%;\n  font-size: 12px;\n  margin-bottom: 4px;\n  line-height: 1.2;\n  user-select: none;\n  color: var(--nick-color, var(--primary-color));\n}\nhtml[data-theme=\"dark\"] .bubble-nickname {\n  color: color-mix(in srgb, var(--nick-color, var(--primary-color)), #fff 60%) !important;\n}\n.chat-message.self .bubble-nickname {\n  display: none;\n}\n.chat-message .swipe-reply-indicator {\n  position: absolute;\n  left: 100%;\n  top: 50%;\n  transform: translateY(-50%) scale(0.5);\n  margin-left: 10px;\n  opacity: 0;\n  width: 32px;\n  height: 32px;\n  background-color: var(--dollars-icon-color-secondary);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M9 14l-4 -4l4 -4\" /><path d=\"M5 10h11a4 4 0 1 1 0 8h-1\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M9 14l-4 -4l4 -4\" /><path d=\"M5 10h11a4 4 0 1 1 0 8h-1\" /></svg>');\n  -webkit-mask-size: 24px;\n  mask-size: 24px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;\n  pointer-events: none;\n}\n.chat-message.is-grouped-with-prev .bubble-nickname {\n  display: none;\n}\n.bubble.sticker-mode .bubble-nickname {\n  display: none !important;\n}\n.bubble-timestamp {\n  font-size: 10px;\n  opacity: 0.58;\n  user-select: none;\n  cursor: default;\n  color: var(--dollars-text-secondary);\n  line-height: 1.2;\n  white-space: nowrap;\n  pointer-events: none;\n  max-width: 100%;\n}\n.text-content {\n  display: block;\n  width: 100%;\n}\nhtml[data-theme=\"dark\"] .bubble-timestamp {\n  color: color-mix(in srgb, var(--primary-color), #fff 60%);\n}\n.bubble.has-trailing-timestamp {\n  display: flow-root;\n}\n.bubble.has-trailing-timestamp .text-content {\n  display: inline;\n  width: auto;\n}\n.bubble.has-trailing-timestamp .bubble-timestamp.is-trailing {\n  float: right;\n  margin-left: 8px;\n  margin-top: 8px;\n  text-align: right;\n}\n.bubble.has-stacked-timestamp .bubble-timestamp.is-stacked {\n  align-self: flex-end;\n  margin-top: 6px;\n  text-align: right;\n}\n.bubble.has-stacked-timestamp .expand-toggle-btn + .bubble-timestamp.is-stacked {\n  margin-top: 4px;\n}\n.bubble.sticker-mode .bubble-timestamp.is-overlay {\n  position: absolute;\n  right: 6px;\n  bottom: 6px;\n  background: rgba(0, 0, 0, 0.4);\n  backdrop-filter: blur(4px);\n  -webkit-backdrop-filter: blur(4px);\n  color: rgba(255, 255, 255, 0.9);\n  padding: 2px 6px;\n  border-radius: 999px;\n  font-size: 10px;\n  line-height: 1.2;\n  opacity: 0;\n  transition: opacity 0.2s ease;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);\n  z-index: 10;\n}\n@media (hover: hover) and (pointer: fine) {\n  .chat-message:hover .bubble.sticker-mode .bubble-timestamp.is-overlay,\n  .chat-message:focus-within .bubble.sticker-mode .bubble-timestamp.is-overlay {\n    opacity: 1;\n  }\n}\n@media (hover: none), (pointer: coarse) {\n  .bubble.sticker-mode .bubble-timestamp.is-overlay {\n    opacity: 1;\n  }\n}\n.chat-message.failed .bubble.sticker-mode .bubble-timestamp.is-overlay {\n  opacity: 1;\n}\n.bubble-tail {\n  position: absolute;\n  top: 0;\n  width: 11px;\n  height: 20px;\n  pointer-events: none;\n  z-index: 1;\n}\n.chat-message:not(.self) .bubble-tail {\n  left: -9px;\n  top: -1px;\n  color: #fff;\n  transform: scaleY(-1);\n}\nhtml[data-theme=\"dark\"] .chat-message:not(.self) .bubble-tail {\n  color: #212121;\n}\n.chat-message.self .bubble-tail {\n  right: -9px;\n  top: -1px;\n  transform: scale(-1, -1);\n  color: color-mix(in srgb, var(--primary-color), #ffffff 80%);\n}\nhtml[data-theme=\"dark\"] .chat-message.self .bubble-tail {\n  color: color-mix(in srgb, var(--primary-color), #180518 60%) !important;\n}\n.chat-message.is-grouped-with-prev .bubble-tail {\n  display: none;\n}\n.bubble.sticker-mode .bubble-tail {\n  display: none;\n}\n.bubble .text-content.deleted {\n  font-style: italic !important;\n  color: var(--dollars-text-secondary) !important;\n}\n.bubble .text-content.is-collapsed {\n  display: block !important;\n  max-height: var(--collapse-max-height, 300px);\n  overflow: hidden;\n  position: relative;\n  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);\n  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);\n}\n.expand-toggle-btn {\n  display: inline-block;\n  align-self: center;\n  max-width: 100%;\n  background: color-mix(in srgb, var(--primary-color), transparent 90%);\n  border: 0;\n  border-radius: 999px;\n  color: var(--primary-color);\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 1.2;\n  cursor: pointer;\n  padding: 4px 10px;\n  margin-top: 8px;\n  text-align: center;\n  transition: background-color 0.2s ease;\n}\n.expand-toggle-btn:hover {\n  background: color-mix(in srgb, var(--primary-color), transparent 84%);\n  text-decoration: none;\n}\n.expand-toggle-btn:focus-visible {\n  outline: 2px solid color-mix(in srgb, var(--primary-color), #fff 15%);\n  outline-offset: 2px;\n}\n.bubble a {\n  color: #0084b4 !important;\n}\n.bubble a:hover {\n  text-decoration: underline;\n}\n.bubble img.smiley {\n  display: inline-block;\n  width: 21px;\n  height: 21px;\n  margin: 0 1px;\n  vertical-align: text-bottom;\n  image-rendering: pixelated;\n}\n.bubble img.custom-emoji {\n  max-width: 150px;\n  max-height: 150px;\n  border-radius: 8px;\n}\n.bubble img.smiley-musume,\n.bubble img.smiley-blake {\n  width: 60px;\n  height: 60px;\n  image-rendering: auto;\n  vertical-align: bottom;\n}\n.bubble.sticker-mode .custom-emoji {\n  max-width: 120px;\n  max-height: 120px;\n  margin: 2px 0;\n  display: block;\n}\n.bubble.sticker-mode .smiley-musume,\n.bubble.sticker-mode .smiley-blake {\n  width: 100px;\n  height: 100px;\n  display: block;\n  margin: 2px 0;\n}\n.bubble .image-container {\n  position: relative;\n  display: grid;\n  overflow: hidden;\n  border-radius: 8px;\n  cursor: pointer;\n  max-height: 350px;\n}\n.bubble .image-container .full-image {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  opacity: 0;\n  grid-area: 1/1;\n  transition: opacity 0.3s ease-out;\n  z-index: 2;\n}\n.bubble .image-container .full-image.is-loaded {\n  opacity: 1;\n}\n.bubble .image-container .full-image.load-failed {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  background-color: var(--dollars-bg-hover);\n  border-radius: 8px;\n}\n.bubble .image-container.image-placeholder {\n  cursor: default;\n}\n.bubble .image-container.image-placeholder .image-load-hint {\n  position: absolute;\n  right: 10px;\n  bottom: 10px;\n  z-index: 3;\n  background: rgba(0, 0, 0, 0.5);\n  color: #fff;\n  padding: 6px 12px;\n  border-radius: 16px;\n  font-size: 12px;\n  white-space: nowrap;\n  pointer-events: none;\n  backdrop-filter: blur(4px);\n  -webkit-backdrop-filter: blur(4px);\n  transition: opacity 0.2s ease;\n}\n.bubble .image-container.image-placeholder:hover .image-load-hint {\n  background: rgba(0, 0, 0, 0.7);\n}\n.bubble .image-container.image-masked .full-image {\n  filter: blur(24px) brightness(0.45);\n  transform: scale(1.08);\n}\n.bubble .image-container.image-masked {\n  cursor: default;\n}\n.bubble .image-container.image-masked .image-load-hint {\n  background: rgba(0, 0, 0, 0.68);\n}\n.bubble .chat-file-link {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  margin: 4px 0;\n  padding: 2px 0;\n  font-size: 13px;\n  font-weight: 600;\n  line-height: 1.5;\n  max-width: 100%;\n  color: var(--primary-color) !important;\n  text-decoration: none !important;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bubble .chat-file-link::before {\n  content: \"附件\";\n  flex-shrink: 0;\n  padding: 1px 6px;\n  border-radius: 999px;\n  font-size: 11px;\n  font-weight: 700;\n  color: var(--primary-color);\n  background: color-mix(in srgb, var(--primary-color), transparent 88%);\n}\n.bubble .chat-file-link:hover {\n  text-decoration: underline !important;\n}\n.chat-quote {\n  padding: 6px 8px;\n  border-left: 3px solid var(--primary-color);\n  background: linear-gradient(#ffffffe6, #ffffffe6), var(--primary-color);\n  border-radius: 4px;\n  margin-bottom: 8px;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  cursor: pointer;\n  max-width: 100%;\n  width: 100%;\n  box-sizing: border-box;\n  transition: opacity 0.2s, transform 0.15s ease, background 0.2s;\n}\nhtml[data-theme=\"dark\"] .chat-quote {\n  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), var(--primary-color);\n}\n.chat-quote:hover {\n  opacity: 0.9;\n  transform: scale(1.01);\n}\n.quote-avatar {\n  width: 14px;\n  height: 14px;\n  border-radius: 50%;\n  object-fit: cover;\n  flex-shrink: 0;\n  margin-right: 4px;\n}\n.quote-thumbnail {\n  width: 36px;\n  height: 36px;\n  border-radius: 4px;\n  object-fit: cover;\n  margin-bottom: 2px;\n  display: block;\n}\n.quote-nickname {\n  font-weight: 700;\n  color: var(--primary-color);\n  font-size: 12px;\n}\n.quote-text-wrapper {\n  min-width: 0;\n  flex: 1;\n}\n.quote-content {\n  font-size: 12px;\n  color: var(--dollars-text);\n  opacity: 0.8;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  overflow-wrap: break-word;\n}\n.chat-input-container {\n  position: absolute;\n  bottom: 12px;\n  left: 12px;\n  right: 12px;\n  width: auto;\n  z-index: 100;\n  transition: transform 0.2s ease;\n}\n.chat-input-container:hover {\n  transform: translateY(-2px);\n}\n.chat-input-area {\n  position: relative;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  border: none;\n  box-shadow:\n    var(--dollars-glass-shadow),\n    inset 0 0 0 1px var(--dollars-glass-border-color, rgba(255, 255, 255, 0.35));\n  border-radius: 24px;\n  padding: 6px 8px;\n  transition: box-shadow 0.2s ease;\n}\n.reply-preview {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 8px 4px 8px;\n  margin: 0 4px 4px 4px;\n  border-bottom: 1px solid var(--dollars-glass-border);\n  height: 0;\n  opacity: 0;\n  overflow: hidden;\n  transition: height 0.2s ease-out, opacity 0.2s ease-out;\n}\n.reply-preview.visible {\n  height: 42px;\n  opacity: 1;\n}\n.reply-preview .reply-bar {\n  width: 3px;\n  height: 70%;\n  background-color: var(--primary-color);\n  border-radius: 2px;\n}\n.reply-preview .reply-avatar {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n}\n.reply-preview .reply-info {\n  flex: 1;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 1.4;\n}\n.reply-preview .reply-user {\n  font-weight: 700;\n  color: var(--primary-color);\n}\n.reply-preview .reaction-item .num {\n  color: var(--dollars-text-secondary);\n}\n@keyframes pop {\n  0% {\n    transform: scale(1);\n  }\n  50% {\n    transform: scale(1.4);\n  }\n  100% {\n    transform: scale(1);\n  }\n}\n.reaction-item.live_selected .emoji {\n  animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);\n}\n.reply-preview .reply-text {\n  color: var(--dollars-text-secondary);\n  display: block;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.reply-preview .reply-cancel-btn {\n  background: none;\n  border: none;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  font-size: 20px;\n  padding: 0;\n}\n.image-preview-container {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 8px;\n  margin: 0 4px;\n  border-bottom: 1px solid var(--dollars-glass-border);\n  height: 0;\n  opacity: 0;\n  overflow-x: auto;\n  overflow-y: hidden;\n  transition: height 0.2s ease-out, opacity 0.2s ease-out, padding 0.2s ease-out, margin 0.2s ease-out;\n  scrollbar-width: none;\n}\n.image-preview-container.visible {\n  height: 80px;\n  opacity: 1;\n  padding-bottom: 8px;\n  margin-bottom: 4px;\n  margin-top: 4px;\n}\n.image-preview-container::-webkit-scrollbar {\n  display: none;\n}\n.image-preview-item {\n  position: relative;\n  flex-shrink: 0;\n  width: 64px;\n  height: 64px;\n  border-radius: 8px;\n  overflow: hidden;\n  border: 1px solid var(--dollars-border);\n  background: var(--dollars-bg);\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n}\n.preview-image {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.2s;\n}\n.image-preview-item:hover .preview-image {\n  transform: scale(1.05);\n}\n.preview-remove-btn {\n  position: absolute;\n  top: 2px;\n  right: 2px;\n  width: 18px;\n  height: 18px;\n  background: rgba(0, 0, 0, 0.5);\n  border-radius: 50%;\n  color: #fff;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n  cursor: pointer;\n  border: none;\n  backdrop-filter: blur(2px);\n  transition: background 0.2s, transform 0.1s;\n  padding: 0;\n  line-height: 1;\n}\n.preview-remove-btn:hover {\n  background: rgba(244, 67, 54, 0.9);\n  transform: scale(1.1);\n}\n.video-preview-item {\n  position: relative;\n}\n.preview-video {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.2s;\n}\n.video-preview-item:hover .preview-video {\n  transform: scale(1.05);\n}\n.video-play-overlay {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: 32px;\n  height: 32px;\n  background: rgba(0, 0, 0, 0.6);\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  pointer-events: none;\n  backdrop-filter: blur(2px);\n}\n.video-play-overlay svg {\n  margin-left: 2px;\n}\n.input-wrapper {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  position: relative;\n}\n.dollars-input-wrapper {\n  flex-grow: 1;\n  display: flex;\n  align-items: stretch;\n  border-radius: 18px;\n  min-width: 0;\n  background-color: rgba(255, 255, 255, 0.25);\n  border: none;\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);\n  transition: all 0.2s ease;\n  backdrop-filter: blur(5px);\n  padding-left: 0;\n  position: relative;\n}\nhtml[data-theme=\"dark\"] .dollars-input-wrapper {\n  background-color: rgba(0, 0, 0, 0.3);\n}\n.dollars-input-wrapper:focus-within {\n  background-color: rgba(255, 255, 255, 0.5);\n  border-color: var(--primary-color);\n  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px color-mix(in srgb, var(--primary-color), transparent 40%) !important;\n}\nhtml[data-theme=\"dark\"] .dollars-input-wrapper:focus-within {\n  background-color: rgba(0, 0, 0, 0.5);\n}\n.chat-textarea {\n  flex: 1;\n  border: none;\n  outline: none;\n  background: transparent;\n  border-radius: 18px;\n  padding: 8px 14px;\n  resize: none;\n  font-size: 14px;\n  line-height: 1.4;\n  height: 38px;\n  max-height: 150px;\n  color: var(--dollars-text);\n  outline: none;\n  font-family: inherit;\n  box-sizing: border-box;\n  width: 100%;\n  display: block;\n  white-space: pre-wrap;\n  word-break: break-word;\n  overflow-wrap: anywhere;\n  overflow-y: hidden;\n}\nhtml[data-theme=\"dark\"] .chat-textarea {\n  background: none !important;\n}\n.chat-textarea:focus {\n  outline: none;\n  box-shadow: none !important;\n}\n.chat-rich-editor {\n  min-height: 38px;\n  caret-color: var(--dollars-text);\n  line-height: 1.5;\n}\n.chat-rich-editor.is-overflowing {\n  overflow-y: auto;\n}\n.chat-rich-editor:empty::before {\n  content: attr(data-placeholder);\n  color: var(--dollars-text-placeholder);\n  pointer-events: none;\n}\n.chat-textarea-proxy {\n  position: absolute;\n  inset: 0;\n  opacity: 0;\n  pointer-events: none;\n  resize: none;\n}\n.chat-input-token {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  vertical-align: middle;\n  max-width: 100%;\n  user-select: all;\n  margin-block: 2px;\n}\n.chat-input-token img,\n.chat-input-token .bmoji-image {\n  display: block;\n  pointer-events: none;\n}\n.chat-input-token-smiley .chat-input-inline-smiley:not(.chat-input-inline-large),\n.chat-input-token-bmo .bmoji-image {\n  image-rendering: pixelated;\n}\n.chat-input-token-smiley .chat-input-inline-large,\n.chat-input-token-image .chat-input-inline-sticker {\n  image-rendering: auto;\n}\n.chat-input-inline-smiley {\n  width: 21px;\n  height: 21px;\n}\n.chat-input-inline-large {\n  width: 60px;\n  height: 60px;\n}\n.chat-input-inline-sticker {\n  width: auto;\n  height: 60px;\n  max-width: min(180px, 100%);\n  max-height: 60px;\n  border-radius: 10px;\n}\n.input-actions {\n  display: flex;\n  gap: 4px;\n}\n.action-btn {\n  flex-shrink: 0;\n  width: 38px;\n  height: 38px;\n  border: none;\n  border-radius: 50%;\n  background-color: transparent;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);\n  background-repeat: no-repeat;\n  background-position: center;\n}\n.action-btn:hover {\n  background-color: var(--dollars-glass-highlight);\n  transform: scale(1.1);\n}\n.action-btn:active {\n  transform: scale(0.95);\n}\n.action-btn svg {\n  width: 20px;\n  height: 20px;\n}\n.send-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background: var(--primary-color);\n  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z\" /><path d=\"M6.5 12h14.5\" /></svg>');\n  background-size: 20px;\n  background-repeat: no-repeat;\n  background-position: center;\n  border-radius: 50%;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: white;\n  transition: background-color .2s, filter .2s, box-shadow 0.2s, transform 0.15s ease;\n  box-shadow: 0 0 10px color-mix(in srgb, var(--primary-color), transparent 20%);\n}\n.send-btn:hover {\n  filter: brightness(1.1);\n  transform: scale(1.05);\n}\n.send-btn:disabled {\n  background-color: #ccc;\n  cursor: not-allowed;\n  filter: none;\n  box-shadow: none;\n}\n.send-btn svg {\n  width: 18px;\n  height: 18px;\n}\n#dollars-smiles-floating {\n  --item-size: 32px;\n  --icon-size: 21px;\n  --item-hover-bg: rgba(255, 255, 255, 0.3);\n  --item-hover-scale: 1.1;\n  --transition-speed: 0.2s;\n  --panel-height: 320px;\n  --border-color: var(--dollars-border);\n  position: absolute;\n  bottom: calc(100% + 5px);\n  z-index: var(--dollars-z-index-smiley);\n  height: var(--panel-height);\n  width: 100%;\n  left: 0;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  box-sizing: border-box;\n  overflow: hidden;\n  opacity: 0;\n  transform: translateY(10px) scale(0.95);\n  transition: opacity 0.2s, transform 0.2s;\n  pointer-events: none;\n  transform-origin: bottom left;\n}\nhtml[data-theme=\"dark\"] #dollars-smiles-floating {\n  --item-hover-bg: rgba(255, 255, 255, 0.1);\n}\n@keyframes dollars-panel-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(15px) scale(0.95);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-smiles-floating.open {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  animation: dollars-panel-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n#dollars-smiles-tabs {\n  display: flex;\n  flex-shrink: 0;\n  padding: 4px;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.2);\n  background-color: transparent;\n  overflow-x: auto;\n  overflow-y: hidden;\n  scrollbar-width: none;\n}\n#dollars-smiles-tabs::-webkit-scrollbar {\n  display: none;\n}\n.smiley-tab-btn {\n  padding: 4px 12px;\n  border: 1px solid transparent;\n  border-radius: 15px;\n  background: none;\n  cursor: pointer;\n  color: var(--primary-color);\n  font-size: 13px;\n  flex-shrink: 0;\n  transition: background-color var(--transition-speed), color var(--transition-speed);\n  image-rendering: pixelated;\n}\n.smiley-tab-btn:hover {\n  background-color: var(--item-hover-bg);\n}\n.smiley-tab-btn.active {\n  background-color: transparent;\n  color: var(--primary-color);\n  border-color: var(--dollars-border);\n  font-weight: 700;\n}\n#dollars-smiles-content {\n  padding: 8px;\n  overflow-y: auto;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  justify-content: flex-start;\n  overscroll-behavior: contain;\n}\n#dollars-smiles-content.grouped-content {\n  display: block;\n  padding: 10px;\n}\n.smiley-group-section + .smiley-group-section {\n  margin-top: 12px;\n  padding-top: 10px;\n  border-top: 1px solid rgba(127, 127, 127, 0.18);\n}\n.smiley-group-title {\n  margin: 0 0 8px 2px;\n  color: var(--dollars-text-secondary);\n  font-size: 12px;\n  font-weight: 700;\n  line-height: 1.3;\n}\n.smiley-group-grid {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n}\n.smiley-item {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  width: var(--item-size);\n  height: var(--item-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n}\n.smiley-item a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: var(--icon-size) var(--icon-size);\n  font-size: 0;\n  transition: background-color var(--transition-speed), transform calc(var(--transition-speed) / 2);\n  image-rendering: pixelated;\n}\n#dollars-smiles-floating .bmo,\n#dollars-reaction-picker-floating .bmo {\n  vertical-align: middle;\n}\n.smiley-item a:hover {\n  background-color: var(--item-hover-bg);\n  transform: scale(var(--item-hover-scale));\n}\n.smiley-item.favorite-item {\n  width: 64px;\n  height: 64px;\n  border-radius: 8px;\n}\n.smiley-item.favorite-item a {\n  background-size: contain;\n  background-color: rgba(0, 0, 0, 0.03);\n}\nhtml[data-theme=\"dark\"] .smiley-item.favorite-item a {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n.smiley-item.favorite-item .remove-favorite-btn {\n  position: absolute;\n  top: -4px;\n  right: -4px;\n  width: 16px;\n  height: 16px;\n  background: rgba(0, 0, 0, 0.5);\n  color: white;\n  border-radius: 50%;\n  border: none;\n  font-size: 12px;\n  line-height: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: pointer;\n  opacity: 0;\n  transition: opacity 0.2s;\n}\n.smiley-item.favorite-item:hover .remove-favorite-btn {\n  opacity: 1;\n}\n#dollars-smiles-floating.large-smiley-mode {\n  --item-size: 56px;\n  --icon-size: 48px;\n}\n#dollars-smiles-floating.large-smiley-mode .smiley-item a {\n  image-rendering: auto;\n}\n#dollars-context-menu {\n  position: fixed;\n  z-index: var(--dollars-z-index-overlay);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  min-width: unset;\n  opacity: 0;\n  transform: scale(0.95);\n  pointer-events: none;\n  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease-out;\n}\nhtml[data-theme=\"dark\"] #dollars-context-menu {\n  background: transparent;\n  box-shadow: none;\n}\n#dollars-context-menu.visible {\n  opacity: 1;\n  transform: scale(1);\n  pointer-events: auto;\n}\n#dollars-context-menu.has-items-wrapper {\n  padding: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  align-items: flex-start;\n}\n.context-menu-reactions {\n  display: flex;\n  align-items: center;\n  padding: 6px;\n  gap: 4px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 40px;\n}\n.context-menu-reactions .reaction-item {\n  width: 30px;\n  height: 30px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 50%;\n  cursor: pointer;\n  transition: transform 0.1s ease, background-color 0.15s ease;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\n.context-menu-reactions .reaction-item:hover {\n  background-color: var(--dollars-bg-hover);\n  transform: scale(1.15);\n}\n.context-menu-reactions .reaction-item:active {\n  transform: scale(0.95);\n}\n.context-menu-reactions .reaction-item img {\n  width: 20px;\n  height: 20px;\n  display: block;\n  image-rendering: pixelated;\n}\n.context-menu-reactions .reaction-item .bmoji-image,\n.reaction-item .bmoji-image {\n  width: 18px !important;\n  height: 18px !important;\n}\n.context-menu-reactions-more {\n  width: 30px;\n  height: 30px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: none;\n  border-radius: 50%;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  transition: background-color 0.15s ease, transform 0.1s ease;\n  flex-shrink: 0;\n}\n.context-menu-reactions-more:hover {\n  background-color: var(--dollars-bg-hover);\n  transform: scale(1.1);\n}\n.context-menu-reactions-more:active {\n  transform: scale(0.95);\n}\n.context-menu-reactions-more svg {\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s ease;\n}\n.context-menu-reactions-more.expanded svg {\n  transform: rotate(180deg);\n}\n.context-menu-items {\n  padding: 5px 0;\n  min-width: 160px;\n  max-width: 220px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  overflow: hidden;\n}\n.context-menu-items button {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  padding: 8px 12px;\n  border: none;\n  background: none;\n  text-align: left;\n  cursor: pointer;\n  color: var(--dollars-text);\n  font-size: 14px;\n  line-height: 20px;\n  transition: background-color 0.1s ease;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.context-menu-items button span:not(.context-icon) {\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.context-icon {\n  width: 20px;\n  height: 20px;\n  margin-right: 10px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  color: var(--dollars-text-secondary);\n}\nhtml[data-theme=\"dark\"] .context-icon {\n  color: #aaa;\n}\n.context-icon svg {\n  width: 20px;\n  height: 20px;\n}\n.context-menu-items button.danger .context-icon {\n  color: #f5222d;\n}\n.context-menu-items button:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.context-menu-items button.danger {\n  color: #f5222d;\n}\n.context-menu-items button.image-action {\n  display: none;\n}\n#dollars-context-menu.image-mode .context-menu-items button.image-action {\n  display: flex;\n}\n#dollars-reaction-picker-floating {\n  --item-size: 32px;\n  --icon-size: 21px;\n  --item-hover-bg: rgba(255, 255, 255, 0.3);\n  --panel-height: 260px;\n  position: fixed;\n  z-index: calc(var(--dollars-z-index-overlay) + 1);\n  height: var(--panel-height);\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  overflow: hidden;\n  opacity: 0;\n  transform: translateY(-5px) scale(0.95);\n  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n}\nhtml[data-theme=\"dark\"] #dollars-reaction-picker-floating {\n  --item-hover-bg: rgba(255, 255, 255, 0.1);\n}\n@keyframes dollars-picker-slide-down {\n  0% {\n    opacity: 0;\n    transform: translateY(-15px) scale(0.95);\n  }\n  60% {\n    transform: translateY(3px) scale(1.01);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-reaction-picker-floating.open {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  animation: dollars-picker-slide-down 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n.reaction-picker-tabs {\n  display: flex;\n  flex-shrink: 0;\n  padding: 4px;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.2);\n  background-color: transparent;\n  gap: 2px;\n}\n.reaction-picker-tab-btn {\n  padding: 4px 10px;\n  border: 1px solid transparent;\n  border-radius: 12px;\n  background: none;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  font-size: 13px;\n  transition: background-color 0.15s, color 0.15s;\n  image-rendering: pixelated;\n}\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn {\n  color: #aaa;\n}\n.reaction-picker-tab-btn:hover {\n  background-color: var(--item-hover-bg);\n}\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn:hover {\n  background-color: #444;\n}\n.reaction-picker-tab-btn.active {\n  background-color: var(--dollars-bg);\n  color: var(--dollars-text);\n  border-color: var(--dollars-border);\n  font-weight: 700;\n}\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn.active {\n  background-color: #3a3a3a;\n  color: #eee;\n  border-color: #555;\n}\n.reaction-picker-content {\n  padding: 8px;\n  overflow-y: auto;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  justify-content: flex-start;\n  overscroll-behavior: contain;\n}\n.reaction-picker-content .smiley-item {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  width: var(--item-size);\n  height: var(--item-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n}\n.reaction-picker-content .smiley-item a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: var(--icon-size) var(--icon-size);\n  font-size: 0;\n  transition: background-color 0.15s, transform 0.1s;\n  image-rendering: pixelated;\n}\n.reaction-picker-content .smiley-item a:hover {\n  background-color: var(--item-hover-bg);\n  transform: scale(1.1);\n}\n.user-mention {\n  color: var(--primary-color);\n  font-weight: 500;\n}\n.user-mention:hover {\n  text-decoration: underline;\n}\n.chat-tag {\n  color: var(--primary-color);\n  cursor: pointer;\n  margin-right: 2px;\n  display: inline-block;\n}\n.chat-tag:hover {\n  opacity: 0.8;\n}\n#dollars-floating-date {\n  position: absolute;\n  top: 55px;\n  left: 50%;\n  transform: translateX(-50%);\n  z-index: 10;\n  pointer-events: none;\n  opacity: 0;\n  transition: opacity 0.2s ease;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  color: var(--primary-color);\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  font-weight: 700;\n  text-shadow: none;\n  white-space: nowrap;\n}\n#dollars-floating-date.visible {\n  opacity: 1;\n}\n#dollars-typing-indicator {\n  position: absolute;\n  top: -30px;\n  left: 10px;\n  height: auto;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  padding: 4px 10px;\n  border-radius: 12px;\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  font-style: italic;\n  opacity: 0;\n  transition: opacity 0.2s, transform 0.2s;\n  line-height: 1.5;\n  pointer-events: none;\n  transform: translateY(5px);\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n#dollars-typing-indicator.visible {\n  opacity: 1;\n  transform: translateY(0);\n}\nhtml[data-theme=dark] #dollars-typing-indicator {\n  color: #fff;\n}\nspan.text_mask {\n  background-color: #555;\n}\n@media (max-width: 768px) {\n  #dollars-chat-window {\n    width: auto;\n    max-width: calc(100vw - 20px);\n    height: calc(100dvh - 60px);\n    max-height: calc(100dvh - 60px);\n    left: 10px;\n    right: 10px;\n    bottom: 30px;\n    top: auto;\n  }\n  .chat-message {\n    content-visibility: visible;\n    contain-intrinsic-size: auto;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  #dollars-chat-window,\n  #dollars-chat-window .chat-header .close-btn,\n  #dollars-chat-window .chat-message,\n  #dollars-chat-window .send-btn {\n    transition: none !important;\n  }\n}\n#dollars-profile-card {\n  position: fixed;\n  z-index: var(--dollars-z-index-overlay);\n  width: 280px;\n  padding: 0;\n  border-radius: 20px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  color: var(--dollars-text);\n  opacity: 0;\n  transform: scale(0.95) translateY(5px);\n  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n}\n@keyframes dollars-profile-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(15px) scale(0.95);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-profile-card.visible {\n  opacity: 1;\n  transform: scale(1) translateY(0);\n  pointer-events: auto;\n  transition: none;\n  animation: dollars-profile-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);\n}\n.dollars-profile-banner {\n  height: 60px;\n  width: 100%;\n  background: linear-gradient(160deg,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);\n  position: relative;\n}\n.dollars-profile-banner::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-image: var(--dollars-bg-pattern-url);\n  background-size: 300px;\n  opacity: 0.6;\n  mix-blend-mode: overlay;\n}\nhtml[data-theme=dark] .dollars-profile-banner::before {\n  opacity: 0.2;\n}\n.dollars-profile-body {\n  padding: 0 20px 15px 20px;\n  position: relative;\n  display: flex;\n  flex-direction: column;\n}\n.dollars-profile-top-row {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-end;\n  margin-top: -30px;\n  margin-bottom: 12px;\n  position: relative;\n  z-index: 2;\n}\n.dollars-profile-identity {\n  display: flex;\n  align-items: flex-end;\n  gap: 12px;\n  flex-grow: 1;\n  min-width: 0;\n  margin-right: 8px;\n}\n.dollars-profile-avatar {\n  width: 64px;\n  height: 64px;\n  border-radius: 50%;\n  border: 3px solid var(--dollars-bg);\n  background-color: var(--dollars-bg);\n  object-fit: cover;\n  box-shadow: 0 4px 8px var(--dollars-shadow);\n  flex-shrink: 0;\n  transition: border-color 0.2s;\n}\n.dollars-profile-avatar.active {\n  border-color: var(--dollars-color-online);\n  box-shadow: 0 0 0 2px var(--dollars-bg), 0 0 0 4px var(--dollars-color-online);\n}\n.dollars-profile-names {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.dollars-profile-nickname {\n  font-size: 16px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  line-height: 1.2;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.dollars-profile-username {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  font-family: monospace;\n  opacity: 0.7;\n}\n.dollars-profile-actions {\n  display: flex;\n  gap: 6px;\n  flex-shrink: 0;\n}\n.dollars-profile-btn {\n  width: 36px;\n  height: 36px;\n  border-radius: 50%;\n  background: transparent;\n  border: 1px solid var(--dollars-border);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s;\n  cursor: pointer;\n  position: relative;\n}\n.dollars-profile-btn:hover {\n  background: var(--primary-color);\n  color: var(--dollars-bg);\n  border-color: var(--primary-color);\n  transform: translateY(-2px);\n  box-shadow: 0 2px 8px var(--dollars-shadow);\n}\n.dollars-profile-btn svg {\n  width: 15px;\n  height: 15px;\n  stroke: currentColor;\n}\n.dollars-profile-sign {\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--dollars-text-secondary);\n  margin-bottom: 12px;\n  padding: 6px 10px;\n  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border-radius: 0 6px 6px 0;\n  word-wrap: break-word;\n}\n.dollars-profile-footer {\n  font-size: 10px;\n  color: var(--dollars-text-placeholder);\n  padding-top: 8px;\n  border-top: 1px solid var(--dollars-border);\n  margin-top: auto;\n  display: flex;\n  align-items: center;\n  gap: 4px;\n}\n.dollars-profile-footer::before {\n  content: \"\";\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: var(--dollars-border);\n}\n.dollars-profile-footer.active::before {\n  background-color: var(--dollars-color-online);\n}\n#dollars-emoji-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background-color: var(--dollars-icon-color);\n  cursor: pointer;\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z\" /><path d=\"M16 3l-4 4l-4 -4\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z\" /><path d=\"M16 3l-4 4l-4 -4\" /></svg>');\n  -webkit-mask-size: 23px;\n  mask-size: 23px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  border-radius: 50%;\n}\n#dollars-emoji-btn svg {\n  display: none !important;\n}\n#dollars-attach-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background-color: var(--dollars-icon-color);\n  cursor: pointer;\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5\" /></svg>');\n  -webkit-mask-size: 23px;\n  mask-size: 23px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  border-radius: 50%;\n}\n#dollars-attach-btn svg {\n  display: none !important;\n}\n.send-btn svg {\n  display: none !important;\n}\n.chat-header .header-buttons,\n.header-buttons {\n  margin-left: auto;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.header-btn {\n  cursor: pointer;\n  width: 24px;\n  height: 24px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 4px;\n  transition: background-color .2s ease, transform 0.15s ease;\n  border: none;\n  background: transparent;\n}\n#dollars-back-btn,\n.dollars-back-btn {\n  margin-right: 0;\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"/></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n}\n#dollars-back-btn svg,\n.dollars-back-btn svg {\n  display: none !important;\n}\n#dollars-resize-handle {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 20px;\n  height: 20px;\n  cursor: nw-resize;\n  z-index: 10003;\n  touch-action: none;\n  background-color: var(--dollars-icon-color-secondary);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M10 2L2 10\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/><path d=\"M14 6L6 14\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M10 2L2 10\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/><path d=\"M14 6L6 14\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: 5px 5px;\n  mask-position: 5px 5px;\n  -webkit-mask-size: 10px;\n  mask-size: 10px;\n  opacity: .6;\n  transition: opacity .2s ease;\n}\n#dollars-resize-handle:hover {\n  opacity: 1;\n}\n#dollars-resize-handle::after {\n  display: none !important;\n}\n#dollars-settings-btn-header {\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n}\n#dollars-text-formatter {\n  position: fixed;\n  z-index: var(--dollars-z-index-context);\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 50px;\n  display: flex;\n  flex-direction: column;\n  padding: 4px;\n  opacity: 0;\n  transform: translateY(10px) scale(0.95);\n  pointer-events: none;\n  transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),\n    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n#dollars-text-formatter.visible {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n}\n.formatter-row {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n.formatter-btn {\n  width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: transparent;\n  border-radius: 50px;\n  cursor: pointer;\n  color: var(--dollars-text);\n  transition: background-color 0.15s, transform 0.1s, color 0.15s;\n}\n.formatter-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.formatter-btn.active {\n  color: var(--primary-color);\n}\n.formatter-btn svg {\n  width: 18px;\n  height: 18px;\n}\n.formatter-divider {\n  width: 1px;\n  height: 18px;\n  background-color: var(--dollars-border);\n  margin: 0 4px;\n}\n.formatter-link-input-wrapper {\n  display: none;\n  align-items: center;\n  gap: 4px;\n  padding: 0 2px;\n}\n#dollars-text-formatter.link-mode .main-buttons {\n  display: none;\n}\n#dollars-text-formatter.link-mode .formatter-link-input-wrapper {\n  display: flex;\n}\n.formatter-link-input {\n  background: transparent;\n  border: none;\n  color: var(--dollars-text);\n  font-size: 13px;\n  width: 150px;\n  outline: none;\n  padding: 4px;\n}\n.formatter-link-input::placeholder {\n  color: var(--dollars-text-placeholder);\n}\n#dollars-nav-group {\n  position: absolute;\n  bottom: 90px;\n  right: 20px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  z-index: 30;\n  pointer-events: none;\n  transition: transform 0.2s, opacity 0.2s;\n}\n#dollars-nav-group.visible {\n  pointer-events: auto;\n}\n.nav-btn {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  border: 1px solid var(--dollars-glass-border-color);\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  color: var(--primary-color);\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  transform: scale(0.8);\n  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);\n  pointer-events: none;\n}\n.nav-btn.visible {\n  opacity: 1;\n  transform: scale(1);\n  pointer-events: auto;\n}\n.nav-btn:hover {\n  background: var(--dollars-glass-bg);\n  transform: scale(1.1);\n  box-shadow: var(--dollars-glass-shadow), 0 0 0 2px color-mix(in srgb, var(--primary-color), transparent 70%);\n}\n.nav-btn:active {\n  transform: scale(0.95);\n}\n.nav-btn svg {\n  width: 24px;\n  height: 24px;\n  stroke-width: 2.5;\n}\n#dollars-scroll-bottom-btn {\n  position: absolute;\n  bottom: 80px;\n  right: 20px;\n  z-index: 95;\n}\n#dollars-scroll-mention-btn {\n  position: absolute;\n  right: 20px;\n  z-index: 95;\n}\n#dollars-scroll-mention-btn svg {\n  transform: rotate(180deg);\n}\n.nav-btn-badge {\n  position: absolute;\n  top: -5px;\n  right: -5px;\n  min-width: 18px;\n  height: 18px;\n  border-radius: 9px;\n  background-color: var(--primary-color);\n  color: #fff;\n  font-size: 11px;\n  font-weight: 700;\n  line-height: 18px;\n  text-align: center;\n  padding: 0 5px;\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);\n  z-index: 31;\n}\n#dollars-mention-list {\n  position: absolute;\n  bottom: calc(100% + 5px);\n  left: 0;\n  width: 100%;\n  max-height: 220px;\n  overflow-y: auto;\n  border-radius: 18px;\n  display: none;\n  flex-direction: column;\n  z-index: var(--dollars-z-index-smiley);\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  gap: 4px;\n  transition: bottom 0.2s ease;\n}\n#dollars-mention-list.visible {\n  display: flex;\n  animation: dollars-slide-up 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n@keyframes dollars-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(10px) scale(0.98);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n@keyframes dollars-item-slide-in {\n  0% {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.mention-item {\n  display: flex;\n  align-items: center;\n  padding: 4px 8px;\n  border-radius: 15px;\n  cursor: pointer;\n  transition: background-color 0.2s;\n  gap: 8px;\n  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n.mention-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n.mention-item:nth-child(2) {\n  animation-delay: 30ms;\n}\n.mention-item:nth-child(3) {\n  animation-delay: 60ms;\n}\n.mention-item:nth-child(4) {\n  animation-delay: 90ms;\n}\n.mention-item:nth-child(5) {\n  animation-delay: 120ms;\n}\n.mention-item:nth-child(6) {\n  animation-delay: 150ms;\n}\n.mention-item:hover,\n.mention-item.active {\n  background-color: rgba(255, 255, 255, 0.3);\n}\nhtml[data-theme=\"dark\"] .mention-item:hover,\nhtml[data-theme=\"dark\"] .mention-item.active {\n  background-color: rgba(255, 255, 255, 0.1);\n}\n.mention-item img {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  object-fit: cover;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n}\n.mention-item-info {\n  display: flex;\n  align-items: baseline;\n  gap: 6px;\n  overflow: hidden;\n  min-width: 0;\n  line-height: 1.2;\n}\n.mention-item-nick {\n  font-size: 12px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.mention-item-user {\n  font-size: 10px;\n  color: var(--dollars-text-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  opacity: 0.8;\n}\n.dollars-preview-card {\n  background-color: var(--dollars-bg);\n  border: 1px solid var(--dollars-border);\n  border-radius: 8px;\n  padding: 10px;\n  display: flex;\n  gap: 12px;\n  text-decoration: none !important;\n  transition: all 0.2s;\n  box-sizing: border-box;\n  max-width: 100% !important;\n  height: 100px;\n  width: 300px;\n  overflow: hidden;\n  position: relative;\n  min-width: 0;\n}\n.dollars-preview-card .cover {\n  width: 80px;\n  height: 80px;\n  flex-shrink: 0;\n  border-radius: 6px;\n  background-color: var(--dollars-bg);\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.dollars-preview-card .cover img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  border-radius: 0 !important;\n}\n.dollars-preview-card[data-entity-type=character] .cover img,\n.dollars-preview-card[data-entity-type=person] .cover img {\n  object-fit: contain !important;\n}\n.dollars-preview-card[data-entity-type=generic] .cover {\n  background-color: var(--dollars-bg);\n  border-radius: 5px;\n}\n.dollars-preview-card[data-entity-type=generic] .cover img {\n  object-fit: cover;\n}\n.dollars-preview-card .inner {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n}\n.dollars-preview-card .title {\n  font-size: 14px;\n  font-weight: bold;\n  color: var(--dollars-text) !important;\n  margin: 0 0 4px 0;\n  line-height: 1.4;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.dollars-preview-card .info {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  margin: 0;\n  line-height: 1.5;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.dollars-preview-card[data-entity-type=generic] .info {\n  margin-top: 4px;\n  margin-bottom: 0;\n}\n.dollars-preview-card .rateInfo {\n  margin-top: 6px;\n  font-size: 11px;\n  color: var(--dollars-text-placeholder);\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n@media (prefers-reduced-motion: reduce) {\n  .uprofile-action-btn,\n  .uprofile-action-btn:active {\n    transition: none;\n    transform: none;\n  }\n  .uprofile-info-row {\n    transition: none;\n  }\n  .uprofile-media-item img {\n    transition: none;\n  }\n  #dollars-user-profile-panel.narrow,\n  #dollars-user-profile-panel.narrow.visible,\n  #dollars-user-profile-panel.narrow.closing {\n    transition: none;\n  }\n  #dollars-user-profile-panel.wide,\n  #dollars-user-profile-panel.wide.visible,\n  #dollars-user-profile-panel.wide.closing {\n    transition: none;\n  }\n}\n#dollars-user-profile-panel {\n  position: absolute;\n  z-index: 100;\n  display: flex;\n  flex-direction: column;\n  background: var(--dollars-bg);\n  overflow: hidden;\n}\n#dollars-user-profile-panel.narrow {\n  inset: 0;\n  transform: translateX(100%);\n  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n#dollars-user-profile-panel.narrow.visible {\n  transform: translateX(0);\n}\n#dollars-user-profile-panel.narrow.closing {\n  transform: translateX(100%);\n}\n#dollars-user-profile-panel.wide {\n  top: calc(40px + 16px);\n  right: 16px;\n  bottom: 16px;\n  left: 16px;\n  z-index: 101;\n  border-radius: 16px;\n  border: 1px solid var(--dollars-border);\n  box-shadow: 0 8px 40px -8px var(--dollars-shadow);\n  opacity: 0;\n  transform: translateY(4px);\n  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n}\n#dollars-user-profile-panel.wide.visible {\n  opacity: 1;\n  transform: translateY(0);\n  pointer-events: auto;\n}\n#dollars-user-profile-panel.wide.closing {\n  opacity: 0;\n  transform: translateY(4px);\n  pointer-events: none;\n}\n.uprofile-card-header {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 12px 8px 8px;\n  flex-shrink: 0;\n  border-bottom: 1px solid var(--dollars-border);\n}\n.uprofile-card-title {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n.uprofile-banner {\n  height: 120px;\n  flex-shrink: 0;\n  background: linear-gradient(160deg,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);\n  position: relative;\n  display: flex;\n  align-items: flex-end;\n  justify-content: center;\n}\n.uprofile-banner::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-image: var(--dollars-bg-pattern-url);\n  background-size: 300px;\n  opacity: 0.6;\n  mix-blend-mode: overlay;\n}\nhtml[data-theme=dark] .uprofile-banner::before {\n  opacity: 0.2;\n}\n.uprofile-avatar {\n  width: 88px;\n  height: 88px;\n  border-radius: 50%;\n  border: 3px solid var(--dollars-bg);\n  background-color: var(--dollars-bg);\n  object-fit: cover;\n  box-shadow: 0 4px 16px var(--dollars-shadow);\n  position: relative;\n  z-index: 1;\n  transform: translateY(44px);\n  flex-shrink: 0;\n}\n.uprofile-content {\n  flex: 1;\n  overflow-y: auto;\n  padding: 52px 20px 24px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.uprofile-body {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.uprofile-name-section {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 2px;\n}\n.uprofile-nickname {\n  font-size: 20px;\n  font-weight: 800;\n  color: var(--dollars-text);\n  line-height: 1.3;\n  word-break: break-word;\n  text-align: center;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n}\n.uprofile-status-dot {\n  display: inline-block;\n  width: 9px;\n  height: 9px;\n  border-radius: 50%;\n  background-color: var(--dollars-color-online);\n  flex-shrink: 0;\n  box-shadow: 0 0 0 2px var(--dollars-bg);\n  position: relative;\n}\n.uprofile-status-dot.active::after {\n  content: none;\n}\n.uprofile-username {\n  font-size: 13px;\n  color: var(--dollars-text-secondary);\n  font-family: monospace;\n  text-align: center;\n}\n.uprofile-last-active {\n  font-size: 12px;\n  color: var(--dollars-text-placeholder);\n  margin-top: 2px;\n}\n.uprofile-stats-row {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0;\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border: 1px solid color-mix(in srgb, var(--primary-color), transparent 80%);\n  border-radius: 12px;\n  padding: 10px 8px;\n}\n.uprofile-stat {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 2px;\n}\n.uprofile-stat-num {\n  font-size: 17px;\n  font-weight: 700;\n  color: var(--primary-color);\n  line-height: 1;\n  letter-spacing: -0.3px;\n  display: inline-block;\n}\n.uprofile-stat-label {\n  font-size: 11px;\n  color: var(--dollars-text-placeholder);\n  line-height: 1;\n}\n.uprofile-stat-divider {\n  width: 1px;\n  height: 28px;\n  background: color-mix(in srgb, var(--primary-color), transparent 70%);\n  flex-shrink: 0;\n}\n.uprofile-actions {\n  display: flex;\n  gap: 8px;\n}\n.uprofile-action-btn {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 10px 12px;\n  border-radius: 10px;\n  background: var(--dollars-glass-bg);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text);\n  font-size: 13px;\n  cursor: pointer;\n  transition: background-color 0.14s ease-out, color 0.14s ease-out, border-color 0.14s ease-out;\n  white-space: nowrap;\n}\n.uprofile-action-btn:hover {\n  background: var(--primary-color);\n  color: var(--dollars-bg);\n  border-color: var(--primary-color);\n}\n.uprofile-action-btn:focus-visible {\n  outline: 2px solid var(--primary-color);\n  outline-offset: 2px;\n}\n.uprofile-action-btn span {\n  display: flex;\n  align-items: center;\n  flex-shrink: 0;\n}\n.uprofile-action-btn svg {\n  width: 16px;\n  height: 16px;\n  stroke: currentColor;\n}\n.uprofile-info-section {\n  display: flex;\n  flex-direction: column;\n  border-top: 1px solid var(--dollars-border);\n  padding-top: 12px;\n}\n.uprofile-info-row {\n  display: flex;\n  align-items: flex-start;\n  gap: 12px;\n  padding: 10px 8px;\n  border-radius: 8px;\n  transition: background-color 0.15s;\n}\n.uprofile-info-row:hover {\n  background: var(--dollars-bg-hover);\n}\n.uprofile-info-row + .uprofile-info-row {\n  border-top: 1px solid color-mix(in srgb, var(--dollars-border), transparent 50%);\n}\n.uprofile-info-content {\n  flex: 1;\n  min-width: 0;\n}\n.uprofile-info-label {\n  font-size: 11px;\n  color: var(--primary-color);\n  opacity: 0.8;\n  font-weight: 500;\n  margin-bottom: 2px;\n}\n.uprofile-info-value {\n  font-size: 13px;\n  color: var(--dollars-text);\n  line-height: 1.5;\n  word-break: break-word;\n}\n.uprofile-sign-value {\n  padding: 4px 8px;\n  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border-radius: 0 6px 6px 0;\n  color: var(--dollars-text-secondary);\n}\n.uprofile-media-section {\n  border-top: 1px solid var(--dollars-border);\n  padding-top: 12px;\n}\n.uprofile-media-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 10px;\n  padding: 0 4px;\n}\n.uprofile-media-header span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n.uprofile-media-grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 3px;\n  border-radius: 10px;\n  overflow: hidden;\n}\n.uprofile-media-item {\n  position: relative;\n  aspect-ratio: 1;\n  cursor: pointer;\n  overflow: hidden;\n  background: var(--dollars-border);\n}\n.uprofile-media-item img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.16s ease-out;\n}\n.uprofile-media-item:hover img {\n  transform: scale(1.02);\n}\n.uprofile-media-video-btn {\n  display: block;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  border: none;\n  background: none;\n  cursor: pointer;\n  position: relative;\n}\n.uprofile-media-video-badge {\n  position: absolute;\n  bottom: 4px;\n  left: 4px;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.uprofile-media-video-badge svg {\n  margin-left: 2px;\n}\n.uprofile-empty-hint {\n  text-align: center;\n  color: var(--dollars-text-placeholder);\n  font-size: 13px;\n  padding: 16px 0;\n}\n#dollars-search-ui {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  min-height: 0;\n  gap: 8px;\n  padding: 52px 12px 12px 12px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 100;\n}\n#dollars-search-ui~.chat-input-container,\n#dollars-user-profile-panel.visible~.chat-input-container {\n  display: none;\n}\n#dollars-search-ui .search-panel-row {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  opacity: 0.8\n}\n#dollars-search-ui .search-calendar-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-left: 5px;\n  width: 35px;\n  height: 35px;\n  border-radius: 50%;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  transition: all 0.2s;\n}\n#dollars-search-ui .search-bar {\n  height: 35px;\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  position: relative;\n  border-radius: 100px;\n  border: 1px solid var(--dollars-border);\n  background-color: var(--dollars-bg);\n  transition: all .3s ease-in-out;\n  padding: 0 6px 0 6px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n}\n#dollars-search-ui .search-bar:focus-within {\n  border-color: var(--primary-color);\n  box-shadow: 0 0 10px rgba(240, 145, 153, .6);\n}\n#dollars-search-ui input {\n  flex-grow: 1;\n  min-width: 0;\n  padding: 6px 0;\n  border: none;\n  border-radius: 0;\n  background-color: transparent;\n  outline: 0;\n  color: var(--dollars-text);\n}\n#dollars-search-ui .search-close-btn {\n  flex-shrink: 0;\n  cursor: pointer;\n  font-size: 20px;\n  color: var(--dollars-text-secondary);\n  align-items: center;\n  opacity: 0.5;\n  z-index: 1;\n  display: flex;\n}\n#dollars-search-ui .search-icon {\n  flex-shrink: 0;\n}\n#dollars-search-ui input[type=search]::-webkit-search-cancel-button,\n#dollars-search-ui input[type=search]::-webkit-search-decoration {\n  -webkit-appearance: none;\n  appearance: none;\n  display: none;\n}\n#dollars-search-results {\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.search-status-msg {\n  text-align: center;\n  padding: 20px;\n  color: var(--dollars-text-placeholder);\n}\n.search-result-item {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  padding: 8px;\n  border-radius: 8px;\n  cursor: pointer;\n  transition: background-color .2s;\n}\n.search-result-item:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.search-result-item img {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n}\n.search-result-item .dollars-search-content {\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n.search-result-item .dollars-search-header {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 12px;\n}\n.search-result-item .dollars-search-nickname {\n  font-weight: 700;\n  color: var(--dollars-text);\n}\n.search-result-item .dollars-search-timestamp {\n  color: var(--dollars-text-secondary);\n}\n.search-result-item .dollars-search-message {\n  font-size: 13px;\n  color: var(--dollars-text-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n#dollars-search-ui .search-gallery-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-left: 5px;\n  width: 35px;\n  height: 35px;\n  border-radius: 50%;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  transition: all 0.2s;\n}\n#dollars-search-ui .search-gallery-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n#dollars-search-ui .search-gallery-btn.active {\n  background-color: var(--primary-color);\n  color: #fff;\n  border-color: var(--primary-color);\n}\n#dollars-search-ui .search-calendar-btn svg,\n#dollars-search-ui .search-gallery-btn svg {\n  width: 20px;\n  height: 20px;\n}\n#dollars-search-ui .gallery-container {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  min-height: 0;\n  overflow: hidden;\n}\n#dollars-search-ui .gallery-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 8px;\n}\n#dollars-search-ui .gallery-title {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n#dollars-search-ui .gallery-close-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 50%;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s;\n}\n#dollars-search-ui .gallery-close-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n#dollars-search-ui .gallery-grid {\n  display: grid;\n  grid-template-columns: repeat(5, 1fr);\n  gap: 4px;\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  align-content: start;\n}\n#dollars-search-ui .gallery-item {\n  position: relative;\n  width: 100%;\n  padding-bottom: 100%;\n  cursor: pointer;\n  overflow: hidden;\n  border-radius: 6px;\n  background-color: var(--dollars-bg);\n}\n#dollars-search-ui .gallery-item a {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  display: block;\n}\n#dollars-search-ui .gallery-item img,\n#dollars-search-ui .gallery-item video {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n#dollars-search-ui .gallery-item .video-overlay {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: rgba(0, 0, 0, 0.3);\n  pointer-events: none;\n}\n#dollars-search-ui .gallery-item:hover .video-overlay {\n  background-color: rgba(0, 0, 0, 0.4);\n}\n#dollars-search-ui .gallery-loading {\n  grid-column: 1 / -1;\n  text-align: center;\n  padding: 20px;\n  color: var(--dollars-text-secondary);\n}\n.dollars-tooltip {\n  pointer-events: auto !important;\n}\n.dollars-tooltip .tooltip-inner a {\n  color: #eee !important;\n  text-decoration: none !important;\n  transition: color .2s;\n  cursor: pointer;\n}\n.dollars-tooltip .tooltip-inner a:hover {\n  color: #fff !important;\n  border-bottom-color: #fff;\n  text-decoration: none !important;\n}\n@keyframes dollars-message-in {\n  0% {\n    opacity: 0;\n    transform: translateY(16px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@keyframes dollars-scale-out {\n  from {\n    opacity: 1;\n    transform: scale(1);\n  }\n  to {\n    opacity: 0;\n    transform: scale(0.95);\n  }\n}\n@keyframes dollars-slide-down-out {\n  from {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  to {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n}\n#dollars-context-menu.closing {\n  animation: dollars-scale-out 0.15s ease-out forwards;\n  pointer-events: none;\n}\n@keyframes dollars-profile-slide-out {\n  0% {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(10px) scale(0.95);\n  }\n}\n#dollars-profile-card.closing {\n  animation: dollars-profile-slide-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;\n  pointer-events: none;\n  transition: none;\n}\n#dollars-smiles-floating.closing {\n  animation: dollars-slide-down-out 0.2s ease-out forwards;\n  pointer-events: none;\n}\n#dollars-reaction-picker-floating.closing {\n  animation: dollars-scale-out 0.15s ease-out forwards;\n  pointer-events: none;\n}\n.chat-message.new-message {\n  animation: dollars-message-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;\n  transition: none;\n  opacity: 0;\n  transform: translateY(16px);\n}\n.chat-message.pending.new-message {\n  opacity: 0.75;\n}\n.chat-message.pending {\n  opacity: 0.7;\n  transition: opacity 0.25s ease-out !important;\n}\n.chat-message.pending .bubble::after {\n  content: '';\n  position: absolute;\n  right: 6px;\n  bottom: 4px;\n  width: 12px;\n  height: 12px;\n  border: 2px solid var(--dollars-text-secondary);\n  border-top-color: transparent;\n  border-radius: 50%;\n  animation: dollars-spin 0.7s ease-in-out infinite, dollars-spinner-fade-in 0.2s ease-out forwards;\n  will-change: transform;\n}\n@keyframes dollars-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes dollars-spinner-fade-in {\n  from {\n    opacity: 0;\n    transform: scale(0.5) rotate(0deg);\n  }\n  to {\n    opacity: 1;\n    transform: scale(1) rotate(0deg);\n  }\n}\n#dollars-chat-root .likes_grid {\n  opacity: 1;\n}\n#dollars-chat-root .likes_grid .item {\n  gap: 3px;\n  background: rgba(255, 255, 255, 0.85);\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root .likes_grid .item {\n  background: rgba(255, 255, 255, 0.15);\n}\n.reaction-avatars {\n  display: inline-flex;\n  align-items: center;\n  margin-left: 3px;\n  flex-shrink: 0;\n}\n.reaction-avatar {\n  width: 21px;\n  height: 21px;\n  border-radius: 50%;\n  margin-left: -5px;\n  object-fit: cover;\n  background-color: var(--dollars-bg);\n  position: relative;\n  flex-shrink: 0;\n  transition: transform 0.15s ease;\n}\n.reaction-avatar:first-child {\n  margin-left: 0;\n}\n.reaction-item:hover .reaction-avatar {\n  border-color: #369cf8;\n}\n.reaction-item .num.extra {\n  font-size: 10px;\n  margin-left: 2px;\n  color: var(--dollars-text-secondary);\n}\n.reaction-item:hover .num.extra {\n  color: #fff;\n}\n@keyframes dollars-stagger-fade {\n  from {\n    opacity: 0;\n    transform: scale(0.85);\n  }\n  to {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n#dollars-smiles-floating.open .smiley-item,\n#dollars-reaction-picker-floating.open .smiley-item {\n  animation: dollars-stagger-fade 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n@keyframes dollars-menu-cascade {\n  from {\n    opacity: 0;\n    transform: translateX(-8px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n#dollars-context-menu.visible .context-menu-items button {\n  animation: dollars-menu-cascade 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(1) {\n  animation-delay: 0ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(2) {\n  animation-delay: 25ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(3) {\n  animation-delay: 50ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(4) {\n  animation-delay: 75ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(5) {\n  animation-delay: 100ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(6) {\n  animation-delay: 125ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(7) {\n  animation-delay: 150ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(8) {\n  animation-delay: 175ms;\n}\n@keyframes dollars-reaction-bounce {\n  0% {\n    opacity: 0;\n    transform: scale(0.3) translateY(15px);\n  }\n  40% {\n    transform: scale(1.2) translateY(-10px);\n  }\n  65% {\n    transform: scale(0.92) translateY(2px);\n  }\n  85% {\n    transform: scale(1.05) translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: scale(1) translateY(0);\n  }\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item {\n  animation: dollars-reaction-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(2) {\n  animation-delay: 35ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(3) {\n  animation-delay: 70ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(4) {\n  animation-delay: 105ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(5) {\n  animation-delay: 140ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(6) {\n  animation-delay: 175ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(7) {\n  animation-delay: 210ms;\n}\n.reply-preview.visible {\n  animation: dollars-slide-up 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.search-result-item {\n  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n.search-result-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n.search-result-item:nth-child(2) {\n  animation-delay: 30ms;\n}\n.search-result-item:nth-child(3) {\n  animation-delay: 60ms;\n}\n.search-result-item:nth-child(4) {\n  animation-delay: 90ms;\n}\n.search-result-item:nth-child(5) {\n  animation-delay: 120ms;\n}\n.search-result-item:nth-child(6) {\n  animation-delay: 150ms;\n}\n.search-result-item:nth-child(7) {\n  animation-delay: 180ms;\n}\n.search-result-item:nth-child(8) {\n  animation-delay: 210ms;\n}\n.conversation-item {\n  transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.conversation-item:hover {\n  transform: scale(1.02);\n}\n.conversation-item:active {\n  transform: scale(0.98);\n}\n.send-btn:active {\n  transform: scale(0.9) !important;\n}\n.header-btn:active {\n  transform: scale(0.92);\n}\n@keyframes dollars-date-slide {\n  from {\n    opacity: 0;\n    transform: translateX(-50%) translateY(-10px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(-50%) translateY(0);\n  }\n}\n#dollars-floating-date.visible {\n  animation: dollars-date-slide 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n@keyframes dollars-btn-bounce-in {\n  0% {\n    opacity: 0;\n    transform: scale(0.5);\n  }\n  60% {\n    transform: scale(1.1);\n  }\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n.nav-btn.visible {\n  animation: dollars-btn-bounce-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n.dollars-preview-card {\n  animation: dollars-item-slide-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.smiley-tab-btn,\n.reaction-picker-tab-btn {\n  transition: background-color 0.15s, color 0.15s, transform 0.1s;\n}\n.smiley-tab-btn:active,\n.reaction-picker-tab-btn:active {\n  transform: scale(0.95);\n}\n@keyframes dollars-formatter-in {\n  from {\n    opacity: 0;\n    transform: translateY(8px) scale(0.9);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-text-formatter.visible {\n  animation: dollars-formatter-in 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.formatter-btn:active {\n  transform: scale(0.9);\n}\n@media (prefers-reduced-motion: reduce) {\n  *,\n  *::before,\n  *::after {\n    animation-duration: 0.01ms !important;\n    animation-iteration-count: 1 !important;\n    transition-duration: 0.01ms !important;\n  }\n}\n#unified-notifier {\n  position: fixed;\n  bottom: 40px;\n  right: 30px;\n  width: 223px;\n  z-index: 10001;\n  border-radius: 15px;\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  overflow: hidden;\n  transform: translateX(calc(100% + 30px));\n  transition: all .4s ease-in-out;\n  background-color: rgba(254, 254, 254, .9);\n  color: #000;\n  border: 1px solid rgba(0, 0, 0, .1);\n  box-shadow: 0 5px 25px -5px rgba(80, 80, 80, .3);\n  display: flex;\n  flex-direction: column;\n}\nhtml[data-theme=dark] #unified-notifier {\n  background-color: rgba(45, 46, 47, .9);\n  color: #e0e0e1;\n  border: 1px solid rgba(255, 255, 255, .15);\n}\n#unified-notifier.show {\n  transform: translateX(0);\n}\n.un-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 0 15px;\n  height: 32px;\n  font-size: 14px;\n  font-weight: 700;\n  color: var(--primary-color);\n  border-bottom: 1px solid #eee;\n}\nhtml[data-theme=dark] .un-header {\n  border-bottom: 1px solid #444;\n}\n.un-body {\n  padding: 0;\n  max-height: 400px;\n  overflow-y: auto;\n}\n.un-item {\n  display: flex;\n  align-items: flex-start;\n  padding: 10px 15px;\n}\n.un-item:not(:last-child) {\n  border-bottom: 1px solid #eee;\n}\nhtml[data-theme=dark] .un-item:not(:last-child) {\n  border-bottom: 1px solid #444;\n}\n.un-item .avatarNeue {\n  margin-right: 12px;\n  flex-shrink: 0;\n  width: 40px;\n  height: 40px;\n  background-size: cover;\n  border-radius: 50%;\n}\n.un-item .content {\n  flex-grow: 1;\n  font-size: 13px;\n  overflow: hidden;\n}\n.un-item .actions {\n  margin-top: 8px;\n}\n.un-action-btn {\n  cursor: pointer;\n  display: inline-block;\n  padding: 2px 8px;\n  border-radius: 4px;\n  font-size: 12px;\n  text-decoration: none !important;\n  transition: background-color 0.2s;\n}\n.un-action-btn.btnRedSmall {\n  background-color: var(--primary-color);\n  color: #fff !important;\n}\n.un-action-btn.btnRedSmall:hover {\n  background-color: #369cf8;\n}\n.un-action-btn.btnGraySmall {\n  background-color: #eee;\n  color: #666 !important;\n}\n.un-action-btn.btnGraySmall:hover {\n  background-color: #ddd;\n}\nhtml[data-theme=dark] .un-action-btn.btnGraySmall {\n  background-color: #444;\n  color: #ccc !important;\n}\nhtml[data-theme=dark] .un-action-btn.btnGraySmall:hover {\n  background-color: #555;\n}\n.un-widget-title {\n  color: #3e3e3e;\n  display: block;\n  margin-bottom: 4px;\n}\n.un-widget-message {\n  color: #666;\n  display: block;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin-bottom: 4px;\n}\nhtml[data-theme=dark] .un-widget-title {\n  color: #e9e9e9;\n}\nhtml[data-theme=dark] .un-widget-message {\n  color: #aaa;\n}\n.un-clear-all {\n  font-size: 12px;\n  color: var(--dollars-text-placeholder) !important;\n  text-decoration: none !important;\n}\n.un-clear-all:hover {\n  color: var(--primary-color) !important;\n}\n@keyframes dollars-fade-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n.browse-separator {\n  display: block;\n  position: relative;\n  text-align: center;\n  margin: 12px -19px;\n  width: calc(100% + 38px);\n  height: 30px;\n  line-height: 30px;\n  background-color: rgba(var(--primary-color-rgb, 249, 109, 142), 0.1);\n  z-index: 2;\n  pointer-events: none;\n  animation: dollars-fade-in 0.3s ease;\n}\n.browse-separator span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--primary-color);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  padding: 0 12px;\n}\nhtml[data-theme='dark'] .browse-separator {\n  background-color: rgba(249, 109, 142, 0.15);\n}\n.unread-separator {\n  display: block;\n  position: relative;\n  text-align: center;\n  margin: 12px -19px;\n  width: calc(100% + 38px);\n  height: 30px;\n  line-height: 30px;\n  background-color: rgba(255, 255, 255, 0.9);\n  z-index: 2;\n  pointer-events: none;\n  animation: dollars-fade-in 0.3s ease;\n}\n.unread-separator span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--primary-color);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  padding: 0 12px;\n}\nhtml[data-theme='dark'] .unread-separator {\n  background-color: rgba(60, 62, 64, 0.9);\n}\n#dollars-card {\n  transition: transform 0.1s ease-out, box-shadow 0.3s ease;\n  transform-style: preserve-3d;\n  perspective: 1000px;\n  border: 1px solid var(--primary-color) !important;\n  background-color: var(--dollars-bg);\n  cursor: pointer;\n}\n#dollars-card::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  pointer-events: none;\n  background-image:\n    url('https://lsky.ry.mk/i/2026/01/03/background.svg'),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: 300px, center;\n  background-size: 300px auto, cover;\n  background-blend-mode: overlay, normal;\n  opacity: 1;\n  transition: opacity 0.3s ease, background-position 0.1s ease-out;\n}\nhtml[data-theme='dark'] #dollars-card {\n  border: 1px solid var(--primary-color);\n  background: initial;\n}\nhtml[data-theme='dark'] #dollars-card::before {\n  background: linear-gradient(160deg,\n      var(--primary-color) 0%,\n      color-mix(in srgb, var(--primary-color), transparent 40%) 100%);\n  -webkit-mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  mask-repeat: repeat;\n  mask-size: 300px;\n  mask-position: 300px;\n}\n#dollars-card:hover {\n  transform: scale(1.02);\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);\n}\n#dock-chat-link {\n  position: relative;\n}\n#dock-chat-link.flashing {\n  animation: dock-flash 1s ease-in-out infinite;\n}\n@keyframes dock-flash {\n  0%,\n  100% {\n    opacity: 1;\n  }\n  50% {\n    opacity: 0.3;\n  }\n}\n.dock-notif-badge {\n  position: absolute;\n  top: -4px;\n  right: -4px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: 8px;\n  background-color: #f96d8e;\n  color: #fff;\n  font-size: 10px;\n  font-weight: 700;\n  line-height: 16px;\n  text-align: center;\n  display: none;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n}\n";
 
   function injectStyles() {
     if (document.querySelector("[data-dollars-styles]")) return;
@@ -7771,7 +8400,7 @@ ${content}`;
     const container = document.createElement("div");
     container.id = "dollars-app-mount";
     document.body.appendChild(container);
-    G$1(/* @__PURE__ */ u$2(App, {}), container);
+    G(/* @__PURE__ */ u$2(App, {}), container);
     setTimeout(injectHomeCard, 0);
   }
   if (document.readyState === "loading") {

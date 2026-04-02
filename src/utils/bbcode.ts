@@ -1,6 +1,6 @@
 import { escapeHTML, calculateImageStyle, getAvatarUrl, getThumbnailUrl } from './format';
 import { settings } from '@/stores/user';
-import { SMILIES } from './smilies';
+import { replaceInlineTokens } from './inlineTokens';
 
 // 标准化 Bangumi 链接，将 bangumi.tv/bgm.tv/chii.in 转换为相对路径
 function normalizeBangumiUrl(url: string): string {
@@ -101,14 +101,6 @@ export function processBBCode(
         </div>`;
     });
 
-    // 自定义表情（兼容 [emoji] 和 [sticker] 两种标签）
-    html = html.replace(/\[(?:emoji|sticker)\]([\s\S]+?)\[\/(?:emoji|sticker)\]/gi, (m, src) => {
-        if (!/^https?:\/\/[^\s<>"']+$/i.test(src)) return escapeHTML(m);
-        const isCommunityEmoji = src.includes('/emojis/');
-        const className = isCommunityEmoji ? 'smiley' : 'custom-emoji';
-        return `<img src="${src}" class="${className}" alt="sticker" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer">`;
-    });
-
     // 音频
     html = html.replace(/\[audio\]([\s\S]+?)\[\/audio\]/gi, (m, src) => {
         const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
@@ -127,6 +119,17 @@ export function processBBCode(
             return `<a href="${cleanSrc}" target="_blank">[视频]</a>`;
         }
         return `<div class="video-player-container" style="max-width: 100%; margin: 5px 0;"><video controls preload="metadata" style="max-width: 100%; max-height: 400px; border-radius: 8px; background: #000;"><source src="${cleanSrc}" type="video/mp4"><source src="${cleanSrc}" type="video/webm">您的浏览器不支持视频播放。</video></div>`;
+    });
+
+    // 通用附件
+    html = html.replace(/\[file=(.*?)\]([\s\S]+?)\[\/file\]/gi, (m, label, src) => {
+        const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
+        if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
+        const name = escapeHTML((label || '').trim() || '附件');
+        if (options.isInsideQuote) {
+            return `<a href="${cleanSrc}" target="_blank">[附件] ${name}</a>`;
+        }
+        return `<a href="${cleanSrc}" target="_blank" rel="noopener noreferrer" class="chat-file-link" download="${name}">${name}</a>`;
     });
 
     // 图片
@@ -158,42 +161,27 @@ export function processBBCode(
     // 用户提及
     html = html.replace(/\[user=(.+?)\]([\s\S]+?)\[\/user\]/gi, '<a href="/user/$1" target="_blank" class="user-mention">@$2</a>');
 
-    // 大尺寸表情（动图）
-    html = html.replace(/\(((?:musume_|blake_))(\d+)\)/g, (match, prefix, p1, offset, str) => {
-        const before = str.slice(0, offset);
-        if (before.lastIndexOf('<') > before.lastIndexOf('>')) return match;
-
-        const num = parseInt(p1, 10);
-        if (num < 1 || num > 98) return match;
-
-        const folder = prefix === 'blake_' ? 'blake' : 'musume';
-        const src = `/img/smiles/${folder}/${prefix}${String(num).padStart(2, '0')}.gif`;
-        const className = prefix === 'blake_' ? 'smiley-blake' : 'smiley-musume';
-        return `<img src="${src}" class="smiley ${className}" alt="${match}">`;
-    });
-
-    // BGM 表情
-    html = html.replace(/\(bgm(\d+)\)/g, (match, p1, offset, str) => {
-        // 检查是否在 HTML 标签内
-        const before = str.slice(0, offset);
-        if (before.lastIndexOf('<') > before.lastIndexOf('>')) return match;
-
-        const num = parseInt(p1, 10);
-        const range = SMILIES.find(r => num >= r.start && num <= r.end);
-
-        if (range && range.path) {
-            const src = range.path(num);
-            return `<img src="${src}" class="smiley" alt="${match}" width="21" height="21">`;
+    html = replaceInlineTokens(html, (token, raw) => {
+        if (!token) {
+            return raw.startsWith('[') ? escapeHTML(raw) : raw;
         }
-        return match;
-    });
 
-    // BMO 表情
-    html = html.replace(/\((bmo(?:C|_)[a-zA-Z0-9_-]+)\)/g, (match, _code, offset, str) => {
-        const before = str.slice(0, offset);
-        if (before.lastIndexOf('<') > before.lastIndexOf('>')) return match;
-        return `<span class="bmo" data-code="${match}"></span>`;
-    });
+        switch (token.type) {
+            case 'custom-image': {
+                const className = token.isCommunityEmoji ? 'smiley' : 'custom-emoji';
+                return `<img src="${escapeHTML(token.src)}" class="${className}" alt="sticker" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer">`;
+            }
+            case 'smiley': {
+                const className = token.variant === 'bgm'
+                    ? 'smiley'
+                    : `smiley ${token.variant === 'blake' ? 'smiley-blake' : 'smiley-musume'}`;
+                const size = token.variant === 'bgm' ? ' width="21" height="21"' : '';
+                return `<img src="${escapeHTML(token.src)}" class="${className}" alt="${escapeHTML(token.raw)}"${size}>`;
+            }
+            case 'bmo':
+                return `<span class="bmo" data-code="${escapeHTML(token.code)}"></span>`;
+        }
+    }, { skipInsideHtml: true });
 
     // URL 链接
     html = html.replace(/\[url=([^\]]+?)\]([\s\S]+?)\[\/url\]/gi, (_, url, label) => {
@@ -264,7 +252,9 @@ export function renderReplyQuote(details: {
     content: string;
     firstImage?: string;
 }, replyToId: number): string {
-    const content = stripQuotes(details.content).substring(0, 80);
+    const content = stripQuotes(details.content)
+        .replace(/\[file=.*?\].*?\[\/file\]/gi, '[附件]')
+        .substring(0, 80);
     const avatarSrc = getAvatarUrl(details.avatar, 's');
 
     // 图片缩略图（如果有）

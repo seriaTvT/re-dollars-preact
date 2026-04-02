@@ -1,10 +1,11 @@
+import type { RefObject } from 'preact';
 import { useRef, useCallback } from 'preact/hooks';
 import { isContextMenuOpen, isSmileyPanelOpen, profileCardUserId, showContextMenu } from '@/stores/ui';
 
 interface SwipeToReplyOptions {
     messageId: number;
     onReply: () => void;
-    elementRef: React.RefObject<HTMLDivElement>;
+    elementRef: RefObject<HTMLDivElement>;
 }
 
 interface SwipeHandlers {

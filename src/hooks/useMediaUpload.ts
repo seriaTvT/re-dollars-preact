@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from 'preact/hooks';
 import { uploadFile } from '@/utils/api';
+import type { RichInputController } from '@/utils/richInput';
 
 export type MediaItem = {
     type: 'image' | 'video';
@@ -22,8 +23,7 @@ const ALLOWED_AUDIO_EXTS = new Set([
 ]);
 
 export function useMediaUpload(
-    textareaRef: { current: HTMLTextAreaElement | null },
-    handleInput: () => void
+    inputControllerRef: { current: RichInputController | null }
 ) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -80,10 +80,10 @@ export function useMediaUpload(
 
     // 移除媒体文件
     const handleRemoveMedia = useCallback((index: number) => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
+        const controller = inputControllerRef.current;
+        if (!controller) return;
 
-        const text = textarea.value;
+        const text = controller.getValue();
         const currentPreviewMedia = previewMedia;
         const media = currentPreviewMedia[index];
         if (!media) return;
@@ -111,10 +111,8 @@ export function useMediaUpload(
             return match;
         });
 
-        textarea.value = newText;
-        handleInput();
-        textarea.focus();
-    }, [textareaRef, previewMedia, handleInput]);
+        controller.setValue(newText, { focus: true });
+    }, [inputControllerRef, previewMedia]);
 
     // 处理附件按钮点击（图片/视频）
     const handleAttachClick = useCallback(() => {
@@ -135,7 +133,7 @@ export function useMediaUpload(
             isAttachLongPressRef.current = true;
             if (navigator.vibrate) navigator.vibrate(50);
             if (fileInputRef.current) {
-                fileInputRef.current.accept = 'audio/*';
+                fileInputRef.current.accept = '*/*';
                 fileInputRef.current.click();
             }
         }, 500);
@@ -156,11 +154,6 @@ export function useMediaUpload(
         const isImage = file.type.startsWith('image/') || ALLOWED_IMAGE_EXTS.has(ext);
         const isVideo = file.type.startsWith('video/') || ALLOWED_VIDEO_EXTS.has(ext);
         const isAudio = file.type.startsWith('audio/') || ALLOWED_AUDIO_EXTS.has(ext);
-
-        if (!isImage && !isVideo && !isAudio) {
-            alert(`不支持的文件格式: ${ext || file.type || '未知'}\n支持的图片格式: JPEG, PNG, WebP, GIF, AVIF, BMP, HEIC, TIFF 等\n支持的视频格式: MP4, WebM, MOV, MKV 等`);
-            return;
-        }
 
         // Handle files with missing MIME type (common for HEIC on some platforms)
         let fileToUpload = file;
@@ -207,32 +200,53 @@ export function useMediaUpload(
         try {
             const result = await uploadFile(fileToUpload);
             if (result.status && result.url) {
-                const textarea = textareaRef.current;
-                if (textarea) {
-                    let tag = 'img';
-                    if (isVideo) {
-                        tag = 'video';
-                    } else if (isAudio) {
-                        tag = 'audio';
-                    }
-                    const bbcode = `[${tag}]${result.url}[/${tag}]`;
-                    const start = textarea.selectionStart;
-                    const end = textarea.selectionEnd;
-                    const value = textarea.value;
-                    textarea.value = value.substring(0, start) + bbcode + value.substring(end);
-                    textarea.selectionStart = textarea.selectionEnd = start + bbcode.length;
+                const controller = inputControllerRef.current;
+                if (!controller) return;
 
-                    // Use client-side dimensions (more reliable than async backend)
-                    if (tag === 'img' && clientWidth && clientHeight) {
-                        setPreviewMedia(prev => [...prev, {
+                let tag = 'img';
+                if (isVideo) {
+                    tag = 'video';
+                } else if (isAudio) {
+                    tag = 'audio';
+                } else if (!isImage) {
+                    tag = 'file';
+                }
+                const safeName = file.name.replace(/[\[\]\r\n]+/g, ' ').trim() || '附件';
+                const bbcode = tag === 'file'
+                    ? `[file=${safeName}]${result.url}[/file]`
+                    : `[${tag}]${result.url}[/${tag}]`;
+                controller.insertText(bbcode, { focus: true });
+
+                // Use client-side dimensions (more reliable than async backend)
+                if (tag === 'img' && clientWidth && clientHeight) {
+                    setPreviewMedia(prev => {
+                        const existingIndex = prev.findIndex((item) =>
+                            item.type === 'image' &&
+                            item.url === result.url &&
+                            (!item.width || !item.height)
+                        );
+
+                        if (existingIndex >= 0) {
+                            const next = [...prev];
+                            next[existingIndex] = {
+                                ...next[existingIndex],
+                                width: clientWidth,
+                                height: clientHeight
+                            };
+                            return next;
+                        }
+
+                        if (prev.some(item => item.type === 'image' && item.url === result.url)) {
+                            return prev;
+                        }
+
+                        return [...prev, {
                             type: 'image',
                             url: result.url!,
                             width: clientWidth,
                             height: clientHeight
-                        }]);
-                    }
-
-                    handleInput();
+                        }];
+                    });
                 }
             } else {
                 alert(result.error || '上传失败');
@@ -242,7 +256,7 @@ export function useMediaUpload(
         } finally {
             setIsUploading(false);
         }
-    }, [textareaRef, handleInput]);
+    }, [inputControllerRef]);
 
     // 处理文件选择
     const handleFileChange = useCallback(async (e: Event) => {
@@ -261,8 +275,8 @@ export function useMediaUpload(
                 it.type.startsWith('image/') ||
                 it.type.startsWith('video/') ||
                 it.type.startsWith('audio/') ||
-                it.type === 'application/octet-stream' || // Some browsers report this for certain image types
-                it.type === '' // Firefox sometimes reports empty type for pasted images
+                it.type === 'application/octet-stream' ||
+                it.type === ''
             )
         );
 
@@ -274,6 +288,13 @@ export function useMediaUpload(
                     await handleFileUpload(file);
                 }
             }
+            return;
+        }
+
+        const text = e.clipboardData?.getData('text/plain');
+        if (text) {
+            e.preventDefault();
+            inputControllerRef.current?.insertText(text, { focus: true });
         }
     }, [handleFileUpload]);
 

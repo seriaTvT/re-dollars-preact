@@ -1,6 +1,8 @@
 import { useRef, useCallback, useEffect, useState } from 'preact/hooks';
+import type { RefObject } from 'preact';
 import { escapeHTML } from '@/utils/format';
 import { MENTION_DEBOUNCE, MAX_MENTION_RESULTS } from '@/utils/constants';
+import type { RichInputController } from '@/utils/richInput';
 
 interface MentionUser {
     id: number;
@@ -10,10 +12,11 @@ interface MentionUser {
 }
 
 interface MentionCompleterProps {
-    textareaRef: React.RefObject<HTMLTextAreaElement>;
+    editorRef: RefObject<HTMLDivElement>;
+    inputControllerRef: { current: RichInputController | null };
 }
 
-export function MentionCompleter({ textareaRef }: MentionCompleterProps) {
+export function MentionCompleter({ editorRef, inputControllerRef }: MentionCompleterProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [visible, setVisible] = useState(false);
     const [users, setUsers] = useState<MentionUser[]>([]);
@@ -23,11 +26,11 @@ export function MentionCompleter({ textareaRef }: MentionCompleterProps) {
 
     // Check for @mention pattern in input
     const checkInput = useCallback(() => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
+        const controller = inputControllerRef.current;
+        if (!controller) return;
 
-        const cursor = textarea.selectionStart;
-        const text = textarea.value.slice(0, cursor);
+        const cursor = controller.getSelection().end;
+        const text = controller.getValue().slice(0, cursor);
 
         // Match @ followed by any characters (supports Chinese/Japanese)
         const match = text.match(/(?:^|\s)(@[^\s]*)$/);
@@ -56,7 +59,7 @@ export function MentionCompleter({ textareaRef }: MentionCompleterProps) {
 
         // Debounce API call
         timerRef.current = setTimeout(() => fetchUsers(currentQuery), MENTION_DEBOUNCE);
-    }, [textareaRef, visible]);
+    }, [inputControllerRef, visible]);
 
     // Fetch users from API
     const fetchUsers = async (query: string) => {
@@ -93,25 +96,20 @@ export function MentionCompleter({ textareaRef }: MentionCompleterProps) {
 
     // Replace mention in textarea
     const selectUser = useCallback((user: MentionUser) => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
+        const controller = inputControllerRef.current;
+        if (!controller) return;
 
-        textarea.setRangeText(
-            `@${user.username} `,
-            matchStart,
-            textarea.selectionStart,
-            'end'
-        );
+        controller.replaceRange(`@${user.username} `, matchStart, controller.getSelection().end, {
+            focus: true
+        });
 
         hide();
-        textarea.focus();
-        textarea.dispatchEvent(new Event('input', { bubbles: true }));
-    }, [textareaRef, matchStart, hide]);
+    }, [inputControllerRef, matchStart, hide]);
 
     // Listen for input events
     useEffect(() => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
+        const editor = editorRef.current;
+        if (!editor) return;
 
         const handleInput = () => checkInput();
         const handleBlur = (e: FocusEvent) => {
@@ -126,16 +124,16 @@ export function MentionCompleter({ textareaRef }: MentionCompleterProps) {
             }
         };
 
-        textarea.addEventListener('input', handleInput);
-        textarea.addEventListener('blur', handleBlur);
-        textarea.addEventListener('keydown', handleKeyDown);
+        editor.addEventListener('input', handleInput);
+        editor.addEventListener('blur', handleBlur);
+        editor.addEventListener('keydown', handleKeyDown);
 
         return () => {
-            textarea.removeEventListener('input', handleInput);
-            textarea.removeEventListener('blur', handleBlur);
-            textarea.removeEventListener('keydown', handleKeyDown);
+            editor.removeEventListener('input', handleInput);
+            editor.removeEventListener('blur', handleBlur);
+            editor.removeEventListener('keydown', handleKeyDown);
         };
-    }, [textareaRef, checkInput, hide, visible]);
+    }, [editorRef, checkInput, hide, visible]);
 
     if (!visible || users.length === 0) {
         return null;

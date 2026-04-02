@@ -29,15 +29,16 @@ function injectStyles() {
 .lb-overlay{position:fixed;inset:0;z-index:var(--dollars-z-index-modal,2000);background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;touch-action:none;user-select:none;-webkit-user-select:none}
 .lb-overlay.lb-visible{opacity:1}
 .lb-overlay.lb-closing{opacity:0}
-.lb-img-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;transform-origin:center center;transition:transform .25s ease,opacity .2s ease;will-change:transform;pointer-events:none;-webkit-user-drag:none}
+.lb-img-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
+.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;transform-origin:center center;transition:transform .25s ease,opacity .2s ease;will-change:transform;pointer-events:auto;-webkit-user-drag:none;user-select:auto;-webkit-user-select:auto;-webkit-touch-callout:default}
 .lb-img.lb-dragging{transition:none}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s,opacity .2s;opacity:.7}
-.lb-nav:hover{background:rgba(255,255,255,.3);opacity:1}
+.lb-nav,.lb-close{position:absolute;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
+.lb-nav{top:50%;transform:translateY(-50%);width:44px;height:44px;opacity:.7;transition:background .2s,opacity .2s}
+.lb-nav:hover,.lb-close:hover{background:rgba(255,255,255,.3)}
+.lb-nav:hover{opacity:1}
 .lb-prev{left:12px}
 .lb-next{right:12px}
-.lb-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s;font-size:20px}
-.lb-close:hover{background:rgba(255,255,255,.3)}
+.lb-close{top:12px;right:12px;width:40px;height:40px;font-size:20px}
 .lb-counter{position:absolute;top:16px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:14px;z-index:2;pointer-events:none}
 .lb-capsule{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:min(76vw,340px);padding:7px 12px 7px 9px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(12,12,14,.56);backdrop-filter:blur(12px) saturate(1.1);-webkit-backdrop-filter:blur(12px) saturate(1.1);box-shadow:0 8px 20px rgba(0,0,0,.24);color:#fff;cursor:pointer;z-index:2;transition:background-color .18s ease,border-color .18s ease,transform .18s ease;appearance:none;-webkit-appearance:none;font:inherit;text-align:left}
 .lb-capsule:hover{background:rgba(12,12,14,.68);border-color:rgba(255,255,255,.2);transform:translateX(-50%) scale(1.015)}
@@ -50,7 +51,6 @@ function injectStyles() {
 @media(max-width:600px){.lb-nav{display:none}.lb-img{max-width:100vw;max-height:100vh}.lb-capsule{bottom:18px;max-width:calc(100vw - 28px);padding:7px 11px 7px 9px}}
 `;
     const el = document.createElement('style');
-    el.setAttribute('data-lb-styles', '');
     el.textContent = css;
     document.head.appendChild(el);
 }
@@ -118,6 +118,38 @@ export function LightboxViewer() {
             img.style.transform = `translate3d(${tx.current}px,${ty.current}px,0) scale(${scale.current})`;
         }
     }, []);
+
+    const zoomAtPoint = useCallback((clientX: number, clientY: number, nextScale: number) => {
+        const img = imgRef.current;
+        if (!img) return;
+
+        const currentScale = scale.current;
+        const clampedScale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+
+        if (clampedScale <= MIN_SCALE) {
+            scale.current = 1;
+            tx.current = 0;
+            ty.current = 0;
+            img.classList.remove('lb-dragging');
+            applyTransform();
+            return;
+        }
+
+        const rect = img.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const ratio = clampedScale / currentScale;
+
+        tx.current += (clientX - centerX) * (1 - ratio);
+        ty.current += (clientY - centerY) * (1 - ratio);
+        scale.current = clampedScale;
+        img.classList.remove('lb-dragging');
+        applyTransform();
+    }, [applyTransform]);
+
+    const toggleZoomAtPoint = useCallback((clientX: number, clientY: number) => {
+        zoomAtPoint(clientX, clientY, scale.current > 1.1 ? 1 : 2.5);
+    }, [zoomAtPoint]);
 
     const resetTransform = useCallback(() => {
         scale.current = 1;
@@ -197,27 +229,7 @@ export function LightboxViewer() {
             const now = Date.now();
             if (now - lastTap.current < DOUBLE_TAP_DELAY) {
                 e.preventDefault();
-                if (scale.current > 1.1) {
-                    // zoom out
-                    scale.current = 1;
-                    tx.current = 0;
-                    ty.current = 0;
-                    imgRef.current?.classList.remove('lb-dragging');
-                    applyTransform();
-                } else {
-                    // zoom to 2x at tap point
-                    const img = imgRef.current;
-                    if (img) {
-                        const rect = img.getBoundingClientRect();
-                        const cx = rect.left + rect.width / 2;
-                        const cy = rect.top + rect.height / 2;
-                        scale.current = 2.5;
-                        tx.current = (cx - t.clientX) * 1.5;
-                        ty.current = (cy - t.clientY) * 1.5;
-                        img.classList.remove('lb-dragging');
-                    }
-                    applyTransform();
-                }
+                toggleZoomAtPoint(t.clientX, t.clientY);
                 lastTap.current = 0;
                 isDragging.current = false;
                 return;
@@ -312,24 +324,23 @@ export function LightboxViewer() {
     const onWheel = (e: WheelEvent) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? 0.9 : 1.1;
-        const newScale = clamp(scale.current * delta, MIN_SCALE, MAX_SCALE);
-
-        if (newScale === MIN_SCALE) {
-            tx.current = 0;
-            ty.current = 0;
-        }
-        scale.current = newScale;
         imgRef.current?.classList.add('lb-dragging');
-        applyTransform();
+        zoomAtPoint(e.clientX, e.clientY, scale.current * delta);
 
         // re-enable transition after a tick
         setTimeout(() => imgRef.current?.classList.remove('lb-dragging'), 50);
     };
 
     const onBackdropClick = (e: MouseEvent) => {
-        if (e.target === overlayRef.current || (e.target as HTMLElement)?.classList?.contains('lb-img-wrap')) {
+        if (e.target === overlayRef.current) {
             close();
         }
+    };
+
+    const onImageDoubleClick = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleZoomAtPoint(e.clientX, e.clientY);
     };
 
     return (
@@ -377,10 +388,6 @@ export function LightboxViewer() {
             {/* Image */}
             <div
                 class="lb-img-wrap"
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
-                onWheel={onWheel}
             >
                 <img
                     ref={imgRef}
@@ -388,6 +395,11 @@ export function LightboxViewer() {
                     src={src}
                     alt=""
                     draggable={false}
+                    onDblClick={onImageDoubleClick}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                    onWheel={onWheel}
                     onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = '/img/no_img.gif';
                     }}

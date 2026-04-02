@@ -14,7 +14,8 @@ import {
 import { setReplyTo, setEditingMessage, messageMap, getRawMessage } from '@/stores/chat';
 import { userInfo } from '@/stores/user';
 import { toggleReaction as apiToggleReaction, deleteMessage as apiDeleteMessage } from '@/utils/api';
-import { CONTEXT_MENU_REACTIONS, SVGIcons } from '@/utils/constants';
+import { CONTEXT_MENU_REACTIONS } from '@/utils/constants';
+import { iconCopy, iconDelete, iconEdit, iconExpand, iconFavorite, iconReply } from '@/utils/icons';
 import { getSmileyUrl } from '@/utils/smilies';
 import { stripQuotes } from '@/utils/bbcode';
 import { decodeHTML } from '@/utils/format';
@@ -139,6 +140,7 @@ export function ContextMenu() {
 
         const text = stripQuotes(decodeHTML(raw))
             .replace(/\[img\].*?\[\/img\]/gi, '[图片]')
+            .replace(/\[file=.*?\].*?\[\/file\]/gi, '[附件]')
             .replace(/\n/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
@@ -217,12 +219,9 @@ export function ContextMenu() {
     }, []);
 
     const handleFavorite = useCallback((e: MouseEvent) => {
-        // e.stopPropagation(); // Don't stop propagation immediately so we can close menu? No, handleFavorite calls hideContextMenu.
         const button = e.currentTarget as HTMLButtonElement;
-        const originalText = button.querySelector('span:not(.context-icon)')?.textContent || '收藏表情';
 
         if (contextMenuBmoCode.value) {
-            // BMO 表情收藏（使用官方 API）
             const bmoCode = contextMenuBmoCode.value;
             try {
                 const bmoji = (window as any).Bmoji;
@@ -251,11 +250,8 @@ export function ContextMenu() {
             }
         }
 
-        // Close menu after a delay to show feedback
         setTimeout(() => {
             hideContextMenu();
-            // Reset text (though component unmounts, so maybe not needed, but good for cleanup)
-            // But since we hide it, it will re-render next time.
         }, 1000);
     }, []);
 
@@ -302,7 +298,7 @@ export function ContextMenu() {
                             class={`context-menu-reactions-more ${isReactionPickerOpen.value ? 'expanded' : ''}`}
                             onClick={handleMoreReactions}
                             title="更多表情"
-                            dangerouslySetInnerHTML={{ __html: SVGIcons.expand }}
+                            dangerouslySetInnerHTML={{ __html: iconExpand }}
                         />
                     </div>
                 )}
@@ -312,17 +308,17 @@ export function ContextMenu() {
                 {!isReactionPickerOpen.value && (
                     <div class="context-menu-items">
                         <button data-action="reply" onClick={handleReply}>
-                            <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.reply }} />
+                            <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconReply }} />
                             <span>回复</span>
                         </button>
                         <button data-action="copy" onClick={handleCopy}>
-                            <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.copy }} />
+                            <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconCopy }} />
                             <span>复制</span>
                         </button>
 
                         {hasImage && (
                             <button class="image-action" data-action="favorite" onClick={handleFavorite}>
-                                <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.favorite }} />
+                                <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconFavorite }} />
                                 <span>收藏表情</span>
                             </button>
                         )}
@@ -330,11 +326,11 @@ export function ContextMenu() {
                         {isSelf && (
                             <>
                                 <button class="auth-action" data-action="edit" onClick={handleEdit}>
-                                    <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.edit }} />
+                                    <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconEdit }} />
                                     <span>编辑</span>
                                 </button>
                                 <button class="auth-action danger" data-action="delete" onClick={handleDelete}>
-                                    <span class="context-icon" dangerouslySetInnerHTML={{ __html: SVGIcons.delete }} />
+                                    <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconDelete }} />
                                     <span>撤回</span>
                                 </button>
                             </>

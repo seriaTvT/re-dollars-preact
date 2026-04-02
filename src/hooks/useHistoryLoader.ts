@@ -2,7 +2,6 @@ import { useEffect, useCallback } from 'preact/hooks';
 import type { ScrollManagerRefs } from './useScrollManager';
 import {
     messageIds,
-    messageMap,
     isLoadingHistory,
     historyFullyLoaded,
     historyOldestId,

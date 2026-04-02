@@ -2,9 +2,10 @@
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
 import { resolve } from 'path';
+import { readFileSync, writeFileSync } from 'fs';
 
 // 將 Vite 注入的 __vitePreload 替換為最小實現，減少體積（單文件 IIFE 不需要 preload）
-function stripVitePreload(): import('rollup').Plugin {
+function stripVitePreload(userscriptBanner: string): import('rollup').Plugin {
     return {
         name: 'strip-vite-preload',
         generateBundle(_, bundle) {
@@ -17,6 +18,14 @@ function stripVitePreload(): import('rollup').Plugin {
                 }
             }
         },
+        writeBundle(options) {
+            const outputDir = options.dir || resolve(__dirname, 'dist');
+            const filePath = resolve(outputDir, 'userscript.user.js');
+            const code = readFileSync(filePath, 'utf8');
+            if (!code.startsWith('// ==UserScript==')) {
+                writeFileSync(filePath, `${userscriptBanner}\n${code}`);
+            }
+        }
     };
 }
 
@@ -35,7 +44,7 @@ const userscriptBanner = `// ==UserScript==
 `;
 
 export default defineConfig({
-    plugins: [preact(), stripVitePreload()],
+    plugins: [preact(), stripVitePreload(userscriptBanner)],
     resolve: {
         alias: {
             '@': resolve(__dirname, 'src'),

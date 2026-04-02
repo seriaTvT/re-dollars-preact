@@ -2,6 +2,7 @@ export interface SmileyRange {
     name: string;
     start?: number;
     end?: number;
+    ids?: readonly number[];
     path?: (id: number) => string;
     tabIconId?: number;
     /** 表情代码前缀，默认 'bgm'，musume 系列为 'musume_' */
@@ -10,6 +11,68 @@ export interface SmileyRange {
     isLarge?: boolean;
     /** 代码数字部分的补零位数，如 2 表示补零到两位 */
     codePad?: number;
+}
+
+export interface SmileySection {
+    name: string;
+    ids: readonly number[];
+}
+
+// Bangumi 官网新版角色动态表情改为稀疏编号。项目内继续保持数字顺序，避免打乱现有面板排布。
+export const musumeSmileyIds = [
+    ...Array.from({ length: 96 }, (_, index) => index + 1),
+    ...Array.from({ length: 20 }, (_, index) => index + 99)
+];
+export const blakeSmileyIds = Array.from({ length: 118 }, (_, index) => index + 1);
+
+const musumeSmileySections: readonly SmileySection[] = [
+    {
+        name: '情绪反应',
+        ids: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 100, 106, 108, 118]
+    },
+    {
+        name: '动作道具',
+        ids: [43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 101, 102, 103, 99, 107, 112, 109, 110, 111, 113, 114, 115, 116, 117]
+    },
+    {
+        name: '日常状态',
+        ids: [77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 104, 105, 94, 95, 96]
+    },
+    {
+        name: '提示反馈',
+        ids: [1, 2, 3, 4, 5]
+    }
+];
+
+const blakeSmileySections: readonly SmileySection[] = [
+    musumeSmileySections[0],
+    musumeSmileySections[1],
+    {
+        name: '得分反馈',
+        ids: [97, 98]
+    },
+    musumeSmileySections[2],
+    musumeSmileySections[3]
+];
+
+const groupedSmileySections: Readonly<Record<string, readonly SmileySection[]>> = {
+    Musume: musumeSmileySections,
+    Blake: blakeSmileySections
+};
+
+function getRangeIds(range: SmileyRange): readonly number[] {
+    if (range.ids) return range.ids;
+    if (range.start == null || range.end == null) return [];
+    return Array.from({ length: range.end - range.start + 1 }, (_, index) => range.start! + index);
+}
+
+function rangeIncludesId(range: SmileyRange, id: number): boolean {
+    return getRangeIds(range).includes(id);
+}
+
+function formatSmileyCode(prefix: string, id: number, codePad?: number): string {
+    const num = codePad ? String(id).padStart(codePad, '0') : String(id);
+    return `(${prefix}${num})`;
 }
 
 // 表情范围配置 - 统一定义
@@ -47,8 +110,7 @@ export const smileyRanges: SmileyRange[] = [
     },
     {
         name: 'Musume',
-        start: 1,
-        end: 96,
+        ids: musumeSmileyIds,
         codePrefix: 'musume_',
         codePad: 2,
         tabIconId: 3,
@@ -57,8 +119,7 @@ export const smileyRanges: SmileyRange[] = [
     },
     {
         name: 'Blake',
-        start: 1,
-        end: 98,
+        ids: blakeSmileyIds,
         codePrefix: 'blake_',
         codePad: 2,
         tabIconId: 3,
@@ -80,7 +141,7 @@ export function getSmileyUrl(code: string | number): string | null {
         if (largeSmileyMatch) {
             const [, prefix, rawId] = largeSmileyMatch;
             const id = parseInt(rawId, 10);
-            const range = smileyRanges.find(r => r.codePrefix === prefix && r.start && r.end && id >= r.start && id <= r.end);
+            const range = smileyRanges.find(r => r.codePrefix === prefix && rangeIncludesId(r, id));
             return range?.path?.(id) ?? null;
         }
         // 标准 bgm 格式: (bgmXX)
@@ -98,21 +159,29 @@ export function getSmileyUrl(code: string | number): string | null {
 // 生成表情代码列表
 export function generateSmileyCodes(groupName: string): string[] {
     const range = smileyRanges.find(r => r.name === groupName);
-    if (!range || range.start == null || range.end == null) return [];
+    if (!range) return [];
 
     const prefix = range.codePrefix || 'bgm';
-    const codes: string[] = [];
-    for (let i = range.start; i <= range.end; i++) {
-        const num = range.codePad ? String(i).padStart(range.codePad, '0') : String(i);
-        codes.push(`(${prefix}${num})`);
-    }
-    return codes;
+    const ids = getRangeIds(range);
+    return ids.map(id => formatSmileyCode(prefix, id, range.codePad));
 }
 
-// 兼容旧的导出名称（用于 bbcode.ts）
-export const SMILIES = smileyRanges.filter(r => r.start && r.end && r.path) as Array<{
+export function getGroupedSmileyCodes(groupName: string): Array<{
     name: string;
-    start: number;
-    end: number;
-    path: (id: number) => string;
-}>;
+    items: Array<{ id: number; code: string }>;
+}> {
+    const range = smileyRanges.find(r => r.name === groupName);
+    const sections = groupedSmileySections[groupName];
+    if (!range || !sections) return [];
+
+    const prefix = range.codePrefix || 'bgm';
+    return sections.map(section => ({
+        name: section.name,
+        items: section.ids
+            .filter(id => rangeIncludesId(range, id))
+            .map(id => ({
+                id,
+                code: formatSmileyCode(prefix, id, range.codePad)
+            }))
+    })).filter(section => section.items.length > 0);
+}

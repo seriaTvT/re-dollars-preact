@@ -7,7 +7,6 @@ import {
     updateConversationLastMessage,
     addMessagesBatch,
     messageIds,
-    messageMap,
     unreadWhileScrolled,
     isAtBottom,
     timelineIsLive,

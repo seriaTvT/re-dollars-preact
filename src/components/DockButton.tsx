@@ -1,17 +1,12 @@
-import { useEffect, useRef, useState } from 'preact/hooks';
-import { createPortal } from 'preact/compat';
+import { render } from 'preact';
+import { useEffect, useRef } from 'preact/hooks';
 import { isChatOpen, toggleChat } from '@/stores/chat';
 import { dockIconFlashing, stopDockFlashing, notificationCount } from './NotificationManager';
 
 export function DockButton() {
-    const [portalTarget, setPortalTarget] = useState<HTMLLIElement | null>(null);
-    const liRef = useRef<HTMLLIElement | null>(null);
-
-    // Create and insert the <li> container once
     useEffect(() => {
-        const dockContainer = document.querySelector('#dock ul');
         const notifyLink = document.querySelector('#dock a[href*="/notify/all"]');
-        if (!dockContainer || !notifyLink) return;
+        if (!notifyLink) return;
 
         const parentLi = notifyLink.closest('li');
         if (!parentLi) return;
@@ -19,18 +14,15 @@ export function DockButton() {
         const li = document.createElement('li');
         li.className = 'chat';
         parentLi.before(li);
-        liRef.current = li;
-        setPortalTarget(li);
+        render(<DockButtonContent />, li);
 
         return () => {
+            render(null, li);
             li.remove();
-            liRef.current = null;
         };
     }, []);
 
-    if (!portalTarget) return null;
-
-    return createPortal(<DockButtonContent />, portalTarget);
+    return null;
 }
 
 const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.05 20.1l-3.05 -6.1l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5l-3.312 9.173" /><path d="M19 16l-2 3h4l-2 3" /></svg>`;

@@ -1,5 +1,4 @@
-import { BACKEND_URL } from '../constants';
-import { getAuthHeaders } from '@/stores/user';
+import { BACKEND_URL, UPLOAD_BASE_URL } from '../constants';
 
 /**
  * 获取相册媒体
@@ -40,7 +39,7 @@ export async function fetchGalleryMedia(offset = 0, limit = 50, uid?: number): P
  * 上传文件
  */
 const UPLOAD_MAX_IMAGE_SIZE = 50 * 1024 * 1024; // 50MB
-const UPLOAD_MAX_VIDEO_SIZE = 500 * 1024 * 1024; // 500MB
+const UPLOAD_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
 const UPLOAD_TIMEOUT_MS = 60_000; // 60s
 const UPLOAD_MAX_RETRIES = 1;
 
@@ -51,8 +50,8 @@ export async function uploadFile(file: File): Promise<{
     height?: number;
     error?: string;
 }> {
-    const isVideo = file.type.startsWith('video/') || file.type.startsWith('audio/');
-    const maxSize = isVideo ? UPLOAD_MAX_VIDEO_SIZE : UPLOAD_MAX_IMAGE_SIZE;
+    const isImage = file.type.startsWith('image/');
+    const maxSize = isImage ? UPLOAD_MAX_IMAGE_SIZE : UPLOAD_MAX_FILE_SIZE;
 
     // Client-side file size validation
     if (file.size > maxSize) {
@@ -60,8 +59,8 @@ export async function uploadFile(file: File): Promise<{
         return { status: false, error: `文件过大 (${(file.size / (1024 * 1024)).toFixed(1)}MB)，最大支持 ${maxMB}MB` };
     }
 
-    const fieldName = isVideo ? 'video' : 'image';
-    const endpoint = isVideo ? `${BACKEND_URL}/api/upload/video` : `${BACKEND_URL}/api/upload`;
+    const fieldName = isImage ? 'image' : 'file';
+    const endpoint = isImage ? `${UPLOAD_BASE_URL}/api/upload` : `${UPLOAD_BASE_URL}/api/upload/file`;
 
     let lastError = '上传失败';
 
@@ -80,7 +79,6 @@ export async function uploadFile(file: File): Promise<{
 
             const res = await fetch(endpoint, {
                 method: 'POST',
-                headers: getAuthHeaders(),
                 credentials: 'include',
                 body: formData,
                 signal: controller.signal,
@@ -108,20 +106,18 @@ export async function uploadFile(file: File): Promise<{
                 return { status: false, error: lastError };
             }
 
-            // 兼容后端返回字段: imageUrl/videoUrl -> url
-            if (data.status && data.imageUrl) {
-                data.url = data.imageUrl;
+            // 兼容新旧返回字段
+            if (data.status && !data.url) {
+                data.url = data.fileUrl || data.imageUrl || data.videoUrl;
             }
-            if (data.status && data.videoUrl) {
-                data.url = data.videoUrl;
-            }
+
             // 确保 URL 是完整路径
             if (data.status && data.url && !data.url.startsWith('http')) {
-                data.url = `${BACKEND_URL}${data.url}`;
+                data.url = `${UPLOAD_BASE_URL}${data.url}`;
             }
 
             if (!data.status) {
-                return { status: false, error: data.message || '上传处理失败' };
+                return { status: false, error: data.message || data.error || '上传处理失败' };
             }
 
             return data;

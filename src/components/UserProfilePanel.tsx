@@ -11,7 +11,7 @@ import {
 import { searchQuery } from '@/stores/chat';
 import { fetchUserProfile, fetchGalleryMedia } from '@/utils/api';
 import { getAvatarUrl, formatDate, isActiveToday } from '@/utils/format';
-import { SVGIcons } from '@/utils/constants';
+import { iconCalendar, iconHistory, iconHome, iconPen } from '@/utils/icons';
 import type { UserProfile } from '@/types';
 
 interface MediaItem {
@@ -196,11 +196,11 @@ export function UserProfilePanel() {
                         {profile && (
                             <div class="uprofile-actions">
                                 <button class="uprofile-action-btn" onClick={handleHistory}>
-                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.history }} />
+                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHistory }} />
                                     搜索发言
                                 </button>
                                 <button class="uprofile-action-btn" onClick={handleHomepage}>
-                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.home }} />
+                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHome }} />
                                     主页
                                 </button>
                             </div>
@@ -211,7 +211,7 @@ export function UserProfilePanel() {
                             <div class="uprofile-info-section">
                                 {profile.sign && (
                                     <div class="uprofile-info-row">
-                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.pen }} />
+                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconPen }} />
                                         <div class="uprofile-info-content">
                                             <div class="uprofile-info-label">个性签名</div>
                                             <div class="uprofile-info-value uprofile-sign-value">{profile.sign}</div>
@@ -221,7 +221,7 @@ export function UserProfilePanel() {
 
                                 {profile.stats?.first_message_time && (
                                     <div class="uprofile-info-row">
-                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: SVGIcons.calendar }} />
+                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconCalendar }} />
                                         <div class="uprofile-info-content">
                                             <div class="uprofile-info-label">首次发言</div>
                                             <div class="uprofile-info-value">

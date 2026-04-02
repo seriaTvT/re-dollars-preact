@@ -1,20 +1,23 @@
 import { useState, useCallback, useRef, useEffect } from 'preact/hooks';
-import type { JSX } from 'preact';
+import type { JSX, RefObject } from 'preact';
 import { isSmileyPanelOpen, isSmileyPanelClosing, toggleSmileyPanel } from '@/stores/ui';
-import { SVGIcons, BACKEND_URL } from '@/utils/constants';
+import { UPLOAD_BASE_URL } from '@/utils/constants';
 import { favorites, initFavorites, addFavorite, removeFavorite } from '@/stores/favorites';
-import { smileyRanges, getSmileyUrl, generateSmileyCodes } from '@/utils/smilies';
+import { smileyRanges, getSmileyUrl, generateSmileyCodes, getGroupedSmileyCodes } from '@/utils/smilies';
 import { escapeHTML } from '@/utils/format';
+import { iconBmoPanel, iconStar, iconUpload } from '@/utils/icons';
 import { loadSavedBmoItems, type BmoItem } from '@/utils/bmo';
 
 interface SmileyPanelProps {
-    onSelect?: (code: string) => void;
+    onSelect: (code: string) => void;
+    textareaRef: RefObject<HTMLTextAreaElement>;
 }
 
-export function SmileyPanel({ onSelect }: SmileyPanelProps) {
+export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
     const [activeTab, setActiveTab] = useState('TV');
     const [bmoItems, setBmoItems] = useState<BmoItem[]>([]);
     const [isUploading, setIsUploading] = useState(false);
+    const panelRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
     // 加载 BMO 表情 - 使用官方 API
@@ -29,9 +32,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
         if (!isSmileyPanelOpen.value) return;
 
         const handleClickOutside = (e: MouseEvent) => {
-            const panel = document.getElementById('dollars-smiles-floating'); // Use ID since ref might be on content only?
-            // Actually contentRef seems to be on internal content. panelRef/containerRef?
-            // Let's use ID for safety as it's reliable selector.
+            const panel = panelRef.current;
             const trigger = document.getElementById('dollars-emoji-btn');
 
             if (panel && !panel.contains(e.target as Node) && (!trigger || !trigger.contains(e.target as Node))) {
@@ -76,21 +77,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
     }, [isSmileyPanelOpen.value, activeTab, bmoItems]);
 
     const handleSelect = useCallback((code: string) => {
-        if (onSelect) {
-            onSelect(code);
-        } else {
-            // 默认行为：插入到 textarea
-            const textarea = document.querySelector('.chat-textarea') as HTMLTextAreaElement;
-            if (textarea) {
-                const start = textarea.selectionStart;
-                const end = textarea.selectionEnd;
-                const value = textarea.value;
-                textarea.value = value.substring(0, start) + code + value.substring(end);
-                textarea.selectionStart = textarea.selectionEnd = start + code.length;
-                textarea.focus();
-                textarea.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        }
+        onSelect(code);
         toggleSmileyPanel(false);
     }, [onSelect]);
 
@@ -103,7 +90,9 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
         e.preventDefault();
         const apiObject = (window as any).BgmBmoQuickPanel;
         if (apiObject && typeof apiObject.open === 'function') {
-            const textarea = document.querySelector('.chat-textarea') as HTMLTextAreaElement;
+            const textarea = textareaRef.current;
+            if (!textarea) return;
+            textarea.focus();
             apiObject.open(textarea);
             toggleSmileyPanel(false);
         } else {
@@ -111,7 +100,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                 window.location.href = '/dev/app/4853';
             }
         }
-    }, []);
+    }, [textareaRef]);
 
     // 上传收藏表情
     const handleUploadFavorite = useCallback(async (e: Event) => {
@@ -132,12 +121,16 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
             setIsUploading(true);
 
             try {
-                const res = await fetch(`${BACKEND_URL}/api/upload`, { method: 'POST', body: formData });
+                const res = await fetch(`${UPLOAD_BASE_URL}/api/upload`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
                 const result = await res.json();
 
                 if (!res.ok || !result.status) throw new Error(result.message || '上传失败');
 
-                const imageUrl = result.imageUrl;
+                const imageUrl = result.url || result.imageUrl;
                 addFavorite(imageUrl);
             } catch (err: any) {
                 alert(err.message || '上传失败');
@@ -161,6 +154,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
 
     // 根据当前 tab 生成表情列表
     let smileys: string[] = [];
+    let groupedSmileySections: ReturnType<typeof getGroupedSmileyCodes> = [];
     let specialContent: JSX.Element | null = null;
 
     if (activeTab === 'BMO') {
@@ -174,7 +168,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                         title="打开 BMO 快速拼装面板"
                         onClick={handleOpenBmoPanel}
                         style={{ backgroundImage: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                        dangerouslySetInnerHTML={{ __html: SVGIcons.bmoPanel }}
+                        dangerouslySetInnerHTML={{ __html: iconBmoPanel }}
                     />
                 </li>
                 {/* BMO 表情列表 */}
@@ -220,7 +214,7 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                         {isUploading ? (
                             <span style={{ fontSize: '12px' }}>...</span>
                         ) : (
-                            <span dangerouslySetInnerHTML={{ __html: SVGIcons.upload }} />
+                            <span dangerouslySetInnerHTML={{ __html: iconUpload }} />
                         )}
                     </a>
                 </li>
@@ -256,6 +250,8 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                 )}
             </div>
         );
+    } else if (smileyRanges.find(r => r.name === activeTab)?.isLarge) {
+        groupedSmileySections = getGroupedSmileyCodes(activeTab);
     } else {
         smileys = generateSmileyCodes(activeTab);
     }
@@ -264,19 +260,17 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
     const isLargeTab = activeRange?.isLarge ?? false;
 
     return (
-        <div id="dollars-smiles-floating" class={`open ${isSmileyPanelClosing.value ? 'closing' : ''} ${isLargeTab ? 'large-smiley-mode' : ''}`}>
-            {/* Tabs */}
+        <div ref={panelRef} id="dollars-smiles-floating" class={`open ${isSmileyPanelClosing.value ? 'closing' : ''} ${isLargeTab ? 'large-smiley-mode' : ''}`}>
             <div id="dollars-smiles-tabs">
                 {smileyRanges.map((range) => {
                     let textContent: any = range.name;
                     if (range.name === '收藏') {
-                        textContent = <span dangerouslySetInnerHTML={{ __html: SVGIcons.star }} style={{ display: 'flex' }} />;
+                        textContent = <span dangerouslySetInnerHTML={{ __html: iconStar }} style={{ display: 'flex' }} />;
                     } else if (range.name === 'BMO') {
-                        // Original uses: <span class="bmo" data-code="(bmoCgASACIBLgCg)"></span>
-                        // Bmoji lib will replace this span with an image.
                         textContent = <span class="bmo" data-code="(bmoCgASACIBLgCg)" style={{ verticalAlign: 'middle' }}></span>;
-                    } else if (range.path && range.start) {
-                        const iconId = range.tabIconId ?? range.start;
+                    } else if (range.path) {
+                        const iconId = range.tabIconId ?? range.ids?.[0] ?? range.start;
+                        if (!iconId) return null;
                         textContent = <img src={range.path(iconId)} alt={range.name} style={{ width: '21px', height: '21px', verticalAlign: 'middle' }} />;
                     }
 
@@ -294,9 +288,33 @@ export function SmileyPanel({ onSelect }: SmileyPanelProps) {
                 })}
             </div>
 
-            {/* Content */}
-            <div id="dollars-smiles-content" ref={contentRef}>
+            <div id="dollars-smiles-content" ref={contentRef} class={groupedSmileySections.length > 0 ? 'grouped-content' : ''}>
                 {specialContent}
+                {groupedSmileySections.map((section) => (
+                    <section key={section.name} class="smiley-group-section">
+                        <div class="smiley-group-title">{section.name}</div>
+                        <div class="smiley-group-grid">
+                            {section.items.map(({ code }) => {
+                                const url = getSmileyUrl(code);
+                                return (
+                                    <li key={code} class="smiley-item">
+                                        <a
+                                            href="#"
+                                            data-smiley={code}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleSelect(code);
+                                            }}
+                                            style={url ? { backgroundImage: `url('${url}')` } : undefined}
+                                            title={code}
+                                        >
+                                        </a>
+                                    </li>
+                                );
+                            })}
+                        </div>
+                    </section>
+                ))}
                 {smileys.map((code) => {
                     const url = getSmileyUrl(code);
                     return (

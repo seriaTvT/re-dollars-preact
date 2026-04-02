@@ -2,7 +2,7 @@ import { useSignal } from '@preact/signals';
 import { useCallback, useRef, useEffect } from 'preact/hooks';
 import { searchQuery } from '@/stores/chat';
 import { fetchGalleryMedia, lookupUsersByName } from '@/utils/api';
-import { toggleSearch, showImageViewer } from '@/stores/ui';
+import { showImageViewer } from '@/stores/ui';
 
 interface GalleryItem {
     url: string;

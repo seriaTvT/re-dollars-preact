@@ -7,7 +7,7 @@ import type { Message } from '@/types';
 import { processBBCode, renderReplyQuote, stripQuotes } from '@/utils/bbcode';
 import { escapeHTML, formatDate, getAvatarUrl } from '@/utils/format';
 import { showContextMenu, showImageViewer } from '@/stores/ui';
-import { COLLAPSE_THRESHOLD, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
+import { COLLAPSE_MAX_HEIGHT, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import { UserAvatar } from './UserAvatar';
 import { markMessageAsSeenIfNotified } from './NotificationManager';
 import { useSwipeToReply } from '@/hooks/useSwipeToReply';
@@ -18,6 +18,39 @@ interface MessageItemProps {
     isSelf: boolean;
     isGrouped: boolean;
     isGroupedWithNext?: boolean;
+}
+
+type BubbleTimestampMode = 'hidden' | 'trailing' | 'stacked' | 'overlay';
+
+function hasRichBubbleContent(
+    messageText: string,
+    hasReplyQuote: boolean,
+    hasLinkPreviewCards: boolean,
+    hasCollapseToggle: boolean
+) {
+    if (hasReplyQuote || hasLinkPreviewCards || hasCollapseToggle) {
+        return true;
+    }
+
+    return /\[(?:img|emoji|sticker|audio|video|code|quote)\]|\[file=.*?\]|\((?:musume|blake)_\d+\)/i.test(messageText);
+}
+
+function getBubbleTimestampMode(
+    isGroupedWithNext: boolean,
+    editedAt: number | undefined,
+    isDeleted: boolean,
+    isSticker: boolean,
+    prefersTrailing: boolean
+): BubbleTimestampMode {
+    if (isGroupedWithNext && !(editedAt && !isDeleted)) {
+        return 'hidden';
+    }
+
+    if (isSticker) {
+        return 'overlay';
+    }
+
+    return prefersTrailing ? 'trailing' : 'stacked';
 }
 
 // 使用自定义比较函数优化 memo
@@ -42,7 +75,9 @@ function arePropsEqual(prev: MessageItemProps, next: MessageItemProps): boolean 
 
 export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext }: MessageItemProps) => {
     const messageRef = useRef<HTMLDivElement>(null);
+    const textContentRef = useRef<HTMLDivElement>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isCollapsible, setIsCollapsible] = useState(false);
     const [isNew, setIsNew] = useState(() => newMessageIds.peek().has(message.id));
 
     useEffect(() => {
@@ -211,11 +246,77 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
         const raw = (messageText || '').trim();
         return /^(\[img\][^\[]+\[\/img\]|\[(?:emoji|sticker)\][^\[]+\[\/(?:emoji|sticker)\]|\((?:musume|blake)_\d+\))$/i.test(raw) && !replyToId;
     }, [messageText, isDeleted, replyToId]);
+    const shouldCollapse = isCollapsible && !isExpanded;
+    const hasReplyQuote = !!(replyToId && replyDetails);
+    const hasLinkPreviewCards = settings.value.linkPreview && Object.keys(linkPreviews || {}).length > 0;
+    const prefersTrailingTimestamp = !isDeleted && !hasRichBubbleContent(
+        messageText,
+        hasReplyQuote,
+        hasLinkPreviewCards,
+        isCollapsible
+    );
 
     // 时间戳
     const timeText = formatDate(message.timestamp, 'time') +
         (editedAt && !isDeleted ? ' (已编辑)' : '');
     const fullTimeText = formatDate(message.timestamp, 'full');
+    const timestampMode = getBubbleTimestampMode(
+        !!isGroupedWithNext,
+        editedAt,
+        isDeleted,
+        isSticker,
+        prefersTrailingTimestamp
+    );
+
+    useEffect(() => {
+        const el = textContentRef.current;
+        if (!el || isDeleted || isSticker) {
+            setIsCollapsible(false);
+            return;
+        }
+
+        let frameId = 0;
+        const imageListeners: Array<{ image: HTMLImageElement; handleChange: () => void }> = [];
+        const resizeObserver = new ResizeObserver(() => {
+            if (frameId) cancelAnimationFrame(frameId);
+            frameId = requestAnimationFrame(measure);
+        });
+
+        const measure = () => {
+            frameId = 0;
+            const nextCollapsible = el.scrollHeight > COLLAPSE_MAX_HEIGHT + 1;
+            setIsCollapsible((prev) => prev === nextCollapsible ? prev : nextCollapsible);
+        };
+
+        resizeObserver.observe(el);
+        el.querySelectorAll('img').forEach((node) => {
+            const image = node as HTMLImageElement;
+            const handleChange = () => {
+                if (frameId) cancelAnimationFrame(frameId);
+                frameId = requestAnimationFrame(measure);
+            };
+            image.addEventListener('load', handleChange);
+            image.addEventListener('error', handleChange);
+            imageListeners.push({ image, handleChange });
+        });
+
+        measure();
+
+        return () => {
+            if (frameId) cancelAnimationFrame(frameId);
+            resizeObserver.disconnect();
+            imageListeners.forEach(({ image, handleChange }) => {
+                image.removeEventListener('load', handleChange);
+                image.removeEventListener('error', handleChange);
+            });
+        };
+    }, [content, isDeleted, isSticker]);
+
+    useEffect(() => {
+        if (!isCollapsible && isExpanded) {
+            setIsExpanded(false);
+        }
+    }, [isCollapsible, isExpanded]);
 
     // 头像 URL
     const avatarUrl = getAvatarUrl(message.avatar, 'l');
@@ -255,6 +356,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
         const rawContent = (getRawMessage(messageId) || messageText || '').trim();
         const text = stripQuotes(escapeHTML(rawContent))
             .replace(/\[img\].*?\[\/img\]/gi, '[图片]')
+            .replace(/\[file=.*?\].*?\[\/file\]/gi, '[附件]')
             .replace(/\n/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
@@ -344,7 +446,12 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
                 </span>
 
                 <div
-                    class={`bubble ${isSticker ? 'sticker-mode' : ''}`}
+                    class={[
+                        'bubble',
+                        isSticker && 'sticker-mode',
+                        timestampMode === 'trailing' && 'has-trailing-timestamp',
+                        timestampMode === 'stacked' && 'has-stacked-timestamp',
+                    ].filter(Boolean).join(' ')}
                     onClick={message.state === 'failed' ? handleBubbleClick : undefined}
                     style={message.state === 'failed' ? { cursor: 'pointer' } : undefined}
                 >
@@ -356,32 +463,36 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
                         {message.nickname}
                     </span>
 
-                    {(() => {
-                        const shouldCollapse = !isDeleted && messageText.length > COLLAPSE_THRESHOLD && !isExpanded;
-                        return (
-                            <>
-                                <div
-                                    class={`text-content ${shouldCollapse ? 'is-collapsed' : ''}`}
-                                    dangerouslySetInnerHTML={{ __html: content }}
-                                />
-                                {!isDeleted && messageText.length > COLLAPSE_THRESHOLD && (
-                                    <button
-                                        class="expand-toggle-btn"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setIsExpanded(!isExpanded);
-                                        }}
-                                    >
-                                        {isExpanded ? '收起' : '展开全文'}
-                                    </button>
-                                )}
-                            </>
-                        );
-                    })()}
+                    <>
+                        <div
+                            ref={textContentRef}
+                            class={`text-content ${shouldCollapse ? 'is-collapsed' : ''}`}
+                            style={{ '--collapse-max-height': `${COLLAPSE_MAX_HEIGHT}px` } as any}
+                            dangerouslySetInnerHTML={{ __html: content }}
+                        />
+                        {isCollapsible && (
+                            <button
+                                type="button"
+                                class="expand-toggle-btn"
+                                aria-expanded={isExpanded}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsExpanded(!isExpanded);
+                                }}
+                            >
+                                {isExpanded ? '收起' : '展开全文'}
+                            </button>
+                        )}
+                    </>
 
-                    <span class="bubble-timestamp" title={fullTimeText}>
-                        {timeText}
-                    </span>
+                    {timestampMode !== 'hidden' && (
+                        <span
+                            class={`bubble-timestamp ${timestampMode === 'overlay' ? 'is-overlay' : timestampMode === 'trailing' ? 'is-trailing' : 'is-stacked'}`}
+                            title={fullTimeText}
+                        >
+                            {timeText}
+                        </span>
+                    )}
                 </div>
 
                 <MessageReactions reactions={message.reactions || []} messageId={messageId} />

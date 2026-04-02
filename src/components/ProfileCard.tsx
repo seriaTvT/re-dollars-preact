@@ -3,7 +3,7 @@ import { profileCardUserId, profileCardAnchor, hideProfileCard, toggleSearch, is
 import { searchQuery } from '@/stores/chat';
 import { fetchUserProfile } from '@/utils/api';
 import { getAvatarUrl, formatDate, isActiveToday } from '@/utils/format';
-import { SVGIcons } from '@/utils/constants';
+import { iconHistory, iconHome } from '@/utils/icons';
 import type { UserProfile } from '@/types';
 
 export function ProfileCard() {
@@ -131,17 +131,8 @@ export function ProfileCard() {
                             alt={profile?.nickname ?? userId ?? ''}
                         />
                         <div class="dollars-profile-names">
-                            {loading ? (
-                                <>
-                                    <div class="dollars-profile-skel dollars-profile-skel-name" />
-                                    <div class="dollars-profile-skel dollars-profile-skel-user" />
-                                </>
-                            ) : (
-                                <>
-                                    <div class="dollars-profile-nickname">{profile?.nickname}</div>
-                                    <div class="dollars-profile-username">@{profile?.username ?? userId}</div>
-                                </>
-                            )}
+                            <div class="dollars-profile-nickname">{profile?.nickname}</div>
+                            <div class="dollars-profile-username">@{profile?.username ?? userId}</div>
                         </div>
                     </div>
 
@@ -150,24 +141,20 @@ export function ProfileCard() {
                             class="dollars-profile-btn"
                             title="搜索历史发言"
                             onClick={handleHistory}
-                            dangerouslySetInnerHTML={{ __html: SVGIcons.history }}
+                            dangerouslySetInnerHTML={{ __html: iconHistory }}
                         />
                         <button
                             class="dollars-profile-btn"
                             title="主页"
                             onClick={handleHomepage}
-                            dangerouslySetInnerHTML={{ __html: SVGIcons.home }}
+                            dangerouslySetInnerHTML={{ __html: iconHome }}
                         />
                     </div>
                 </div>
 
-                {loading ? (
-                    <div class="dollars-profile-skel dollars-profile-skel-sign" />
-                ) : (
-                    <div class="dollars-profile-sign">
-                        {profile?.sign || '这个人很懒，什么都没有写...'}
-                    </div>
-                )}
+                <div class="dollars-profile-sign">
+                    {profile?.sign || '这个人很懒，什么都没有写...'}
+                </div>
 
                 <div class={`dollars-profile-footer ${active ? 'active' : ''}`}>
                     {loading ? '加载中...' : (lastActiveText ?? '暂无发言记录')}

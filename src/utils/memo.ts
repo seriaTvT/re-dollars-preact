@@ -9,7 +9,7 @@ function shallowDiffers(a: object, b: object): boolean {
 
 /**
  * 輕量 memo：僅在 props 未變時跳過重渲染，可選自定義比較函數。
- * 用於取代 preact/compat 的 memo 以減少 bundle 體積。
+ * 用於避免引入 compat 層並減少 bundle 體積。
  */
 export function memo<P extends object>(
     c: ComponentType<P>,
@@ -19,8 +19,11 @@ export function memo<P extends object>(
         const ref = (this.props as P & { ref?: unknown }).ref;
         const updateRef = ref === (nextProps as P & { ref?: unknown }).ref;
         if (!updateRef && ref) {
-            const r = ref as { call?: (v: null) => void; current?: null };
-            r.call ? r(null) : (r.current = null);
+            if (typeof ref === 'function') {
+                ref(null);
+            } else if (typeof ref === 'object' && 'current' in ref) {
+                (ref as { current: null }).current = null;
+            }
         }
         if (!comparer) return shallowDiffers(this.props as object, nextProps as object);
         return !comparer(this.props, nextProps) || !updateRef;

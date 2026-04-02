@@ -13,7 +13,6 @@ import {
     isChatOpen,
     scrollButtonMode,
     isAtBottom,
-    isLoadingHistory,
     historyFullyLoaded,
     // 已读状态和浏览位置管理
     updateReadState,

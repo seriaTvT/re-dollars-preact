@@ -64,7 +64,7 @@ export function ReactionPickerFloating() {
         if (isReactionPickerOpen.value && containerRef.current) {
             const el = containerRef.current;
             const rect = el.getBoundingClientRect();
-            let { x, y, width } = reactionPickerPosition.value;
+            let { x, y } = reactionPickerPosition.value;
             let hasChanged = false;
 
             // X 轴修正 (Picker 可能会比 width 宽? 不，width 是 props 传进来的 style width)
