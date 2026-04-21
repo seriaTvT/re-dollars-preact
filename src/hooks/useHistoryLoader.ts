@@ -180,6 +180,13 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
             const contextResult = await fetchMessageContext(id);
 
             if (contextResult && contextResult.messages.length > 0) {
+                // 若目标消息的作者已被屏蔽，终止跳转
+                const targetMsg = contextResult.messages.find(m => m.id === id);
+                if (targetMsg && blockedUsers.value.has(String(targetMsg.uid))) {
+                    isContextLoading.value = false;
+                    return;
+                }
+
                 // 过滤屏蔽用户
                 const filtered = contextResult.messages.filter(
                     m => !blockedUsers.value.has(String(m.uid))

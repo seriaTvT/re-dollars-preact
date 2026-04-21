@@ -267,7 +267,7 @@ export function renderReplyQuote(details: {
         ? ''
         : `<img src="${avatarSrc}" class="quote-avatar" loading="lazy">`;
 
-    return `<blockquote class="chat-quote" data-jump-to-id="${replyToId}" title="点击跳转到原文">${imageHTML}<div class="quote-text-wrapper"><div class="quote-header">${avatarHTML}<span class="quote-nickname">${escapeHTML(details.nickname)}</span></div><div class="quote-content">${escapeHTML(content)}${details.content.length > 80 ? '...' : ''}</div></div></blockquote>`;
+    return `<blockquote class="chat-quote" data-jump-to-id="${replyToId}" data-quote-uid="${details.uid}" title="点击跳转到原文">${imageHTML}<div class="quote-text-wrapper"><div class="quote-header">${avatarHTML}<span class="quote-nickname">${escapeHTML(details.nickname)}</span></div><div class="quote-content">${escapeHTML(content)}${details.content.length > 80 ? '...' : ''}</div></div></blockquote>`;
 }
 
 /**

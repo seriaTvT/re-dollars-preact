@@ -12,6 +12,31 @@ import { MessageItem } from './MessageItem';
 import { useScrollManager } from '@/hooks/useScrollManager';
 import { useHistoryLoader } from '@/hooks/useHistoryLoader';
 
+// Toast 提示
+
+let activeToastTimer: ReturnType<typeof setTimeout> | null = null;
+
+function showToast(message: string, duration = 2500) {
+    let toast = document.getElementById('dollars-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'dollars-toast';
+        const container = document.getElementById('dollars-main-chat') || document.body;
+        container.appendChild(toast);
+    }
+    toast.classList.remove('dollars-toast-visible');
+    void (toast as HTMLElement).offsetWidth;
+
+    toast.textContent = message;
+    toast.classList.add('dollars-toast-visible');
+
+    if (activeToastTimer !== null) clearTimeout(activeToastTimer);
+    activeToastTimer = setTimeout(() => {
+        toast!.classList.remove('dollars-toast-visible');
+        activeToastTimer = null;
+    }, duration);
+}
+
 export function ChatBody() {
     // Use a ref to break the circular dependency between useScrollManager and useHistoryLoader.
     // useScrollManager needs loadHistory/loadNewerHistory callbacks,
@@ -74,7 +99,19 @@ export function ChatBody() {
                 e.stopPropagation();
                 const id = Number((quote as HTMLElement).dataset.jumpToId);
                 if (id) {
-                    jumpToMessage(id);
+                    // 检查被引消息来源用户是否已被屏蔽
+                    const quoteUid = (quote as HTMLElement).dataset.quoteUid;
+                    if (quoteUid) {
+                        import('@/stores/user').then(({ blockedUsers }) => {
+                            if (blockedUsers.value.has(quoteUid)) {
+                                showToast('该用户已被屏蔽');
+                            } else {
+                                jumpToMessage(id);
+                            }
+                        });
+                    } else {
+                        jumpToMessage(id);
+                    }
                 }
             }
         };
