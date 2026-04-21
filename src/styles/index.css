@@ -988,6 +988,36 @@ html[data-theme="dark"] .chat-message.self .bubble-tail {
 .chat-message.self .bubble .message-media-block {
   justify-content: flex-end;
 }
+.bubble .message-media-grid {
+  display: grid;
+  gap: 3px;
+  max-width: 320px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.bubble .message-media-grid[style*="--media-count: 2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+.bubble .message-media-grid[style*="--media-count: 3"],
+.bubble .message-media-grid[style*="--media-count: 4"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+.bubble .message-media-grid[style*="--media-count: 5"],
+.bubble .message-media-grid[style*="--media-count: 6"],
+.bubble .message-media-grid[style*="--media-count: 7"],
+.bubble .message-media-grid[style*="--media-count: 8"],
+.bubble .message-media-grid[style*="--media-count: 9"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+.bubble .message-media-grid .image-container {
+  width: 100% !important;
+  max-height: none;
+  border-radius: 0;
+  aspect-ratio: 1 / 1;
+}
+.bubble .message-media-grid .image-container .full-image {
+  object-fit: cover;
+}
 .bubble .image-container {
   position: relative;
   display: grid;

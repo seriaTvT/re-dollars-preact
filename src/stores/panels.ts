@@ -46,6 +46,9 @@ export const isSearchActive = computed(() => activePanels.value.has('search'));
 
 export const isImageViewerOpen = computed(() => activePanels.value.has('imageViewer'));
 
+// Search panel gallery mode (shared so external components can trigger it)
+export const searchGalleryMode = signal(false);
+
 // --- Panel-specific extra state ---
 
 // Context menu

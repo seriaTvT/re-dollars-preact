@@ -29,6 +29,7 @@ export {
     imageViewerIndex,
     imageViewerSource,
     reactionPickerPosition,
+    searchGalleryMode,
 
     // Panel functions
     showContextMenu,

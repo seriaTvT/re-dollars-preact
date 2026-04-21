@@ -282,9 +282,15 @@ export function processBBCode(
     // 换行
     html = html.replace(/\n/g, '<br>');
 
-    html = html.replace(/\x00IMAGE_BLOCK_(\d+)\x00/g, (_, index) =>
-        mediaWrappers.push(`<div class="message-media-block">${imageBlocks.get(index)}</div>`)
-    );
+    // 合并连续的图片块为网格布局
+    html = html.replace(/(\x00IMAGE_BLOCK_\d+\x00(?:\s*<br\s*\/?>\s*)?)+/g, (match) => {
+        const indices = [...match.matchAll(/\x00IMAGE_BLOCK_(\d+)\x00/g)].map(m => m[1]);
+        const content = indices.map(idx => imageBlocks.get(idx)).join('');
+        if (indices.length === 1) {
+            return mediaWrappers.push(`<div class="message-media-block">${content}</div>`);
+        }
+        return mediaWrappers.push(`<div class="message-media-block"><div class="message-media-grid" style="--media-count: ${indices.length}">${content}</div></div>`);
+    });
 
     html = html.replace(MEDIA_WRAPPER_BREAK_RE, '$1');
     html = mediaWrappers.resolve(html);

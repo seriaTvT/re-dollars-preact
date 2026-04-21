@@ -1,6 +1,6 @@
 import { useCallback, useRef, useEffect } from 'preact/hooks';
 import { useSignal } from '@preact/signals';
-import { isSearchActive, toggleSearch } from '@/stores/ui';
+import { isSearchActive, toggleSearch, searchGalleryMode } from '@/stores/ui';
 import { searchQuery } from '@/stores/chat';
 import { searchMessages } from '@/utils/api';
 import { SEARCH_DEBOUNCE } from '@/utils/constants';
@@ -94,12 +94,21 @@ export function SearchPanel() {
         searchQuery.value = '';
         results.value = [];
         isGalleryMode.value = false;
+        searchGalleryMode.value = false;
     };
 
     // 切换相册模式
     const toggleGalleryMode = () => {
         isGalleryMode.value = !isGalleryMode.value;
+        searchGalleryMode.value = isGalleryMode.value;
     };
+
+    // 同步外部触发的 gallery 模式
+    useEffect(() => {
+        if (searchGalleryMode.value !== isGalleryMode.value) {
+            isGalleryMode.value = searchGalleryMode.value;
+        }
+    }, [searchGalleryMode.value]);
 
     // 点击结果
     const handleResultClick = async (msg: Message) => {

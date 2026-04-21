@@ -7,6 +7,7 @@ import {
     toggleSearch,
     isNarrowLayout,
     showImageViewer,
+    searchGalleryMode,
 } from '@/stores/ui';
 import { searchQuery } from '@/stores/chat';
 import { fetchUserProfile, fetchGalleryMedia } from '@/utils/api';
@@ -108,6 +109,15 @@ export function UserProfilePanel() {
     const handleHomepage = () => {
         if (profile) {
             window.open(`/user/${profile.username}`, '_blank');
+        }
+    };
+
+    const handleMedia = () => {
+        if (profile) {
+            searchQuery.value = `user:${profile.username}`;
+            searchGalleryMode.value = true;
+            hideUserProfile();
+            toggleSearch(true);
         }
     };
 
@@ -236,8 +246,9 @@ export function UserProfilePanel() {
                         {/* 共享媒体 */}
                         {!mediaLoading && media.length > 0 && (
                             <div class="uprofile-media-section">
-                                <div class="uprofile-media-header">
+                                <div class="uprofile-media-header" onClick={handleMedia} style={{ cursor: 'pointer' }}>
                                     <span>媒体</span>
+                                    <span style={{ fontSize: '12px', color: 'var(--primary-color)', marginLeft: 'auto' }}>查看全部 →</span>
                                 </div>
                                 <div class="uprofile-media-grid">
                                         {media.map((item) => {
