@@ -3,6 +3,7 @@ import type { Message } from '@/types';
 import { MESSAGE_GROUP_TIME_GAP } from '@/utils/constants';
 import { updateSignalMap, updateSignalSet } from '@/utils/signalMap';
 import { saveChatOpenState } from '@/utils/windowState';
+import { blockedUsers } from '@/stores/user';
 
 // Re-exports from extracted modules (preserves existing import paths)
 export { browsePosition, saveBrowsePosition, loadBrowsePosition, clearBrowsePosition, shouldRestoreBrowsePosition } from './browsePosition';
@@ -368,14 +369,23 @@ export async function loadMessageContext(messageId: number): Promise<{ targetInd
         const result = await fetchMessageContext(messageId);
 
         if (result && result.messages.length > 0) {
-            batch(() => {
-                clearMessages(); // 清空现有消息，避免时间线断裂
-                addMessagesBatch(result.messages);
+            const targetMsg = result.messages.find(m => m.id === messageId);
+            if (!targetMsg || blockedUsers.value.has(String(targetMsg.uid))) {
+                return null;
+            }
 
-                historyOldestId.value = result.messages[0].id;
-                historyNewestId.value = result.messages[result.messages.length - 1].id;
+            const filtered = result.messages.filter(
+                m => !blockedUsers.value.has(String(m.uid))
+            );
+
+            batch(() => {
+                clearMessages();
+                addMessagesBatch(filtered);
+
+                historyOldestId.value = filtered[0].id;
+                historyNewestId.value = filtered[filtered.length - 1].id;
                 historyFullyLoaded.value = !result.has_more_before;
-                timelineIsLive.value = false; // 标记为非实时模式
+                timelineIsLive.value = false;
             });
             return { targetIndex: result.target_index };
         }

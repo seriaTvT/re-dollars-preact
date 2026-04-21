@@ -8,6 +8,7 @@ import {
 } from '@/stores/chat';
 import { toggleSearch, showUserProfile } from '@/stores/ui';
 import { inputAreaHeight } from '@/stores/ui';
+import { blockedUsers } from '@/stores/user';
 import { MessageItem } from './MessageItem';
 import { useScrollManager } from '@/hooks/useScrollManager';
 import { useHistoryLoader } from '@/hooks/useHistoryLoader';
@@ -16,7 +17,7 @@ import { useHistoryLoader } from '@/hooks/useHistoryLoader';
 
 let activeToastTimer: ReturnType<typeof setTimeout> | null = null;
 
-function showToast(message: string, duration = 2500) {
+function showToast(message: string, duration = 2500, color?: string) {
     let toast = document.getElementById('dollars-toast');
     if (!toast) {
         toast = document.createElement('div');
@@ -28,6 +29,8 @@ function showToast(message: string, duration = 2500) {
     void (toast as HTMLElement).offsetWidth;
 
     toast.textContent = message;
+    (toast as HTMLElement).style.color = color || '';
+
     toast.classList.add('dollars-toast-visible');
 
     if (activeToastTimer !== null) clearTimeout(activeToastTimer);
@@ -92,26 +95,18 @@ export function ChatBody() {
                 return;
             }
 
-            // 3. 查找最近的引用块
-            const quote = target.closest('.chat-quote[data-jump-to-id]');
+            // 3. 引用块点击 - 跳转消息或提示屏蔽
+            const quote = target.closest('.chat-quote[data-jump-to-id]') as HTMLElement | null;
             if (quote) {
                 e.preventDefault();
                 e.stopPropagation();
-                const id = Number((quote as HTMLElement).dataset.jumpToId);
-                if (id) {
-                    // 检查被引消息来源用户是否已被屏蔽
-                    const quoteUid = (quote as HTMLElement).dataset.quoteUid;
-                    if (quoteUid) {
-                        import('@/stores/user').then(({ blockedUsers }) => {
-                            if (blockedUsers.value.has(quoteUid)) {
-                                showToast('该用户已被屏蔽');
-                            } else {
-                                jumpToMessage(id);
-                            }
-                        });
-                    } else {
-                        jumpToMessage(id);
-                    }
+                const id = Number(quote.dataset.jumpToId);
+                const quoteUid = quote.dataset.quoteUid;
+                if (!id) return;
+                if (quoteUid && blockedUsers.value.has(quoteUid)) {
+                    showToast('绝交用户', 2500, 'var(--primary-color)');
+                } else {
+                    jumpToMessage(id);
                 }
             }
         };

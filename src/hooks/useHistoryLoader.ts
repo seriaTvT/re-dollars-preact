@@ -180,27 +180,20 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
             const contextResult = await fetchMessageContext(id);
 
             if (contextResult && contextResult.messages.length > 0) {
-                // 若目标消息的作者已被屏蔽，终止跳转
                 const targetMsg = contextResult.messages.find(m => m.id === id);
-                if (targetMsg && blockedUsers.value.has(String(targetMsg.uid))) {
+                if (!targetMsg || blockedUsers.value.has(String(targetMsg.uid))) {
                     isContextLoading.value = false;
                     return;
                 }
 
-                // 过滤屏蔽用户
                 const filtered = contextResult.messages.filter(
                     m => !blockedUsers.value.has(String(m.uid))
                 );
 
-                // 更新消息列表
                 setMessages(filtered);
-
-                // 更新历史状态
-                if (filtered.length > 0) {
-                    historyOldestId.value = filtered[0].id;
-                    historyNewestId.value = filtered[filtered.length - 1].id;
-                    historyFullyLoaded.value = !contextResult.has_more_before;
-                }
+                historyOldestId.value = filtered[0].id;
+                historyNewestId.value = filtered[filtered.length - 1].id;
+                historyFullyLoaded.value = !contextResult.has_more_before;
 
                 // 标记为非实时模式 (重要：防止新消息覆盖)
                 timelineIsLive.value = false;

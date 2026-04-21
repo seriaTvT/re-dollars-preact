@@ -3,8 +3,16 @@ import { getAuthHeaders, userInfo } from '@/stores/user';
 import type { Message } from '@/types';
 
 // 统一的消息响应解析器
-const parseMessages = (data: any): Message[] =>
-    Array.isArray(data) ? data : data?.messages || data?.results || [];
+const parseMessages = (data: any): Message[] => {
+    const arr = Array.isArray(data) ? data : data?.messages || data?.results || [];
+    return arr.map((m: any) => {
+        if (m.id != null) m.id = Number(m.id);
+        if (m.uid != null) m.uid = Number(m.uid);
+        if (m.reply_to_id != null) m.reply_to_id = Number(m.reply_to_id);
+        if (m.reply_details?.uid != null) m.reply_details.uid = Number(m.reply_details.uid);
+        return m;
+    });
+};
 
 /**
  * 获取最近消息
