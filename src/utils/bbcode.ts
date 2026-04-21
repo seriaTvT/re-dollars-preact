@@ -2,6 +2,73 @@ import { escapeHTML, calculateImageStyle, getAvatarUrl, getThumbnailUrl } from '
 import { settings } from '@/stores/user';
 import { replaceInlineTokens } from './inlineTokens';
 
+const HTTP_URL_RE = /^https?:\/\/[^\s<>"']+$/i;
+const MEDIA_WRAPPER_BREAK_RE = /(?:<br>\s*)*(\x00MEDIA_WRAPPER_\d+\x00)(?:\s*<br>)*/g;
+
+type PreviewCardData = { title?: string; description?: string; image?: string };
+type ReplyDetails = { uid: number; nickname: string; avatar: string; content: string; firstImage?: string };
+
+function createPlaceholderStore(prefix: string) {
+    const values: string[] = [];
+
+    return {
+        push(value: string): string {
+            values.push(value);
+            return `\x00${prefix}_${values.length - 1}\x00`;
+        },
+        get(index: string | number): string {
+            return values[Number(index)]!;
+        },
+        resolve(source: string, render: (value: string) => string = (value) => value): string {
+            return source.replace(new RegExp(`\\x00${prefix}_(\\d+)\\x00`, 'g'), (_, index) => render(values[Number(index)]!));
+        }
+    };
+}
+
+function sanitizeHttpUrl(rawSrc: string): string | null {
+    const cleanSrc = rawSrc.replace(/<[^>]*>?/gm, '').trim();
+    return HTTP_URL_RE.test(cleanSrc) ? cleanSrc : null;
+}
+
+function collectPreviewCard(
+    url: string,
+    options: { previewsCollector?: string[]; isInsideQuote?: boolean },
+    linkPreviews: Record<string, PreviewCardData>
+) {
+    if (options.isInsideQuote || !settings.value.linkPreview || !options.previewsCollector) {
+        return;
+    }
+
+    const preview = linkPreviews[url];
+    if (preview) {
+        options.previewsCollector.push(generatePreviewCardHTML(preview, url));
+    }
+}
+
+function renderImageHTML(
+    src: string,
+    meta: { width?: number; height?: number } | undefined,
+    { placeholder = false, masked = false }: { placeholder?: boolean; masked?: boolean } = {}
+): string {
+    const imageStyle = calculateImageStyle(meta);
+    const metaWidth = meta?.width ?? '';
+    const metaHeight = meta?.height ?? '';
+    const safeSrc = escapeHTML(src);
+    const displaySrc = escapeHTML(placeholder ? getThumbnailUrl(src) : src);
+    const classes = ['image-container', placeholder && 'image-placeholder', masked && 'image-masked']
+        .filter(Boolean)
+        .join(' ');
+    const imageClasses = ['full-image', placeholder && 'is-loaded']
+        .filter(Boolean)
+        .join(' ');
+    const dataSrc = masked ? ` data-src="${safeSrc}"` : '';
+    const loadHint = masked ? '\n            <div class="image-load-hint">显示图片</div>' : '';
+
+    return `<div class="${classes}" style="${imageStyle}" data-iw="${metaWidth}" data-ih="${metaHeight}"${dataSrc}>
+            <img src="${displaySrc}" data-full-src="${safeSrc}" class="${imageClasses}" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">${loadHint}
+        </div>`;
+}
+
 // 标准化 Bangumi 链接，将 bangumi.tv/bgm.tv/chii.in 转换为相对路径
 function normalizeBangumiUrl(url: string): string {
     try {
@@ -21,10 +88,9 @@ function normalizeBangumiUrl(url: string): string {
 
 // 生成预览卡片 HTML
 function generatePreviewCardHTML(
-    data: { title?: string; description?: string; image?: string },
+    data: PreviewCardData,
     originalUrl: string
 ): string {
-    if (!data) return '';
     const normalizedUrl = normalizeBangumiUrl(originalUrl);
     const title = escapeHTML(data.title || originalUrl);
     const desc = data.description ? escapeHTML(data.description) : '';
@@ -55,18 +121,20 @@ export function processBBCode(
     options: {
         previewsCollector?: string[];
         replyToId?: number;
-        replyDetails?: { uid: number; nickname: string; avatar: string; content: string };
+        replyDetails?: ReplyDetails;
         isInsideQuote?: boolean;
     } = {},
-    linkPreviews: Record<string, { title: string; description?: string; image?: string }> = {}
+    linkPreviews: Record<string, PreviewCardData> = {}
 ): string {
     let html = text;
 
     // 提取 [code] 块，用占位符替换，防止内部内容被解析
-    const codeBlocks: string[] = [];
+    const codeBlocks = createPlaceholderStore('CODE_BLOCK');
+    const imageBlocks = createPlaceholderStore('IMAGE_BLOCK');
+    const mediaWrappers = createPlaceholderStore('MEDIA_WRAPPER');
+
     html = html.replace(/\[code\]([\s\S]*?)\[\/code\]/gi, (_, content) => {
-        codeBlocks.push(content);
-        return `\x00CODE_BLOCK_${codeBlocks.length - 1}\x00`;
+        return codeBlocks.push(content);
     });
 
     // 话题标签
@@ -83,28 +151,23 @@ export function processBBCode(
 
     // 遮罩内的图片
     html = html.replace(/<span class="text_mask"><span class="inner">\[img\]([\s\S]+?)\[\/img\]<\/span><\/span>/gi, (m, src) => {
-        const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
-        if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
+        const cleanSrc = sanitizeHttpUrl(src);
+        if (!cleanSrc) return escapeHTML(m);
 
         if (options.isInsideQuote) {
             return `<span class="text_mask"><span class="inner"><a href="${cleanSrc}" target="_blank">[图片]</a></span></span>`;
         }
 
         const meta = imageMeta[cleanSrc];
-        const imageStyle = calculateImageStyle(meta);
-        const thumbSrc = getThumbnailUrl(cleanSrc);
 
         // 遮罩图片使用缩略图预览
-        return `<div class="image-container image-placeholder image-masked" style="${imageStyle}" data-iw="${meta?.width || ''}" data-ih="${meta?.height || ''}" data-src="${cleanSrc}">
-            <img src="${thumbSrc}" data-full-src="${cleanSrc}" class="full-image is-loaded" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-            <div class="image-load-hint">显示图片</div>
-        </div>`;
+        return imageBlocks.push(renderImageHTML(cleanSrc, meta, { placeholder: true, masked: true }));
     });
 
     // 音频
     html = html.replace(/\[audio\]([\s\S]+?)\[\/audio\]/gi, (m, src) => {
-        const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
-        if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
+        const cleanSrc = sanitizeHttpUrl(src);
+        if (!cleanSrc) return escapeHTML(m);
         if (options.isInsideQuote) {
             return `<a href="${cleanSrc}" target="_blank">[音频]</a>`;
         }
@@ -113,8 +176,8 @@ export function processBBCode(
 
     // 视频
     html = html.replace(/\[video\]([\s\S]+?)\[\/video\]/gi, (m, src) => {
-        const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
-        if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
+        const cleanSrc = sanitizeHttpUrl(src);
+        if (!cleanSrc) return escapeHTML(m);
         if (options.isInsideQuote) {
             return `<a href="${cleanSrc}" target="_blank">[视频]</a>`;
         }
@@ -123,9 +186,9 @@ export function processBBCode(
 
     // 通用附件
     html = html.replace(/\[file=(.*?)\]([\s\S]+?)\[\/file\]/gi, (m, label, src) => {
-        const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
-        if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
-        const name = escapeHTML((label || '').trim() || '附件');
+        const cleanSrc = sanitizeHttpUrl(src);
+        if (!cleanSrc) return escapeHTML(m);
+        const name = escapeHTML(label.trim() || '附件');
         if (options.isInsideQuote) {
             return `<a href="${cleanSrc}" target="_blank">[附件] ${name}</a>`;
         }
@@ -134,28 +197,21 @@ export function processBBCode(
 
     // 图片
     html = html.replace(/\[img\]([\s\S]+?)\[\/img\]/gi, (m, src) => {
-        const cleanSrc = src.replace(/<[^>]*>?/gm, '').trim();
-        if (!/^https?:\/\/[^\s<>"']+$/i.test(cleanSrc)) return escapeHTML(m);
+        const cleanSrc = sanitizeHttpUrl(src);
+        if (!cleanSrc) return escapeHTML(m);
 
         if (options.isInsideQuote) {
             return `<a href="${cleanSrc}" target="_blank">[图片]</a>`;
         }
 
         const meta = imageMeta[cleanSrc];
-        const imageStyle = calculateImageStyle(meta);
-        const shouldLoadImage = settings.value.loadImages;
-        const thumbSrc = getThumbnailUrl(cleanSrc);
 
         // 如果不自动加载图片，使用缩略图代替占位
-        if (!shouldLoadImage) {
-            return `<div class="image-container image-placeholder" style="${imageStyle}" data-iw="${meta?.width || ''}" data-ih="${meta?.height || ''}">
-                <img src="${thumbSrc}" data-full-src="${cleanSrc}" class="full-image is-loaded" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-            </div>`;
+        if (!settings.value.loadImages) {
+            return imageBlocks.push(renderImageHTML(cleanSrc, meta, { placeholder: true }));
         }
 
-        return `<div class="image-container" style="${imageStyle}" data-iw="${meta?.width || ''}" data-ih="${meta?.height || ''}">
-            <img src="${cleanSrc}" data-full-src="${cleanSrc}" class="full-image" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">
-        </div>`;
+        return imageBlocks.push(renderImageHTML(cleanSrc, meta));
     });
 
     // 用户提及
@@ -188,11 +244,7 @@ export function processBBCode(
         const normalizedUrl = normalizeBangumiUrl(url);
         const linkHtml = `<a href="${escapeHTML(normalizedUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 
-        // 如果不在引用内且启用了链接预览，收集预览卡片到 collector
-        if (!options.isInsideQuote && settings.value.linkPreview && linkPreviews && linkPreviews[url] && options.previewsCollector) {
-            const previewHtml = generatePreviewCardHTML(linkPreviews[url], url);
-            options.previewsCollector.push(previewHtml);
-        }
+        collectPreviewCard(url, options, linkPreviews);
         return linkHtml;
     });
 
@@ -220,11 +272,7 @@ export function processBBCode(
         const normalizedUrl = normalizeBangumiUrl(url);
         const linkHtml = `<a href="${normalizedUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
 
-        // 如果不在引用内且启用了链接预览，收集预览卡片到 collector
-        if (!options.isInsideQuote && settings.value.linkPreview && linkPreviews && linkPreviews[url] && options.previewsCollector) {
-            const previewHtml = generatePreviewCardHTML(linkPreviews[url], url);
-            options.previewsCollector.push(previewHtml);
-        }
+        collectPreviewCard(url, options, linkPreviews);
         return linkHtml;
     });
 
@@ -234,10 +282,15 @@ export function processBBCode(
     // 换行
     html = html.replace(/\n/g, '<br>');
 
+    html = html.replace(/\x00IMAGE_BLOCK_(\d+)\x00/g, (_, index) =>
+        mediaWrappers.push(`<div class="message-media-block">${imageBlocks.get(index)}</div>`)
+    );
+
+    html = html.replace(MEDIA_WRAPPER_BREAK_RE, '$1');
+    html = mediaWrappers.resolve(html);
+
     // 恢复 code 块（内容需要 HTML 转义以防止 XSS）
-    codeBlocks.forEach((content, i) => {
-        html = html.replace(`\x00CODE_BLOCK_${i}\x00`, `<div class="codeHighlight"><pre>${escapeHTML(content)}</pre></div>`);
-    });
+    html = codeBlocks.resolve(html, (content) => `<div class="codeHighlight"><pre>${escapeHTML(content)}</pre></div>`);
 
     return html;
 }
@@ -245,13 +298,7 @@ export function processBBCode(
 /**
  * 渲染回复引用块
  */
-export function renderReplyQuote(details: {
-    uid: number;
-    nickname: string;
-    avatar: string;
-    content: string;
-    firstImage?: string;
-}, replyToId: number): string {
+export function renderReplyQuote(details: ReplyDetails, replyToId: number): string {
     const content = stripQuotes(details.content)
         .replace(/\[file=.*?\].*?\[\/file\]/gi, '[附件]')
         .substring(0, 80);

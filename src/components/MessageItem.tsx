@@ -249,11 +249,14 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     const shouldCollapse = isCollapsible && !isExpanded;
     const hasReplyQuote = !!(replyToId && replyDetails);
     const hasLinkPreviewCards = settings.value.linkPreview && Object.keys(linkPreviews || {}).length > 0;
-    const prefersTrailingTimestamp = !isDeleted && !hasRichBubbleContent(
-        messageText,
-        hasReplyQuote,
-        hasLinkPreviewCards,
-        isCollapsible
+    const prefersTrailingTimestamp = !isDeleted && (
+        (hasReplyQuote && !hasLinkPreviewCards && !isCollapsible) ||
+        !hasRichBubbleContent(
+            messageText,
+            hasReplyQuote,
+            hasLinkPreviewCards,
+            isCollapsible
+        )
     );
 
     // 时间戳
@@ -284,7 +287,8 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
 
         const measure = () => {
             frameId = 0;
-            const nextCollapsible = el.scrollHeight > COLLAPSE_MAX_HEIGHT + 1;
+            const hasInlineImage = !!el.querySelector('.image-container');
+            const nextCollapsible = !hasInlineImage && el.scrollHeight > COLLAPSE_MAX_HEIGHT + 1;
             setIsCollapsible((prev) => prev === nextCollapsible ? prev : nextCollapsible);
         };
 
