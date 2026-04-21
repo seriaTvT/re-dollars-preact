@@ -6241,6 +6241,42 @@ ${content}`;
     ] });
   }
 
+  async function navigateToMessage(msgId) {
+    const { loadMessageContext } = await __vitePreload(async () => { const { loadMessageContext } = await Promise.resolve().then(() => chat);return { loadMessageContext }},false             ?__VITE_PRELOAD__:void 0);
+    const { smoothScrollToCenter } = await __vitePreload(async () => { const { smoothScrollToCenter } = await Promise.resolve().then(() => smoothScroll);return { smoothScrollToCenter }},false             ?__VITE_PRELOAD__:void 0);
+    const result = await loadMessageContext(msgId);
+    if (!result) return;
+    setTimeout(() => {
+      const targetId = `db-${msgId}`;
+      const el = document.getElementById(targetId);
+      const listEl = document.querySelector(".chat-list");
+      if (el) {
+        el.scrollIntoView({ behavior: "auto", block: "center" });
+        setTimeout(() => {
+          const container = document.querySelector(".chat-body");
+          if (container) {
+            smoothScrollToCenter(container, el);
+          } else {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 100);
+        if (listEl) listEl.classList.add("focus-mode");
+        el.classList.remove("message-highlight");
+        void el.offsetWidth;
+        el.classList.add("message-highlight");
+        setTimeout(() => {
+          if (listEl) listEl.classList.remove("focus-mode");
+          el.classList.remove("message-highlight");
+        }, 800);
+      } else if (listEl && result.targetIndex >= 0) {
+        const msgs = listEl.querySelectorAll(".chat-message");
+        if (result.targetIndex < msgs.length) {
+          msgs[result.targetIndex].scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }, 300);
+  }
+
   function GalleryPanel({ onClose }) {
     const items = useSignal([]);
     const isLoading = useSignal(false);
@@ -6403,129 +6439,75 @@ ${content}`;
   }
 
   function SearchPanel() {
-    const results = useSignal([]);
-    const isLoading = useSignal(false);
-    const hasMore = useSignal(false);
-    const searchOffset = A(0);
     const inputRef = A(null);
-    const isGalleryMode = useSignal(false);
-    const performSearch = q(async (q, isNewSearch = false) => {
-      if (!q.trim()) {
-        results.value = [];
-        return;
-      }
-      if (isNewSearch) {
-        results.value = [];
-        searchOffset.current = 0;
-        hasMore.value = true;
-      }
-      isLoading.value = true;
-      try {
-        const data = await searchMessages(q, searchOffset.current);
-        if (isNewSearch) {
-          results.value = data.messages;
-        } else {
-          results.value = [...results.value, ...data.messages];
-        }
-        hasMore.value = data.hasMore;
-        searchOffset.current += data.messages.length;
-      } catch (e) {
-      } finally {
-        isLoading.value = false;
-      }
-    }, []);
-    const debouncedSearch = q(debounce((q) => performSearch(q, true), SEARCH_DEBOUNCE), []);
-    y$1(() => {
-      if (isSearchActive.value && searchQuery.value) {
-        debouncedSearch(searchQuery.value);
-      } else if (!searchQuery.value) {
-        results.value = [];
-      }
-    }, [searchQuery.value, isSearchActive.value]);
-    y$1(() => {
-      if (isSearchActive.value && inputRef.current) {
-        setTimeout(() => {
-          inputRef.current?.focus();
-        }, 50);
-      }
-    }, [isSearchActive.value]);
-    const handleInput = (e) => {
-      const val = e.target.value;
-      searchQuery.value = val;
+    const dateInputRef = A(null);
+    const results = useSignal([]);
+    const loading = useSignal(false);
+    const hasMore = useSignal(false);
+    const offset = A(0);
+    const reset = () => {
+      results.value = [];
+      hasMore.value = false;
+      offset.current = 0;
     };
-    const handleScroll = (e) => {
-      const el = e.target;
-      if (!isLoading.value && hasMore.value && el.scrollHeight - el.scrollTop - el.clientHeight < 50) {
-        performSearch(searchQuery.value, false);
-      }
-    };
-    const handleClose = () => {
+    const close = () => {
       toggleSearch(false);
       searchQuery.value = "";
-      results.value = [];
-      isGalleryMode.value = false;
       searchGalleryMode.value = false;
+      reset();
     };
-    const toggleGalleryMode = () => {
-      isGalleryMode.value = !isGalleryMode.value;
-      searchGalleryMode.value = isGalleryMode.value;
+    const search = async (q, append = false) => {
+      if (!q.trim()) {
+        reset();
+        return;
+      }
+      if (!append) {
+        results.value = [];
+        offset.current = 0;
+        hasMore.value = true;
+      }
+      loading.value = true;
+      try {
+        const data = await searchMessages(q, offset.current);
+        results.value = append ? [...results.value, ...data.messages] : data.messages;
+        hasMore.value = data.hasMore;
+        offset.current += data.messages.length;
+      } finally {
+        loading.value = false;
+      }
     };
+    const debouncedSearch = debounce((q) => search(q), SEARCH_DEBOUNCE);
     y$1(() => {
-      if (searchGalleryMode.value !== isGalleryMode.value) {
-        isGalleryMode.value = searchGalleryMode.value;
+      if (!isSearchActive.value || searchGalleryMode.value) return;
+      if (searchQuery.value) debouncedSearch(searchQuery.value);
+      else reset();
+    }, [searchQuery.value, isSearchActive.value]);
+    y$1(() => {
+      if (isSearchActive.value) {
+        setTimeout(() => inputRef.current?.focus(), 50);
       }
-    }, [searchGalleryMode.value]);
-    const handleResultClick = async (msg) => {
-      handleClose();
-      const { loadMessageContext } = await __vitePreload(async () => { const { loadMessageContext } = await Promise.resolve().then(() => chat);return { loadMessageContext }},false             ?__VITE_PRELOAD__:void 0);
-      const result = await loadMessageContext(msg.id);
-      if (result) {
-        setTimeout(() => {
-          const targetId = `db-${msg.id}`;
-          const el = document.getElementById(targetId);
-          const listEl = document.querySelector(".chat-list");
-          if (el) {
-            el.scrollIntoView({ behavior: "auto", block: "center" });
-            setTimeout(() => {
-              const container = document.querySelector(".chat-body");
-              if (container) {
-                __vitePreload(async () => { const {smoothScrollToCenter} = await Promise.resolve().then(() => smoothScroll);return { smoothScrollToCenter }},false             ?__VITE_PRELOAD__:void 0).then(({ smoothScrollToCenter }) => {
-                  smoothScrollToCenter(container, el);
-                });
-              } else {
-                el.scrollIntoView({ behavior: "smooth", block: "center" });
-              }
-            }, 100);
-            if (listEl) listEl.classList.add("focus-mode");
-            el.classList.remove("message-highlight");
-            void el.offsetWidth;
-            el.classList.add("message-highlight");
-            setTimeout(() => {
-              if (listEl) listEl.classList.remove("focus-mode");
-              el.classList.remove("message-highlight");
-            }, 800);
-          } else {
-            const msgElements = listEl?.querySelectorAll(".chat-message");
-            if (msgElements && result.targetIndex < msgElements.length) {
-              const targetEl = msgElements[result.targetIndex];
-              targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
-          }
-        }, 300);
+    }, [isSearchActive.value]);
+    const handleScroll = (e) => {
+      const el = e.target;
+      if (!loading.value && hasMore.value && el.scrollHeight - el.scrollTop - el.clientHeight < 50) {
+        search(searchQuery.value, true);
       }
     };
-    const dateInputRef = A(null);
+    const handleResultClick = (msg) => {
+      close();
+      navigateToMessage(msg.id);
+    };
     const openDatePicker = () => {
-      if (dateInputRef.current) {
-        if ("showPicker" in HTMLInputElement.prototype) {
-          try {
-            dateInputRef.current.showPicker();
-          } catch (err) {
-            dateInputRef.current.click();
-          }
-        } else {
-          dateInputRef.current.click();
+      const input = dateInputRef.current;
+      if (!input) return;
+      if ("showPicker" in HTMLInputElement.prototype) {
+        try {
+          input.showPicker();
+        } catch {
+          input.click();
         }
+      } else {
+        input.click();
       }
     };
     const handleDateChange = async (e) => {
@@ -6533,12 +6515,13 @@ ${content}`;
       if (!date) return;
       const { getFirstMessageIdByDate } = await __vitePreload(async () => { const { getFirstMessageIdByDate } = await Promise.resolve().then(() => api);return { getFirstMessageIdByDate }},false             ?__VITE_PRELOAD__:void 0);
       const msgId = await getFirstMessageIdByDate(date);
+      e.target.value = "";
       if (msgId) {
-        handleResultClick({ id: msgId });
+        close();
+        navigateToMessage(msgId);
       } else {
         alert(`日期 ${date} 没有找到消息`);
       }
-      e.target.value = "";
     };
     if (!isSearchActive.value) return null;
     return /* @__PURE__ */ u$2("div", { id: "dollars-search-ui", children: [
@@ -6559,7 +6542,9 @@ ${content}`;
               type: "search",
               placeholder: "搜索消息...",
               value: searchQuery.value,
-              onInput: handleInput,
+              onInput: (e) => {
+                searchQuery.value = e.target.value;
+              },
               autoFocus: true
             }
           ),
@@ -6567,7 +6552,7 @@ ${content}`;
             "div",
             {
               class: "search-close-btn",
-              onClick: handleClose,
+              onClick: close,
               dangerouslySetInnerHTML: { __html: iconClose }
             }
           )
@@ -6584,8 +6569,10 @@ ${content}`;
         /* @__PURE__ */ u$2(
           "div",
           {
-            class: `search-gallery-btn ${isGalleryMode.value ? "active" : ""}`,
-            onClick: toggleGalleryMode,
+            class: `search-gallery-btn ${searchGalleryMode.value ? "active" : ""}`,
+            onClick: () => {
+              searchGalleryMode.value = !searchGalleryMode.value;
+            },
             title: "相册模式",
             dangerouslySetInnerHTML: { __html: iconPhoto }
           }
@@ -6600,7 +6587,9 @@ ${content}`;
           style: { position: "absolute", opacity: 0, pointerEvents: "none", width: 0, height: 0 }
         }
       ),
-      isGalleryMode.value ? /* @__PURE__ */ u$2(GalleryPanel, { onClose: () => isGalleryMode.value = false }) : /* @__PURE__ */ u$2("div", { id: "dollars-search-results", onScroll: handleScroll, children: [
+      searchGalleryMode.value ? /* @__PURE__ */ u$2(GalleryPanel, { onClose: () => {
+        searchGalleryMode.value = false;
+      } }) : /* @__PURE__ */ u$2("div", { id: "dollars-search-results", onScroll: handleScroll, children: [
         results.value.map((msg) => /* @__PURE__ */ u$2(
           "div",
           {
@@ -6619,8 +6608,8 @@ ${content}`;
           },
           msg.id
         )),
-        isLoading.value && /* @__PURE__ */ u$2("div", { class: "search-status-msg", children: "搜索中..." }),
-        !isLoading.value && results.value.length === 0 && searchQuery.value && /* @__PURE__ */ u$2("div", { class: "search-status-msg", children: "未找到相关消息" })
+        loading.value && /* @__PURE__ */ u$2("div", { class: "search-status-msg", children: "搜索中..." }),
+        !loading.value && results.value.length === 0 && searchQuery.value && /* @__PURE__ */ u$2("div", { class: "search-status-msg", children: "未找到相关消息" })
       ] })
     ] });
   }

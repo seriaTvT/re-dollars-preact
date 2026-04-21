@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'preact/hooks';
+import { useRef, useEffect } from 'preact/hooks';
 import { useSignal } from '@preact/signals';
 import { isSearchActive, toggleSearch, searchGalleryMode } from '@/stores/ui';
 import { searchQuery } from '@/stores/chat';
@@ -6,212 +6,111 @@ import { searchMessages } from '@/utils/api';
 import { SEARCH_DEBOUNCE } from '@/utils/constants';
 import { debounce, formatDate, getAvatarUrl } from '@/utils/format';
 import { iconCalendar, iconClose, iconPhoto, iconSearch } from '@/utils/icons';
+import { navigateToMessage } from '@/utils/navigation';
 import { GalleryPanel } from './GalleryPanel';
 import type { Message } from '@/types';
 
 export function SearchPanel() {
-    // Use global `searchQuery` instead of local state
-    const results = useSignal<Message[]>([]);
-    const isLoading = useSignal(false);
-    const hasMore = useSignal(false);
-    const searchOffset = useRef(0);
     const inputRef = useRef<HTMLInputElement>(null);
-    const isGalleryMode = useSignal(false);
+    const dateInputRef = useRef<HTMLInputElement>(null);
 
-    // 执行搜索
-    const performSearch = useCallback(async (q: string, isNewSearch = false) => {
+    const results = useSignal<Message[]>([]);
+    const loading = useSignal(false);
+    const hasMore = useSignal(false);
+    const offset = useRef(0);
+
+    const reset = () => {
+        results.value = [];
+        hasMore.value = false;
+        offset.current = 0;
+    };
+
+    const close = () => {
+        toggleSearch(false);
+        searchQuery.value = '';
+        searchGalleryMode.value = false;
+        reset();
+    };
+
+    const search = async (q: string, append = false) => {
         if (!q.trim()) {
-            results.value = [];
+            reset();
             return;
         }
-
-        if (isNewSearch) {
+        if (!append) {
             results.value = [];
-            searchOffset.current = 0;
+            offset.current = 0;
             hasMore.value = true;
         }
-
-        isLoading.value = true;
+        loading.value = true;
         try {
-            const data = await searchMessages(q, searchOffset.current);
-            if (isNewSearch) {
-                results.value = data.messages;
-            } else {
-                results.value = [...results.value, ...data.messages];
-            }
+            const data = await searchMessages(q, offset.current);
+            results.value = append ? [...results.value, ...data.messages] : data.messages;
             hasMore.value = data.hasMore;
-            searchOffset.current += data.messages.length;
-        } catch (e) {
-            // ignore
+            offset.current += data.messages.length;
         } finally {
-            isLoading.value = false;
+            loading.value = false;
         }
-    }, []);
+    };
 
-    // 防抖搜索
-    const debouncedSearch = useCallback(debounce((q: string) => performSearch(q, true), SEARCH_DEBOUNCE), []);
+    const debouncedSearch = debounce((q: string) => search(q), SEARCH_DEBOUNCE);
 
-    // 监听 searchQuery 变化 (支持外部触发)
+    // 监听查询变化（排除相册模式）
     useEffect(() => {
-        if (isSearchActive.value && searchQuery.value) {
-            debouncedSearch(searchQuery.value);
-        } else if (!searchQuery.value) {
-            results.value = [];
-        }
+        if (!isSearchActive.value || searchGalleryMode.value) return;
+        if (searchQuery.value) debouncedSearch(searchQuery.value);
+        else reset();
     }, [searchQuery.value, isSearchActive.value]);
 
-    // 搜索面板打开时自动聚焦输入框（确保移动端弹出键盘）
+    // 面板打开时聚焦输入框
     useEffect(() => {
-        if (isSearchActive.value && inputRef.current) {
-            // 使用 setTimeout 确保 DOM 已渲染完成
-            setTimeout(() => {
-                inputRef.current?.focus();
-            }, 50);
+        if (isSearchActive.value) {
+            setTimeout(() => inputRef.current?.focus(), 50);
         }
     }, [isSearchActive.value]);
 
-    // 输入处理
-    const handleInput = (e: Event) => {
-        const val = (e.target as HTMLInputElement).value;
-        searchQuery.value = val;
-    };
-
-    // 滚动加载更多
     const handleScroll = (e: Event) => {
         const el = e.target as HTMLDivElement;
-        if (
-            !isLoading.value &&
-            hasMore.value &&
-            el.scrollHeight - el.scrollTop - el.clientHeight < 50
-        ) {
-            performSearch(searchQuery.value, false);
+        if (!loading.value && hasMore.value && el.scrollHeight - el.scrollTop - el.clientHeight < 50) {
+            search(searchQuery.value, true);
         }
     };
 
-    // 关闭搜索
-    const handleClose = () => {
-        toggleSearch(false);
-        searchQuery.value = '';
-        results.value = [];
-        isGalleryMode.value = false;
-        searchGalleryMode.value = false;
+    const handleResultClick = (msg: Message) => {
+        close();
+        navigateToMessage(msg.id);
     };
 
-    // 切换相册模式
-    const toggleGalleryMode = () => {
-        isGalleryMode.value = !isGalleryMode.value;
-        searchGalleryMode.value = isGalleryMode.value;
-    };
-
-    // 同步外部触发的 gallery 模式
-    useEffect(() => {
-        if (searchGalleryMode.value !== isGalleryMode.value) {
-            isGalleryMode.value = searchGalleryMode.value;
-        }
-    }, [searchGalleryMode.value]);
-
-    // 点击结果
-    const handleResultClick = async (msg: Message) => {
-        handleClose();
-
-        // 导入并调用跳转逻辑
-        const { loadMessageContext } = await import('@/stores/chat');
-        const result = await loadMessageContext(msg.id);
-
-        if (result) {
-            // 给 DOM 一点时间渲染
-            setTimeout(() => {
-                const targetId = `db-${msg.id}`;
-                const el = document.getElementById(targetId);
-                const listEl = document.querySelector('.chat-list');
-
-                if (el) {
-                    // 第一步：快速定位
-                    el.scrollIntoView({ behavior: 'auto', block: 'center' });
-
-                    // 第二步：使用共享的平滑滚动工具微调居中
-                    setTimeout(() => {
-                        const container = document.querySelector('.chat-body') as HTMLElement;
-                        if (container) {
-                            import('@/utils/smoothScroll').then(({ smoothScrollToCenter }) => {
-                                smoothScrollToCenter(container, el as HTMLElement);
-                            });
-                        } else {
-                            // Fallback
-                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }, 100);
-
-                    // 应用聚焦模式 (使其他消息变暗)
-                    if (listEl) listEl.classList.add('focus-mode');
-
-                    // 应用高亮效果
-                    el.classList.remove('message-highlight');
-                    void el.offsetWidth; // 触发重绘
-                    el.classList.add('message-highlight');
-
-                    setTimeout(() => {
-                        if (listEl) listEl.classList.remove('focus-mode');
-                        el.classList.remove('message-highlight');
-                    }, 800);
-                } else {
-                    // 尝试使用 target_index 滚动
-                    const msgElements = listEl?.querySelectorAll('.chat-message');
-                    if (msgElements && result.targetIndex < msgElements.length) {
-                        const targetEl = msgElements[result.targetIndex] as HTMLElement;
-                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-            }, 300);
-        }
-    };
-
-    // 日期选择 Input Ref
-    const dateInputRef = useRef<HTMLInputElement>(null);
-
-    // 打开日期选择器
     const openDatePicker = () => {
-        // use showPicker() if supported (modern browsers)
-        if (dateInputRef.current) {
-            if ('showPicker' in HTMLInputElement.prototype) {
-                try {
-                    (dateInputRef.current as any).showPicker();
-                } catch (err) {
-                    dateInputRef.current.click();
-                }
-            } else {
-                dateInputRef.current.click();
-            }
+        const input = dateInputRef.current;
+        if (!input) return;
+        if ('showPicker' in HTMLInputElement.prototype) {
+            try { (input as any).showPicker(); } catch { input.click(); }
+        } else {
+            input.click();
         }
     };
 
-    // 处理日期变更
     const handleDateChange = async (e: Event) => {
         const date = (e.target as HTMLInputElement).value;
         if (!date) return;
 
-        // 调用后端 API 获取该日期第一条消息 ID
         const { getFirstMessageIdByDate } = await import('@/utils/api');
         const msgId = await getFirstMessageIdByDate(date);
+        (e.target as HTMLInputElement).value = '';
 
         if (msgId) {
-            // 使用伪造的 Message 对象调用 handleResultClick 复用跳转逻辑
-            // 只需要 id 即可，其他字段不重要
-            handleResultClick({ id: msgId } as Message);
+            close();
+            navigateToMessage(msgId);
         } else {
-            // 简单提示（可以考虑改为 Toast）
             alert(`日期 ${date} 没有找到消息`);
         }
-
-        // 清空选择，以便下次还能选同一天（虽然意义不大，但符合习惯）
-        (e.target as HTMLInputElement).value = '';
     };
 
     if (!isSearchActive.value) return null;
 
     return (
         <div id="dollars-search-ui">
-
             <div class="search-panel-row">
                 <div class="search-bar" style={{ flex: 1, marginBottom: 0 }}>
                     <div
@@ -224,17 +123,16 @@ export function SearchPanel() {
                         type="search"
                         placeholder="搜索消息..."
                         value={searchQuery.value}
-                        onInput={handleInput}
+                        onInput={(e) => { searchQuery.value = (e.target as HTMLInputElement).value; }}
                         autoFocus
                     />
                     <div
                         class="search-close-btn"
-                        onClick={handleClose}
+                        onClick={close}
                         dangerouslySetInnerHTML={{ __html: iconClose }}
                     />
                 </div>
 
-                {/* 独立的日期跳转按钮 */}
                 <div
                     class="search-calendar-btn"
                     onClick={openDatePicker}
@@ -242,16 +140,14 @@ export function SearchPanel() {
                     dangerouslySetInnerHTML={{ __html: iconCalendar }}
                 />
 
-                {/* 相册模式按钮 */}
                 <div
-                    class={`search-gallery-btn ${isGalleryMode.value ? 'active' : ''}`}
-                    onClick={toggleGalleryMode}
+                    class={`search-gallery-btn ${searchGalleryMode.value ? 'active' : ''}`}
+                    onClick={() => { searchGalleryMode.value = !searchGalleryMode.value; }}
                     title="相册模式"
                     dangerouslySetInnerHTML={{ __html: iconPhoto }}
                 />
             </div>
 
-            {/* Hidden Date Input */}
             <input
                 type="date"
                 ref={dateInputRef}
@@ -259,8 +155,8 @@ export function SearchPanel() {
                 style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }}
             />
 
-            {isGalleryMode.value ? (
-                <GalleryPanel onClose={() => isGalleryMode.value = false} />
+            {searchGalleryMode.value ? (
+                <GalleryPanel onClose={() => { searchGalleryMode.value = false; }} />
             ) : (
                 <div id="dollars-search-results" onScroll={handleScroll}>
                     {results.value.map(msg => (
@@ -284,11 +180,11 @@ export function SearchPanel() {
                         </div>
                     ))}
 
-                    {isLoading.value && (
+                    {loading.value && (
                         <div class="search-status-msg">搜索中...</div>
                     )}
 
-                    {!isLoading.value && results.value.length === 0 && searchQuery.value && (
+                    {!loading.value && results.value.length === 0 && searchQuery.value && (
                         <div class="search-status-msg">未找到相关消息</div>
                     )}
                 </div>
