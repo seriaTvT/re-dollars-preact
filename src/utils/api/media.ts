@@ -42,6 +42,16 @@ const UPLOAD_MAX_IMAGE_SIZE = 50 * 1024 * 1024; // 50MB
 const UPLOAD_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
 const UPLOAD_TIMEOUT_MS = 60_000; // 60s
 const UPLOAD_MAX_RETRIES = 1;
+const IMAGE_EXTENSIONS = new Set([
+    '.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif',
+    '.bmp', '.tiff', '.tif', '.svg', '.heic', '.heif',
+    '.ico', '.jxl', '.apng',
+]);
+
+function getFileExtension(filename: string) {
+    const dotIndex = filename.lastIndexOf('.');
+    return dotIndex >= 0 ? filename.slice(dotIndex).toLowerCase() : '';
+}
 
 export async function uploadFile(file: File): Promise<{
     status: boolean;
@@ -50,7 +60,7 @@ export async function uploadFile(file: File): Promise<{
     height?: number;
     error?: string;
 }> {
-    const isImage = file.type.startsWith('image/');
+    const isImage = file.type.startsWith('image/') || IMAGE_EXTENSIONS.has(getFileExtension(file.name));
     const maxSize = isImage ? UPLOAD_MAX_IMAGE_SIZE : UPLOAD_MAX_FILE_SIZE;
 
     // Client-side file size validation

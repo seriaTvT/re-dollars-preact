@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from 'preact/hooks';
-import { uploadFile } from '@/utils/api';
+import { uploadFile } from '@/utils/api/media';
 import type { RichInputController } from '@/utils/richInput';
 
 export type MediaItem = {
@@ -21,6 +21,7 @@ const ALLOWED_VIDEO_EXTS = new Set([
 const ALLOWED_AUDIO_EXTS = new Set([
     '.mp3', '.wav', '.ogg', '.aac', '.flac', '.weba',
 ]);
+export const MEDIA_FILE_ACCEPT = 'image/*,.heic,.heif,video/*';
 
 export function useMediaUpload(
     inputControllerRef: { current: RichInputController | null }
@@ -121,7 +122,7 @@ export function useMediaUpload(
             return;
         }
         if (fileInputRef.current) {
-            fileInputRef.current.accept = 'image/*,video/*';
+            fileInputRef.current.accept = MEDIA_FILE_ACCEPT;
             fileInputRef.current.click();
         }
     }, []);

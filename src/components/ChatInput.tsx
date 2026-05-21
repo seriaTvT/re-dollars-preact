@@ -26,7 +26,7 @@ import { SmileyPanel } from './SmileyPanel';
 import { TextFormatter } from './TextFormatter';
 import { MentionCompleter } from './MentionCompleter';
 import { MediaPreview } from './MediaPreview';
-import { useMediaUpload } from '@/hooks/useMediaUpload';
+import { MEDIA_FILE_ACCEPT, useMediaUpload } from '@/hooks/useMediaUpload';
 import {
     extractRichInputText,
     getRichInputSelection,
@@ -604,7 +604,7 @@ export function ChatInput() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/*,video/*"
+                            accept={MEDIA_FILE_ACCEPT}
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />
