@@ -245,11 +245,9 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
         }
     };
 
-    const className = [
-        'dollars-text-formatter',
-        formatterVisible.value && 'visible',
-        formatterLinkMode.value && 'link-mode'
-    ].filter(Boolean).join(' ');
+    const className = 'dollars-text-formatter' +
+        (formatterVisible.value ? ' visible' : '') +
+        (formatterLinkMode.value ? ' link-mode' : '');
 
     const formatterContent = (
         <div

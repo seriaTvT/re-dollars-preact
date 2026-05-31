@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'preact/hooks';
-import { signal, computed } from '@preact/signals';
+import { signal } from '@preact/signals';
 import { escapeHTML, getAvatarUrl, stripBBCode, decodeHTML } from '@/utils/format';
 import { fetchNotifications, markNotificationRead, markAllNotificationsRead } from '@/utils/api';
 import { toggleChat, unreadJumpList, pendingJumpToMessage } from '@/stores/chat';
@@ -8,7 +8,6 @@ import type { Notification } from '@/types';
 
 // Notification store
 export const notifications = signal<Notification[]>([]);
-export const notificationCount = computed(() => notifications.value.length);
 
 // Dock 图标闪烁状态 (用于精简模式)
 export const dockIconFlashing = signal(false);
@@ -147,7 +146,7 @@ export function NotificationManager() {
         }
     }, []);
 
-    const count = notificationCount.value;
+    const count = notifications.value.length;
 
     // 精简模式下不显示通知面板 (只闪烁图标)
     if (settings.value.notificationType === 'simple') {

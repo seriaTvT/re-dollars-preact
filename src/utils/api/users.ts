@@ -1,4 +1,29 @@
-import { BACKEND_URL } from '../constants';
+import { apiUrl } from './url';
+
+export interface MentionSearchUser {
+    id: number;
+    uid?: number;
+    username: string;
+    nickname: string;
+    avatar_url?: string;
+    sign?: string;
+}
+
+export function mentionSearchUrl(query: string, limit: number): string {
+    return apiUrl('/users/search', { q: query, exact: true, limit });
+}
+
+export async function searchMentionUsers(query: string, limit: number): Promise<MentionSearchUser[]> {
+    try {
+        const res = await fetch(mentionSearchUrl(query, limit));
+        if (!res.ok) return [];
+
+        const json = await res.json();
+        return Array.isArray(json.data) ? json.data : [];
+    } catch (e) {
+        return [];
+    }
+}
 
 /**
  * 获取用户资料
@@ -19,7 +44,7 @@ export async function fetchUserProfile(userId: string): Promise<{
     };
 } | null> {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/users/${userId}`);
+        const res = await fetch(apiUrl(`/users/${userId}`));
         const data = await res.json();
 
         if (data.status && data.data) {
@@ -46,7 +71,7 @@ export async function fetchUserProfile(userId: string): Promise<{
  */
 export async function lookupUsersByName(usernames: string[]): Promise<Record<string, { id: number; nickname: string }>> {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/users/lookup-by-name`, {
+        const res = await fetch(apiUrl('/users/lookup-by-name'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ usernames }),

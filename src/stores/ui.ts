@@ -25,7 +25,6 @@ export {
     profileCardAnchor,
     userProfilePanelUserId,
     imageViewerItems,
-    imageViewerImages,
     imageViewerIndex,
     imageViewerSource,
     reactionPickerPosition,
@@ -45,13 +44,6 @@ export {
     hideImageViewer,
     toggleSearch,
 
-    // New unified API
-    showPanel,
-    hidePanel,
-    togglePanel,
-    activePanels,
-    closingPanels,
-    type PanelId,
 } from '@/stores/panels';
 
 // UI 状态

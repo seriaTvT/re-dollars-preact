@@ -1,17 +1,18 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-let processBBCode: (typeof import('./bbcode'))['processBBCode'];
-let settings: (typeof import('../stores/user'))['settings'];
-
-beforeAll(async () => {
-    vi.stubGlobal('window', {
-        CHOBITS_UID: '1',
-        CHOBITS_USERNAME: 'tester',
+vi.hoisted(() => {
+    Object.defineProperty(globalThis, 'window', {
+        value: {
+            CHOBITS_UID: '1',
+            CHOBITS_USERNAME: 'tester',
+        },
+        configurable: true,
+        writable: true,
     });
-
-    ({ processBBCode } = await import('./bbcode'));
-    ({ settings } = await import('../stores/user'));
 });
+
+import { processBBCode } from './bbcode';
+import { settings } from '../stores/user';
 
 beforeEach(() => {
     settings.value = {
@@ -23,6 +24,7 @@ beforeEach(() => {
 
 afterAll(() => {
     vi.unstubAllGlobals();
+    delete (globalThis as any).window;
 });
 
 describe('processBBCode media layout', () => {
@@ -34,7 +36,7 @@ describe('processBBCode media layout', () => {
         expect(html).not.toContain('<br><div class="message-media-block">');
     });
 
-    it('renders consecutive images as separate media blocks', () => {
+    it('renders consecutive images in a single media grid', () => {
         const html = processBBCode([
             '[img]https://example.com/1.jpg[/img]',
             '[img]https://example.com/2.jpg[/img]',
@@ -42,7 +44,9 @@ describe('processBBCode media layout', () => {
         ].join('\n'));
 
         expect(html).not.toContain('class="message-media-group"');
-        expect((html.match(/class="message-media-block"/g) || [])).toHaveLength(3);
+        expect((html.match(/class="message-media-block"/g) || [])).toHaveLength(1);
+        expect(html).toContain('class="message-media-grid"');
+        expect(html).toContain('style="--media-count: 3"');
         expect((html.match(/class="image-container/g) || [])).toHaveLength(3);
     });
 

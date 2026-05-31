@@ -1,8 +1,32 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
-import preact from '@preact/preset-vite';
 import { resolve } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
+
+const rawCssModuleId = 'virtual:dollars-css';
+const resolvedRawCssModuleId = `\0${rawCssModuleId}`;
+
+function escapeTemplateLiteral(value: string) {
+    return value.replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
+}
+
+function rawCssModule(): import('rollup').Plugin {
+    return {
+        name: 'raw-css-module',
+        resolveId(id) {
+            if (id === rawCssModuleId) {
+                return resolvedRawCssModuleId;
+            }
+            return null;
+        },
+        load(id) {
+            if (id !== resolvedRawCssModuleId) return null;
+
+            const css = readFileSync(resolve(__dirname, 'src/styles/index.css'), 'utf8');
+            return `export default \`${escapeTemplateLiteral(css)}\`;`;
+        },
+    };
+}
 
 // 將 Vite 注入的 __vitePreload 替換為最小實現，減少體積（單文件 IIFE 不需要 preload）
 function stripVitePreload(userscriptBanner: string): import('rollup').Plugin {
@@ -12,9 +36,20 @@ function stripVitePreload(userscriptBanner: string): import('rollup').Plugin {
             for (const f of Object.values(bundle)) {
                 if (f.type !== 'chunk' || f.fileName !== 'userscript.user.js') continue;
                 const stub = `const __vitePreload = (m)=>m();`;
-                const re = /const scriptRel = 'modulepreload';const assetsURL = function\([^)]*\)[^;]*;const seen = \{\};const __vitePreload = function preload\([^)]*\)\s*\{[\s\S]*?return baseModule\(\)\.catch\(handlePreloadError\);\s*\}\);\s*\};/;
+                const re = /const scriptRel = [\s\S]*?;const assetsURL = function\([^)]*\)[^;]*;const seen = \{\};const __vitePreload = function preload\([^)]*\)\s*\{[\s\S]*?return baseModule\(\)\.catch\(handlePreloadError\);\s*\}\);\s*\};/;
                 if (re.test(f.code)) {
                     f.code = f.code.replace(re, stub);
+                }
+                f.code = f.code.replace(
+                    /__vitePreload\(([^,\n]+),false\s+\?\s*__VITE_PRELOAD__\s*:\s*void 0\)/g,
+                    '($1)()'
+                );
+                f.code = f.code.replace(
+                    /__vitePreload\((async \(\) => \{[\s\S]*?\}),false\s+\?\s*__VITE_PRELOAD__\s*:\s*void 0\)/g,
+                    '($1)()'
+                );
+                if (!f.code.includes('__vitePreload(')) {
+                    f.code = f.code.replace(`${stub}\n`, '');
                 }
             }
         },
@@ -44,7 +79,13 @@ const userscriptBanner = `// ==UserScript==
 `;
 
 export default defineConfig({
-    plugins: [preact(), stripVitePreload(userscriptBanner)],
+    plugins: [rawCssModule(), stripVitePreload(userscriptBanner)],
+    esbuild: {
+        jsx: 'transform',
+        jsxFactory: 'h$jsx',
+        jsxFragment: 'Fragment$jsx',
+        jsxInject: `import { h as h$jsx, Fragment as Fragment$jsx } from 'preact';`,
+    },
     resolve: {
         alias: {
             '@': resolve(__dirname, 'src'),
@@ -53,6 +94,7 @@ export default defineConfig({
     build: {
         target: 'esnext',
         minify: false,
+        modulePreload: false,
         cssCodeSplit: false,
         reportCompressedSize: false,
         assetsInlineLimit: 100000,

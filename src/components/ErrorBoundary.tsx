@@ -2,12 +2,10 @@ import { Component, ComponentChildren } from 'preact';
 
 interface Props {
     children: ComponentChildren;
-    fallback?: ComponentChildren;
 }
 
 interface State {
     hasError: boolean;
-    error: Error | null;
 }
 
 /**
@@ -17,23 +15,14 @@ interface State {
 export class ErrorBoundary extends Component<Props, State> {
     state: State = {
         hasError: false,
-        error: null
     };
 
-    static getDerivedStateFromError(error: Error): State {
-        return { hasError: true, error };
-    }
-
-    componentDidCatch(_error: Error, _errorInfo: { componentStack?: string }) {
-        // Error boundary caught an error
+    static getDerivedStateFromError(): State {
+        return { hasError: true };
     }
 
     render() {
         if (this.state.hasError) {
-            if (this.props.fallback) {
-                return this.props.fallback;
-            }
-
             return (
                 <div class="error-fallback" style={{
                     padding: '20px',
@@ -52,7 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
                             color: 'white',
                             cursor: 'pointer',
                         }}
-                        onClick={() => this.setState({ hasError: false, error: null })}
+                        onClick={() => this.setState({ hasError: false })}
                     >
                         重试
                     </button>

@@ -1,50 +1,32 @@
-import { signal, computed } from '@preact/signals';
+import { signal } from '@preact/signals';
 import type { ImageViewerItem } from '@/types';
 
 // Panel identifiers
 export type PanelId = 'smiley' | 'contextMenu' | 'reactionPicker' | 'profileCard' | 'userProfile' | 'search' | 'imageViewer';
 
-// Panels that are mutually exclusive with each other (popover-style panels).
-// Opening one will close the others in this group.
-const EXCLUSIVE_GROUP: ReadonlySet<PanelId> = new Set(['smiley', 'contextMenu', 'profileCard']);
+type PanelState = [ReturnType<typeof signal<boolean>>, ReturnType<typeof signal<boolean>>?, number?];
 
-// Animation durations per panel (ms)
-const ANIMATION_DURATION: Partial<Record<PanelId, number>> = {
-    smiley: 200,
-    contextMenu: 150,
-    reactionPicker: 150,
-    profileCard: 200,
-    userProfile: 250,
+const panels: Record<PanelId, PanelState> = {
+    smiley: [signal(false), signal(false), 200],
+    contextMenu: [signal(false), signal(false), 150],
+    reactionPicker: [signal(false), signal(false), 150],
+    profileCard: [signal(false), signal(false), 200],
+    userProfile: [signal(false), signal(false), 250],
+    search: [signal(false)],
+    imageViewer: [signal(false)],
 };
 
-// --- Core state ---
-
-/** Set of currently open panels */
-export const activePanels = signal<ReadonlySet<PanelId>>(new Set());
-
-/** The panel currently playing its closing animation (at most one at a time per panel) */
-export const closingPanels = signal<ReadonlySet<PanelId>>(new Set());
-
-// --- Computed convenience signals (backward-compatible) ---
-
-export const isSmileyPanelOpen = computed(() => activePanels.value.has('smiley'));
-export const isSmileyPanelClosing = computed(() => closingPanels.value.has('smiley'));
-
-export const isContextMenuOpen = computed(() => activePanels.value.has('contextMenu'));
-export const isContextMenuClosing = computed(() => closingPanels.value.has('contextMenu'));
-
-export const isReactionPickerOpen = computed(() => activePanels.value.has('reactionPicker'));
-export const isReactionPickerClosing = computed(() => closingPanels.value.has('reactionPicker'));
-
-export const isProfileCardOpen = computed(() => activePanels.value.has('profileCard'));
-export const isProfileCardClosing = computed(() => closingPanels.value.has('profileCard'));
-
-export const isUserProfilePanelOpen = computed(() => activePanels.value.has('userProfile'));
-export const isUserProfilePanelClosing = computed(() => closingPanels.value.has('userProfile'));
-
-export const isSearchActive = computed(() => activePanels.value.has('search'));
-
-export const isImageViewerOpen = computed(() => activePanels.value.has('imageViewer'));
+export const isSmileyPanelOpen = panels.smiley[0];
+export const isSmileyPanelClosing = panels.smiley[1]!;
+export const isContextMenuOpen = panels.contextMenu[0];
+export const isContextMenuClosing = panels.contextMenu[1]!;
+export const isReactionPickerOpen = panels.reactionPicker[0];
+export const isReactionPickerClosing = panels.reactionPicker[1]!;
+export const isProfileCardClosing = panels.profileCard[1]!;
+export const isUserProfilePanelOpen = panels.userProfile[0];
+export const isUserProfilePanelClosing = panels.userProfile[1]!;
+export const isSearchActive = panels.search[0];
+export const isImageViewerOpen = panels.imageViewer[0];
 
 // Search panel gallery mode (shared so external components can trigger it)
 export const searchGalleryMode = signal(false);
@@ -67,7 +49,6 @@ export const userProfilePanelUserId = signal<string | null>(null);
 // Image viewer
 export type ImageViewerSource = 'generic' | 'gallery' | 'userProfile';
 export const imageViewerItems = signal<ImageViewerItem[]>([]);
-export const imageViewerImages = computed(() => imageViewerItems.value.map(item => item.src));
 export const imageViewerIndex = signal(0);
 export const imageViewerSource = signal<ImageViewerSource>('generic');
 
@@ -77,42 +58,22 @@ export const reactionPickerPosition = signal({ x: 0, y: 0, width: 280 });
 // --- Internal helpers ---
 
 function addPanel(id: PanelId): void {
-    const next = new Set(activePanels.value);
-    next.add(id);
-    activePanels.value = next;
-
-    // Clear closing state if re-opening
-    if (closingPanels.value.has(id)) {
-        const nextClosing = new Set(closingPanels.value);
-        nextClosing.delete(id);
-        closingPanels.value = nextClosing;
-    }
+    const panel = panels[id];
+    panel[0].value = true;
+    if (panel[1]) panel[1].value = false;
 }
 
 function removePanel(id: PanelId): void {
-    if (!activePanels.value.has(id)) return;
-    const next = new Set(activePanels.value);
-    next.delete(id);
-    activePanels.value = next;
-
-    // Also clear closing state
-    if (closingPanels.value.has(id)) {
-        const nextClosing = new Set(closingPanels.value);
-        nextClosing.delete(id);
-        closingPanels.value = nextClosing;
-    }
-}
-
-function setClosing(id: PanelId): void {
-    const next = new Set(closingPanels.value);
-    next.add(id);
-    closingPanels.value = next;
+    const panel = panels[id];
+    if (!panel[0].value) return;
+    panel[0].value = false;
+    if (panel[1]) panel[1].value = false;
 }
 
 /** Close all panels in the exclusive group except the given one, without animation. */
 function closeExclusiveGroup(except?: PanelId): void {
-    for (const id of EXCLUSIVE_GROUP) {
-        if (id !== except && activePanels.value.has(id)) {
+    for (const id of ['smiley', 'contextMenu', 'profileCard'] as const) {
+        if (id !== except && panels[id][0].value) {
             // Instant close for exclusive siblings
             hidePanelImmediate(id);
         }
@@ -155,7 +116,7 @@ function cleanupPanelState(id: PanelId): void {
  * exclusive panels first. Animated panels clear their closing flag.
  */
 export function showPanel(id: PanelId): void {
-    if (EXCLUSIVE_GROUP.has(id)) {
+    if (id === 'smiley' || id === 'contextMenu' || id === 'profileCard') {
         closeExclusiveGroup(id);
     }
     addPanel(id);
@@ -166,12 +127,14 @@ export function showPanel(id: PanelId): void {
  * After the animation duration, the panel is fully removed.
  */
 export function hidePanel(id: PanelId): void {
-    if (!activePanels.value.has(id)) return;
-    if (closingPanels.value.has(id)) return; // already closing
+    const panel = panels[id];
+    const open = panel[0];
+    const closing = panel[1];
+    if (!open.value || closing?.value) return;
 
-    const duration = ANIMATION_DURATION[id];
+    const duration = panel[2];
     if (duration) {
-        setClosing(id);
+        closing!.value = true;
         setTimeout(() => {
             removePanel(id);
             cleanupPanelState(id);
@@ -186,7 +149,7 @@ export function hidePanel(id: PanelId): void {
  * Toggle a panel open/closed.
  */
 export function togglePanel(id: PanelId, open?: boolean): void {
-    const shouldOpen = open ?? !activePanels.value.has(id);
+    const shouldOpen = open ?? !panels[id][0].value;
     if (shouldOpen) {
         showPanel(id);
     } else {

@@ -2,7 +2,6 @@ import { useEffect, useRef, useCallback } from 'preact/hooks';
 import {
     isImageViewerOpen,
     imageViewerItems,
-    imageViewerImages,
     imageViewerIndex,
     imageViewerSource,
     hideImageViewer,
@@ -89,11 +88,10 @@ export function LightboxViewer() {
     const closing = useRef(false);
 
     const items = imageViewerItems.value;
-    const images = imageViewerImages.value;
     const index = imageViewerIndex.value;
     const source = imageViewerSource.value;
     const visible = isImageViewerOpen.value;
-    const total = images.length;
+    const total = items.length;
     const currentItem = items[index];
 
     const handleCapsuleClick = useCallback((e: MouseEvent) => {
@@ -209,7 +207,7 @@ export function LightboxViewer() {
 
     if (!visible || total === 0) return null;
 
-    const src = images[index];
+    const src = currentItem.src;
 
     // --- Touch handlers ---
     const onTouchStart = (e: TouchEvent) => {

@@ -260,16 +260,8 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                 const savedBrowse = loadBrowsePosition();
                 const currentUnreadCount = unreadCount.value;
 
-                console.log('[Browse Position Debug]', {
-                    savedBrowse,
-                    currentUnreadCount,
-                    lastReadId: lastReadId.value,
-                });
-
                 // 如果有保存的浏览位置，恢复到该位置
                 if (savedBrowse) {
-                    console.log('[Browse Position] Attempting to restore to message:', savedBrowse.anchorMessageId);
-
                     // 恢复到浏览位置
                     unreadWhileScrolled.value = currentUnreadCount;
                     showScrollBottomBtn.value = currentUnreadCount > 0;
@@ -304,11 +296,9 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                                 const browseEl = document.getElementById(`db-${savedBrowse.anchorMessageId}`);
                                 if (browseEl && bodyRef.current) {
                                     bodyRef.current.scrollTop = browseEl.offsetTop - 10;
-                                    console.log('[Browse Position] Restored successfully');
                                 } else if (bodyRef.current) {
                                     // 锚点消息不在加载的范围内，滚动到顶部
                                     bodyRef.current.scrollTop = 0;
-                                    console.warn('[Browse Position] Anchor message not found in loaded messages, scrolled to top');
                                 }
 
                                 syncPresenceSubscriptions();
@@ -321,7 +311,6 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                         return;
                     } else {
                         // 浏览位置的消息不存在或加载失败，清除无效的浏览位置
-                        console.warn('[Browse Position] Failed to load context, clearing invalid browse position');
                         clearBrowsePosition();
                         // 继续执行 fallback 逻辑
                     }

@@ -1,9 +1,31 @@
 // 配置常量
-export const BACKEND_URL = 'https://bgmchat.ry.mk';
-export const UPLOAD_BASE_URL = 'https://lsky.ry.mk';
-export const WEBSOCKET_URL = 'wss://bgmchat.ry.mk/ws';
+const DEFAULT_BACKEND_URL = 'https://rd.ry.mk';
+
+function trimTrailingSlash(value: string): string {
+    return value.replace(/\/+$/, '');
+}
+
+export const BACKEND_URL = trimTrailingSlash(
+    import.meta.env.VITE_DOLLARS_BACKEND_URL || DEFAULT_BACKEND_URL
+);
+export const BACKEND_API_URL = trimTrailingSlash(
+    import.meta.env.VITE_DOLLARS_BACKEND_API_URL || `${BACKEND_URL}/api/v1`
+);
+export const UPLOAD_BASE_URL = trimTrailingSlash(
+    import.meta.env.VITE_DOLLARS_UPLOAD_BASE_URL || 'https://lsky.ry.mk'
+);
+export const UPLOAD_API_URL = trimTrailingSlash(
+    import.meta.env.VITE_DOLLARS_UPLOAD_API_URL || `${UPLOAD_BASE_URL}/api/upload`
+);
+export const FILE_UPLOAD_API_URL = trimTrailingSlash(
+    import.meta.env.VITE_DOLLARS_FILE_UPLOAD_API_URL || `${BACKEND_API_URL}/upload/file`
+);
+export const WEBSOCKET_URL = (
+    import.meta.env.VITE_DOLLARS_WEBSOCKET_URL ||
+    `${BACKEND_URL.replace(/^http/, 'ws')}/ws`
+);
 export const BGM_APP_ID = 'bgm460268b348b05f082';
-export const BGM_CALLBACK_URL = `https://bgmchat.ry.mk/api/auth/callback`;
+export const BGM_CALLBACK_URL = `${BACKEND_API_URL}/auth/callback`;
 
 // UI 常量
 export const MESSAGE_GROUP_TIME_GAP = 300;

@@ -5,6 +5,7 @@ export {
     fetchNewerMessages,
     getUnreadCount,
     fetchMessageContext,
+    confirmSentMessage,
     sendMessage,
     getFirstMessageIdByDate,
     editMessage,
@@ -25,6 +26,7 @@ export {
 export {
     fetchGalleryMedia,
     uploadFile,
+    uploadImages,
 } from './media';
 
 export {

@@ -3,6 +3,7 @@ import {
     replyingTo,
     editingMessage,
     cancelReplyOrEdit,
+    addMessage,
     addOptimisticMessage,
     removeOptimisticMessage,
     pendingMention,
@@ -15,7 +16,7 @@ import {
 } from '@/stores/chat';
 import { toggleSmileyPanel, inputAreaHeight } from '@/stores/ui';
 import { userInfo, settings } from '@/stores/user';
-import { sendMessage as apiSendMessage, editMessage as apiEditMessage, lookupUsersByName } from '@/utils/api';
+import { confirmSentMessage, sendMessage as apiSendMessage, editMessage as apiEditMessage, lookupUsersByName } from '@/utils/api';
 import { sendTypingStart, sendTypingStop, sendPendingMessage } from '@/hooks/useWebSocket';
 import { DRAFT_SAVE_DELAY, TYPING_STOP_DELAY } from '@/utils/constants';
 import { escapeHTML, getAvatarUrl } from '@/utils/format';
@@ -52,6 +53,8 @@ export function ChatInput() {
     const isTypingRef = useRef(false);
     const draftSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isComposingRef = useRef(false);
+    const compositionEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const isCompositionJustEndedRef = useRef(false);
 
     const {
         fileInputRef,
@@ -273,6 +276,14 @@ export function ChatInput() {
 
     const handleCompositionEnd = useCallback(() => {
         isComposingRef.current = false;
+        isCompositionJustEndedRef.current = true;
+        if (compositionEndTimerRef.current) {
+            clearTimeout(compositionEndTimerRef.current);
+        }
+        compositionEndTimerRef.current = setTimeout(() => {
+            isCompositionJustEndedRef.current = false;
+            compositionEndTimerRef.current = null;
+        }, 50);
         handleEditorInput();
     }, [handleEditorInput]);
 
@@ -382,6 +393,9 @@ export function ChatInput() {
             if (draftSaveTimerRef.current) {
                 clearTimeout(draftSaveTimerRef.current);
             }
+            if (compositionEndTimerRef.current) {
+                clearTimeout(compositionEndTimerRef.current);
+            }
             if (isTypingRef.current) {
                 sendTypingStop();
             }
@@ -458,6 +472,10 @@ export function ChatInput() {
                 if (!result.status) {
                     removeOptimisticMessage(tempId);
                     alert(result.error || '发送失败');
+                } else {
+                    void confirmSentMessage(transformedContent).then((message) => {
+                        if (message) addMessage(message, stableKey);
+                    });
                 }
             }
         } catch (e) {
@@ -469,6 +487,10 @@ export function ChatInput() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key !== 'Enter') return;
+
+        if (isComposingRef.current || isCompositionJustEndedRef.current || e.keyCode === 229) {
+            return;
+        }
 
         const isShortcut = e.ctrlKey || e.metaKey;
         const shouldSend =
@@ -605,6 +627,7 @@ export function ChatInput() {
                             ref={fileInputRef}
                             type="file"
                             accept={MEDIA_FILE_ACCEPT}
+                            multiple
                             style={{ display: 'none' }}
                             onChange={handleFileChange}
                         />

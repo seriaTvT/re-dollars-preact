@@ -1,5 +1,5 @@
 import { signal } from '@preact/signals';
-import { BACKEND_URL } from '@/utils/constants';
+import { apiUrl } from '@/utils/api/url';
 import { userInfo } from './user';
 import { getChiiApp } from '@/utils/globals';
 
@@ -30,7 +30,7 @@ export function initFavorites() {
 async function syncFavorites() {
     if (!userInfo.value.id) return;
     try {
-        const res = await fetch(`${BACKEND_URL}/api/favorites?uid=${userInfo.value.id}`);
+        const res = await fetch(apiUrl('/favorites', { uid: userInfo.value.id }));
         if (!res.ok) return;
         const { data } = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -56,7 +56,7 @@ export function addFavorite(url: string) {
 
         // Granular backend sync
         if (userInfo.value.id) {
-            fetch(`${BACKEND_URL}/api/favorites/add`, {
+            fetch(apiUrl('/favorites/add'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userInfo.value.id, image_url: url })
@@ -73,7 +73,7 @@ export function removeFavorite(url: string) {
 
     // Granular backend sync
     if (userInfo.value.id) {
-        fetch(`${BACKEND_URL}/api/favorites/remove`, {
+        fetch(apiUrl('/favorites/remove'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_id: userInfo.value.id, image_url: url })

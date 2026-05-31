@@ -10,7 +10,7 @@ import { ContextMenu } from './components/ContextMenu';
 import { ProfileCard } from './components/ProfileCard';
 import { DockButton } from './components/DockButton';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { ImageViewer } from './components/ImageViewer';
+import { LightboxViewer } from './components/LightboxViewer';
 import { NotificationManager, loadNotifications } from './components/NotificationManager';
 import { initWebSocket } from '@/hooks/useWebSocket';
 import { signal } from '@preact/signals';
@@ -103,7 +103,7 @@ export function App() {
                     <ChatWindow skipEntryAnimation={!needsEntryAnimation && isChatOpen.value} />
                     <ContextMenu />
                     <ProfileCard />
-                    <ImageViewer />
+                    <LightboxViewer />
                 </ErrorBoundary>
             )}
         </div>

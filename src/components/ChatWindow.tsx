@@ -292,15 +292,13 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
         }
     };
 
-    const className = [
-        'dollars-chat-window',
-        (animateIn && isChatOpen.value) && 'visible',
-        isMobileViewport.value && 'mobile',
-        isMaximized.value && 'maximized',
-        isSearchActive.value && 'search-active',
-        isNarrowLayout.value && 'is-narrow',
-        mobileChatViewActive.value && 'mobile-chat-active',
-    ].filter(Boolean).join(' ');
+    const className = 'dollars-chat-window' +
+        (animateIn && isChatOpen.value ? ' visible' : '') +
+        (isMobileViewport.value ? ' mobile' : '') +
+        (isMaximized.value ? ' maximized' : '') +
+        (isSearchActive.value ? ' search-active' : '') +
+        (isNarrowLayout.value ? ' is-narrow' : '') +
+        (mobileChatViewActive.value ? ' mobile-chat-active' : '');
 
     // BMO 观察器 - 自动渲染新增的 .bmo 元素
     useEffect(() => {

@@ -1,4 +1,3 @@
-import { computed } from '@preact/signals';
 import { onlineUsers, pendingMention } from '@/stores/chat';
 import { showUserProfile } from '@/stores/ui';
 import { useLongPress } from '@/hooks/useLongPress';
@@ -13,10 +12,8 @@ interface UserAvatarProps {
 export function UserAvatar({ uid, src, nickname, className = '' }: UserAvatarProps) {
     // Reactive online status
     // uid=0 is system user (Bangumi), always online
-    const isOnline = computed(() => {
-        const uidStr = String(uid);
-        return uidStr === '0' || onlineUsers.value.has(uidStr);
-    });
+    const uidStr = String(uid);
+    const isOnline = uidStr === '0' || onlineUsers.value.has(uidStr);
 
     const handleShortClick = (e: MouseEvent | TouchEvent) => {
         // Prevent default to stop "ghost click" on mobile which might close the profile card immediately
@@ -52,7 +49,7 @@ export function UserAvatar({ uid, src, nickname, className = '' }: UserAvatarPro
 
     return (
         <img
-            class={`avatar ${isOnline.value ? 'online' : ''} ${className}`}
+            class={`avatar ${isOnline ? 'online' : ''} ${className}`}
             src={src}
             alt={nickname}
             data-uid={uid}

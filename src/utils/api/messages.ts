@@ -1,24 +1,55 @@
-import { BACKEND_URL } from '../constants';
 import { getAuthHeaders, userInfo } from '@/stores/user';
 import type { Message } from '@/types';
+import { apiUrl } from './url';
 
 // 统一的消息响应解析器
 const parseMessages = (data: any): Message[] => {
     const arr = Array.isArray(data) ? data : data?.messages || data?.results || [];
-    return arr.map((m: any) => {
-        if (m.id != null) m.id = Number(m.id);
-        if (m.uid != null) m.uid = Number(m.uid);
-        if (m.reply_to_id != null) m.reply_to_id = Number(m.reply_to_id);
-        if (m.reply_details?.uid != null) m.reply_details.uid = Number(m.reply_details.uid);
-        return m;
-    });
+    return arr.map(normalizeMessage);
 };
+
+const normalizeMessage = (m: any): Message => {
+    if (m.id != null) m.id = Number(m.id);
+    if (m.uid != null) m.uid = Number(m.uid);
+    if (m.reply_to_id != null) m.reply_to_id = Number(m.reply_to_id);
+    if (m.reply_details?.uid != null) m.reply_details.uid = Number(m.reply_details.uid);
+    return m as Message;
+};
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export async function confirmSentMessage(content: string, attempts = 12): Promise<Message | undefined> {
+    const uid = userInfo.value.id;
+    if (!uid) return undefined;
+
+    for (let attempt = 0; attempt < attempts; attempt++) {
+        if (attempt > 0) await delay(Math.min(250 + attempt * 125, 1000));
+
+        try {
+            const res = await fetch(apiUrl('/messages/confirm'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid, message: content }),
+            });
+            if (!res.ok) continue;
+
+            const data = await res.json();
+            if (data.status && data.found && data.message) {
+                return normalizeMessage(data.message);
+            }
+        } catch (e) {
+            // keep polling briefly; websocket delivery can still confirm the optimistic message
+        }
+    }
+
+    return undefined;
+}
 
 /**
  * 获取最近消息
  */
 export async function fetchRecentMessages(limit = 50): Promise<Message[]> {
-    const res = await fetch(`${BACKEND_URL}/api/messages?limit=${limit}`);
+    const res = await fetch(apiUrl('/messages', { limit }));
     if (!res.ok) return [];
     return parseMessages(await res.json());
 }
@@ -27,7 +58,7 @@ export async function fetchRecentMessages(limit = 50): Promise<Message[]> {
  * 获取历史消息 (向上滚动)
  */
 export async function fetchHistoryMessages(beforeId: number, limit = 30): Promise<Message[]> {
-    const res = await fetch(`${BACKEND_URL}/api/messages?before_id=${beforeId}&limit=${limit}`);
+    const res = await fetch(apiUrl('/messages', { before_id: beforeId, limit }));
     if (!res.ok) return [];
     return parseMessages(await res.json());
 }
@@ -36,7 +67,7 @@ export async function fetchHistoryMessages(beforeId: number, limit = 30): Promis
  * 获取更新消息 (向下滚动)
  */
 export async function fetchNewerMessages(afterId: number, limit = 30): Promise<Message[]> {
-    const res = await fetch(`${BACKEND_URL}/api/messages?since_db_id=${afterId}&limit=${limit}`);
+    const res = await fetch(apiUrl('/messages', { since_db_id: afterId, limit }));
     if (!res.ok) return [];
     return parseMessages(await res.json());
 }
@@ -60,7 +91,7 @@ export async function getUnreadCount(sinceId: number, uid: number): Promise<{
     latest_id: number;
 } | null> {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/messages/unread-count?since_db_id=${sinceId}&uid=${uid}`);
+        const res = await fetch(apiUrl('/messages/unread-count', { since_db_id: sinceId, uid }));
         if (!res.ok) return null;
         const data = await res.json();
         return {
@@ -76,7 +107,7 @@ export async function getUnreadCount(sinceId: number, uid: number): Promise<{
  * 获取消息上下文
  */
 export async function fetchMessageContext(messageId: number, before = 30, after = 30): Promise<MessageContextResponse | null> {
-    const res = await fetch(`${BACKEND_URL}/api/messages/context/${messageId}?before=${before}&after=${after}&extended=1`);
+    const res = await fetch(apiUrl(`/messages/context/${messageId}`, { before, after, extended: 1 }));
     if (!res.ok) return null;
 
     const data = await res.json();
@@ -93,7 +124,7 @@ export async function fetchMessageContext(messageId: number, before = 30, after 
 /**
  * 发送消息
  */
-export async function sendMessage(content: string): Promise<{ status: boolean; message?: Message; error?: string }> {
+export async function sendMessage(content: string): Promise<{ status: boolean; error?: string }> {
     try {
         const formhash = userInfo.value.formhash;
 
@@ -110,11 +141,8 @@ export async function sendMessage(content: string): Promise<{ status: boolean; m
             body: params,
         });
 
-        if (res.ok) {
-            return { status: true };
-        } else {
-            return { status: false, error: 'Network response was not ok' };
-        }
+        if (res.ok) return { status: true };
+        return { status: false, error: 'Network response was not ok' };
     } catch (e) {
         return { status: false, error: String(e) };
     }
@@ -125,7 +153,7 @@ export async function sendMessage(content: string): Promise<{ status: boolean; m
  */
 export async function getFirstMessageIdByDate(date: string): Promise<number | null> {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/messages/by-date?date=${date}&first_id_only=true`);
+        const res = await fetch(apiUrl('/messages/by-date', { date, first_id_only: true }));
         if (!res.ok) return null;
         const data = await res.json();
         return data.status ? data.id : null;
@@ -138,7 +166,7 @@ export async function getFirstMessageIdByDate(date: string): Promise<number | nu
  * 编辑消息
  */
 export async function editMessage(messageId: number, content: string): Promise<{ status: boolean; error?: string }> {
-    const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}`, {
+    const res = await fetch(apiUrl(`/messages/${messageId}`), {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -156,7 +184,7 @@ export async function editMessage(messageId: number, content: string): Promise<{
  * 删除消息
  */
 export async function deleteMessage(messageId: number): Promise<{ status: boolean; error?: string }> {
-    const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}`, {
+    const res = await fetch(apiUrl(`/messages/${messageId}`), {
         method: 'DELETE',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -170,7 +198,7 @@ export async function deleteMessage(messageId: number): Promise<{ status: boolea
  * 切换表情反应
  */
 export async function toggleReaction(messageId: number, emoji: string): Promise<{ status: boolean; action?: 'add' | 'remove' }> {
-    const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}/reactions`, {
+    const res = await fetch(apiUrl(`/messages/${messageId}/reactions`), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -197,7 +225,7 @@ export async function searchMessages(query: string, offset = 0, limit = 20): Pro
     hasMore: boolean;
 }> {
     const res = await fetch(
-        `${BACKEND_URL}/api/search?q=${encodeURIComponent(query)}&offset=${offset}&limit=${limit}`
+        apiUrl('/search', { q: query, offset, limit })
     );
     const data = await res.json();
 
@@ -216,7 +244,7 @@ export async function searchMessages(query: string, offset = 0, limit = 20): Pro
  */
 export async function fetchNotifications(uid: string): Promise<any[]> {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/notifications?uid=${uid}`);
+        const res = await fetch(apiUrl('/notifications', { uid }));
         const data = await res.json();
 
         if (data.status && data.notifications) {
@@ -233,7 +261,7 @@ export async function fetchNotifications(uid: string): Promise<any[]> {
  * 标记通知已读
  */
 export async function markNotificationRead(notifId: number, uid: string): Promise<void> {
-    await fetch(`${BACKEND_URL}/api/notifications/${notifId}/read`, {
+    await fetch(apiUrl(`/notifications/${notifId}/read`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid }),
@@ -244,7 +272,7 @@ export async function markNotificationRead(notifId: number, uid: string): Promis
  * 标记所有通知已读
  */
 export async function markAllNotificationsRead(uid: string): Promise<void> {
-    await fetch(`${BACKEND_URL}/api/notifications/read-all`, {
+    await fetch(apiUrl('/notifications/read-all'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid }),

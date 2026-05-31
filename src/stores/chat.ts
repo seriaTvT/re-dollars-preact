@@ -147,6 +147,10 @@ export const isAtBottom = signal(true);
 // 消息操作函数
 // ============================================================================
 
+function normalizePendingContent(content: string) {
+    return content.replace(/\s+/g, ' ').trim();
+}
+
 /**
  * 添加单条消息 (通常由 WebSocket 新消息触发)
  * @param msg - 消息对象
@@ -163,6 +167,27 @@ export function addMessage(msg: Message, tempId?: string) {
         if (tempId) {
             for (const [id, m] of map) {
                 if (m.state === 'sending' && m.stableKey === tempId) {
+                    inheritedStableKey = m.stableKey;
+                    matchedTempId = id;
+                    map.delete(id);
+                    replacedOptimistic = true;
+                    break;
+                }
+            }
+        }
+
+        // Backend scraper broadcasts do not know the client-side tempId. Match
+        // the pending self-message by normalized content to avoid duplicate
+        // optimistic bubbles when websocket delivery wins the confirm poll.
+        if (matchedTempId === undefined) {
+            const incomingContent = normalizePendingContent(msg.message ?? '');
+            for (const [id, m] of map) {
+                if (
+                    m.state === 'sending' &&
+                    String(m.uid) === String(msg.uid) &&
+                    normalizePendingContent(m.message ?? '') === incomingContent &&
+                    Math.abs(Number(m.timestamp ?? 0) - Number(msg.timestamp ?? 0)) <= 30
+                ) {
                     inheritedStableKey = m.stableKey;
                     matchedTempId = id;
                     map.delete(id);
@@ -439,4 +464,3 @@ export function cancelReplyOrEdit() {
     replyingTo.value = null;
     editingMessage.value = null;
 }
-

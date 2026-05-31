@@ -1,6 +1,7 @@
 import { signal } from '@preact/signals';
 import type { UserInfo, Settings } from '@/types';
 import { getChiiApp } from '@/utils/globals';
+import { lookupUsersByName } from '@/utils/api/users';
 
 // 用户状态
 export const isLoggedIn = signal(false);
@@ -44,11 +45,11 @@ export async function initializeBlockedUsers() {
         if (cloudSettings?.dollars_blocked_cache) {
             cache = JSON.parse(cloudSettings.dollars_blocked_cache);
         }
-    } catch (e) {
-        console.warn('[Re:Dollars] Failed to parse blocked users cache', e);
+    } catch {
+        // ignore
     }
 
-    const fetchPromises: Promise<void>[] = [];
+    const usernamesToResolve: string[] = [];
 
     for (const u of list) {
         const uStr = String(u);
@@ -61,25 +62,25 @@ export async function initializeBlockedUsers() {
             if (cache[uStr]) {
                 newBlockedUsers.add(String(cache[uStr]));
             } else {
-                fetchPromises.push(
-                    fetch(`https://api.bgm.tv/v0/users/${uStr}`)
-                        .then(r => r.ok ? r.json() : null)
-                        .then(d => {
-                            if (d?.id) {
-                                const id = String(d.id);
-                                newBlockedUsers.add(id);
-                                cache[uStr] = id;
-                                cacheDirty = true;
-                            }
-                        })
-                        .catch((e) => console.error(`[Re:Dollars] Failed to resolve user ${uStr}`, e))
-                );
+                usernamesToResolve.push(uStr);
             }
         }
     }
 
-    if (fetchPromises.length) {
-        await Promise.all(fetchPromises);
+    if (usernamesToResolve.length) {
+        try {
+            const resolved = await lookupUsersByName(usernamesToResolve);
+            for (const username of usernamesToResolve) {
+                const user = resolved[username];
+                if (!user?.id) continue;
+                const id = String(user.id);
+                newBlockedUsers.add(id);
+                cache[username] = id;
+                cacheDirty = true;
+            }
+        } catch {
+            // ignore
+        }
     }
 
     blockedUsers.value = newBlockedUsers;

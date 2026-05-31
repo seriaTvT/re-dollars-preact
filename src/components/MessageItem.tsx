@@ -1,7 +1,7 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'preact/hooks';
 import { isMobile } from '@/utils/format';
 import { memo } from '@/utils/memo';
-import { getRawMessage, setReplyTo, newMessageIds, retryMessage } from '@/stores/chat';
+import { addMessage, getRawMessage, setReplyTo, newMessageIds, retryMessage } from '@/stores/chat';
 import { settings } from '@/stores/user';
 import type { Message } from '@/types';
 import { processBBCode, renderReplyQuote, stripQuotes } from '@/utils/bbcode';
@@ -90,7 +90,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     // 提取原始值用于依赖
     const messageId = message.id;
     const messageText = message.message;
-    const isDeleted = message.is_deleted;
+    const isDeleted = !!message.is_deleted;
     const editedAt = message.edited_at;
     const replyToId = message.reply_to_id;
     const replyDetails = message.reply_details;
@@ -381,12 +381,17 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     const handleRetry = useCallback(async () => {
         const result = retryMessage(messageId);
         if (result) {
-            const [{ sendPendingMessage }, { sendMessage: apiSendMessage }] = await Promise.all([
+            const [{ sendPendingMessage }, { sendMessage: apiSendMessage, confirmSentMessage }] = await Promise.all([
                 import('@/hooks/useWebSocket'),
                 import('@/utils/api')
             ]);
             sendPendingMessage(result.stableKey, result.content);
-            apiSendMessage(result.content);
+            const sent = await apiSendMessage(result.content);
+            if (sent.status) {
+                void confirmSentMessage(result.content).then((message) => {
+                    if (message) addMessage(message, result.stableKey);
+                });
+            }
         }
     }, [messageId]);
 
@@ -405,16 +410,14 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
         elementRef: messageRef,
     });
 
-    const className = [
-        'chat-message',
-        isSelf && 'self',
-        isGrouped && 'is-grouped-with-prev',
-        isGroupedWithNext && 'is-grouped-with-next',
-        editedAt && !isDeleted && 'is-edited',
-        isNew && 'new-message',
-        message.state === 'sending' && 'pending',
-        message.state === 'failed' && 'failed',
-    ].filter(Boolean).join(' ');
+    const className = 'chat-message' +
+        (isSelf ? ' self' : '') +
+        (isGrouped ? ' is-grouped-with-prev' : '') +
+        (isGroupedWithNext ? ' is-grouped-with-next' : '') +
+        (editedAt && !isDeleted ? ' is-edited' : '') +
+        (isNew ? ' new-message' : '') +
+        (message.state === 'sending' ? ' pending' : '') +
+        (message.state === 'failed' ? ' failed' : '');
 
     return (
         <div
@@ -450,12 +453,10 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
                 </span>
 
                 <div
-                    class={[
-                        'bubble',
-                        isSticker && 'sticker-mode',
-                        timestampMode === 'trailing' && 'has-trailing-timestamp',
-                        timestampMode === 'stacked' && 'has-stacked-timestamp',
-                    ].filter(Boolean).join(' ')}
+                    class={'bubble' +
+                        (isSticker ? ' sticker-mode' : '') +
+                        (timestampMode === 'trailing' ? ' has-trailing-timestamp' : '') +
+                        (timestampMode === 'stacked' ? ' has-stacked-timestamp' : '')}
                     onClick={message.state === 'failed' ? handleBubbleClick : undefined}
                     style={message.state === 'failed' ? { cursor: 'pointer' } : undefined}
                 >

@@ -14,23 +14,37 @@
 (function () {
   'use strict';
 
-  var n$1,l$3,u$3,t$2,i$2,r$2,o$2,e$2,f$3,c$2,s$3,a$3,p$3={},v$2=[],y$2=/acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i,w$2=Array.isArray;function d$3(n,l){for(var u in l)n[u]=l[u];return n}function g$1(n){n&&n.parentNode&&n.parentNode.removeChild(n);}function _$3(l,u,t){var i,r,o,e={};for(o in u)"key"==o?i=u[o]:"ref"==o?r=u[o]:e[o]=u[o];if(arguments.length>2&&(e.children=arguments.length>3?n$1.call(arguments,2):t),"function"==typeof l&&null!=l.defaultProps)for(o in l.defaultProps) void 0===e[o]&&(e[o]=l.defaultProps[o]);return m$1(l,e,i,r,null)}function m$1(n,t,i,r,o){var e={type:n,props:t,key:i,ref:r,__k:null,__:null,__b:0,__e:null,__c:null,constructor:void 0,__v:null==o?++u$3:o,__i:-1,__u:0};return null==o&&null!=l$3.vnode&&l$3.vnode(e),e}function k$1(n){return n.children}function x(n,l){this.props=n,this.context=l;}function S(n,l){if(null==l)return n.__?S(n.__,n.__i+1):null;for(var u;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e)return u.__e;return "function"==typeof n.type?S(n):null}function C$1(n){var l,u;if(null!=(n=n.__)&&null!=n.__c){for(n.__e=n.__c.base=null,l=0;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e){n.__e=n.__c.base=u.__e;break}return C$1(n)}}function M(n){(!n.__d&&(n.__d=true)&&i$2.push(n)&&!$.__r++||r$2!=l$3.debounceRendering)&&((r$2=l$3.debounceRendering)||o$2)($);}function $(){for(var n,u,t,r,o,f,c,s=1;i$2.length;)i$2.length>s&&i$2.sort(e$2),n=i$2.shift(),s=i$2.length,n.__d&&(t=void 0,r=void 0,o=(r=(u=n).__v).__e,f=[],c=[],u.__P&&((t=d$3({},r)).__v=r.__v+1,l$3.vnode&&l$3.vnode(t),O(u.__P,t,r,u.__n,u.__P.namespaceURI,32&r.__u?[o]:null,f,null==o?S(r):o,!!(32&r.__u),c),t.__v=r.__v,t.__.__k[t.__i]=t,N(f,t,c),r.__e=r.__=null,t.__e!=o&&C$1(t)));$.__r=0;}function I(n,l,u,t,i,r,o,e,f,c,s){var a,h,y,w,d,g,_,m=t&&t.__k||v$2,b=l.length;for(f=P(u,l,m,f,b),a=0;a<b;a++)null!=(y=u.__k[a])&&(h=-1==y.__i?p$3:m[y.__i]||p$3,y.__i=a,g=O(n,y,h,i,r,o,e,f,c,s),w=y.__e,y.ref&&h.ref!=y.ref&&(h.ref&&B$1(h.ref,null,y),s.push(y.ref,y.__c||w,y)),null==d&&null!=w&&(d=w),(_=!!(4&y.__u))||h.__k===y.__k?f=A$1(y,f,n,_):"function"==typeof y.type&&void 0!==g?f=g:w&&(f=w.nextSibling),y.__u&=-7);return u.__e=d,f}function P(n,l,u,t,i){var r,o,e,f,c,s=u.length,a=s,h=0;for(n.__k=new Array(i),r=0;r<i;r++)null!=(o=l[r])&&"boolean"!=typeof o&&"function"!=typeof o?("string"==typeof o||"number"==typeof o||"bigint"==typeof o||o.constructor==String?o=n.__k[r]=m$1(null,o,null,null,null):w$2(o)?o=n.__k[r]=m$1(k$1,{children:o},null,null,null):null==o.constructor&&o.__b>0?o=n.__k[r]=m$1(o.type,o.props,o.key,o.ref?o.ref:null,o.__v):n.__k[r]=o,f=r+h,o.__=n,o.__b=n.__b+1,e=null,-1!=(c=o.__i=L(o,u,f,a))&&(a--,(e=u[c])&&(e.__u|=2)),null==e||null==e.__v?(-1==c&&(i>s?h--:i<s&&h++),"function"!=typeof o.type&&(o.__u|=4)):c!=f&&(c==f-1?h--:c==f+1?h++:(c>f?h--:h++,o.__u|=4))):n.__k[r]=null;if(a)for(r=0;r<s;r++)null!=(e=u[r])&&0==(2&e.__u)&&(e.__e==t&&(t=S(e)),D$1(e,e));return t}function A$1(n,l,u,t){var i,r;if("function"==typeof n.type){for(i=n.__k,r=0;i&&r<i.length;r++)i[r]&&(i[r].__=n,l=A$1(i[r],l,u,t));return l}n.__e!=l&&(t&&(l&&n.type&&!l.parentNode&&(l=S(n)),u.insertBefore(n.__e,l||null)),l=n.__e);do{l=l&&l.nextSibling;}while(null!=l&&8==l.nodeType);return l}function L(n,l,u,t){var i,r,o,e=n.key,f=n.type,c=l[u],s=null!=c&&0==(2&c.__u);if(null===c&&null==e||s&&e==c.key&&f==c.type)return u;if(t>(s?1:0))for(i=u-1,r=u+1;i>=0||r<l.length;)if(null!=(c=l[o=i>=0?i--:r++])&&0==(2&c.__u)&&e==c.key&&f==c.type)return o;return  -1}function T$1(n,l,u){"-"==l[0]?n.setProperty(l,null==u?"":u):n[l]=null==u?"":"number"!=typeof u||y$2.test(l)?u:u+"px";}function j$1(n,l,u,t,i){var r,o;n:if("style"==l)if("string"==typeof u)n.style.cssText=u;else {if("string"==typeof t&&(n.style.cssText=t=""),t)for(l in t)u&&l in u||T$1(n.style,l,"");if(u)for(l in u)t&&u[l]==t[l]||T$1(n.style,l,u[l]);}else if("o"==l[0]&&"n"==l[1])r=l!=(l=l.replace(f$3,"$1")),o=l.toLowerCase(),l=o in n||"onFocusOut"==l||"onFocusIn"==l?o.slice(2):l.slice(2),n.l||(n.l={}),n.l[l+r]=u,u?t?u.u=t.u:(u.u=c$2,n.addEventListener(l,r?a$3:s$3,r)):n.removeEventListener(l,r?a$3:s$3,r);else {if("http://www.w3.org/2000/svg"==i)l=l.replace(/xlink(H|:h)/,"h").replace(/sName$/,"s");else if("width"!=l&&"height"!=l&&"href"!=l&&"list"!=l&&"form"!=l&&"tabIndex"!=l&&"download"!=l&&"rowSpan"!=l&&"colSpan"!=l&&"role"!=l&&"popover"!=l&&l in n)try{n[l]=null==u?"":u;break n}catch(n){}"function"==typeof u||(null==u||false===u&&"-"!=l[4]?n.removeAttribute(l):n.setAttribute(l,"popover"==l&&1==u?"":u));}}function F(n){return function(u){if(this.l){var t=this.l[u.type+n];if(null==u.t)u.t=c$2++;else if(u.t<t.u)return;return t(l$3.event?l$3.event(u):u)}}}function O(n,u,t,i,r,o,e,f,c,s){var a,h,p,v,y,_,m,b,S,C,M,$,P,A,H,L,T,j=u.type;if(null!=u.constructor)return null;128&t.__u&&(c=!!(32&t.__u),o=[f=u.__e=t.__e]),(a=l$3.__b)&&a(u);n:if("function"==typeof j)try{if(b=u.props,S="prototype"in j&&j.prototype.render,C=(a=j.contextType)&&i[a.__c],M=a?C?C.props.value:a.__:i,t.__c?m=(h=u.__c=t.__c).__=h.__E:(S?u.__c=h=new j(b,M):(u.__c=h=new x(b,M),h.constructor=j,h.render=E$1),C&&C.sub(h),h.state||(h.state={}),h.__n=i,p=h.__d=!0,h.__h=[],h._sb=[]),S&&null==h.__s&&(h.__s=h.state),S&&null!=j.getDerivedStateFromProps&&(h.__s==h.state&&(h.__s=d$3({},h.__s)),d$3(h.__s,j.getDerivedStateFromProps(b,h.__s))),v=h.props,y=h.state,h.__v=u,p)S&&null==j.getDerivedStateFromProps&&null!=h.componentWillMount&&h.componentWillMount(),S&&null!=h.componentDidMount&&h.__h.push(h.componentDidMount);else {if(S&&null==j.getDerivedStateFromProps&&b!==v&&null!=h.componentWillReceiveProps&&h.componentWillReceiveProps(b,M),u.__v==t.__v||!h.__e&&null!=h.shouldComponentUpdate&&!1===h.shouldComponentUpdate(b,h.__s,M)){for(u.__v!=t.__v&&(h.props=b,h.state=h.__s,h.__d=!1),u.__e=t.__e,u.__k=t.__k,u.__k.some(function(n){n&&(n.__=u);}),$=0;$<h._sb.length;$++)h.__h.push(h._sb[$]);h._sb=[],h.__h.length&&e.push(h);break n}null!=h.componentWillUpdate&&h.componentWillUpdate(b,h.__s,M),S&&null!=h.componentDidUpdate&&h.__h.push(function(){h.componentDidUpdate(v,y,_);});}if(h.context=M,h.props=b,h.__P=n,h.__e=!1,P=l$3.__r,A=0,S){for(h.state=h.__s,h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),H=0;H<h._sb.length;H++)h.__h.push(h._sb[H]);h._sb=[];}else do{h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),h.state=h.__s;}while(h.__d&&++A<25);h.state=h.__s,null!=h.getChildContext&&(i=d$3(d$3({},i),h.getChildContext())),S&&!p&&null!=h.getSnapshotBeforeUpdate&&(_=h.getSnapshotBeforeUpdate(v,y)),L=a,null!=a&&a.type===k$1&&null==a.key&&(L=V(a.props.children)),f=I(n,w$2(L)?L:[L],u,t,i,r,o,e,f,c,s),h.base=u.__e,u.__u&=-161,h.__h.length&&e.push(h),m&&(h.__E=h.__=null);}catch(n){if(u.__v=null,c||null!=o)if(n.then){for(u.__u|=c?160:128;f&&8==f.nodeType&&f.nextSibling;)f=f.nextSibling;o[o.indexOf(f)]=null,u.__e=f;}else {for(T=o.length;T--;)g$1(o[T]);z$1(u);}else u.__e=t.__e,u.__k=t.__k,n.then||z$1(u);l$3.__e(n,u,t);}else null==o&&u.__v==t.__v?(u.__k=t.__k,u.__e=t.__e):f=u.__e=q$1(t.__e,u,t,i,r,o,e,c,s);return (a=l$3.diffed)&&a(u),128&u.__u?void 0:f}function z$1(n){n&&n.__c&&(n.__c.__e=true),n&&n.__k&&n.__k.forEach(z$1);}function N(n,u,t){for(var i=0;i<t.length;i++)B$1(t[i],t[++i],t[++i]);l$3.__c&&l$3.__c(u,n),n.some(function(u){try{n=u.__h,u.__h=[],n.some(function(n){n.call(u);});}catch(n){l$3.__e(n,u.__v);}});}function V(n){return "object"!=typeof n||null==n||n.__b&&n.__b>0?n:w$2(n)?n.map(V):d$3({},n)}function q$1(u,t,i,r,o,e,f,c,s){var a,h,v,y,d,_,m,b=i.props||p$3,k=t.props,x=t.type;if("svg"==x?o="http://www.w3.org/2000/svg":"math"==x?o="http://www.w3.org/1998/Math/MathML":o||(o="http://www.w3.org/1999/xhtml"),null!=e)for(a=0;a<e.length;a++)if((d=e[a])&&"setAttribute"in d==!!x&&(x?d.localName==x:3==d.nodeType)){u=d,e[a]=null;break}if(null==u){if(null==x)return document.createTextNode(k);u=document.createElementNS(o,x,k.is&&k),c&&(l$3.__m&&l$3.__m(t,e),c=false),e=null;}if(null==x)b===k||c&&u.data==k||(u.data=k);else {if(e=e&&n$1.call(u.childNodes),!c&&null!=e)for(b={},a=0;a<u.attributes.length;a++)b[(d=u.attributes[a]).name]=d.value;for(a in b)if(d=b[a],"children"==a);else if("dangerouslySetInnerHTML"==a)v=d;else if(!(a in k)){if("value"==a&&"defaultValue"in k||"checked"==a&&"defaultChecked"in k)continue;j$1(u,a,null,d,o);}for(a in k)d=k[a],"children"==a?y=d:"dangerouslySetInnerHTML"==a?h=d:"value"==a?_=d:"checked"==a?m=d:c&&"function"!=typeof d||b[a]===d||j$1(u,a,d,b[a],o);if(h)c||v&&(h.__html==v.__html||h.__html==u.innerHTML)||(u.innerHTML=h.__html),t.__k=[];else if(v&&(u.innerHTML=""),I("template"==t.type?u.content:u,w$2(y)?y:[y],t,i,r,"foreignObject"==x?"http://www.w3.org/1999/xhtml":o,e,f,e?e[0]:i.__k&&S(i,0),c,s),null!=e)for(a=e.length;a--;)g$1(e[a]);c||(a="value","progress"==x&&null==_?u.removeAttribute("value"):null!=_&&(_!==u[a]||"progress"==x&&!_||"option"==x&&_!=b[a])&&j$1(u,a,_,b[a],o),a="checked",null!=m&&m!=u[a]&&j$1(u,a,m,b[a],o));}return u}function B$1(n,u,t){try{if("function"==typeof n){var i="function"==typeof n.__u;i&&n.__u(),i&&null==u||(n.__u=n(u));}else n.current=u;}catch(n){l$3.__e(n,t);}}function D$1(n,u,t){var i,r;if(l$3.unmount&&l$3.unmount(n),(i=n.ref)&&(i.current&&i.current!=n.__e||B$1(i,null,u)),null!=(i=n.__c)){if(i.componentWillUnmount)try{i.componentWillUnmount();}catch(n){l$3.__e(n,u);}i.base=i.__P=null;}if(i=n.__k)for(r=0;r<i.length;r++)i[r]&&D$1(i[r],u,t||"function"!=typeof n.type);t||g$1(n.__e),n.__c=n.__=n.__e=void 0;}function E$1(n,l,u){return this.constructor(n,u)}function G(u,t,i){var r,o,e,f;t==document&&(t=document.documentElement),l$3.__&&l$3.__(u,t),o=(r="function"=="undefined")?null:t.__k,e=[],f=[],O(t,u=(t).__k=_$3(k$1,null,[u]),o||p$3,p$3,t.namespaceURI,o?null:t.firstChild?n$1.call(t.childNodes):null,e,o?o.__e:t.firstChild,r,f),N(e,u,f);}n$1=v$2.slice,l$3={__e:function(n,l,u,t){for(var i,r,o;l=l.__;)if((i=l.__c)&&!i.__)try{if((r=i.constructor)&&null!=r.getDerivedStateFromError&&(i.setState(r.getDerivedStateFromError(n)),o=i.__d),null!=i.componentDidCatch&&(i.componentDidCatch(n,t||{}),o=i.__d),o)return i.__E=i}catch(l){n=l;}throw n}},u$3=0,t$2=function(n){return null!=n&&null==n.constructor},x.prototype.setState=function(n,l){var u;u=null!=this.__s&&this.__s!=this.state?this.__s:this.__s=d$3({},this.state),"function"==typeof n&&(n=n(d$3({},u),this.props)),n&&d$3(u,n),null!=n&&this.__v&&(l&&this._sb.push(l),M(this));},x.prototype.forceUpdate=function(n){this.__v&&(this.__e=true,n&&this.__h.push(n),M(this));},x.prototype.render=k$1,i$2=[],o$2="function"==typeof Promise?Promise.prototype.then.bind(Promise.resolve()):setTimeout,e$2=function(n,l){return n.__v.__b-l.__v.__b},$.__r=0,f$3=/(PointerCapture)$|Capture$/i,c$2=0,s$3=F(false),a$3=F(true);
-
-  var f$2=0;function u$2(e,t,n,o,i,u){t||(t={});var a,c,p=t;if("ref"in p)for(c in p={},t)"ref"==c?a=t[c]:p[c]=t[c];var l={type:e,props:p,key:n,ref:a,__k:null,__:null,__b:0,__e:null,__c:null,constructor:void 0,__v:--f$2,__i:-1,__u:0,__source:i,__self:u};if("function"==typeof e&&(a=e.defaultProps))for(c in a) void 0===p[c]&&(p[c]=a[c]);return l$3.vnode&&l$3.vnode(l),l}
+  var n$1,l$3,u$2,t$2,i$2,r$2,o$2,e$2,f$2,c$2,s$3,a$3,p$3={},v$2=[],y$2=/acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i,w$2=Array.isArray;function d$3(n,l){for(var u in l)n[u]=l[u];return n}function g$1(n){n&&n.parentNode&&n.parentNode.removeChild(n);}function _$3(l,u,t){var i,r,o,e={};for(o in u)"key"==o?i=u[o]:"ref"==o?r=u[o]:e[o]=u[o];if(arguments.length>2&&(e.children=arguments.length>3?n$1.call(arguments,2):t),"function"==typeof l&&null!=l.defaultProps)for(o in l.defaultProps) void 0===e[o]&&(e[o]=l.defaultProps[o]);return m$1(l,e,i,r,null)}function m$1(n,t,i,r,o){var e={type:n,props:t,key:i,ref:r,__k:null,__:null,__b:0,__e:null,__c:null,constructor:void 0,__v:null==o?++u$2:o,__i:-1,__u:0};return null==o&&null!=l$3.vnode&&l$3.vnode(e),e}function k$1(n){return n.children}function x(n,l){this.props=n,this.context=l;}function S(n,l){if(null==l)return n.__?S(n.__,n.__i+1):null;for(var u;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e)return u.__e;return "function"==typeof n.type?S(n):null}function C$1(n){var l,u;if(null!=(n=n.__)&&null!=n.__c){for(n.__e=n.__c.base=null,l=0;l<n.__k.length;l++)if(null!=(u=n.__k[l])&&null!=u.__e){n.__e=n.__c.base=u.__e;break}return C$1(n)}}function M(n){(!n.__d&&(n.__d=true)&&i$2.push(n)&&!$.__r++||r$2!=l$3.debounceRendering)&&((r$2=l$3.debounceRendering)||o$2)($);}function $(){for(var n,u,t,r,o,f,c,s=1;i$2.length;)i$2.length>s&&i$2.sort(e$2),n=i$2.shift(),s=i$2.length,n.__d&&(t=void 0,r=void 0,o=(r=(u=n).__v).__e,f=[],c=[],u.__P&&((t=d$3({},r)).__v=r.__v+1,l$3.vnode&&l$3.vnode(t),O(u.__P,t,r,u.__n,u.__P.namespaceURI,32&r.__u?[o]:null,f,null==o?S(r):o,!!(32&r.__u),c),t.__v=r.__v,t.__.__k[t.__i]=t,N(f,t,c),r.__e=r.__=null,t.__e!=o&&C$1(t)));$.__r=0;}function I(n,l,u,t,i,r,o,e,f,c,s){var a,h,y,w,d,g,_,m=t&&t.__k||v$2,b=l.length;for(f=P(u,l,m,f,b),a=0;a<b;a++)null!=(y=u.__k[a])&&(h=-1==y.__i?p$3:m[y.__i]||p$3,y.__i=a,g=O(n,y,h,i,r,o,e,f,c,s),w=y.__e,y.ref&&h.ref!=y.ref&&(h.ref&&B$1(h.ref,null,y),s.push(y.ref,y.__c||w,y)),null==d&&null!=w&&(d=w),(_=!!(4&y.__u))||h.__k===y.__k?f=A$1(y,f,n,_):"function"==typeof y.type&&void 0!==g?f=g:w&&(f=w.nextSibling),y.__u&=-7);return u.__e=d,f}function P(n,l,u,t,i){var r,o,e,f,c,s=u.length,a=s,h=0;for(n.__k=new Array(i),r=0;r<i;r++)null!=(o=l[r])&&"boolean"!=typeof o&&"function"!=typeof o?("string"==typeof o||"number"==typeof o||"bigint"==typeof o||o.constructor==String?o=n.__k[r]=m$1(null,o,null,null,null):w$2(o)?o=n.__k[r]=m$1(k$1,{children:o},null,null,null):null==o.constructor&&o.__b>0?o=n.__k[r]=m$1(o.type,o.props,o.key,o.ref?o.ref:null,o.__v):n.__k[r]=o,f=r+h,o.__=n,o.__b=n.__b+1,e=null,-1!=(c=o.__i=L(o,u,f,a))&&(a--,(e=u[c])&&(e.__u|=2)),null==e||null==e.__v?(-1==c&&(i>s?h--:i<s&&h++),"function"!=typeof o.type&&(o.__u|=4)):c!=f&&(c==f-1?h--:c==f+1?h++:(c>f?h--:h++,o.__u|=4))):n.__k[r]=null;if(a)for(r=0;r<s;r++)null!=(e=u[r])&&0==(2&e.__u)&&(e.__e==t&&(t=S(e)),D$1(e,e));return t}function A$1(n,l,u,t){var i,r;if("function"==typeof n.type){for(i=n.__k,r=0;i&&r<i.length;r++)i[r]&&(i[r].__=n,l=A$1(i[r],l,u,t));return l}n.__e!=l&&(t&&(l&&n.type&&!l.parentNode&&(l=S(n)),u.insertBefore(n.__e,l||null)),l=n.__e);do{l=l&&l.nextSibling;}while(null!=l&&8==l.nodeType);return l}function L(n,l,u,t){var i,r,o,e=n.key,f=n.type,c=l[u],s=null!=c&&0==(2&c.__u);if(null===c&&null==e||s&&e==c.key&&f==c.type)return u;if(t>(s?1:0))for(i=u-1,r=u+1;i>=0||r<l.length;)if(null!=(c=l[o=i>=0?i--:r++])&&0==(2&c.__u)&&e==c.key&&f==c.type)return o;return  -1}function T$1(n,l,u){"-"==l[0]?n.setProperty(l,null==u?"":u):n[l]=null==u?"":"number"!=typeof u||y$2.test(l)?u:u+"px";}function j$1(n,l,u,t,i){var r,o;n:if("style"==l)if("string"==typeof u)n.style.cssText=u;else {if("string"==typeof t&&(n.style.cssText=t=""),t)for(l in t)u&&l in u||T$1(n.style,l,"");if(u)for(l in u)t&&u[l]==t[l]||T$1(n.style,l,u[l]);}else if("o"==l[0]&&"n"==l[1])r=l!=(l=l.replace(f$2,"$1")),o=l.toLowerCase(),l=o in n||"onFocusOut"==l||"onFocusIn"==l?o.slice(2):l.slice(2),n.l||(n.l={}),n.l[l+r]=u,u?t?u.u=t.u:(u.u=c$2,n.addEventListener(l,r?a$3:s$3,r)):n.removeEventListener(l,r?a$3:s$3,r);else {if("http://www.w3.org/2000/svg"==i)l=l.replace(/xlink(H|:h)/,"h").replace(/sName$/,"s");else if("width"!=l&&"height"!=l&&"href"!=l&&"list"!=l&&"form"!=l&&"tabIndex"!=l&&"download"!=l&&"rowSpan"!=l&&"colSpan"!=l&&"role"!=l&&"popover"!=l&&l in n)try{n[l]=null==u?"":u;break n}catch(n){}"function"==typeof u||(null==u||false===u&&"-"!=l[4]?n.removeAttribute(l):n.setAttribute(l,"popover"==l&&1==u?"":u));}}function F(n){return function(u){if(this.l){var t=this.l[u.type+n];if(null==u.t)u.t=c$2++;else if(u.t<t.u)return;return t(l$3.event?l$3.event(u):u)}}}function O(n,u,t,i,r,o,e,f,c,s){var a,h,p,v,y,_,m,b,S,C,M,$,P,A,H,L,T,j=u.type;if(null!=u.constructor)return null;128&t.__u&&(c=!!(32&t.__u),o=[f=u.__e=t.__e]),(a=l$3.__b)&&a(u);n:if("function"==typeof j)try{if(b=u.props,S="prototype"in j&&j.prototype.render,C=(a=j.contextType)&&i[a.__c],M=a?C?C.props.value:a.__:i,t.__c?m=(h=u.__c=t.__c).__=h.__E:(S?u.__c=h=new j(b,M):(u.__c=h=new x(b,M),h.constructor=j,h.render=E$1),C&&C.sub(h),h.state||(h.state={}),h.__n=i,p=h.__d=!0,h.__h=[],h._sb=[]),S&&null==h.__s&&(h.__s=h.state),S&&null!=j.getDerivedStateFromProps&&(h.__s==h.state&&(h.__s=d$3({},h.__s)),d$3(h.__s,j.getDerivedStateFromProps(b,h.__s))),v=h.props,y=h.state,h.__v=u,p)S&&null==j.getDerivedStateFromProps&&null!=h.componentWillMount&&h.componentWillMount(),S&&null!=h.componentDidMount&&h.__h.push(h.componentDidMount);else {if(S&&null==j.getDerivedStateFromProps&&b!==v&&null!=h.componentWillReceiveProps&&h.componentWillReceiveProps(b,M),u.__v==t.__v||!h.__e&&null!=h.shouldComponentUpdate&&!1===h.shouldComponentUpdate(b,h.__s,M)){for(u.__v!=t.__v&&(h.props=b,h.state=h.__s,h.__d=!1),u.__e=t.__e,u.__k=t.__k,u.__k.some(function(n){n&&(n.__=u);}),$=0;$<h._sb.length;$++)h.__h.push(h._sb[$]);h._sb=[],h.__h.length&&e.push(h);break n}null!=h.componentWillUpdate&&h.componentWillUpdate(b,h.__s,M),S&&null!=h.componentDidUpdate&&h.__h.push(function(){h.componentDidUpdate(v,y,_);});}if(h.context=M,h.props=b,h.__P=n,h.__e=!1,P=l$3.__r,A=0,S){for(h.state=h.__s,h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),H=0;H<h._sb.length;H++)h.__h.push(h._sb[H]);h._sb=[];}else do{h.__d=!1,P&&P(u),a=h.render(h.props,h.state,h.context),h.state=h.__s;}while(h.__d&&++A<25);h.state=h.__s,null!=h.getChildContext&&(i=d$3(d$3({},i),h.getChildContext())),S&&!p&&null!=h.getSnapshotBeforeUpdate&&(_=h.getSnapshotBeforeUpdate(v,y)),L=a,null!=a&&a.type===k$1&&null==a.key&&(L=V(a.props.children)),f=I(n,w$2(L)?L:[L],u,t,i,r,o,e,f,c,s),h.base=u.__e,u.__u&=-161,h.__h.length&&e.push(h),m&&(h.__E=h.__=null);}catch(n){if(u.__v=null,c||null!=o)if(n.then){for(u.__u|=c?160:128;f&&8==f.nodeType&&f.nextSibling;)f=f.nextSibling;o[o.indexOf(f)]=null,u.__e=f;}else {for(T=o.length;T--;)g$1(o[T]);z$1(u);}else u.__e=t.__e,u.__k=t.__k,n.then||z$1(u);l$3.__e(n,u,t);}else null==o&&u.__v==t.__v?(u.__k=t.__k,u.__e=t.__e):f=u.__e=q$1(t.__e,u,t,i,r,o,e,c,s);return (a=l$3.diffed)&&a(u),128&u.__u?void 0:f}function z$1(n){n&&n.__c&&(n.__c.__e=true),n&&n.__k&&n.__k.forEach(z$1);}function N(n,u,t){for(var i=0;i<t.length;i++)B$1(t[i],t[++i],t[++i]);l$3.__c&&l$3.__c(u,n),n.some(function(u){try{n=u.__h,u.__h=[],n.some(function(n){n.call(u);});}catch(n){l$3.__e(n,u.__v);}});}function V(n){return "object"!=typeof n||null==n||n.__b&&n.__b>0?n:w$2(n)?n.map(V):d$3({},n)}function q$1(u,t,i,r,o,e,f,c,s){var a,h,v,y,d,_,m,b=i.props||p$3,k=t.props,x=t.type;if("svg"==x?o="http://www.w3.org/2000/svg":"math"==x?o="http://www.w3.org/1998/Math/MathML":o||(o="http://www.w3.org/1999/xhtml"),null!=e)for(a=0;a<e.length;a++)if((d=e[a])&&"setAttribute"in d==!!x&&(x?d.localName==x:3==d.nodeType)){u=d,e[a]=null;break}if(null==u){if(null==x)return document.createTextNode(k);u=document.createElementNS(o,x,k.is&&k),c&&(l$3.__m&&l$3.__m(t,e),c=false),e=null;}if(null==x)b===k||c&&u.data==k||(u.data=k);else {if(e=e&&n$1.call(u.childNodes),!c&&null!=e)for(b={},a=0;a<u.attributes.length;a++)b[(d=u.attributes[a]).name]=d.value;for(a in b)if(d=b[a],"children"==a);else if("dangerouslySetInnerHTML"==a)v=d;else if(!(a in k)){if("value"==a&&"defaultValue"in k||"checked"==a&&"defaultChecked"in k)continue;j$1(u,a,null,d,o);}for(a in k)d=k[a],"children"==a?y=d:"dangerouslySetInnerHTML"==a?h=d:"value"==a?_=d:"checked"==a?m=d:c&&"function"!=typeof d||b[a]===d||j$1(u,a,d,b[a],o);if(h)c||v&&(h.__html==v.__html||h.__html==u.innerHTML)||(u.innerHTML=h.__html),t.__k=[];else if(v&&(u.innerHTML=""),I("template"==t.type?u.content:u,w$2(y)?y:[y],t,i,r,"foreignObject"==x?"http://www.w3.org/1999/xhtml":o,e,f,e?e[0]:i.__k&&S(i,0),c,s),null!=e)for(a=e.length;a--;)g$1(e[a]);c||(a="value","progress"==x&&null==_?u.removeAttribute("value"):null!=_&&(_!==u[a]||"progress"==x&&!_||"option"==x&&_!=b[a])&&j$1(u,a,_,b[a],o),a="checked",null!=m&&m!=u[a]&&j$1(u,a,m,b[a],o));}return u}function B$1(n,u,t){try{if("function"==typeof n){var i="function"==typeof n.__u;i&&n.__u(),i&&null==u||(n.__u=n(u));}else n.current=u;}catch(n){l$3.__e(n,t);}}function D$1(n,u,t){var i,r;if(l$3.unmount&&l$3.unmount(n),(i=n.ref)&&(i.current&&i.current!=n.__e||B$1(i,null,u)),null!=(i=n.__c)){if(i.componentWillUnmount)try{i.componentWillUnmount();}catch(n){l$3.__e(n,u);}i.base=i.__P=null;}if(i=n.__k)for(r=0;r<i.length;r++)i[r]&&D$1(i[r],u,t||"function"!=typeof n.type);t||g$1(n.__e),n.__c=n.__=n.__e=void 0;}function E$1(n,l,u){return this.constructor(n,u)}function G(u,t,i){var r,o,e,f;t==document&&(t=document.documentElement),l$3.__&&l$3.__(u,t),o=(r="function"=="undefined")?null:t.__k,e=[],f=[],O(t,u=(t).__k=_$3(k$1,null,[u]),o||p$3,p$3,t.namespaceURI,o?null:t.firstChild?n$1.call(t.childNodes):null,e,o?o.__e:t.firstChild,r,f),N(e,u,f);}n$1=v$2.slice,l$3={__e:function(n,l,u,t){for(var i,r,o;l=l.__;)if((i=l.__c)&&!i.__)try{if((r=i.constructor)&&null!=r.getDerivedStateFromError&&(i.setState(r.getDerivedStateFromError(n)),o=i.__d),null!=i.componentDidCatch&&(i.componentDidCatch(n,t||{}),o=i.__d),o)return i.__E=i}catch(l){n=l;}throw n}},u$2=0,t$2=function(n){return null!=n&&null==n.constructor},x.prototype.setState=function(n,l){var u;u=null!=this.__s&&this.__s!=this.state?this.__s:this.__s=d$3({},this.state),"function"==typeof n&&(n=n(d$3({},u),this.props)),n&&d$3(u,n),null!=n&&this.__v&&(l&&this._sb.push(l),M(this));},x.prototype.forceUpdate=function(n){this.__v&&(this.__e=true,n&&this.__h.push(n),M(this));},x.prototype.render=k$1,i$2=[],o$2="function"==typeof Promise?Promise.prototype.then.bind(Promise.resolve()):setTimeout,e$2=function(n,l){return n.__v.__b-l.__v.__b},$.__r=0,f$2=/(PointerCapture)$|Capture$/i,c$2=0,s$3=F(false),a$3=F(true);
 
   var t$1,r$1,u$1,i$1,o$1=0,f$1=[],c$1=l$3,e$1=c$1.__b,a$2=c$1.__r,v$1=c$1.diffed,l$2=c$1.__c,m=c$1.unmount,s$2=c$1.__;function p$2(n,t){c$1.__h&&c$1.__h(r$1,n,o$1||t),o$1=0;var u=r$1.__H||(r$1.__H={__:[],__h:[]});return n>=u.__.length&&u.__.push({}),u.__[n]}function d$2(n){return o$1=1,h$2(D,n)}function h$2(n,u,i){var o=p$2(t$1++,2);if(o.t=n,!o.__c&&(o.__=[D(void 0,u),function(n){var t=o.__N?o.__N[0]:o.__[0],r=o.t(t,n);t!==r&&(o.__N=[r,o.__[1]],o.__c.setState({}));}],o.__c=r$1,!r$1.__f)){var f=function(n,t,r){if(!o.__c.__H)return  true;var u=o.__c.__H.__.filter(function(n){return !!n.__c});if(u.every(function(n){return !n.__N}))return !c||c.call(this,n,t,r);var i=o.__c.props!==n;return u.forEach(function(n){if(n.__N){var t=n.__[0];n.__=n.__N,n.__N=void 0,t!==n.__[0]&&(i=true);}}),c&&c.call(this,n,t,r)||i};r$1.__f=true;var c=r$1.shouldComponentUpdate,e=r$1.componentWillUpdate;r$1.componentWillUpdate=function(n,t,r){if(this.__e){var u=c;c=void 0,f(n,t,r),c=u;}e&&e.call(this,n,t,r);},r$1.shouldComponentUpdate=f;}return o.__N||o.__}function y$1(n,u){var i=p$2(t$1++,3);!c$1.__s&&C(i.__H,u)&&(i.__=n,i.u=u,r$1.__H.__h.push(i));}function _$2(n,u){var i=p$2(t$1++,4);!c$1.__s&&C(i.__H,u)&&(i.__=n,i.u=u,r$1.__h.push(i));}function A(n){return o$1=5,T(function(){return {current:n}},[])}function T(n,r){var u=p$2(t$1++,7);return C(u.__H,r)&&(u.__=n(),u.__H=r,u.__h=n),u.__}function q(n,t){return o$1=8,T(function(){return n},t)}function j(){for(var n;n=f$1.shift();)if(n.__P&&n.__H)try{n.__H.__h.forEach(z),n.__H.__h.forEach(B),n.__H.__h=[];}catch(t){n.__H.__h=[],c$1.__e(t,n.__v);}}c$1.__b=function(n){r$1=null,e$1&&e$1(n);},c$1.__=function(n,t){n&&t.__k&&t.__k.__m&&(n.__m=t.__k.__m),s$2&&s$2(n,t);},c$1.__r=function(n){a$2&&a$2(n),t$1=0;var i=(r$1=n.__c).__H;i&&(u$1===r$1?(i.__h=[],r$1.__h=[],i.__.forEach(function(n){n.__N&&(n.__=n.__N),n.u=n.__N=void 0;})):(i.__h.forEach(z),i.__h.forEach(B),i.__h=[],t$1=0)),u$1=r$1;},c$1.diffed=function(n){v$1&&v$1(n);var t=n.__c;t&&t.__H&&(t.__H.__h.length&&(1!==f$1.push(t)&&i$1===c$1.requestAnimationFrame||((i$1=c$1.requestAnimationFrame)||w$1)(j)),t.__H.__.forEach(function(n){n.u&&(n.__H=n.u),n.u=void 0;})),u$1=r$1=null;},c$1.__c=function(n,t){t.some(function(n){try{n.__h.forEach(z),n.__h=n.__h.filter(function(n){return !n.__||B(n)});}catch(r){t.some(function(n){n.__h&&(n.__h=[]);}),t=[],c$1.__e(r,n.__v);}}),l$2&&l$2(n,t);},c$1.unmount=function(n){m&&m(n);var t,r=n.__c;r&&r.__H&&(r.__H.__.forEach(function(n){try{z(n);}catch(n){t=n;}}),r.__H=void 0,t&&c$1.__e(t,r.__v));};var k="function"==typeof requestAnimationFrame;function w$1(n){var t,r=function(){clearTimeout(u),k&&cancelAnimationFrame(t),setTimeout(n);},u=setTimeout(r,35);k&&(t=requestAnimationFrame(r));}function z(n){var t=r$1,u=n.__c;"function"==typeof u&&(n.__c=void 0,u()),r$1=t;}function B(n){var t=r$1;n.__c=n.__(),r$1=t;}function C(n,t){return !n||n.length!==t.length||t.some(function(t,r){return t!==n[r]})}function D(n,t){return "function"==typeof t?t(n):t}
 
-  const __vitePreload = (m)=>m();
-
+  
   var i=Symbol.for("preact-signals");function t(){if(!(s$1>1)){var i,t=false;while(void 0!==h$1){var r=h$1;h$1=void 0;f++;while(void 0!==r){var o=r.o;r.o=void 0;r.f&=-3;if(!(8&r.f)&&c(r))try{r.c();}catch(r){if(!t){i=r;t=true;}}r=o;}}f=0;s$1--;if(t)throw i}else s$1--;}function r(i){if(s$1>0)return i();s$1++;try{return i()}finally{t();}}var o=void 0;function n(i){var t=o;o=void 0;try{return i()}finally{o=t;}}var h$1=void 0,s$1=0,f=0,v=0;function e(i){if(void 0!==o){var t=i.n;if(void 0===t||t.t!==o){t={i:0,S:i,p:o.s,n:void 0,t:o,e:void 0,x:void 0,r:t};if(void 0!==o.s)o.s.n=t;o.s=t;i.n=t;if(32&o.f)i.S(t);return t}else if(-1===t.i){t.i=0;if(void 0!==t.n){t.n.p=t.p;if(void 0!==t.p)t.p.n=t.n;t.p=o.s;t.n=void 0;o.s.n=t;o.s=t;}return t}}}function u(i,t){this.v=i;this.i=0;this.n=void 0;this.t=void 0;this.W=null==t?void 0:t.watched;this.Z=null==t?void 0:t.unwatched;this.name=null==t?void 0:t.name;}u.prototype.brand=i;u.prototype.h=function(){return  true};u.prototype.S=function(i){var t=this,r=this.t;if(r!==i&&void 0===i.e){i.x=r;this.t=i;if(void 0!==r)r.e=i;else n(function(){var i;null==(i=t.W)||i.call(t);});}};u.prototype.U=function(i){var t=this;if(void 0!==this.t){var r=i.e,o=i.x;if(void 0!==r){r.x=o;i.e=void 0;}if(void 0!==o){o.e=r;i.x=void 0;}if(i===this.t){this.t=o;if(void 0===o)n(function(){var i;null==(i=t.Z)||i.call(t);});}}};u.prototype.subscribe=function(i){var t=this;return E(function(){var r=t.value,n=o;o=void 0;try{i(r);}finally{o=n;}},{name:"sub"})};u.prototype.valueOf=function(){return this.value};u.prototype.toString=function(){return this.value+""};u.prototype.toJSON=function(){return this.value};u.prototype.peek=function(){var i=o;o=void 0;try{return this.value}finally{o=i;}};Object.defineProperty(u.prototype,"value",{get:function(){var i=e(this);if(void 0!==i)i.i=this.i;return this.v},set:function(i){if(i!==this.v){if(f>100)throw new Error("Cycle detected");this.v=i;this.i++;v++;s$1++;try{for(var r=this.t;void 0!==r;r=r.x)r.t.N();}finally{t();}}}});function d$1(i,t){return new u(i,t)}function c(i){for(var t=i.s;void 0!==t;t=t.n)if(t.S.i!==t.i||!t.S.h()||t.S.i!==t.i)return  true;return  false}function a$1(i){for(var t=i.s;void 0!==t;t=t.n){var r=t.S.n;if(void 0!==r)t.r=r;t.S.n=t;t.i=-1;if(void 0===t.n){i.s=t;break}}}function l$1(i){var t=i.s,r=void 0;while(void 0!==t){var o=t.p;if(-1===t.i){t.S.U(t);if(void 0!==o)o.n=t.n;if(void 0!==t.n)t.n.p=o;}else r=t;t.S.n=t.r;if(void 0!==t.r)t.r=void 0;t=o;}i.s=r;}function y(i,t){u.call(this,void 0);this.x=i;this.s=void 0;this.g=v-1;this.f=4;this.W=null==t?void 0:t.watched;this.Z=null==t?void 0:t.unwatched;this.name=null==t?void 0:t.name;}y.prototype=new u;y.prototype.h=function(){this.f&=-3;if(1&this.f)return  false;if(32==(36&this.f))return  true;this.f&=-5;if(this.g===v)return  true;this.g=v;this.f|=1;if(this.i>0&&!c(this)){this.f&=-2;return  true}var i=o;try{a$1(this);o=this;var t=this.x();if(16&this.f||this.v!==t||0===this.i){this.v=t;this.f&=-17;this.i++;}}catch(i){this.v=i;this.f|=16;this.i++;}o=i;l$1(this);this.f&=-2;return  true};y.prototype.S=function(i){if(void 0===this.t){this.f|=36;for(var t=this.s;void 0!==t;t=t.n)t.S.S(t);}u.prototype.S.call(this,i);};y.prototype.U=function(i){if(void 0!==this.t){u.prototype.U.call(this,i);if(void 0===this.t){this.f&=-33;for(var t=this.s;void 0!==t;t=t.n)t.S.U(t);}}};y.prototype.N=function(){if(!(2&this.f)){this.f|=6;for(var i=this.t;void 0!==i;i=i.x)i.t.N();}};Object.defineProperty(y.prototype,"value",{get:function(){if(1&this.f)throw new Error("Cycle detected");var i=e(this);this.h();if(void 0!==i)i.i=this.i;if(16&this.f)throw this.v;return this.v}});function w(i,t){return new y(i,t)}function _$1(i){var r=i.u;i.u=void 0;if("function"==typeof r){s$1++;var n=o;o=void 0;try{r();}catch(t){i.f&=-2;i.f|=8;b(i);throw t}finally{o=n;t();}}}function b(i){for(var t=i.s;void 0!==t;t=t.n)t.S.U(t);i.x=void 0;i.s=void 0;_$1(i);}function g(i){if(o!==this)throw new Error("Out-of-order effect");l$1(this);o=i;this.f&=-2;if(8&this.f)b(this);t();}function p$1(i,t){this.x=i;this.u=void 0;this.s=void 0;this.o=void 0;this.f=32;this.name=null==t?void 0:t.name;}p$1.prototype.c=function(){var i=this.S();try{if(8&this.f)return;if(void 0===this.x)return;var t=this.x();if("function"==typeof t)this.u=t;}finally{i();}};p$1.prototype.S=function(){if(1&this.f)throw new Error("Cycle detected");this.f|=1;this.f&=-9;_$1(this);a$1(this);s$1++;var i=o;o=this;return g.bind(this,i)};p$1.prototype.N=function(){if(!(2&this.f)){this.f|=2;this.o=h$1;h$1=this;}};p$1.prototype.d=function(){this.f|=8;if(!(1&this.f))b(this);};p$1.prototype.dispose=function(){this.d();};function E(i,t){var r=new p$1(i,t);try{r.c();}catch(i){r.d();throw i}var o=r.d.bind(r);o[Symbol.dispose]=o;return o}
 
   var s;function l(i,n){l$3[i]=n.bind(null,l$3[i]||function(){});}function d(i){if(s)s();s=i&&i.S();}function h(i){var r=this,f=i.data,o=useSignal(f);o.value=f;var e=T(function(){var i=r.__v;while(i=i.__)if(i.__c){i.__c.__$f|=4;break}r.__$u.c=function(){var i,t=r.__$u.S(),f=e.value;t();if(t$2(f)||3!==(null==(i=r.base)?void 0:i.nodeType)){r.__$f|=1;r.setState({});}else r.base.data=f;};return w(function(){var i=o.value.value;return 0===i?0:true===i?"":i||""})},[]);return e.value}h.displayName="_st";Object.defineProperties(u.prototype,{constructor:{configurable:true,value:void 0},type:{configurable:true,value:h},props:{configurable:true,get:function(){return {data:this}}},__b:{configurable:true,value:1}});l("__b",function(i,r){if("string"==typeof r.type){var n,t=r.props;for(var f in t)if("children"!==f){var o=t[f];if(o instanceof u){if(!n)r.__np=n={};n[f]=o;t[f]=o.peek();}}}i(r);});l("__r",function(i,r){d();var n,t=r.__c;if(t){t.__$f&=-2;if(void 0===(n=t.__$u))t.__$u=n=function(i){var r;E(function(){r=this;});r.c=function(){t.__$f|=1;t.setState({});};return r}();}d(n);i(r);});l("__e",function(i,r,n,t){d();i(r,n,t);});l("diffed",function(i,r){d();var n;if("string"==typeof r.type&&(n=r.__e)){var t=r.__np,f=r.props;if(t){var o=n.U;if(o)for(var e in o){var u=o[e];if(void 0!==u&&!(e in t)){u.d();o[e]=void 0;}}else n.U=o={};for(var a in t){var c=o[a],s=t[a];if(void 0===c){c=p(n,a,s,f);o[a]=c;}else c.o(s,f);}}}i(r);});function p(i,r,n,t){var f=r in i&&void 0===i.ownerSVGElement,o=d$1(n);return {o:function(i,r){o.value=i;t=r;},d:E(function(){var n=o.value.value;if(t[r]!==n){t[r]=n;if(f)i[r]=n;else if(n)i.setAttribute(r,n);else i.removeAttribute(r);}})}}l("unmount",function(i,r){if("string"==typeof r.type){var n=r.__e;if(n){var t=n.U;if(t){n.U=void 0;for(var f in t){var o=t[f];if(o)o.d();}}}}else {var e=r.__c;if(e){var u=e.__$u;if(u){e.__$u=void 0;u.d();}}}i(r);});l("__h",function(i,r,n,t){if(t<3||9===t)r.__$f|=2;i(r,n,t);});x.prototype.shouldComponentUpdate=function(i,r){var n=this.__$u,t=n&&void 0!==n.s;for(var f in r)return  true;if(this.__f||"boolean"==typeof this.u&&true===this.u){if(!(t||2&this.__$f||4&this.__$f))return  true;if(1&this.__$f)return  true}else {if(!(t||4&this.__$f))return  true;if(3&this.__$f)return  true}for(var o in i)if("__source"!==o&&i[o]!==this.props[o])return  true;for(var e in this.props)if(!(e in i))return  true;return  false};function useSignal(i){return T(function(){return d$1(i)},[])}
 
-  const BACKEND_URL = "https://bgmchat.ry.mk";
-  const UPLOAD_BASE_URL = "https://lsky.ry.mk";
-  const WEBSOCKET_URL = "wss://bgmchat.ry.mk/ws";
+  const DEFAULT_BACKEND_URL = "https://rd.ry.mk";
+  function trimTrailingSlash(value) {
+    return value.replace(/\/+$/, "");
+  }
+  const BACKEND_URL = trimTrailingSlash(
+    DEFAULT_BACKEND_URL
+  );
+  const BACKEND_API_URL = trimTrailingSlash(
+    `${BACKEND_URL}/api/v1`
+  );
+  const UPLOAD_BASE_URL = trimTrailingSlash(
+    "https://lsky.ry.mk"
+  );
+  const UPLOAD_API_URL = trimTrailingSlash(
+    `${UPLOAD_BASE_URL}/api/upload`
+  );
+  const FILE_UPLOAD_API_URL = trimTrailingSlash(
+    `${BACKEND_API_URL}/upload/file`
+  );
+  const WEBSOCKET_URL = `${BACKEND_URL.replace(/^http/, "ws")}/ws`;
   const BGM_APP_ID = "bgm460268b348b05f082";
-  const BGM_CALLBACK_URL = `https://bgmchat.ry.mk/api/auth/callback`;
+  const BGM_CALLBACK_URL = `${BACKEND_API_URL}/auth/callback`;
   const MESSAGE_GROUP_TIME_GAP = 300;
   const TYPING_STOP_DELAY = 2500;
   const DRAFT_SAVE_DELAY = 1e3;
@@ -113,6 +127,88 @@
     return chiiLib;
   }
 
+  function joinUrl(base, path = "") {
+    if (!path) return base;
+    return `${base}${path.startsWith("/") ? path : `/${path}`}`;
+  }
+  function apiUrl(path, query) {
+    const url = joinUrl(BACKEND_API_URL, path);
+    if (!query) return url;
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value === null || value === void 0) continue;
+      params.set(key, String(value));
+    }
+    const search = params.toString();
+    if (!search) return url;
+    return `${url}${url.includes("?") ? "&" : "?"}${search}`;
+  }
+  function uploadApiUrl(path = "") {
+    if (!path) return UPLOAD_API_URL;
+    if (path === "/batch") return `${UPLOAD_API_URL}/batch`;
+    return joinUrl(UPLOAD_API_URL, path);
+  }
+  function fileUploadApiUrl() {
+    return FILE_UPLOAD_API_URL;
+  }
+  function absoluteUploadUrl(url) {
+    if (url.startsWith("http")) return url;
+    return joinUrl(UPLOAD_BASE_URL, url);
+  }
+  function absoluteBackendUrl(url) {
+    if (url.startsWith("http")) return url;
+    return joinUrl(BACKEND_URL, url);
+  }
+
+  function mentionSearchUrl(query, limit) {
+    return apiUrl("/users/search", { q: query, exact: true, limit });
+  }
+  async function searchMentionUsers(query, limit) {
+    try {
+      const res = await fetch(mentionSearchUrl(query, limit));
+      if (!res.ok) return [];
+      const json = await res.json();
+      return Array.isArray(json.data) ? json.data : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  async function fetchUserProfile(userId) {
+    try {
+      const res = await fetch(apiUrl(`/users/${userId}`));
+      const data = await res.json();
+      if (data.status && data.data) {
+        const d = data.data;
+        return {
+          id: d.id,
+          nickname: d.nickname,
+          username: d.username,
+          avatar: d.avatar?.large || d.avatar?.medium || d.avatar?.small || "",
+          sign: d.sign,
+          url: d.url,
+          lastActive: d.stats?.last_message_time ? Math.floor(Date.parse(d.stats.last_message_time) / 1e3) : void 0,
+          stats: d.stats
+        };
+      }
+    } catch (e) {
+    }
+    return null;
+  }
+  async function lookupUsersByName(usernames) {
+    try {
+      const res = await fetch(apiUrl("/users/lookup-by-name"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usernames })
+      });
+      if (!res.ok) return {};
+      const data = await res.json();
+      return data.data || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
   const isLoggedIn = d$1(false);
   const userInfo = d$1({
     id: window.CHOBITS_UID?.toString() || "",
@@ -144,10 +240,9 @@
       if (cloudSettings?.dollars_blocked_cache) {
         cache = JSON.parse(cloudSettings.dollars_blocked_cache);
       }
-    } catch (e) {
-      console.warn("[Re:Dollars] Failed to parse blocked users cache", e);
+    } catch {
     }
-    const fetchPromises = [];
+    const usernamesToResolve = [];
     for (const u of list) {
       const uStr = String(u);
       if (/^\d+$/.test(uStr)) {
@@ -156,21 +251,23 @@
         if (cache[uStr]) {
           newBlockedUsers.add(String(cache[uStr]));
         } else {
-          fetchPromises.push(
-            fetch(`https://api.bgm.tv/v0/users/${uStr}`).then((r) => r.ok ? r.json() : null).then((d) => {
-              if (d?.id) {
-                const id = String(d.id);
-                newBlockedUsers.add(id);
-                cache[uStr] = id;
-                cacheDirty = true;
-              }
-            }).catch((e) => console.error(`[Re:Dollars] Failed to resolve user ${uStr}`, e))
-          );
+          usernamesToResolve.push(uStr);
         }
       }
     }
-    if (fetchPromises.length) {
-      await Promise.all(fetchPromises);
+    if (usernamesToResolve.length) {
+      try {
+        const resolved = await lookupUsersByName(usernamesToResolve);
+        for (const username of usernamesToResolve) {
+          const user = resolved[username];
+          if (!user?.id) continue;
+          const id = String(user.id);
+          newBlockedUsers.add(id);
+          cache[username] = id;
+          cacheDirty = true;
+        }
+      } catch {
+      }
     }
     blockedUsers.value = newBlockedUsers;
     if (cacheDirty) {
@@ -338,11 +435,10 @@
     try {
       const userId = getReadStateUserId();
       if (!userId) {
-        console.warn("Cannot load read state: user not logged in");
         return null;
       }
       isReadStateSyncing.value = true;
-      const response = await fetch(`${BACKEND_URL}/api/messages/read?user_id=${userId}`, {
+      const response = await fetch(apiUrl("/messages/read", { user_id: userId }), {
         headers: getAuthHeaders(),
         credentials: "include"
       });
@@ -359,8 +455,7 @@
         return effectiveId;
       }
       return null;
-    } catch (e) {
-      console.error("Failed to load read state:", e);
+    } catch {
       return null;
     } finally {
       isReadStateSyncing.value = false;
@@ -388,10 +483,9 @@
     try {
       const userId = getReadStateUserId();
       if (!userId) {
-        console.warn("Cannot sync read state: user not logged in");
         return;
       }
-      const response = await fetch(`${BACKEND_URL}/api/messages/read`, {
+      const response = await fetch(apiUrl("/messages/read"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -411,8 +505,7 @@
           lastReadId.value = effective;
         }
       }
-    } catch (e) {
-      console.error("Failed to sync read state:", e);
+    } catch {
       pendingReadId.value = messageId;
     }
   }
@@ -442,7 +535,7 @@
   const activeConversationId = d$1("dollars");
   function setActiveConversation(conversationId) {
     activeConversationId.value = conversationId;
-    __vitePreload(async () => { const {activeExtensionId, extensionConversations} = await Promise.resolve().then(() => extensionConversations$1);return { activeExtensionId, extensionConversations }},false             ?__VITE_PRELOAD__:void 0).then(({ activeExtensionId, extensionConversations }) => {
+    (async () => { const {activeExtensionId, extensionConversations} = await Promise.resolve().then(() => extensionConversations$1);return { activeExtensionId, extensionConversations }})().then(({ activeExtensionId, extensionConversations }) => {
       if (activeExtensionId.value !== null) {
         const activeExt = extensionConversations.value.find(
           (item) => item.id === activeExtensionId.value
@@ -530,6 +623,9 @@
   const pendingScrollToBottom = d$1(false);
   const manualScrollToBottom = d$1(0);
   const isAtBottom = d$1(true);
+  function normalizePendingContent(content) {
+    return content.replace(/\s+/g, " ").trim();
+  }
   function addMessage(msg, tempId) {
     r(() => {
       const map = new Map(messageMap.value);
@@ -539,6 +635,18 @@
       if (tempId) {
         for (const [id, m] of map) {
           if (m.state === "sending" && m.stableKey === tempId) {
+            inheritedStableKey = m.stableKey;
+            matchedTempId = id;
+            map.delete(id);
+            replacedOptimistic = true;
+            break;
+          }
+        }
+      }
+      if (matchedTempId === void 0) {
+        const incomingContent = normalizePendingContent(msg.message ?? "");
+        for (const [id, m] of map) {
+          if (m.state === "sending" && String(m.uid) === String(msg.uid) && normalizePendingContent(m.message ?? "") === incomingContent && Math.abs(Number(m.timestamp ?? 0) - Number(msg.timestamp ?? 0)) <= 30) {
             inheritedStableKey = m.stableKey;
             matchedTempId = id;
             map.delete(id);
@@ -658,7 +766,7 @@
   async function loadMessageContext(messageId) {
     isLoadingHistory.value = true;
     try {
-      const { fetchMessageContext } = await __vitePreload(async () => { const { fetchMessageContext } = await Promise.resolve().then(() => api);return { fetchMessageContext }},false             ?__VITE_PRELOAD__:void 0);
+      const { fetchMessageContext } = await (async () => { const { fetchMessageContext } = await Promise.resolve().then(() => api);return { fetchMessageContext }})();
       const result = await fetchMessageContext(messageId);
       if (result && result.messages.length > 0) {
         const targetMsg = result.messages.find((m) => m.id === messageId);
@@ -775,28 +883,26 @@
     wsConnected
   }, Symbol.toStringTag, { value: 'Module' }));
 
-  const EXCLUSIVE_GROUP = /* @__PURE__ */ new Set(["smiley", "contextMenu", "profileCard"]);
-  const ANIMATION_DURATION = {
-    smiley: 200,
-    contextMenu: 150,
-    reactionPicker: 150,
-    profileCard: 200,
-    userProfile: 250
+  const panels = {
+    smiley: [d$1(false), d$1(false), 200],
+    contextMenu: [d$1(false), d$1(false), 150],
+    reactionPicker: [d$1(false), d$1(false), 150],
+    profileCard: [d$1(false), d$1(false), 200],
+    userProfile: [d$1(false), d$1(false), 250],
+    search: [d$1(false)],
+    imageViewer: [d$1(false)]
   };
-  const activePanels = d$1(/* @__PURE__ */ new Set());
-  const closingPanels = d$1(/* @__PURE__ */ new Set());
-  const isSmileyPanelOpen = w(() => activePanels.value.has("smiley"));
-  const isSmileyPanelClosing = w(() => closingPanels.value.has("smiley"));
-  const isContextMenuOpen = w(() => activePanels.value.has("contextMenu"));
-  const isContextMenuClosing = w(() => closingPanels.value.has("contextMenu"));
-  const isReactionPickerOpen = w(() => activePanels.value.has("reactionPicker"));
-  const isReactionPickerClosing = w(() => closingPanels.value.has("reactionPicker"));
-  w(() => activePanels.value.has("profileCard"));
-  const isProfileCardClosing = w(() => closingPanels.value.has("profileCard"));
-  const isUserProfilePanelOpen = w(() => activePanels.value.has("userProfile"));
-  const isUserProfilePanelClosing = w(() => closingPanels.value.has("userProfile"));
-  const isSearchActive = w(() => activePanels.value.has("search"));
-  const isImageViewerOpen = w(() => activePanels.value.has("imageViewer"));
+  const isSmileyPanelOpen = panels.smiley[0];
+  const isSmileyPanelClosing = panels.smiley[1];
+  const isContextMenuOpen = panels.contextMenu[0];
+  const isContextMenuClosing = panels.contextMenu[1];
+  const isReactionPickerOpen = panels.reactionPicker[0];
+  const isReactionPickerClosing = panels.reactionPicker[1];
+  const isProfileCardClosing = panels.profileCard[1];
+  const isUserProfilePanelOpen = panels.userProfile[0];
+  const isUserProfilePanelClosing = panels.userProfile[1];
+  const isSearchActive = panels.search[0];
+  const isImageViewerOpen = panels.imageViewer[0];
   const searchGalleryMode = d$1(false);
   const contextMenuPosition = d$1({ x: 0, y: 0 });
   const contextMenuTargetId = d$1(null);
@@ -806,39 +912,23 @@
   const profileCardAnchor = d$1(null);
   const userProfilePanelUserId = d$1(null);
   const imageViewerItems = d$1([]);
-  const imageViewerImages = w(() => imageViewerItems.value.map((item) => item.src));
   const imageViewerIndex = d$1(0);
   const imageViewerSource = d$1("generic");
   const reactionPickerPosition = d$1({ x: 0, y: 0, width: 280 });
   function addPanel(id) {
-    const next = new Set(activePanels.value);
-    next.add(id);
-    activePanels.value = next;
-    if (closingPanels.value.has(id)) {
-      const nextClosing = new Set(closingPanels.value);
-      nextClosing.delete(id);
-      closingPanels.value = nextClosing;
-    }
+    const panel = panels[id];
+    panel[0].value = true;
+    if (panel[1]) panel[1].value = false;
   }
   function removePanel(id) {
-    if (!activePanels.value.has(id)) return;
-    const next = new Set(activePanels.value);
-    next.delete(id);
-    activePanels.value = next;
-    if (closingPanels.value.has(id)) {
-      const nextClosing = new Set(closingPanels.value);
-      nextClosing.delete(id);
-      closingPanels.value = nextClosing;
-    }
-  }
-  function setClosing(id) {
-    const next = new Set(closingPanels.value);
-    next.add(id);
-    closingPanels.value = next;
+    const panel = panels[id];
+    if (!panel[0].value) return;
+    panel[0].value = false;
+    if (panel[1]) panel[1].value = false;
   }
   function closeExclusiveGroup(except) {
-    for (const id of EXCLUSIVE_GROUP) {
-      if (id !== except && activePanels.value.has(id)) {
+    for (const id of ["smiley", "contextMenu", "profileCard"]) {
+      if (id !== except && panels[id][0].value) {
         hidePanelImmediate(id);
       }
     }
@@ -869,17 +959,19 @@
     }
   }
   function showPanel(id) {
-    if (EXCLUSIVE_GROUP.has(id)) {
+    if (id === "smiley" || id === "contextMenu" || id === "profileCard") {
       closeExclusiveGroup(id);
     }
     addPanel(id);
   }
   function hidePanel(id) {
-    if (!activePanels.value.has(id)) return;
-    if (closingPanels.value.has(id)) return;
-    const duration = ANIMATION_DURATION[id];
+    const panel = panels[id];
+    const open = panel[0];
+    const closing = panel[1];
+    if (!open.value || closing?.value) return;
+    const duration = panel[2];
     if (duration) {
-      setClosing(id);
+      closing.value = true;
       setTimeout(() => {
         removePanel(id);
         cleanupPanelState(id);
@@ -890,7 +982,7 @@
     }
   }
   function togglePanel(id, open) {
-    const shouldOpen = open ?? !activePanels.value.has(id);
+    const shouldOpen = open ?? !panels[id][0].value;
     if (shouldOpen) {
       showPanel(id);
     } else {
@@ -967,7 +1059,7 @@
   });
   function toggleMaximize() {
     isMaximized.value = !isMaximized.value;
-    __vitePreload(async () => { const {settings} = await Promise.resolve().then(() => user);return { settings }},false             ?__VITE_PRELOAD__:void 0).then(({ settings }) => {
+    (async () => { const {settings} = await Promise.resolve().then(() => user);return { settings }})().then(({ settings }) => {
       if (settings.value.rememberOpenState) {
         saveMaximizedState(isMaximized.value);
       }
@@ -975,7 +1067,7 @@
   }
   function setMobileChatView(active) {
     mobileChatViewActive.value = active;
-    __vitePreload(async () => { const {settings} = await Promise.resolve().then(() => user);return { settings }},false             ?__VITE_PRELOAD__:void 0).then(({ settings }) => {
+    (async () => { const {settings} = await Promise.resolve().then(() => user);return { settings }})().then(({ settings }) => {
       if (settings.value.rememberOpenState) {
         saveMobileChatViewState(active);
       }
@@ -1017,9 +1109,7 @@
 
   const ui = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    activePanels,
     checkNarrowLayout,
-    closingPanels,
     contextMenuBmoCode,
     contextMenuImageUrl,
     contextMenuPosition,
@@ -1027,11 +1117,9 @@
     ensureNarrowLayoutChatView,
     hideContextMenu,
     hideImageViewer,
-    hidePanel,
     hideProfileCard,
     hideReactionPicker,
     hideUserProfile,
-    imageViewerImages,
     imageViewerIndex,
     imageViewerItems,
     imageViewerSource,
@@ -1059,12 +1147,10 @@
     setMobileChatView,
     showContextMenu,
     showImageViewer,
-    showPanel,
     showProfileCard,
     showReactionPicker,
     showUserProfile,
     toggleMaximize,
-    togglePanel,
     toggleSearch,
     toggleSmileyPanel,
     userProfilePanelUserId
@@ -1092,7 +1178,7 @@
   }
   function setActiveExtension(extensionId) {
     activeExtensionId.value = extensionId;
-    __vitePreload(async () => { const {activeConversationId} = await Promise.resolve().then(() => chat);return { activeConversationId }},false             ?__VITE_PRELOAD__:void 0).then(({ activeConversationId }) => {
+    (async () => { const {activeConversationId} = await Promise.resolve().then(() => chat);return { activeConversationId }})().then(({ activeConversationId }) => {
       activeConversationId.value = "";
     });
   }
@@ -1141,32 +1227,55 @@
 
   const parseMessages = (data) => {
     const arr = Array.isArray(data) ? data : data?.messages || data?.results || [];
-    return arr.map((m) => {
-      if (m.id != null) m.id = Number(m.id);
-      if (m.uid != null) m.uid = Number(m.uid);
-      if (m.reply_to_id != null) m.reply_to_id = Number(m.reply_to_id);
-      if (m.reply_details?.uid != null) m.reply_details.uid = Number(m.reply_details.uid);
-      return m;
-    });
+    return arr.map(normalizeMessage$1);
   };
+  const normalizeMessage$1 = (m) => {
+    if (m.id != null) m.id = Number(m.id);
+    if (m.uid != null) m.uid = Number(m.uid);
+    if (m.reply_to_id != null) m.reply_to_id = Number(m.reply_to_id);
+    if (m.reply_details?.uid != null) m.reply_details.uid = Number(m.reply_details.uid);
+    return m;
+  };
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  async function confirmSentMessage(content, attempts = 12) {
+    const uid = userInfo.value.id;
+    if (!uid) return void 0;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      if (attempt > 0) await delay(Math.min(250 + attempt * 125, 1e3));
+      try {
+        const res = await fetch(apiUrl("/messages/confirm"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ uid, message: content })
+        });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (data.status && data.found && data.message) {
+          return normalizeMessage$1(data.message);
+        }
+      } catch (e) {
+      }
+    }
+    return void 0;
+  }
   async function fetchRecentMessages(limit = 50) {
-    const res = await fetch(`${BACKEND_URL}/api/messages?limit=${limit}`);
+    const res = await fetch(apiUrl("/messages", { limit }));
     if (!res.ok) return [];
     return parseMessages(await res.json());
   }
   async function fetchHistoryMessages(beforeId, limit = 30) {
-    const res = await fetch(`${BACKEND_URL}/api/messages?before_id=${beforeId}&limit=${limit}`);
+    const res = await fetch(apiUrl("/messages", { before_id: beforeId, limit }));
     if (!res.ok) return [];
     return parseMessages(await res.json());
   }
   async function fetchNewerMessages(afterId, limit = 30) {
-    const res = await fetch(`${BACKEND_URL}/api/messages?since_db_id=${afterId}&limit=${limit}`);
+    const res = await fetch(apiUrl("/messages", { since_db_id: afterId, limit }));
     if (!res.ok) return [];
     return parseMessages(await res.json());
   }
   async function getUnreadCount(sinceId, uid) {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/messages/unread-count?since_db_id=${sinceId}&uid=${uid}`);
+      const res = await fetch(apiUrl("/messages/unread-count", { since_db_id: sinceId, uid }));
       if (!res.ok) return null;
       const data = await res.json();
       return {
@@ -1178,7 +1287,7 @@
     }
   }
   async function fetchMessageContext(messageId, before = 30, after = 30) {
-    const res = await fetch(`${BACKEND_URL}/api/messages/context/${messageId}?before=${before}&after=${after}&extended=1`);
+    const res = await fetch(apiUrl(`/messages/context/${messageId}`, { before, after, extended: 1 }));
     if (!res.ok) return null;
     const data = await res.json();
     return {
@@ -1202,18 +1311,15 @@
         },
         body: params
       });
-      if (res.ok) {
-        return { status: true };
-      } else {
-        return { status: false, error: "Network response was not ok" };
-      }
+      if (res.ok) return { status: true };
+      return { status: false, error: "Network response was not ok" };
     } catch (e) {
       return { status: false, error: String(e) };
     }
   }
   async function getFirstMessageIdByDate(date) {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/messages/by-date?date=${date}&first_id_only=true`);
+      const res = await fetch(apiUrl("/messages/by-date", { date, first_id_only: true }));
       if (!res.ok) return null;
       const data = await res.json();
       return data.status ? data.id : null;
@@ -1222,7 +1328,7 @@
     }
   }
   async function editMessage(messageId, content) {
-    const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}`, {
+    const res = await fetch(apiUrl(`/messages/${messageId}`), {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -1235,7 +1341,7 @@
     return res.json();
   }
   async function deleteMessage(messageId) {
-    const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}`, {
+    const res = await fetch(apiUrl(`/messages/${messageId}`), {
       method: "DELETE",
       headers: getAuthHeaders(),
       credentials: "include"
@@ -1244,7 +1350,7 @@
     return res.json();
   }
   async function toggleReaction(messageId, emoji) {
-    const res = await fetch(`${BACKEND_URL}/api/messages/${messageId}/reactions`, {
+    const res = await fetch(apiUrl(`/messages/${messageId}/reactions`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1262,7 +1368,7 @@
   }
   async function searchMessages(query, offset = 0, limit = 20) {
     const res = await fetch(
-      `${BACKEND_URL}/api/search?q=${encodeURIComponent(query)}&offset=${offset}&limit=${limit}`
+      apiUrl("/search", { q: query, offset, limit })
     );
     const data = await res.json();
     if (data.status) {
@@ -1275,7 +1381,7 @@
   }
   async function fetchNotifications(uid) {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/notifications?uid=${uid}`);
+      const res = await fetch(apiUrl("/notifications", { uid }));
       const data = await res.json();
       if (data.status && data.notifications) {
         return data.notifications;
@@ -1285,62 +1391,22 @@
     return [];
   }
   async function markNotificationRead(notifId, uid) {
-    await fetch(`${BACKEND_URL}/api/notifications/${notifId}/read`, {
+    await fetch(apiUrl(`/notifications/${notifId}/read`), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ uid })
     });
   }
   async function markAllNotificationsRead(uid) {
-    await fetch(`${BACKEND_URL}/api/notifications/read-all`, {
+    await fetch(apiUrl("/notifications/read-all"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ uid })
     });
   }
 
-  async function fetchUserProfile(userId) {
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/users/${userId}`);
-      const data = await res.json();
-      if (data.status && data.data) {
-        const d = data.data;
-        return {
-          id: d.id,
-          nickname: d.nickname,
-          username: d.username,
-          avatar: d.avatar?.large || d.avatar?.medium || d.avatar?.small || "",
-          sign: d.sign,
-          url: d.url,
-          lastActive: d.stats?.last_message_time ? Math.floor(Date.parse(d.stats.last_message_time) / 1e3) : void 0,
-          stats: d.stats
-        };
-      }
-    } catch (e) {
-    }
-    return null;
-  }
-  async function lookupUsersByName(usernames) {
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/users/lookup-by-name`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usernames })
-      });
-      if (!res.ok) return {};
-      const data = await res.json();
-      return data.data || {};
-    } catch (e) {
-      return {};
-    }
-  }
-
   async function fetchGalleryMedia(offset = 0, limit = 50, uid) {
-    let url = `${BACKEND_URL}/api/gallery?offset=${offset}&limit=${limit}`;
-    if (uid) {
-      url += `&uid=${uid}`;
-    }
-    const res = await fetch(url);
+    const res = await fetch(apiUrl("/gallery", { offset, limit, uid }));
     const data = await res.json();
     if (data.status) {
       return {
@@ -1355,15 +1421,131 @@
   const UPLOAD_MAX_FILE_SIZE = 200 * 1024 * 1024;
   const UPLOAD_TIMEOUT_MS = 6e4;
   const UPLOAD_MAX_RETRIES = 1;
-  async function uploadFile(file) {
-    const isImage = file.type.startsWith("image/");
-    const maxSize = isImage ? UPLOAD_MAX_IMAGE_SIZE : UPLOAD_MAX_FILE_SIZE;
-    if (file.size > maxSize) {
-      const maxMB = Math.round(maxSize / (1024 * 1024));
-      return { status: false, error: `文件过大 (${(file.size / (1024 * 1024)).toFixed(1)}MB)，最大支持 ${maxMB}MB` };
+  const UPLOAD_MAX_BATCH_IMAGES = 20;
+  const IMAGE_EXTENSIONS = /* @__PURE__ */ new Set([
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp",
+    ".gif",
+    ".avif",
+    ".bmp",
+    ".tiff",
+    ".tif",
+    ".svg",
+    ".heic",
+    ".heif",
+    ".ico",
+    ".jxl",
+    ".apng"
+  ]);
+  function getFileExtension(filename) {
+    const dotIndex = filename.lastIndexOf(".");
+    return dotIndex >= 0 ? filename.slice(dotIndex).toLowerCase() : "";
+  }
+  function isImageFile(file) {
+    return file.type.startsWith("image/") || IMAGE_EXTENSIONS.has(getFileExtension(file.name));
+  }
+  function stringValue(value) {
+    return typeof value === "string" && value.trim() ? value.trim() : void 0;
+  }
+  function numberValue(value) {
+    const parsed = typeof value === "number" ? value : Number(value);
+    return Number.isFinite(parsed) ? parsed : void 0;
+  }
+  function firstString(...values) {
+    for (const value of values) {
+      const str = stringValue(value);
+      if (!str) continue;
+      const url = str.match(/https?:\/\/[^\s"'()[\]]+/)?.[0] ?? str;
+      return url;
     }
+    return void 0;
+  }
+  function normalizeUploadResponse(data, isImage) {
+    const nested = data?.data ?? {};
+    const links = nested?.links ?? data?.links ?? {};
+    const rawUrl = firstString(
+      data?.url,
+      isImage ? data?.imageUrl : data?.fileUrl,
+      isImage ? data?.image_url : data?.videoUrl,
+      nested?.url,
+      nested?.path,
+      nested?.pathname,
+      links?.url,
+      links?.thumbnail_url,
+      links?.imageUrl,
+      links?.image_url,
+      links?.html,
+      links?.markdown,
+      links?.bbcode,
+      data?.fileUrl,
+      data?.imageUrl,
+      data?.videoUrl
+    );
+    const url = rawUrl ? isImage ? absoluteUploadUrl(rawUrl) : absoluteBackendUrl(rawUrl) : void 0;
+    const width = numberValue(data?.width ?? nested?.width);
+    const height = numberValue(data?.height ?? nested?.height);
+    const status = data?.status !== false && Boolean(url);
+    return {
+      ...data,
+      status,
+      ...url ? { url } : {},
+      ...width != null ? { width } : {},
+      ...height != null ? { height } : {}
+    };
+  }
+  function uploadError(message) {
+    return { status: false, error: message };
+  }
+  function validateUploadFile(file, isImage) {
+    const maxSize = isImage ? UPLOAD_MAX_IMAGE_SIZE : UPLOAD_MAX_FILE_SIZE;
+    if (file.size <= maxSize) return null;
+    const maxMB = Math.round(maxSize / (1024 * 1024));
+    return uploadError(`文件过大 (${(file.size / (1024 * 1024)).toFixed(1)}MB)，最大支持 ${maxMB}MB`);
+  }
+  async function parseUploadResponse(res) {
+    try {
+      return await res.json();
+    } catch {
+      if (!res.ok) {
+        return { status: false, error: `服务器错误 (HTTP ${res.status})` };
+      }
+      return { status: false, error: "服务器返回了无法解析的响应" };
+    }
+  }
+  function batchItems(data) {
+    const nested = data?.data ?? {};
+    const candidates = [
+      Array.isArray(data) ? data : void 0,
+      data?.items,
+      data?.images,
+      data?.files,
+      data?.urls,
+      data?.success,
+      data?.successful,
+      data?.list,
+      nested?.items,
+      nested?.images,
+      nested?.files,
+      nested?.urls,
+      nested?.success,
+      nested?.successful,
+      nested?.list,
+      Array.isArray(nested) ? nested : void 0
+    ];
+    for (const candidate of candidates) {
+      if (!Array.isArray(candidate)) continue;
+      return candidate.map((item) => typeof item === "string" ? { url: item } : item);
+    }
+    return [];
+  }
+  async function uploadFile(file) {
+    const isImage = isImageFile(file);
+    const validationError = validateUploadFile(file, isImage);
+    if (validationError) return validationError;
     const fieldName = isImage ? "image" : "file";
-    const endpoint = isImage ? `${UPLOAD_BASE_URL}/api/upload` : `${UPLOAD_BASE_URL}/api/upload/file`;
+    const endpoint = isImage ? uploadApiUrl() : fileUploadApiUrl();
     let lastError = "上传失败";
     for (let attempt = 0; attempt <= UPLOAD_MAX_RETRIES; attempt++) {
       if (attempt > 0) {
@@ -1376,33 +1558,18 @@
         const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
         const res = await fetch(endpoint, {
           method: "POST",
-          credentials: "include",
+          credentials: isImage ? "omit" : "include",
           body: formData,
           signal: controller.signal
         });
         clearTimeout(timeoutId);
-        let data;
-        try {
-          data = await res.json();
-        } catch {
-          if (!res.ok) {
-            lastError = `服务器错误 (HTTP ${res.status})`;
-            if (res.status >= 500) continue;
-            return { status: false, error: lastError };
-          }
-          return { status: false, error: "服务器返回了无法解析的响应" };
-        }
+        let data = await parseUploadResponse(res);
         if (!res.ok) {
-          lastError = data?.message || `上传失败 (HTTP ${res.status})`;
+          lastError = data?.message || data?.error || `上传失败 (HTTP ${res.status})`;
           if (res.status >= 500) continue;
           return { status: false, error: lastError };
         }
-        if (data.status && !data.url) {
-          data.url = data.fileUrl || data.imageUrl || data.videoUrl;
-        }
-        if (data.status && data.url && !data.url.startsWith("http")) {
-          data.url = `${UPLOAD_BASE_URL}${data.url}`;
-        }
+        data = normalizeUploadResponse(data, isImage);
         if (!data.status) {
           return { status: false, error: data.message || data.error || "上传处理失败" };
         }
@@ -1418,10 +1585,54 @@
     }
     return { status: false, error: lastError };
   }
+  async function uploadImages(files) {
+    if (files.length === 0) return [];
+    if (files.length === 1) {
+      return [await uploadFile(files[0])];
+    }
+    if (files.length > UPLOAD_MAX_BATCH_IMAGES) {
+      return [uploadError(`一次最多上传 ${UPLOAD_MAX_BATCH_IMAGES} 张图片`)];
+    }
+    for (const file of files) {
+      if (!isImageFile(file)) return [uploadError("批量上传仅支持图片")];
+      const validationError = validateUploadFile(file, true);
+      if (validationError) return [validationError];
+    }
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append("images", file);
+    }
+    try {
+      const res = await fetch(uploadApiUrl("/batch"), {
+        method: "POST",
+        credentials: "omit",
+        body: formData,
+        signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS)
+      });
+      const data = await parseUploadResponse(res);
+      if (!res.ok || data?.status === false) {
+        return [uploadError(data?.message || data?.error || `上传失败 (HTTP ${res.status})`)];
+      }
+      const items = batchItems(data);
+      if (items.length === 0) {
+        const normalized = normalizeUploadResponse(data, true);
+        return normalized.status ? [normalized] : [uploadError(data?.message || data?.error || "上传处理失败")];
+      }
+      return items.map((item) => {
+        const normalized = normalizeUploadResponse(item, true);
+        return normalized.status ? normalized : uploadError(item?.message || item?.error || "上传处理失败");
+      });
+    } catch (e) {
+      if (e.name === "TimeoutError" || e.name === "AbortError") {
+        return [uploadError("上传超时，请检查网络后重试")];
+      }
+      return [uploadError("网络错误，请检查连接后重试")];
+    }
+  }
 
   async function checkAuth() {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/auth/me`, {
+      const res = await fetch(apiUrl("/auth/me"), {
         headers: getAuthHeaders(),
         credentials: "include"
       });
@@ -1434,7 +1645,7 @@
       const token = cloud?.getAll()?.dollarsAuthToken;
       if (token) {
         try {
-          const loginRes = await fetch(`${BACKEND_URL}/api/auth/token-login`, {
+          const loginRes = await fetch(apiUrl("/auth/token-login"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ token }),
@@ -1480,7 +1691,7 @@
   }
   async function performLogout() {
     try {
-      await fetch(`${BACKEND_URL}/api/auth/logout`, {
+      await fetch(apiUrl("/auth/logout"), {
         method: "POST",
         credentials: "include"
       });
@@ -1497,6 +1708,7 @@
   const api = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     checkAuth,
+    confirmSentMessage,
     deleteMessage,
     editMessage,
     fetchGalleryMedia,
@@ -1516,7 +1728,8 @@
     searchMessages,
     sendMessage: sendMessage$1,
     toggleReaction,
-    uploadFile
+    uploadFile,
+    uploadImages
   }, Symbol.toStringTag, { value: 'Module' }));
 
   const settingsConfig = [
@@ -1617,7 +1830,7 @@
       clearWindowState();
     } else {
       saveChatOpenState(isChatOpen.value);
-      __vitePreload(async () => { const {isMaximized, mobileChatViewActive} = await Promise.resolve().then(() => ui);return { isMaximized, mobileChatViewActive }},false             ?__VITE_PRELOAD__:void 0).then(({ isMaximized, mobileChatViewActive }) => {
+      (async () => { const {isMaximized, mobileChatViewActive} = await Promise.resolve().then(() => ui);return { isMaximized, mobileChatViewActive }})().then(({ isMaximized, mobileChatViewActive }) => {
         saveMaximizedState(isMaximized.value);
         saveMobileChatViewState(mobileChatViewActive.value);
       }).catch(() => {
@@ -1753,111 +1966,82 @@
       showOnlineStatus = activeConv.type === "channel";
     }
     if (isUserProfilePanelOpen.value && isNarrowLayout.value) {
-      return /* @__PURE__ */ u$2("div", { class: "chat-header", children: [
-        /* @__PURE__ */ u$2("div", { class: "chat-header-left-pane", children: /* @__PURE__ */ u$2(
-          "button",
-          {
-            id: "dollars-back-btn",
-            class: "header-btn",
-            title: "返回",
-            onClick: hideUserProfile,
-            dangerouslySetInnerHTML: { __html: iconArrowLeft }
-          }
-        ) }),
-        /* @__PURE__ */ u$2("div", { class: "title-wrapper", children: /* @__PURE__ */ u$2("div", { class: "header-text-column", children: /* @__PURE__ */ u$2("span", { class: "header-main-title", children: "用户资料" }) }) }),
-        /* @__PURE__ */ u$2("div", { class: "header-buttons", children: [
-          /* @__PURE__ */ u$2(
-            "button",
-            {
-              id: "dollars-maximize-btn",
-              class: "header-btn maximize-btn",
-              title: isMaximized.value ? "还原" : "最大化",
-              onClick: handleMaximize
-            }
-          ),
-          /* @__PURE__ */ u$2(
-            "button",
-            {
-              class: "header-btn close-btn",
-              title: "关闭",
-              onClick: handleClose
-            }
-          )
-        ] })
-      ] });
+      return /* @__PURE__ */ _$3("div", { class: "chat-header" }, /* @__PURE__ */ _$3("div", { class: "chat-header-left-pane" }, /* @__PURE__ */ _$3(
+        "button",
+        {
+          id: "dollars-back-btn",
+          class: "header-btn",
+          title: "返回",
+          onClick: hideUserProfile,
+          dangerouslySetInnerHTML: { __html: iconArrowLeft }
+        }
+      )), /* @__PURE__ */ _$3("div", { class: "title-wrapper" }, /* @__PURE__ */ _$3("div", { class: "header-text-column" }, /* @__PURE__ */ _$3("span", { class: "header-main-title" }, "用户资料"))), /* @__PURE__ */ _$3("div", { class: "header-buttons" }, /* @__PURE__ */ _$3(
+        "button",
+        {
+          id: "dollars-maximize-btn",
+          class: "header-btn maximize-btn",
+          title: isMaximized.value ? "还原" : "最大化",
+          onClick: handleMaximize
+        }
+      ), /* @__PURE__ */ _$3(
+        "button",
+        {
+          class: "header-btn close-btn",
+          title: "关闭",
+          onClick: handleClose
+        }
+      )));
     }
-    return /* @__PURE__ */ u$2("div", { class: "chat-header", children: [
-      /* @__PURE__ */ u$2("div", { class: "chat-header-left-pane", children: [
-        /* @__PURE__ */ u$2(
-          "button",
-          {
-            id: "dollars-settings-btn-header",
-            class: "header-btn",
-            title: "设置",
-            onClick: handleSettings,
-            style: { display: isShowingChatView ? "none" : "flex" }
-          }
-        ),
-        /* @__PURE__ */ u$2(
-          "button",
-          {
-            id: "dollars-back-btn",
-            class: "header-btn",
-            title: "返回",
-            onClick: handleBack,
-            style: { display: isShowingChatView ? "flex" : "none" },
-            dangerouslySetInnerHTML: { __html: iconArrowLeft }
-          }
-        )
-      ] }),
-      /* @__PURE__ */ u$2("div", { class: "title-wrapper", children: [
-        (!isNarrowLayout.value || isShowingChatView) && /* @__PURE__ */ u$2(
-          "img",
-          {
-            class: "header-chat-icon",
-            src: avatarUrl,
-            alt: mainTitle
-          }
-        ),
-        /* @__PURE__ */ u$2("div", { class: "header-text-column", children: [
-          /* @__PURE__ */ u$2("span", { class: "header-main-title", children: mainTitle }),
-          showOnlineStatus && /* @__PURE__ */ u$2("span", { class: "online-status", children: [
-            /* @__PURE__ */ u$2("span", { class: "online-dot" }),
-            /* @__PURE__ */ u$2("span", { id: "dollars-online-count", children: onlineCount.value }),
-            " ",
-            statusLabel
-          ] })
-        ] })
-      ] }),
-      /* @__PURE__ */ u$2("div", { class: "header-buttons", children: [
-        /* @__PURE__ */ u$2(
-          "button",
-          {
-            id: "dollars-search-btn",
-            class: "header-btn",
-            title: "搜索",
-            onClick: handleSearch
-          }
-        ),
-        /* @__PURE__ */ u$2(
-          "button",
-          {
-            id: "dollars-maximize-btn",
-            class: "header-btn maximize-btn",
-            title: isMaximized.value ? "还原" : "最大化",
-            onClick: handleMaximize
-          }
-        ),
-        /* @__PURE__ */ u$2(
-          "button",
-          {
-            class: "header-btn close-btn",
-            title: "关闭",
-            onClick: handleClose
-          }
-        )
-      ] })
-    ] });
+    return /* @__PURE__ */ _$3("div", { class: "chat-header" }, /* @__PURE__ */ _$3("div", { class: "chat-header-left-pane" }, /* @__PURE__ */ _$3(
+      "button",
+      {
+        id: "dollars-settings-btn-header",
+        class: "header-btn",
+        title: "设置",
+        onClick: handleSettings,
+        style: { display: isShowingChatView ? "none" : "flex" }
+      }
+    ), /* @__PURE__ */ _$3(
+      "button",
+      {
+        id: "dollars-back-btn",
+        class: "header-btn",
+        title: "返回",
+        onClick: handleBack,
+        style: { display: isShowingChatView ? "flex" : "none" },
+        dangerouslySetInnerHTML: { __html: iconArrowLeft }
+      }
+    )), /* @__PURE__ */ _$3("div", { class: "title-wrapper" }, (!isNarrowLayout.value || isShowingChatView) && /* @__PURE__ */ _$3(
+      "img",
+      {
+        class: "header-chat-icon",
+        src: avatarUrl,
+        alt: mainTitle
+      }
+    ), /* @__PURE__ */ _$3("div", { class: "header-text-column" }, /* @__PURE__ */ _$3("span", { class: "header-main-title" }, mainTitle), showOnlineStatus && /* @__PURE__ */ _$3("span", { class: "online-status" }, /* @__PURE__ */ _$3("span", { class: "online-dot" }), /* @__PURE__ */ _$3("span", { id: "dollars-online-count" }, onlineCount.value), " ", statusLabel))), /* @__PURE__ */ _$3("div", { class: "header-buttons" }, /* @__PURE__ */ _$3(
+      "button",
+      {
+        id: "dollars-search-btn",
+        class: "header-btn",
+        title: "搜索",
+        onClick: handleSearch
+      }
+    ), /* @__PURE__ */ _$3(
+      "button",
+      {
+        id: "dollars-maximize-btn",
+        class: "header-btn maximize-btn",
+        title: isMaximized.value ? "还原" : "最大化",
+        onClick: handleMaximize
+      }
+    ), /* @__PURE__ */ _$3(
+      "button",
+      {
+        class: "header-btn close-btn",
+        title: "关闭",
+        onClick: handleClose
+      }
+    )));
   }
 
   const isMobile = () => {
@@ -2223,8 +2407,8 @@
     const metaHeight = meta?.height ?? "";
     const safeSrc = escapeHTML(src);
     const displaySrc = escapeHTML(placeholder ? getThumbnailUrl(src) : src);
-    const classes = ["image-container", placeholder && "image-placeholder", masked && "image-masked"].filter(Boolean).join(" ");
-    const imageClasses = ["full-image", placeholder && "is-loaded"].filter(Boolean).join(" ");
+    const classes = "image-container" + (placeholder ? " image-placeholder" : "") + (masked ? " image-masked" : "");
+    const imageClasses = "full-image" + (placeholder ? " is-loaded" : "");
     const dataSrc = masked ? ` data-src="${safeSrc}"` : "";
     const loadHint = masked ? '\n            <div class="image-load-hint">显示图片</div>' : "";
     return `<div class="${classes}" style="${imageStyle}" data-iw="${metaWidth}" data-ih="${metaHeight}"${dataSrc}>
@@ -2466,10 +2650,8 @@
   }
 
   function UserAvatar({ uid, src, nickname, className = "" }) {
-    const isOnline = w(() => {
-      const uidStr = String(uid);
-      return uidStr === "0" || onlineUsers.value.has(uidStr);
-    });
+    const uidStr = String(uid);
+    const isOnline = uidStr === "0" || onlineUsers.value.has(uidStr);
     const handleShortClick = (e) => {
       if (e.cancelable && e.type !== "click") {
         e.preventDefault();
@@ -2492,10 +2674,10 @@
       onClick: handleShortClick,
       threshold: 500
     });
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "img",
       {
-        class: `avatar ${isOnline.value ? "online" : ""} ${className}`,
+        class: `avatar ${isOnline ? "online" : ""} ${className}`,
         src,
         alt: nickname,
         "data-uid": uid,
@@ -2509,7 +2691,6 @@
   }
 
   const notifications = d$1([]);
-  const notificationCount = w(() => notifications.value.length);
   const dockIconFlashing = d$1(false);
   async function loadNotifications() {
     if (!userInfo.value.id) return;
@@ -2594,43 +2775,33 @@
         }
       }
     }, []);
-    const count = notificationCount.value;
+    const count = notifications.value.length;
     if (settings.value.notificationType === "simple") {
       return null;
     }
     if (count === 0) {
       return null;
     }
-    return /* @__PURE__ */ u$2("div", { id: "unified-notifier", class: count > 0 ? "show" : "", children: [
-      /* @__PURE__ */ u$2("div", { class: "un-header", children: [
-        /* @__PURE__ */ u$2("span", { children: [
-          "通知 (",
-          /* @__PURE__ */ u$2("span", { class: "un-count", children: count }),
-          ")"
-        ] }),
-        /* @__PURE__ */ u$2(
-          "a",
-          {
-            href: "#",
-            class: "un-clear-all",
-            onClick: (e) => {
-              e.preventDefault();
-              handleMarkAllRead();
-            },
-            children: "全部已读"
-          }
-        )
-      ] }),
-      /* @__PURE__ */ u$2("div", { class: "un-body", children: /* @__PURE__ */ u$2("ul", { children: notifications.value.map((notif) => /* @__PURE__ */ u$2(
-        NotificationItem,
-        {
-          notification: notif,
-          onView: () => handleView(notif),
-          onDismiss: () => handleMarkRead(notif)
-        },
-        notif.id
-      )) }) })
-    ] });
+    return /* @__PURE__ */ _$3("div", { id: "unified-notifier", class: count > 0 ? "show" : "" }, /* @__PURE__ */ _$3("div", { class: "un-header" }, /* @__PURE__ */ _$3("span", null, "通知 (", /* @__PURE__ */ _$3("span", { class: "un-count" }, count), ")"), /* @__PURE__ */ _$3(
+      "a",
+      {
+        href: "#",
+        class: "un-clear-all",
+        onClick: (e) => {
+          e.preventDefault();
+          handleMarkAllRead();
+        }
+      },
+      "全部已读"
+    )), /* @__PURE__ */ _$3("div", { class: "un-body" }, /* @__PURE__ */ _$3("ul", null, notifications.value.map((notif) => /* @__PURE__ */ _$3(
+      NotificationItem,
+      {
+        key: notif.id,
+        notification: notif,
+        onView: () => handleView(notif),
+        onDismiss: () => handleMarkRead(notif)
+      }
+    )))));
   }
   function NotificationItem({ notification, onView, onDismiss }) {
     const isReply = notification.type === "reply";
@@ -2644,58 +2815,45 @@
       "m"
     );
     const nickname = notification.message?.nickname || notification.nickname || "Unknown";
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "li",
       {
         class: "un-item",
         id: `un-item-${notification.id}`,
         "data-notif-id": notification.id,
-        "data-message-id": notification.message_id || notification.message?.id,
-        children: [
-          /* @__PURE__ */ u$2(
-            "span",
-            {
-              class: "avatarNeue avatarReSize40",
-              style: { backgroundImage: `url('${avatarSrc}')` }
-            }
-          ),
-          /* @__PURE__ */ u$2("div", { class: "content", children: [
-            /* @__PURE__ */ u$2("strong", { class: "un-widget-title", children: [
-              escapeHTML(nickname),
-              " ",
-              /* @__PURE__ */ u$2("span", { style: { fontWeight: "normal", color: "var(--dollars-text-placeholder)", fontSize: "11px" }, children: typeLabel })
-            ] }),
-            /* @__PURE__ */ u$2("span", { class: "un-widget-message", children: escapeHTML(text) }),
-            /* @__PURE__ */ u$2("div", { class: "actions", children: [
-              /* @__PURE__ */ u$2(
-                "a",
-                {
-                  href: "#",
-                  class: "un-action-btn btnRedSmall ll",
-                  onClick: (e) => {
-                    e.preventDefault();
-                    onView();
-                  },
-                  children: /* @__PURE__ */ u$2("span", { children: "查看" })
-                }
-              ),
-              /* @__PURE__ */ u$2(
-                "a",
-                {
-                  href: "#",
-                  class: "un-action-btn btnGraySmall ll",
-                  style: { marginLeft: "6px" },
-                  onClick: (e) => {
-                    e.preventDefault();
-                    onDismiss();
-                  },
-                  children: /* @__PURE__ */ u$2("span", { children: "忽略" })
-                }
-              )
-            ] })
-          ] })
-        ]
-      }
+        "data-message-id": notification.message_id || notification.message?.id
+      },
+      /* @__PURE__ */ _$3(
+        "span",
+        {
+          class: "avatarNeue avatarReSize40",
+          style: { backgroundImage: `url('${avatarSrc}')` }
+        }
+      ),
+      /* @__PURE__ */ _$3("div", { class: "content" }, /* @__PURE__ */ _$3("strong", { class: "un-widget-title" }, escapeHTML(nickname), " ", /* @__PURE__ */ _$3("span", { style: { fontWeight: "normal", color: "var(--dollars-text-placeholder)", fontSize: "11px" } }, typeLabel)), /* @__PURE__ */ _$3("span", { class: "un-widget-message" }, escapeHTML(text)), /* @__PURE__ */ _$3("div", { class: "actions" }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          class: "un-action-btn btnRedSmall ll",
+          onClick: (e) => {
+            e.preventDefault();
+            onView();
+          }
+        },
+        /* @__PURE__ */ _$3("span", null, "查看")
+      ), /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          class: "un-action-btn btnGraySmall ll",
+          style: { marginLeft: "6px" },
+          onClick: (e) => {
+            e.preventDefault();
+            onDismiss();
+          }
+        },
+        /* @__PURE__ */ _$3("span", null, "忽略")
+      )))
     );
   }
 
@@ -2799,7 +2957,7 @@
       acc[r.emoji].push(r);
       return acc;
     }, {});
-    return /* @__PURE__ */ u$2("div", { class: "reactions-container likes_grid", children: Object.entries(grouped).map(([emoji, users]) => /* @__PURE__ */ u$2(ReactionItem, { emoji, users, messageId }, emoji)) });
+    return /* @__PURE__ */ _$3("div", { class: "reactions-container likes_grid" }, Object.entries(grouped).map(([emoji, users]) => /* @__PURE__ */ _$3(ReactionItem, { key: emoji, emoji, users, messageId })));
   }
   function ReactionItem({ emoji, users, messageId }) {
     const url = getSmileyUrl(emoji);
@@ -2873,41 +3031,34 @@
       e.stopPropagation();
       await toggleReaction(messageId, emoji);
     };
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         ref: itemRef,
         class: `reaction-item item ${isSelected ? "selected" : ""}`,
         "data-emoji": emoji,
-        onClick: handleToggle,
-        children: [
-          /* @__PURE__ */ u$2(
-            "span",
-            {
-              class: "emoji",
-              style: url ? { backgroundImage: `url('${url}')` } : void 0,
-              children: [
-                !url && !isBmo && emoji,
-                isBmo && /* @__PURE__ */ u$2("span", { class: "bmo", "data-code": emoji })
-              ]
-            }
-          ),
-          avatarsToShow.length > 0 && /* @__PURE__ */ u$2("span", { class: "reaction-avatars", children: avatarsToShow.map((u, i) => /* @__PURE__ */ u$2(
-            "img",
-            {
-              class: "reaction-avatar",
-              src: getAvatarUrl(u.avatar, "l"),
-              alt: u.nickname,
-              style: { zIndex: MAX_AVATARS_SHOWN - i }
-            },
-            u.user_id
-          )) }),
-          avatarsToShow.length === 0 ? /* @__PURE__ */ u$2("span", { class: "num", children: users.length }) : extraCount > 0 ? /* @__PURE__ */ u$2("span", { class: "num extra", children: [
-            "+",
-            extraCount
-          ] }) : null
-        ]
-      }
+        onClick: handleToggle
+      },
+      /* @__PURE__ */ _$3(
+        "span",
+        {
+          class: "emoji",
+          style: url ? { backgroundImage: `url('${url}')` } : void 0
+        },
+        !url && !isBmo && emoji,
+        isBmo && /* @__PURE__ */ _$3("span", { class: "bmo", "data-code": emoji })
+      ),
+      avatarsToShow.length > 0 && /* @__PURE__ */ _$3("span", { class: "reaction-avatars" }, avatarsToShow.map((u, i) => /* @__PURE__ */ _$3(
+        "img",
+        {
+          key: u.user_id,
+          class: "reaction-avatar",
+          src: getAvatarUrl(u.avatar, "l"),
+          alt: u.nickname,
+          style: { zIndex: MAX_AVATARS_SHOWN - i }
+        }
+      ))),
+      avatarsToShow.length === 0 ? /* @__PURE__ */ _$3("span", { class: "num" }, users.length) : extraCount > 0 ? /* @__PURE__ */ _$3("span", { class: "num extra" }, "+", extraCount) : null
     );
   }
 
@@ -2945,7 +3096,7 @@
     }, [isNew]);
     const messageId = message.id;
     const messageText = message.message;
-    const isDeleted = message.is_deleted;
+    const isDeleted = !!message.is_deleted;
     const editedAt = message.edited_at;
     const replyToId = message.reply_to_id;
     const replyDetails = message.reply_details;
@@ -3174,12 +3325,17 @@
     const handleRetry = q(async () => {
       const result = retryMessage(messageId);
       if (result) {
-        const [{ sendPendingMessage }, { sendMessage: apiSendMessage }] = await Promise.all([
-          __vitePreload(() => Promise.resolve().then(() => useWebSocket$1),false             ?__VITE_PRELOAD__:void 0),
-          __vitePreload(() => Promise.resolve().then(() => api),false             ?__VITE_PRELOAD__:void 0)
+        const [{ sendPendingMessage }, { sendMessage: apiSendMessage, confirmSentMessage }] = await Promise.all([
+          (() => Promise.resolve().then(() => useWebSocket$1))(),
+          (() => Promise.resolve().then(() => api))()
         ]);
         sendPendingMessage(result.stableKey, result.content);
-        apiSendMessage(result.content);
+        const sent = await apiSendMessage(result.content);
+        if (sent.status) {
+          void confirmSentMessage(result.content).then((message2) => {
+            if (message2) addMessage(message2, result.stableKey);
+          });
+        }
       }
     }, [messageId]);
     const handleBubbleClick = q((e) => {
@@ -3193,17 +3349,8 @@
       onReply: triggerReply,
       elementRef: messageRef
     });
-    const className = [
-      "chat-message",
-      isSelf && "self",
-      isGrouped && "is-grouped-with-prev",
-      isGroupedWithNext && "is-grouped-with-next",
-      editedAt && !isDeleted && "is-edited",
-      isNew && "new-message",
-      message.state === "sending" && "pending",
-      message.state === "failed" && "failed"
-    ].filter(Boolean).join(" ");
-    return /* @__PURE__ */ u$2(
+    const className = "chat-message" + (isSelf ? " self" : "") + (isGrouped ? " is-grouped-with-prev" : "") + (isGroupedWithNext ? " is-grouped-with-next" : "") + (editedAt && !isDeleted ? " is-edited" : "") + (isNew ? " new-message" : "") + (message.state === "sending" ? " pending" : "") + (message.state === "failed" ? " failed" : "");
+    return /* @__PURE__ */ _$3(
       "div",
       {
         id: `db-${messageId}`,
@@ -3216,80 +3363,64 @@
         onTouchStart,
         onTouchMove,
         onTouchEnd,
-        onTouchCancel: onTouchEnd,
-        children: [
-          /* @__PURE__ */ u$2("div", { class: "swipe-reply-indicator" }),
-          /* @__PURE__ */ u$2(
-            UserAvatar,
-            {
-              uid: message.uid,
-              src: avatarUrl,
-              nickname: message.nickname
+        onTouchCancel: onTouchEnd
+      },
+      /* @__PURE__ */ _$3("div", { class: "swipe-reply-indicator" }),
+      /* @__PURE__ */ _$3(
+        UserAvatar,
+        {
+          uid: message.uid,
+          src: avatarUrl,
+          nickname: message.nickname
+        }
+      ),
+      /* @__PURE__ */ _$3("div", { class: "message-content" }, /* @__PURE__ */ _$3("span", { class: "nickname" }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: message.uid === 0 ? "/user/bangumi" : `/user/${message.uid}`,
+          target: "_blank",
+          rel: "noopener"
+        },
+        message.nickname
+      )), /* @__PURE__ */ _$3(
+        "div",
+        {
+          class: "bubble" + (isSticker ? " sticker-mode" : "") + (timestampMode === "trailing" ? " has-trailing-timestamp" : "") + (timestampMode === "stacked" ? " has-stacked-timestamp" : ""),
+          onClick: message.state === "failed" ? handleBubbleClick : void 0,
+          style: message.state === "failed" ? { cursor: "pointer" } : void 0
+        },
+        /* @__PURE__ */ _$3("svg", { viewBox: "0 0 11 20", width: "11", height: "20", class: "bubble-tail" }, /* @__PURE__ */ _$3("use", { href: "#message-tail-filled" })),
+        /* @__PURE__ */ _$3("span", { class: "bubble-nickname", style: { "--nick-color": nickColor } }, message.nickname),
+        /* @__PURE__ */ _$3(k$1, null, /* @__PURE__ */ _$3(
+          "div",
+          {
+            ref: textContentRef,
+            class: `text-content ${shouldCollapse ? "is-collapsed" : ""}`,
+            style: { "--collapse-max-height": `${COLLAPSE_MAX_HEIGHT}px` },
+            dangerouslySetInnerHTML: { __html: content }
+          }
+        ), isCollapsible && /* @__PURE__ */ _$3(
+          "button",
+          {
+            type: "button",
+            class: "expand-toggle-btn",
+            "aria-expanded": isExpanded,
+            onClick: (e) => {
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
             }
-          ),
-          /* @__PURE__ */ u$2("div", { class: "message-content", children: [
-            /* @__PURE__ */ u$2("span", { class: "nickname", children: /* @__PURE__ */ u$2(
-              "a",
-              {
-                href: message.uid === 0 ? "/user/bangumi" : `/user/${message.uid}`,
-                target: "_blank",
-                rel: "noopener",
-                children: message.nickname
-              }
-            ) }),
-            /* @__PURE__ */ u$2(
-              "div",
-              {
-                class: [
-                  "bubble",
-                  isSticker && "sticker-mode",
-                  timestampMode === "trailing" && "has-trailing-timestamp",
-                  timestampMode === "stacked" && "has-stacked-timestamp"
-                ].filter(Boolean).join(" "),
-                onClick: message.state === "failed" ? handleBubbleClick : void 0,
-                style: message.state === "failed" ? { cursor: "pointer" } : void 0,
-                children: [
-                  /* @__PURE__ */ u$2("svg", { viewBox: "0 0 11 20", width: "11", height: "20", class: "bubble-tail", children: /* @__PURE__ */ u$2("use", { href: "#message-tail-filled" }) }),
-                  /* @__PURE__ */ u$2("span", { class: "bubble-nickname", style: { "--nick-color": nickColor }, children: message.nickname }),
-                  /* @__PURE__ */ u$2(k$1, { children: [
-                    /* @__PURE__ */ u$2(
-                      "div",
-                      {
-                        ref: textContentRef,
-                        class: `text-content ${shouldCollapse ? "is-collapsed" : ""}`,
-                        style: { "--collapse-max-height": `${COLLAPSE_MAX_HEIGHT}px` },
-                        dangerouslySetInnerHTML: { __html: content }
-                      }
-                    ),
-                    isCollapsible && /* @__PURE__ */ u$2(
-                      "button",
-                      {
-                        type: "button",
-                        class: "expand-toggle-btn",
-                        "aria-expanded": isExpanded,
-                        onClick: (e) => {
-                          e.stopPropagation();
-                          setIsExpanded(!isExpanded);
-                        },
-                        children: isExpanded ? "收起" : "展开全文"
-                      }
-                    )
-                  ] }),
-                  timestampMode !== "hidden" && /* @__PURE__ */ u$2(
-                    "span",
-                    {
-                      class: `bubble-timestamp ${timestampMode === "overlay" ? "is-overlay" : timestampMode === "trailing" ? "is-trailing" : "is-stacked"}`,
-                      title: fullTimeText,
-                      children: timeText
-                    }
-                  )
-                ]
-              }
-            ),
-            /* @__PURE__ */ u$2(MessageReactions, { reactions: message.reactions || [], messageId })
-          ] })
-        ]
-      }
+          },
+          isExpanded ? "收起" : "展开全文"
+        )),
+        timestampMode !== "hidden" && /* @__PURE__ */ _$3(
+          "span",
+          {
+            class: `bubble-timestamp ${timestampMode === "overlay" ? "is-overlay" : timestampMode === "trailing" ? "is-trailing" : "is-stacked"}`,
+            title: fullTimeText
+          },
+          timeText
+        )
+      ), /* @__PURE__ */ _$3(MessageReactions, { reactions: message.reactions || [], messageId }))
     );
   }, arePropsEqual);
 
@@ -4187,13 +4318,7 @@
         try {
           const savedBrowse = loadBrowsePosition();
           const currentUnreadCount = unreadCount.value;
-          console.log("[Browse Position Debug]", {
-            savedBrowse,
-            currentUnreadCount,
-            lastReadId: lastReadId.value
-          });
           if (savedBrowse) {
-            console.log("[Browse Position] Attempting to restore to message:", savedBrowse.anchorMessageId);
             unreadWhileScrolled.value = currentUnreadCount;
             showScrollBottomBtn.value = currentUnreadCount > 0;
             const contextResult = await fetchMessageContext(savedBrowse.anchorMessageId, 25, 50);
@@ -4221,10 +4346,8 @@
                   const browseEl = document.getElementById(`db-${savedBrowse.anchorMessageId}`);
                   if (browseEl && bodyRef.current) {
                     bodyRef.current.scrollTop = browseEl.offsetTop - 10;
-                    console.log("[Browse Position] Restored successfully");
                   } else if (bodyRef.current) {
                     bodyRef.current.scrollTop = 0;
-                    console.warn("[Browse Position] Anchor message not found in loaded messages, scrolled to top");
                   }
                   syncPresenceSubscriptions();
                   isLoadingHistory.value = false;
@@ -4234,7 +4357,6 @@
               });
               return;
             } else {
-              console.warn("[Browse Position] Failed to load context, clearing invalid browse position");
               clearBrowsePosition();
             }
           }
@@ -4358,29 +4480,29 @@
       listEl.addEventListener("click", handleClick);
       return () => listEl.removeEventListener("click", handleClick);
     }, []);
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         class: `chat-body ${isLoadingHistory.value ? "loading" : ""} ${isContextLoading.value ? "context-loading" : ""}`,
         ref: bodyRef,
         onScroll: handleScroll,
-        style: { paddingBottom: `${inputAreaHeight.value + 20}px` },
-        children: /* @__PURE__ */ u$2("div", { class: "chat-list", ref: listRef, children: visibleMessageIds.map((msgId) => {
-          const msg = messageMap.value.get(msgId);
-          if (!msg) return null;
-          const grouping = getMessageGrouping(msgId);
-          return /* @__PURE__ */ u$2(
-            MessageItem,
-            {
-              message: msg,
-              isSelf: grouping.isSelf,
-              isGrouped: grouping.isGrouped,
-              isGroupedWithNext: grouping.isGroupedWithNext
-            },
-            msg.stableKey || msgId
-          );
-        }) })
-      }
+        style: { paddingBottom: `${inputAreaHeight.value + 20}px` }
+      },
+      /* @__PURE__ */ _$3("div", { class: "chat-list", ref: listRef }, visibleMessageIds.map((msgId) => {
+        const msg = messageMap.value.get(msgId);
+        if (!msg) return null;
+        const grouping = getMessageGrouping(msgId);
+        return /* @__PURE__ */ _$3(
+          MessageItem,
+          {
+            key: msg.stableKey || msgId,
+            message: msg,
+            isSelf: grouping.isSelf,
+            isGrouped: grouping.isGrouped,
+            isGroupedWithNext: grouping.isGroupedWithNext
+          }
+        );
+      }))
     );
   }
 
@@ -4495,7 +4617,7 @@
         isVisible.value = false;
       }
     }, [users.length]);
-    return /* @__PURE__ */ u$2("div", { id: "dollars-typing-indicator", class: isVisible.value ? "visible" : "", children: lastText.current || " " });
+    return /* @__PURE__ */ _$3("div", { id: "dollars-typing-indicator", class: isVisible.value ? "visible" : "" }, lastText.current || " ");
   }
 
   const FAVORITES_KEY = "dollars_saved_favorites";
@@ -4519,7 +4641,7 @@
   async function syncFavorites() {
     if (!userInfo.value.id) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/favorites?uid=${userInfo.value.id}`);
+      const res = await fetch(apiUrl("/favorites", { uid: userInfo.value.id }));
       if (!res.ok) return;
       const { data } = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -4540,7 +4662,7 @@
       favorites.value = newList;
       saveToCloud(newList);
       if (userInfo.value.id) {
-        fetch(`${BACKEND_URL}/api/favorites/add`, {
+        fetch(apiUrl("/favorites/add"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: userInfo.value.id, image_url: url })
@@ -4555,7 +4677,7 @@
     favorites.value = newList;
     saveToCloud(newList);
     if (userInfo.value.id) {
-      fetch(`${BACKEND_URL}/api/favorites/remove`, {
+      fetch(apiUrl("/favorites/remove"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: userInfo.value.id, image_url: url })
@@ -4678,25 +4800,21 @@
       e.preventDefault();
       const tempInput = document.createElement("input");
       tempInput.type = "file";
-      tempInput.accept = "image/*";
+      tempInput.accept = "image/*,.heic,.heif,.avif,.webp,.bmp";
+      tempInput.multiple = true;
       tempInput.style.display = "none";
       tempInput.onchange = async (evt) => {
         const target = evt.target;
-        const file = target.files?.[0];
-        if (!file) return;
-        const formData = new FormData();
-        formData.append("image", file);
+        const files = Array.from(target.files || []);
+        if (files.length === 0) return;
         setIsUploading(true);
         try {
-          const res = await fetch(`${UPLOAD_BASE_URL}/api/upload`, {
-            method: "POST",
-            credentials: "include",
-            body: formData
+          const results = await uploadImages(files);
+          const failed = results.find((result) => !result.status || !result.url);
+          if (failed) throw new Error(failed.error || "上传失败");
+          results.forEach((result) => {
+            if (result.url) addFavorite(result.url);
           });
-          const result = await res.json();
-          if (!res.ok || !result.status) throw new Error(result.message || "上传失败");
-          const imageUrl = result.url || result.imageUrl;
-          addFavorite(imageUrl);
         } catch (err) {
           alert(err.message || "上传失败");
         } finally {
@@ -4717,78 +4835,61 @@
     let groupedSmileySections = [];
     let specialContent = null;
     if (activeTab === "BMO") {
-      specialContent = /* @__PURE__ */ u$2("div", { style: { display: "contents" }, children: [
-        /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
-          "a",
-          {
-            href: "#",
-            id: "dollars-open-bmo-panel",
-            title: "打开 BMO 快速拼装面板",
-            onClick: handleOpenBmoPanel,
-            style: { backgroundImage: "none", display: "flex", alignItems: "center", justifyContent: "center" },
-            dangerouslySetInnerHTML: { __html: iconBmoPanel }
+      specialContent = /* @__PURE__ */ _$3("div", { style: { display: "contents" } }, /* @__PURE__ */ _$3("li", { class: "smiley-item" }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          id: "dollars-open-bmo-panel",
+          title: "打开 BMO 快速拼装面板",
+          onClick: handleOpenBmoPanel,
+          style: { backgroundImage: "none", display: "flex", alignItems: "center", justifyContent: "center" },
+          dangerouslySetInnerHTML: { __html: iconBmoPanel }
+        }
+      )), bmoItems.length > 0 ? bmoItems.map((item) => /* @__PURE__ */ _$3("li", { key: item.code, class: "smiley-item" }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          "data-smiley": item.code,
+          title: item.name || item.code,
+          onClick: (e) => {
+            e.preventDefault();
+            handleSelect(item.code);
           }
-        ) }),
-        bmoItems.length > 0 ? bmoItems.map((item) => /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
-          "a",
-          {
-            href: "#",
-            "data-smiley": item.code,
-            title: item.name || item.code,
-            onClick: (e) => {
-              e.preventDefault();
-              handleSelect(item.code);
-            },
-            children: /* @__PURE__ */ u$2("span", { class: "bmo", "data-code": item.code })
-          }
-        ) }, item.code)) : /* @__PURE__ */ u$2("p", { style: { width: "100%", textAlign: "center", color: "var(--dollars-text-secondary)", fontSize: "12px", marginTop: "20px", padding: "0 10px" }, children: [
-          "暂无保存的 BMO 表情",
-          /* @__PURE__ */ u$2("br", {}),
-          /* @__PURE__ */ u$2("a", { href: "/dev/app/4853", target: "_blank", rel: "noopener", style: { color: "var(--primary-color)" }, children: "前往 BMO 快速拼装面板" })
-        ] })
-      ] });
+        },
+        /* @__PURE__ */ _$3("span", { class: "bmo", "data-code": item.code })
+      ))) : /* @__PURE__ */ _$3("p", { style: { width: "100%", textAlign: "center", color: "var(--dollars-text-secondary)", fontSize: "12px", marginTop: "20px", padding: "0 10px" } }, "暂无保存的 BMO 表情", /* @__PURE__ */ _$3("br", null), /* @__PURE__ */ _$3("a", { href: "/dev/app/4853", target: "_blank", rel: "noopener", style: { color: "var(--primary-color)" } }, "前往 BMO 快速拼装面板")));
     } else if (activeTab === "收藏") {
       const favoritesList = favorites.value;
-      specialContent = /* @__PURE__ */ u$2("div", { style: { display: "contents" }, children: [
-        /* @__PURE__ */ u$2("li", { class: "smiley-item favorite-item", style: { border: "2px dashed var(--dollars-border)", borderRadius: "8px", boxSizing: "border-box" }, children: /* @__PURE__ */ u$2(
-          "a",
-          {
-            href: "#",
-            title: "上传新表情",
-            onClick: handleUploadFavorite,
-            style: { backgroundImage: "none", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--dollars-text-secondary)" },
-            children: isUploading ? /* @__PURE__ */ u$2("span", { style: { fontSize: "12px" }, children: "..." }) : /* @__PURE__ */ u$2("span", { dangerouslySetInnerHTML: { __html: iconUpload } })
-          }
-        ) }),
-        favoritesList.length > 0 ? favoritesList.map((url) => /* @__PURE__ */ u$2("li", { class: "smiley-item favorite-item", children: [
-          /* @__PURE__ */ u$2(
-            "a",
-            {
-              href: "#",
-              "data-smiley": `[sticker]${escapeHTML(url)}[/sticker]`,
-              title: `[sticker]${url}[/sticker]`,
-              onClick: (e) => {
-                e.preventDefault();
-                handleSelect(`[sticker]${url}[/sticker]`);
-              },
-              style: { backgroundImage: `url('${url}')` }
-            }
-          ),
-          /* @__PURE__ */ u$2(
-            "button",
-            {
-              class: "remove-favorite-btn",
-              title: "移除收藏",
-              onClick: (e) => handleRemoveFavorite(e, url),
-              children: "×"
-            }
-          )
-        ] }, url)) : /* @__PURE__ */ u$2("p", { style: { width: "100%", textAlign: "center", color: "var(--dollars-icon-color-secondary)", fontSize: "12px", marginTop: "20px", padding: "0 10px" }, children: [
-          "上传或右键图片收藏",
-          /* @__PURE__ */ u$2("br", {}),
-          "(存储于Chii云端)"
-        ] })
-      ] });
+      specialContent = /* @__PURE__ */ _$3("div", { style: { display: "contents" } }, /* @__PURE__ */ _$3("li", { class: "smiley-item favorite-item", style: { border: "2px dashed var(--dollars-border)", borderRadius: "8px", boxSizing: "border-box" } }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          title: "上传新表情",
+          onClick: handleUploadFavorite,
+          style: { backgroundImage: "none", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--dollars-text-secondary)" }
+        },
+        isUploading ? /* @__PURE__ */ _$3("span", { style: { fontSize: "12px" } }, "...") : /* @__PURE__ */ _$3("span", { dangerouslySetInnerHTML: { __html: iconUpload } })
+      )), favoritesList.length > 0 ? favoritesList.map((url) => /* @__PURE__ */ _$3("li", { key: url, class: "smiley-item favorite-item" }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          "data-smiley": `[sticker]${escapeHTML(url)}[/sticker]`,
+          title: `[sticker]${url}[/sticker]`,
+          onClick: (e) => {
+            e.preventDefault();
+            handleSelect(`[sticker]${url}[/sticker]`);
+          },
+          style: { backgroundImage: `url('${url}')` }
+        }
+      ), /* @__PURE__ */ _$3(
+        "button",
+        {
+          class: "remove-favorite-btn",
+          title: "移除收藏",
+          onClick: (e) => handleRemoveFavorite(e, url)
+        },
+        "×"
+      ))) : /* @__PURE__ */ _$3("p", { style: { width: "100%", textAlign: "center", color: "var(--dollars-icon-color-secondary)", fontSize: "12px", marginTop: "20px", padding: "0 10px" } }, "上传或右键图片收藏", /* @__PURE__ */ _$3("br", null), "(存储于Chii云端)"));
     } else if (smileyRanges.find((r) => r.name === activeTab)?.isLarge) {
       groupedSmileySections = getGroupedSmileyCodes(activeTab);
     } else {
@@ -4796,69 +4897,59 @@
     }
     const activeRange = smileyRanges.find((r) => r.name === activeTab);
     const isLargeTab = activeRange?.isLarge ?? false;
-    return /* @__PURE__ */ u$2("div", { ref: panelRef, id: "dollars-smiles-floating", class: `open ${isSmileyPanelClosing.value ? "closing" : ""} ${isLargeTab ? "large-smiley-mode" : ""}`, children: [
-      /* @__PURE__ */ u$2("div", { id: "dollars-smiles-tabs", children: smileyRanges.map((range) => {
-        let textContent = range.name;
-        if (range.name === "收藏") {
-          textContent = /* @__PURE__ */ u$2("span", { dangerouslySetInnerHTML: { __html: iconStar }, style: { display: "flex" } });
-        } else if (range.name === "BMO") {
-          textContent = /* @__PURE__ */ u$2("span", { class: "bmo", "data-code": "(bmoCgASACIBLgCg)", style: { verticalAlign: "middle" } });
-        } else if (range.path) {
-          const iconId = range.tabIconId ?? range.ids?.[0] ?? range.start;
-          if (!iconId) return null;
-          textContent = /* @__PURE__ */ u$2("img", { src: range.path(iconId), alt: range.name, style: { width: "21px", height: "21px", verticalAlign: "middle" } });
-        }
-        return /* @__PURE__ */ u$2(
-          "button",
-          {
-            class: `smiley-tab-btn ${activeTab === range.name ? "active" : ""}`,
-            "data-group": range.name,
-            onClick: () => handleTabClick(range.name),
-            title: range.name,
-            children: textContent
+    return /* @__PURE__ */ _$3("div", { ref: panelRef, id: "dollars-smiles-floating", class: `open ${isSmileyPanelClosing.value ? "closing" : ""} ${isLargeTab ? "large-smiley-mode" : ""}` }, /* @__PURE__ */ _$3("div", { id: "dollars-smiles-tabs" }, smileyRanges.map((range) => {
+      let textContent = range.name;
+      if (range.name === "收藏") {
+        textContent = /* @__PURE__ */ _$3("span", { dangerouslySetInnerHTML: { __html: iconStar }, style: { display: "flex" } });
+      } else if (range.name === "BMO") {
+        textContent = /* @__PURE__ */ _$3("span", { class: "bmo", "data-code": "(bmoCgASACIBLgCg)", style: { verticalAlign: "middle" } });
+      } else if (range.path) {
+        const iconId = range.tabIconId ?? range.ids?.[0] ?? range.start;
+        if (!iconId) return null;
+        textContent = /* @__PURE__ */ _$3("img", { src: range.path(iconId), alt: range.name, style: { width: "21px", height: "21px", verticalAlign: "middle" } });
+      }
+      return /* @__PURE__ */ _$3(
+        "button",
+        {
+          key: range.name,
+          class: `smiley-tab-btn ${activeTab === range.name ? "active" : ""}`,
+          "data-group": range.name,
+          onClick: () => handleTabClick(range.name),
+          title: range.name
+        },
+        textContent
+      );
+    })), /* @__PURE__ */ _$3("div", { id: "dollars-smiles-content", ref: contentRef, class: groupedSmileySections.length > 0 ? "grouped-content" : "" }, specialContent, groupedSmileySections.map((section) => /* @__PURE__ */ _$3("section", { key: section.name, class: "smiley-group-section" }, /* @__PURE__ */ _$3("div", { class: "smiley-group-title" }, section.name), /* @__PURE__ */ _$3("div", { class: "smiley-group-grid" }, section.items.map(({ code }) => {
+      const url = getSmileyUrl(code);
+      return /* @__PURE__ */ _$3("li", { key: code, class: "smiley-item" }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          "data-smiley": code,
+          onClick: (e) => {
+            e.preventDefault();
+            handleSelect(code);
           },
-          range.name
-        );
-      }) }),
-      /* @__PURE__ */ u$2("div", { id: "dollars-smiles-content", ref: contentRef, class: groupedSmileySections.length > 0 ? "grouped-content" : "", children: [
-        specialContent,
-        groupedSmileySections.map((section) => /* @__PURE__ */ u$2("section", { class: "smiley-group-section", children: [
-          /* @__PURE__ */ u$2("div", { class: "smiley-group-title", children: section.name }),
-          /* @__PURE__ */ u$2("div", { class: "smiley-group-grid", children: section.items.map(({ code }) => {
-            const url = getSmileyUrl(code);
-            return /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
-              "a",
-              {
-                href: "#",
-                "data-smiley": code,
-                onClick: (e) => {
-                  e.preventDefault();
-                  handleSelect(code);
-                },
-                style: url ? { backgroundImage: `url('${url}')` } : void 0,
-                title: code
-              }
-            ) }, code);
-          }) })
-        ] }, section.name)),
-        smileys.map((code) => {
-          const url = getSmileyUrl(code);
-          return /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
-            "a",
-            {
-              href: "#",
-              "data-smiley": code,
-              onClick: (e) => {
-                e.preventDefault();
-                handleSelect(code);
-              },
-              style: url ? { backgroundImage: `url('${url}')` } : void 0,
-              title: code
-            }
-          ) }, code);
-        })
-      ] })
-    ] });
+          style: url ? { backgroundImage: `url('${url}')` } : void 0,
+          title: code
+        }
+      ));
+    })))), smileys.map((code) => {
+      const url = getSmileyUrl(code);
+      return /* @__PURE__ */ _$3("li", { key: code, class: "smiley-item" }, /* @__PURE__ */ _$3(
+        "a",
+        {
+          href: "#",
+          "data-smiley": code,
+          onClick: (e) => {
+            e.preventDefault();
+            handleSelect(code);
+          },
+          style: url ? { backgroundImage: `url('${url}')` } : void 0,
+          title: code
+        }
+      ));
+    })));
   }
 
   const formatterVisible = d$1(false);
@@ -4872,7 +4963,7 @@
         root.id = PORTAL_ID;
         document.body.appendChild(root);
       }
-      G(/* @__PURE__ */ u$2(TextFormatterLayer, { editorRef, inputControllerRef }), root);
+      G(/* @__PURE__ */ _$3(TextFormatterLayer, { editorRef, inputControllerRef }), root);
       return () => {
         G(null, root);
         root.remove();
@@ -5042,38 +5133,16 @@
         inputControllerRef.current?.focus();
       }
     };
-    const className = [
-      "dollars-text-formatter",
-      formatterVisible.value && "visible",
-      formatterLinkMode.value && "link-mode"
-    ].filter(Boolean).join(" ");
-    const formatterContent = /* @__PURE__ */ u$2(
+    const className = "dollars-text-formatter" + (formatterVisible.value ? " visible" : "") + (formatterLinkMode.value ? " link-mode" : "");
+    const formatterContent = /* @__PURE__ */ _$3(
       "div",
       {
         ref: containerRef,
         id: "dollars-text-formatter",
-        class: className,
-        children: [
-          /* @__PURE__ */ u$2("div", { class: "formatter-row main-buttons", children: [
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "防剧透 (Mask)", onClick: () => handleAction("mask"), dangerouslySetInnerHTML: { __html: iconSpoiler } }),
-            /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "加粗", onClick: () => handleAction("b"), dangerouslySetInnerHTML: { __html: iconBold } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "斜体", onClick: () => handleAction("i"), dangerouslySetInnerHTML: { __html: iconItalic } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "下划线", onClick: () => handleAction("u"), dangerouslySetInnerHTML: { __html: iconUnderline } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "删除线", onClick: () => handleAction("s"), dangerouslySetInnerHTML: { __html: iconStrike } }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "等宽代码", onClick: () => handleAction("code"), dangerouslySetInnerHTML: { __html: iconCode } }),
-            /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "添加链接", onClick: () => handleAction("link-mode"), dangerouslySetInnerHTML: { __html: iconLink } })
-          ] }),
-          /* @__PURE__ */ u$2("div", { class: "formatter-row formatter-link-input-wrapper", children: [
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "返回", onClick: () => handleAction("cancel-link"), dangerouslySetInnerHTML: { __html: iconBack } }),
-            /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
-            /* @__PURE__ */ u$2("input", { ref: linkInputRef, type: "text", class: "formatter-link-input", placeholder: "输入链接 URL...", autoComplete: "off", onKeyDown: handleLinkKeyDown }),
-            /* @__PURE__ */ u$2("div", { class: "formatter-divider" }),
-            /* @__PURE__ */ u$2("button", { type: "button", class: "formatter-btn", title: "确认", onClick: () => handleAction("apply-link"), dangerouslySetInnerHTML: { __html: iconCheck } })
-          ] })
-        ]
-      }
+        class: className
+      },
+      /* @__PURE__ */ _$3("div", { class: "formatter-row main-buttons" }, /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "防剧透 (Mask)", onClick: () => handleAction("mask"), dangerouslySetInnerHTML: { __html: iconSpoiler } }), /* @__PURE__ */ _$3("div", { class: "formatter-divider" }), /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "加粗", onClick: () => handleAction("b"), dangerouslySetInnerHTML: { __html: iconBold } }), /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "斜体", onClick: () => handleAction("i"), dangerouslySetInnerHTML: { __html: iconItalic } }), /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "下划线", onClick: () => handleAction("u"), dangerouslySetInnerHTML: { __html: iconUnderline } }), /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "删除线", onClick: () => handleAction("s"), dangerouslySetInnerHTML: { __html: iconStrike } }), /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "等宽代码", onClick: () => handleAction("code"), dangerouslySetInnerHTML: { __html: iconCode } }), /* @__PURE__ */ _$3("div", { class: "formatter-divider" }), /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "添加链接", onClick: () => handleAction("link-mode"), dangerouslySetInnerHTML: { __html: iconLink } })),
+      /* @__PURE__ */ _$3("div", { class: "formatter-row formatter-link-input-wrapper" }, /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "返回", onClick: () => handleAction("cancel-link"), dangerouslySetInnerHTML: { __html: iconBack } }), /* @__PURE__ */ _$3("div", { class: "formatter-divider" }), /* @__PURE__ */ _$3("input", { ref: linkInputRef, type: "text", class: "formatter-link-input", placeholder: "输入链接 URL...", autoComplete: "off", onKeyDown: handleLinkKeyDown }), /* @__PURE__ */ _$3("div", { class: "formatter-divider" }), /* @__PURE__ */ _$3("button", { type: "button", class: "formatter-btn", title: "确认", onClick: () => handleAction("apply-link"), dangerouslySetInnerHTML: { __html: iconCheck } }))
     );
     return formatterContent;
   }
@@ -5110,20 +5179,12 @@
       timerRef.current = setTimeout(() => fetchUsers(currentQuery), MENTION_DEBOUNCE);
     }, [inputControllerRef, visible]);
     const fetchUsers = async (query) => {
-      try {
-        const res = await fetch(
-          `https://bgm.ry.mk/search/users?q=${encodeURIComponent(query)}&exact=true&limit=${MAX_MENTION_RESULTS}`
-        );
-        if (query !== queryRef.current) return;
-        const json = await res.json();
-        const data = json.data || [];
-        if (data.length > 0) {
-          setUsers(data);
-          setVisible(true);
-        } else {
-          hide();
-        }
-      } catch (e) {
+      const data = await searchMentionUsers(query, MAX_MENTION_RESULTS);
+      if (query !== queryRef.current) return;
+      if (data.length > 0) {
+        setUsers(data);
+        setVisible(true);
+      } else {
         hide();
       }
     };
@@ -5168,77 +5229,63 @@
     if (!visible || users.length === 0) {
       return null;
     }
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         ref: containerRef,
         id: "dollars-mention-list",
-        class: "visible",
-        children: users.map((user) => /* @__PURE__ */ u$2(
-          "div",
+        class: "visible"
+      },
+      users.map((user) => /* @__PURE__ */ _$3(
+        "div",
+        {
+          key: user.id || user.username,
+          class: "mention-item",
+          onClick: () => selectUser(user)
+        },
+        /* @__PURE__ */ _$3(
+          "img",
           {
-            class: "mention-item",
-            onClick: () => selectUser(user),
-            children: [
-              /* @__PURE__ */ u$2(
-                "img",
-                {
-                  src: user.avatar_url || "//lain.bgm.tv/pic/user/m/000/00/00/0.jpg",
-                  alt: ""
-                }
-              ),
-              /* @__PURE__ */ u$2("div", { class: "mention-item-info", children: [
-                /* @__PURE__ */ u$2("span", { class: "mention-item-nick", children: escapeHTML(user.nickname || user.username) }),
-                /* @__PURE__ */ u$2("span", { class: "mention-item-user", children: [
-                  "@",
-                  escapeHTML(user.username)
-                ] })
-              ] })
-            ]
-          },
-          user.id || user.username
-        ))
-      }
+            src: user.avatar_url || "//lain.bgm.tv/pic/user/m/000/00/00/0.jpg",
+            alt: ""
+          }
+        ),
+        /* @__PURE__ */ _$3("div", { class: "mention-item-info" }, /* @__PURE__ */ _$3("span", { class: "mention-item-nick" }, escapeHTML(user.nickname || user.username)), /* @__PURE__ */ _$3("span", { class: "mention-item-user" }, "@", escapeHTML(user.username)))
+      ))
     );
   }
 
   function MediaPreview({ previewMedia, onRemoveMedia }) {
     if (previewMedia.length === 0) return null;
-    return /* @__PURE__ */ u$2("div", { class: "image-preview-container visible", children: previewMedia.map((media, index) => /* @__PURE__ */ u$2("div", { class: `image-preview-item ${media.type === "video" ? "video-preview-item" : ""}`, children: [
-      media.type === "image" ? /* @__PURE__ */ u$2(
-        "img",
-        {
-          src: media.url,
-          class: "preview-image",
-          onClick: () => {
-            const imageUrls = previewMedia.filter((m) => m.type === "image").map((m) => m.url);
-            const imageIndex = previewMedia.slice(0, index).filter((m) => m.type === "image").length;
-            showImageViewer(imageUrls, imageIndex);
-          },
-          style: { cursor: "zoom-in" }
-        }
-      ) : /* @__PURE__ */ u$2(k$1, { children: [
-        /* @__PURE__ */ u$2(
-          "video",
-          {
-            src: media.url,
-            class: "preview-video",
-            muted: true,
-            preload: "metadata"
-          }
-        ),
-        /* @__PURE__ */ u$2("div", { class: "video-play-overlay", children: /* @__PURE__ */ u$2("svg", { viewBox: "0 0 24 24", width: "24", height: "24", fill: "white", children: /* @__PURE__ */ u$2("path", { d: "M8 5v14l11-7z" }) }) })
-      ] }),
-      /* @__PURE__ */ u$2(
-        "button",
-        {
-          class: "preview-remove-btn",
-          onClick: () => onRemoveMedia(index),
-          title: media.type === "image" ? "删除图片" : "删除视频",
-          children: "✕"
-        }
-      )
-    ] }, index)) });
+    return /* @__PURE__ */ _$3("div", { class: "image-preview-container visible" }, previewMedia.map((media, index) => /* @__PURE__ */ _$3("div", { key: index, class: `image-preview-item ${media.type === "video" ? "video-preview-item" : ""}` }, media.type === "image" ? /* @__PURE__ */ _$3(
+      "img",
+      {
+        src: media.url,
+        class: "preview-image",
+        onClick: () => {
+          const imageUrls = previewMedia.filter((m) => m.type === "image").map((m) => m.url);
+          const imageIndex = previewMedia.slice(0, index).filter((m) => m.type === "image").length;
+          showImageViewer(imageUrls, imageIndex);
+        },
+        style: { cursor: "zoom-in" }
+      }
+    ) : /* @__PURE__ */ _$3(k$1, null, /* @__PURE__ */ _$3(
+      "video",
+      {
+        src: media.url,
+        class: "preview-video",
+        muted: true,
+        preload: "metadata"
+      }
+    ), /* @__PURE__ */ _$3("div", { class: "video-play-overlay" }, /* @__PURE__ */ _$3("svg", { viewBox: "0 0 24 24", width: "24", height: "24", fill: "white" }, /* @__PURE__ */ _$3("path", { d: "M8 5v14l11-7z" })))), /* @__PURE__ */ _$3(
+      "button",
+      {
+        class: "preview-remove-btn",
+        onClick: () => onRemoveMedia(index),
+        title: media.type === "image" ? "删除图片" : "删除视频"
+      },
+      "✕"
+    ))));
   }
 
   const ALLOWED_IMAGE_EXTS = /* @__PURE__ */ new Set([
@@ -5273,6 +5320,57 @@
     ".flac",
     ".weba"
   ]);
+  const MEDIA_FILE_ACCEPT = "image/*,.heic,.heif,video/*";
+  function getMediaKind(file) {
+    const ext = "." + (file.name.split(".").pop() || "").toLowerCase();
+    return {
+      ext,
+      isImage: file.type.startsWith("image/") || ALLOWED_IMAGE_EXTS.has(ext),
+      isVideo: file.type.startsWith("video/") || ALLOWED_VIDEO_EXTS.has(ext),
+      isAudio: file.type.startsWith("audio/") || ALLOWED_AUDIO_EXTS.has(ext)
+    };
+  }
+  function normalizeUploadFile(file, kind) {
+    if (file.type || !kind.isImage) return file;
+    const mimeMap = {
+      ".heic": "image/heic",
+      ".heif": "image/heif",
+      ".bmp": "image/bmp",
+      ".tiff": "image/tiff",
+      ".tif": "image/tiff",
+      ".jxl": "image/jxl",
+      ".avif": "image/avif",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".png": "image/png",
+      ".webp": "image/webp",
+      ".gif": "image/gif"
+    };
+    return new File([file], file.name, { type: mimeMap[kind.ext] || "application/octet-stream" });
+  }
+  async function getImageDimensions(file) {
+    let width = 0;
+    let height = 0;
+    try {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      await new Promise((resolve) => {
+        img.onload = () => {
+          width = img.naturalWidth;
+          height = img.naturalHeight;
+          URL.revokeObjectURL(objectUrl);
+          resolve();
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          resolve();
+        };
+        img.src = objectUrl;
+      });
+    } catch {
+    }
+    return { width, height };
+  }
   function useMediaUpload(inputControllerRef) {
     const fileInputRef = A(null);
     const [isUploading, setIsUploading] = d$2(false);
@@ -5344,7 +5442,7 @@
         return;
       }
       if (fileInputRef.current) {
-        fileInputRef.current.accept = "image/*,video/*";
+        fileInputRef.current.accept = MEDIA_FILE_ACCEPT;
         fileInputRef.current.click();
       }
     }, []);
@@ -5365,124 +5463,102 @@
         attachLongPressRef.current = null;
       }
     }, []);
-    const handleFileUpload = q(async (file) => {
-      const ext = "." + (file.name.split(".").pop() || "").toLowerCase();
-      const isImage = file.type.startsWith("image/") || ALLOWED_IMAGE_EXTS.has(ext);
-      const isVideo = file.type.startsWith("video/") || ALLOWED_VIDEO_EXTS.has(ext);
-      const isAudio = file.type.startsWith("audio/") || ALLOWED_AUDIO_EXTS.has(ext);
-      let fileToUpload = file;
-      if (!file.type && isImage) {
-        const mimeMap = {
-          ".heic": "image/heic",
-          ".heif": "image/heif",
-          ".bmp": "image/bmp",
-          ".tiff": "image/tiff",
-          ".tif": "image/tiff",
-          ".jxl": "image/jxl",
-          ".avif": "image/avif",
-          ".jpg": "image/jpeg",
-          ".jpeg": "image/jpeg",
-          ".png": "image/png",
-          ".webp": "image/webp",
-          ".gif": "image/gif"
-        };
-        const correctedMime = mimeMap[ext] || "application/octet-stream";
-        fileToUpload = new File([file], file.name, { type: correctedMime });
+    const insertUploadResult = q((file, kind, result, dimensions) => {
+      if (!result.status || !result.url) {
+        alert(result.error || "上传失败");
+        return;
       }
-      setIsUploading(true);
-      let clientWidth = 0;
-      let clientHeight = 0;
-      if (isImage) {
-        try {
-          const img = new Image();
-          const objectUrl = URL.createObjectURL(fileToUpload);
-          await new Promise((resolve) => {
-            img.onload = () => {
-              clientWidth = img.naturalWidth;
-              clientHeight = img.naturalHeight;
-              URL.revokeObjectURL(objectUrl);
-              resolve();
-            };
-            img.onerror = () => {
-              URL.revokeObjectURL(objectUrl);
-              resolve();
-            };
-            img.src = objectUrl;
-          });
-        } catch (e) {
-          console.warn("Failed to get image dimensions:", e);
-        }
+      const controller = inputControllerRef.current;
+      if (!controller) return;
+      let tag = "img";
+      if (kind.isVideo) {
+        tag = "video";
+      } else if (kind.isAudio) {
+        tag = "audio";
+      } else if (!kind.isImage) {
+        tag = "file";
       }
-      try {
-        const result = await uploadFile(fileToUpload);
-        if (result.status && result.url) {
-          const controller = inputControllerRef.current;
-          if (!controller) return;
-          let tag = "img";
-          if (isVideo) {
-            tag = "video";
-          } else if (isAudio) {
-            tag = "audio";
-          } else if (!isImage) {
-            tag = "file";
+      const safeName = file.name.replace(/[\[\]\r\n]+/g, " ").trim() || "附件";
+      const bbcode = tag === "file" ? `[file=${safeName}]${result.url}[/file]` : `[${tag}]${result.url}[/${tag}]`;
+      controller.insertText(bbcode, { focus: true });
+      if (tag === "img" && dimensions?.width && dimensions.height) {
+        setPreviewMedia((prev) => {
+          const existingIndex = prev.findIndex(
+            (item) => item.type === "image" && item.url === result.url && (!item.width || !item.height)
+          );
+          if (existingIndex >= 0) {
+            const next = [...prev];
+            next[existingIndex] = {
+              ...next[existingIndex],
+              width: dimensions.width,
+              height: dimensions.height
+            };
+            return next;
           }
-          const safeName = file.name.replace(/[\[\]\r\n]+/g, " ").trim() || "附件";
-          const bbcode = tag === "file" ? `[file=${safeName}]${result.url}[/file]` : `[${tag}]${result.url}[/${tag}]`;
-          controller.insertText(bbcode, { focus: true });
-          if (tag === "img" && clientWidth && clientHeight) {
-            setPreviewMedia((prev) => {
-              const existingIndex = prev.findIndex(
-                (item) => item.type === "image" && item.url === result.url && (!item.width || !item.height)
-              );
-              if (existingIndex >= 0) {
-                const next = [...prev];
-                next[existingIndex] = {
-                  ...next[existingIndex],
-                  width: clientWidth,
-                  height: clientHeight
-                };
-                return next;
-              }
-              if (prev.some((item) => item.type === "image" && item.url === result.url)) {
-                return prev;
-              }
-              return [...prev, {
-                type: "image",
-                url: result.url,
-                width: clientWidth,
-                height: clientHeight
-              }];
+          if (prev.some((item) => item.type === "image" && item.url === result.url)) {
+            return prev;
+          }
+          return [...prev, {
+            type: "image",
+            url: result.url,
+            width: dimensions.width,
+            height: dimensions.height
+          }];
+        });
+      }
+    }, [inputControllerRef]);
+    const handleFilesUpload = q(async (files) => {
+      if (files.length === 0) return;
+      setIsUploading(true);
+      try {
+        const prepared = files.map((file) => {
+          const kind = getMediaKind(file);
+          return { original: file, kind, upload: normalizeUploadFile(file, kind) };
+        });
+        const images = prepared.filter((item) => item.kind.isImage);
+        const others = prepared.filter((item) => !item.kind.isImage);
+        if (images.length > 0) {
+          const [dimensions, results] = await Promise.all([
+            Promise.all(images.map((item) => getImageDimensions(item.upload))),
+            uploadImages(images.map((item) => item.upload))
+          ]);
+          if (results.length !== images.length && results[0]?.status === false) {
+            alert(results[0].error || "上传失败");
+          } else {
+            images.forEach((item, index) => {
+              insertUploadResult(item.original, item.kind, results[index] ?? { status: false, error: "上传失败" }, dimensions[index]);
             });
           }
-        } else {
-          alert(result.error || "上传失败");
+        }
+        for (const item of others) {
+          const result = await uploadFile(item.upload);
+          insertUploadResult(item.original, item.kind, result);
         }
       } catch (e) {
         alert("上传失败，请重试");
       } finally {
         setIsUploading(false);
       }
-    }, [inputControllerRef]);
+    }, [insertUploadResult]);
+    const handleFileUpload = q(async (file) => {
+      await handleFilesUpload([file]);
+    }, [handleFilesUpload]);
     const handleFileChange = q(async (e) => {
       const input = e.target;
-      const file = input.files?.[0];
-      if (file) {
-        await handleFileUpload(file);
+      const files = Array.from(input.files || []);
+      if (files.length > 0) {
+        await handleFilesUpload(files);
         input.value = "";
       }
-    }, [handleFileUpload]);
+    }, [handleFilesUpload]);
     const handlePaste = q(async (e) => {
       const items = [...e.clipboardData?.items || []].filter(
         (it) => it.kind === "file" && (it.type.startsWith("image/") || it.type.startsWith("video/") || it.type.startsWith("audio/") || it.type === "application/octet-stream" || it.type === "")
       );
       if (items.length > 0) {
         e.preventDefault();
-        for (const item of items) {
-          const file = item.getAsFile();
-          if (file) {
-            await handleFileUpload(file);
-          }
-        }
+        const files = items.map((item) => item.getAsFile()).filter((file) => Boolean(file));
+        await handleFilesUpload(files);
         return;
       }
       const text = e.clipboardData?.getData("text/plain");
@@ -5490,7 +5566,7 @@
         e.preventDefault();
         inputControllerRef.current?.insertText(text, { focus: true });
       }
-    }, [handleFileUpload]);
+    }, [handleFilesUpload, inputControllerRef]);
     return {
       fileInputRef,
       isUploading,
@@ -5503,6 +5579,7 @@
       handleAttachTouchEnd,
       handleFileChange,
       handleFileUpload,
+      handleFilesUpload,
       handlePaste
     };
   }
@@ -5741,6 +5818,8 @@
     const isTypingRef = A(false);
     const draftSaveTimerRef = A(null);
     const isComposingRef = A(false);
+    const compositionEndTimerRef = A(null);
+    const isCompositionJustEndedRef = A(false);
     const {
       fileInputRef,
       isUploading,
@@ -5925,6 +6004,14 @@
     }, []);
     const handleCompositionEnd = q(() => {
       isComposingRef.current = false;
+      isCompositionJustEndedRef.current = true;
+      if (compositionEndTimerRef.current) {
+        clearTimeout(compositionEndTimerRef.current);
+      }
+      compositionEndTimerRef.current = setTimeout(() => {
+        isCompositionJustEndedRef.current = false;
+        compositionEndTimerRef.current = null;
+      }, 50);
       handleEditorInput();
     }, [handleEditorInput]);
     const clearInput = q((focus = false) => {
@@ -6013,6 +6100,9 @@
         if (draftSaveTimerRef.current) {
           clearTimeout(draftSaveTimerRef.current);
         }
+        if (compositionEndTimerRef.current) {
+          clearTimeout(compositionEndTimerRef.current);
+        }
         if (isTypingRef.current) {
           sendTypingStop();
         }
@@ -6075,6 +6165,10 @@ ${content}`;
           if (!result.status) {
             removeOptimisticMessage(tempId);
             alert(result.error || "发送失败");
+          } else {
+            void confirmSentMessage(transformedContent).then((message) => {
+              if (message) addMessage(message, stableKey);
+            });
           }
         }
       } catch (e) {
@@ -6085,6 +6179,9 @@ ${content}`;
     };
     const handleKeyDown = (e) => {
       if (e.key !== "Enter") return;
+      if (isComposingRef.current || isCompositionJustEndedRef.current || e.keyCode === 229) {
+        return;
+      }
       const isShortcut = e.ctrlKey || e.metaKey;
       const shouldSend = settings.value.sendShortcut === "Enter" && !isShortcut || settings.value.sendShortcut === "CtrlEnter" && isShortcut;
       if (shouldSend) {
@@ -6107,143 +6204,109 @@ ${content}`;
       updateHeight();
       return () => observer.disconnect();
     }, []);
-    return /* @__PURE__ */ u$2("div", { ref: containerRef, class: "chat-input-container", children: [
-      /* @__PURE__ */ u$2(
-        SmileyPanel,
-        {
-          onSelect: (code) => inputControllerRef.current?.insertText(code, { focus: true }),
-          textareaRef: textareaProxyRef
+    return /* @__PURE__ */ _$3("div", { ref: containerRef, class: "chat-input-container" }, /* @__PURE__ */ _$3(
+      SmileyPanel,
+      {
+        onSelect: (code) => inputControllerRef.current?.insertText(code, { focus: true }),
+        textareaRef: textareaProxyRef
+      }
+    ), /* @__PURE__ */ _$3(TextFormatter, { editorRef, inputControllerRef }), /* @__PURE__ */ _$3(MentionCompleter, { editorRef, inputControllerRef }), /* @__PURE__ */ _$3(TypingIndicator, null), /* @__PURE__ */ _$3("div", { class: "chat-input-area" }, (replyingTo.value || editingMessage.value) && /* @__PURE__ */ _$3("div", { id: "dollars-reply-preview", class: `reply-preview visible` }, /* @__PURE__ */ _$3("div", { class: "reply-bar" }), replyingTo.value && /* @__PURE__ */ _$3(k$1, null, /* @__PURE__ */ _$3(
+      "img",
+      {
+        class: "reply-avatar",
+        src: getAvatarUrl(replyingTo.value.avatar, "s"),
+        alt: ""
+      }
+    ), /* @__PURE__ */ _$3("div", { class: "reply-info" }, /* @__PURE__ */ _$3("span", { class: "reply-user" }, escapeHTML(replyingTo.value.user)), /* @__PURE__ */ _$3("span", { class: "reply-text" }, escapeHTML(replyingTo.value.text.substring(0, 50))))), editingMessage.value && /* @__PURE__ */ _$3("div", { class: "reply-info" }, /* @__PURE__ */ _$3("span", { class: "reply-user" }, "编辑消息"), /* @__PURE__ */ _$3("span", { class: "reply-text" }, escapeHTML(editingMessage.value.raw.substring(0, 50)))), /* @__PURE__ */ _$3(
+      "button",
+      {
+        class: "reply-cancel-btn",
+        onClick: () => {
+          clearInput();
+          cancelReplyOrEdit();
         }
-      ),
-      /* @__PURE__ */ u$2(TextFormatter, { editorRef, inputControllerRef }),
-      /* @__PURE__ */ u$2(MentionCompleter, { editorRef, inputControllerRef }),
-      /* @__PURE__ */ u$2(TypingIndicator, {}),
-      /* @__PURE__ */ u$2("div", { class: "chat-input-area", children: [
-        (replyingTo.value || editingMessage.value) && /* @__PURE__ */ u$2("div", { id: "dollars-reply-preview", class: `reply-preview visible`, children: [
-          /* @__PURE__ */ u$2("div", { class: "reply-bar" }),
-          replyingTo.value && /* @__PURE__ */ u$2(k$1, { children: [
-            /* @__PURE__ */ u$2(
-              "img",
-              {
-                class: "reply-avatar",
-                src: getAvatarUrl(replyingTo.value.avatar, "s"),
-                alt: ""
-              }
-            ),
-            /* @__PURE__ */ u$2("div", { class: "reply-info", children: [
-              /* @__PURE__ */ u$2("span", { class: "reply-user", children: escapeHTML(replyingTo.value.user) }),
-              /* @__PURE__ */ u$2("span", { class: "reply-text", children: escapeHTML(replyingTo.value.text.substring(0, 50)) })
-            ] })
-          ] }),
-          editingMessage.value && /* @__PURE__ */ u$2("div", { class: "reply-info", children: [
-            /* @__PURE__ */ u$2("span", { class: "reply-user", children: "编辑消息" }),
-            /* @__PURE__ */ u$2("span", { class: "reply-text", children: escapeHTML(editingMessage.value.raw.substring(0, 50)) })
-          ] }),
-          /* @__PURE__ */ u$2(
-            "button",
-            {
-              class: "reply-cancel-btn",
-              onClick: () => {
-                clearInput();
-                cancelReplyOrEdit();
-              },
-              children: "✕"
-            }
-          )
-        ] }),
-        /* @__PURE__ */ u$2(
-          MediaPreview,
-          {
-            previewMedia,
-            onRemoveMedia: handleRemoveMedia
-          }
-        ),
-        /* @__PURE__ */ u$2("div", { class: "input-wrapper", children: [
-          /* @__PURE__ */ u$2(
-            "button",
-            {
-              id: "dollars-emoji-btn",
-              class: "action-btn",
-              title: "表情",
-              onClick: () => toggleSmileyPanel(),
-              dangerouslySetInnerHTML: { __html: iconEmoji }
-            }
-          ),
-          /* @__PURE__ */ u$2("div", { class: "dollars-input-wrapper", children: [
-            /* @__PURE__ */ u$2(
-              "div",
-              {
-                ref: editorRef,
-                class: "chat-textarea chat-rich-editor",
-                contentEditable: true,
-                role: "textbox",
-                "aria-multiline": "true",
-                "data-placeholder": "说点什么...",
-                spellcheck: false,
-                onInput: handleEditorInput,
-                onKeyDown: handleKeyDown,
-                onPaste: handlePaste,
-                onCompositionStart: handleCompositionStart,
-                onCompositionEnd: handleCompositionEnd
-              }
-            ),
-            /* @__PURE__ */ u$2(
-              "textarea",
-              {
-                ref: textareaProxyRef,
-                class: "chat-textarea-proxy",
-                tabIndex: -1,
-                "aria-hidden": "true"
-              }
-            )
-          ] }),
-          /* @__PURE__ */ u$2("div", { class: "input-actions", children: [
-            /* @__PURE__ */ u$2(
-              "button",
-              {
-                id: "dollars-attach-btn",
-                class: "action-btn",
-                title: "上传图片/视频（长按上传文件）",
-                onClick: handleAttachClick,
-                onTouchStart: handleAttachTouchStart,
-                onTouchEnd: handleAttachTouchEnd,
-                onTouchCancel: handleAttachTouchEnd,
-                onMouseDown: handleAttachTouchStart,
-                onMouseUp: handleAttachTouchEnd,
-                onMouseLeave: handleAttachTouchEnd,
-                dangerouslySetInnerHTML: { __html: iconUpload }
-              }
-            ),
-            /* @__PURE__ */ u$2(
-              "input",
-              {
-                ref: fileInputRef,
-                type: "file",
-                accept: "image/*,video/*",
-                style: { display: "none" },
-                onChange: handleFileChange
-              }
-            ),
-            /* @__PURE__ */ u$2(
-              "button",
-              {
-                class: `send-btn ${isUploading ? "uploading" : ""}`,
-                disabled: isSending || isUploading,
-                onClick: handleSend,
-                onMouseDown: (e) => e.preventDefault(),
-                title: isUploading ? "上传中..." : "发送",
-                dangerouslySetInnerHTML: { __html: iconSend }
-              }
-            )
-          ] })
-        ] })
-      ] })
-    ] });
+      },
+      "✕"
+    )), /* @__PURE__ */ _$3(
+      MediaPreview,
+      {
+        previewMedia,
+        onRemoveMedia: handleRemoveMedia
+      }
+    ), /* @__PURE__ */ _$3("div", { class: "input-wrapper" }, /* @__PURE__ */ _$3(
+      "button",
+      {
+        id: "dollars-emoji-btn",
+        class: "action-btn",
+        title: "表情",
+        onClick: () => toggleSmileyPanel(),
+        dangerouslySetInnerHTML: { __html: iconEmoji }
+      }
+    ), /* @__PURE__ */ _$3("div", { class: "dollars-input-wrapper" }, /* @__PURE__ */ _$3(
+      "div",
+      {
+        ref: editorRef,
+        class: "chat-textarea chat-rich-editor",
+        contentEditable: true,
+        role: "textbox",
+        "aria-multiline": "true",
+        "data-placeholder": "说点什么...",
+        spellcheck: false,
+        onInput: handleEditorInput,
+        onKeyDown: handleKeyDown,
+        onPaste: handlePaste,
+        onCompositionStart: handleCompositionStart,
+        onCompositionEnd: handleCompositionEnd
+      }
+    ), /* @__PURE__ */ _$3(
+      "textarea",
+      {
+        ref: textareaProxyRef,
+        class: "chat-textarea-proxy",
+        tabIndex: -1,
+        "aria-hidden": "true"
+      }
+    )), /* @__PURE__ */ _$3("div", { class: "input-actions" }, /* @__PURE__ */ _$3(
+      "button",
+      {
+        id: "dollars-attach-btn",
+        class: "action-btn",
+        title: "上传图片/视频（长按上传文件）",
+        onClick: handleAttachClick,
+        onTouchStart: handleAttachTouchStart,
+        onTouchEnd: handleAttachTouchEnd,
+        onTouchCancel: handleAttachTouchEnd,
+        onMouseDown: handleAttachTouchStart,
+        onMouseUp: handleAttachTouchEnd,
+        onMouseLeave: handleAttachTouchEnd,
+        dangerouslySetInnerHTML: { __html: iconUpload }
+      }
+    ), /* @__PURE__ */ _$3(
+      "input",
+      {
+        ref: fileInputRef,
+        type: "file",
+        accept: MEDIA_FILE_ACCEPT,
+        multiple: true,
+        style: { display: "none" },
+        onChange: handleFileChange
+      }
+    ), /* @__PURE__ */ _$3(
+      "button",
+      {
+        class: `send-btn ${isUploading ? "uploading" : ""}`,
+        disabled: isSending || isUploading,
+        onClick: handleSend,
+        onMouseDown: (e) => e.preventDefault(),
+        title: isUploading ? "上传中..." : "发送",
+        dangerouslySetInnerHTML: { __html: iconSend }
+      }
+    )))));
   }
 
   async function navigateToMessage(msgId) {
-    const { loadMessageContext } = await __vitePreload(async () => { const { loadMessageContext } = await Promise.resolve().then(() => chat);return { loadMessageContext }},false             ?__VITE_PRELOAD__:void 0);
-    const { smoothScrollToCenter } = await __vitePreload(async () => { const { smoothScrollToCenter } = await Promise.resolve().then(() => smoothScroll);return { smoothScrollToCenter }},false             ?__VITE_PRELOAD__:void 0);
+    const { loadMessageContext } = await (async () => { const { loadMessageContext } = await Promise.resolve().then(() => chat);return { loadMessageContext }})();
+    const { smoothScrollToCenter } = await (async () => { const { smoothScrollToCenter } = await Promise.resolve().then(() => smoothScroll);return { smoothScrollToCenter }})();
     const result = await loadMessageContext(msgId);
     if (!result) return;
     setTimeout(() => {
@@ -6312,8 +6375,7 @@ ${content}`;
                 hasMore.value = false;
               }
             }
-          } catch (e) {
-            console.error("Failed to resolve user filter", e);
+          } catch {
           } finally {
             isResolvingUser.value = false;
           }
@@ -6338,8 +6400,7 @@ ${content}`;
         items.value = [...items.value, ...data.items];
         hasMore.value = data.hasMore;
         offset.current += data.items.length;
-      } catch (e) {
-        console.error("[GalleryPanel] Failed to load:", e);
+      } catch {
       } finally {
         isLoading.value = false;
       }
@@ -6375,67 +6436,55 @@ ${content}`;
       avatar: item.avatar,
       timestamp: item.timestamp
     }));
-    return /* @__PURE__ */ u$2("div", { class: "gallery-container", children: [
-      /* @__PURE__ */ u$2("div", { class: "gallery-header", children: [
-        /* @__PURE__ */ u$2("span", { class: "gallery-title", children: "相册" }),
-        /* @__PURE__ */ u$2(
-          "div",
+    return /* @__PURE__ */ _$3("div", { class: "gallery-container" }, /* @__PURE__ */ _$3("div", { class: "gallery-header" }, /* @__PURE__ */ _$3("span", { class: "gallery-title" }, "相册"), /* @__PURE__ */ _$3(
+      "div",
+      {
+        class: "gallery-close-btn",
+        onClick: onClose
+      },
+      /* @__PURE__ */ _$3("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round" }, /* @__PURE__ */ _$3("path", { d: "M18 6L6 18M6 6l12 12" }))
+    )), /* @__PURE__ */ _$3("div", { class: "gallery-grid", ref: gridRef, onScroll: handleScroll }, items.value.map((item, idx) => {
+      const imageIndex = imageItems.indexOf(item);
+      return /* @__PURE__ */ _$3(
+        "div",
+        {
+          key: `${item.message_id}-${idx}`,
+          class: "gallery-item"
+        },
+        item.type === "video" ? /* @__PURE__ */ _$3("div", { class: "video-container", onClick: () => {
+          window.open(item.url, "_blank");
+        } }, /* @__PURE__ */ _$3(
+          "img",
           {
-            class: "gallery-close-btn",
-            onClick: onClose,
-            children: /* @__PURE__ */ u$2("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", children: /* @__PURE__ */ u$2("path", { d: "M18 6L6 18M6 6l12 12" }) })
+            src: item.thumbnailUrl || item.url,
+            alt: "Video thumbnail",
+            loading: "lazy",
+            style: "width: 100%; height: 100%; object-fit: cover; cursor: pointer;",
+            onError: (e) => {
+              const target = e.currentTarget;
+              target.src = "/img/no_img.gif";
+              target.onerror = null;
+            }
+          }
+        ), /* @__PURE__ */ _$3("div", { class: "video-overlay" }, /* @__PURE__ */ _$3("svg", { xmlns: "http://www.w3.org/2000/svg", width: "48", height: "48", viewBox: "0 0 24 24", fill: "white", style: "filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));" }, /* @__PURE__ */ _$3("path", { d: "M8 5v14l11-7z" })))) : /* @__PURE__ */ _$3(
+          "img",
+          {
+            src: item.thumbnailUrl || item.url,
+            alt: "",
+            loading: "lazy",
+            style: "cursor: pointer;",
+            onClick: () => {
+              showImageViewer(viewerItems, imageIndex, "gallery");
+            },
+            onError: (e) => {
+              const target = e.currentTarget;
+              target.src = "/img/no_img.gif";
+              target.onerror = null;
+            }
           }
         )
-      ] }),
-      /* @__PURE__ */ u$2("div", { class: "gallery-grid", ref: gridRef, onScroll: handleScroll, children: [
-        items.value.map((item, idx) => {
-          const imageIndex = imageItems.indexOf(item);
-          return /* @__PURE__ */ u$2(
-            "div",
-            {
-              class: "gallery-item",
-              children: item.type === "video" ? /* @__PURE__ */ u$2("div", { class: "video-container", onClick: () => {
-                window.open(item.url, "_blank");
-              }, children: [
-                /* @__PURE__ */ u$2(
-                  "img",
-                  {
-                    src: item.thumbnailUrl || item.url,
-                    alt: "Video thumbnail",
-                    loading: "lazy",
-                    style: "width: 100%; height: 100%; object-fit: cover; cursor: pointer;",
-                    onError: (e) => {
-                      const target = e.currentTarget;
-                      target.src = "/img/no_img.gif";
-                      target.onerror = null;
-                    }
-                  }
-                ),
-                /* @__PURE__ */ u$2("div", { class: "video-overlay", children: /* @__PURE__ */ u$2("svg", { xmlns: "http://www.w3.org/2000/svg", width: "48", height: "48", viewBox: "0 0 24 24", fill: "white", style: "filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));", children: /* @__PURE__ */ u$2("path", { d: "M8 5v14l11-7z" }) }) })
-              ] }) : /* @__PURE__ */ u$2(
-                "img",
-                {
-                  src: item.thumbnailUrl || item.url,
-                  alt: "",
-                  loading: "lazy",
-                  style: "cursor: pointer;",
-                  onClick: () => {
-                    showImageViewer(viewerItems, imageIndex, "gallery");
-                  },
-                  onError: (e) => {
-                    const target = e.currentTarget;
-                    target.src = "/img/no_img.gif";
-                    target.onerror = null;
-                  }
-                }
-              )
-            },
-            `${item.message_id}-${idx}`
-          );
-        }),
-        isLoading.value && /* @__PURE__ */ u$2("div", { class: "gallery-loading", children: "加载中..." })
-      ] })
-    ] });
+      );
+    }), isLoading.value && /* @__PURE__ */ _$3("div", { class: "gallery-loading" }, "加载中...")));
   }
 
   function SearchPanel() {
@@ -6513,7 +6562,7 @@ ${content}`;
     const handleDateChange = async (e) => {
       const date = e.target.value;
       if (!date) return;
-      const { getFirstMessageIdByDate } = await __vitePreload(async () => { const { getFirstMessageIdByDate } = await Promise.resolve().then(() => api);return { getFirstMessageIdByDate }},false             ?__VITE_PRELOAD__:void 0);
+      const { getFirstMessageIdByDate } = await (async () => { const { getFirstMessageIdByDate } = await Promise.resolve().then(() => api);return { getFirstMessageIdByDate }})();
       const msgId = await getFirstMessageIdByDate(date);
       e.target.value = "";
       if (msgId) {
@@ -6524,94 +6573,70 @@ ${content}`;
       }
     };
     if (!isSearchActive.value) return null;
-    return /* @__PURE__ */ u$2("div", { id: "dollars-search-ui", children: [
-      /* @__PURE__ */ u$2("div", { class: "search-panel-row", children: [
-        /* @__PURE__ */ u$2("div", { class: "search-bar", style: { flex: 1, marginBottom: 0 }, children: [
-          /* @__PURE__ */ u$2(
-            "div",
-            {
-              class: "search-icon",
-              style: { display: "flex", alignItems: "center", opacity: 0.5 },
-              dangerouslySetInnerHTML: { __html: iconSearch }
-            }
-          ),
-          /* @__PURE__ */ u$2(
-            "input",
-            {
-              ref: inputRef,
-              type: "search",
-              placeholder: "搜索消息...",
-              value: searchQuery.value,
-              onInput: (e) => {
-                searchQuery.value = e.target.value;
-              },
-              autoFocus: true
-            }
-          ),
-          /* @__PURE__ */ u$2(
-            "div",
-            {
-              class: "search-close-btn",
-              onClick: close,
-              dangerouslySetInnerHTML: { __html: iconClose }
-            }
-          )
-        ] }),
-        /* @__PURE__ */ u$2(
-          "div",
-          {
-            class: "search-calendar-btn",
-            onClick: openDatePicker,
-            title: "按日期跳转",
-            dangerouslySetInnerHTML: { __html: iconCalendar }
-          }
-        ),
-        /* @__PURE__ */ u$2(
-          "div",
-          {
-            class: `search-gallery-btn ${searchGalleryMode.value ? "active" : ""}`,
-            onClick: () => {
-              searchGalleryMode.value = !searchGalleryMode.value;
-            },
-            title: "相册模式",
-            dangerouslySetInnerHTML: { __html: iconPhoto }
-          }
-        )
-      ] }),
-      /* @__PURE__ */ u$2(
-        "input",
-        {
-          type: "date",
-          ref: dateInputRef,
-          onChange: handleDateChange,
-          style: { position: "absolute", opacity: 0, pointerEvents: "none", width: 0, height: 0 }
-        }
-      ),
-      searchGalleryMode.value ? /* @__PURE__ */ u$2(GalleryPanel, { onClose: () => {
-        searchGalleryMode.value = false;
-      } }) : /* @__PURE__ */ u$2("div", { id: "dollars-search-results", onScroll: handleScroll, children: [
-        results.value.map((msg) => /* @__PURE__ */ u$2(
-          "div",
-          {
-            class: "search-result-item",
-            onClick: () => handleResultClick(msg),
-            children: [
-              /* @__PURE__ */ u$2("img", { src: getAvatarUrl(msg.avatar, "s"), alt: msg.nickname }),
-              /* @__PURE__ */ u$2("div", { class: "dollars-search-content", children: [
-                /* @__PURE__ */ u$2("div", { class: "dollars-search-header", children: [
-                  /* @__PURE__ */ u$2("span", { class: "dollars-search-nickname", children: msg.nickname }),
-                  /* @__PURE__ */ u$2("span", { class: "dollars-search-timestamp", children: formatDate(msg.timestamp, "full") })
-                ] }),
-                /* @__PURE__ */ u$2("div", { class: "dollars-search-message", children: msg.message.replace(/\[.*?\]/g, " ") })
-              ] })
-            ]
-          },
-          msg.id
-        )),
-        loading.value && /* @__PURE__ */ u$2("div", { class: "search-status-msg", children: "搜索中..." }),
-        !loading.value && results.value.length === 0 && searchQuery.value && /* @__PURE__ */ u$2("div", { class: "search-status-msg", children: "未找到相关消息" })
-      ] })
-    ] });
+    return /* @__PURE__ */ _$3("div", { id: "dollars-search-ui" }, /* @__PURE__ */ _$3("div", { class: "search-panel-row" }, /* @__PURE__ */ _$3("div", { class: "search-bar", style: { flex: 1, marginBottom: 0 } }, /* @__PURE__ */ _$3(
+      "div",
+      {
+        class: "search-icon",
+        style: { display: "flex", alignItems: "center", opacity: 0.5 },
+        dangerouslySetInnerHTML: { __html: iconSearch }
+      }
+    ), /* @__PURE__ */ _$3(
+      "input",
+      {
+        ref: inputRef,
+        type: "search",
+        placeholder: "搜索消息...",
+        value: searchQuery.value,
+        onInput: (e) => {
+          searchQuery.value = e.target.value;
+        },
+        autoFocus: true
+      }
+    ), /* @__PURE__ */ _$3(
+      "div",
+      {
+        class: "search-close-btn",
+        onClick: close,
+        dangerouslySetInnerHTML: { __html: iconClose }
+      }
+    )), /* @__PURE__ */ _$3(
+      "div",
+      {
+        class: "search-calendar-btn",
+        onClick: openDatePicker,
+        title: "按日期跳转",
+        dangerouslySetInnerHTML: { __html: iconCalendar }
+      }
+    ), /* @__PURE__ */ _$3(
+      "div",
+      {
+        class: `search-gallery-btn ${searchGalleryMode.value ? "active" : ""}`,
+        onClick: () => {
+          searchGalleryMode.value = !searchGalleryMode.value;
+        },
+        title: "相册模式",
+        dangerouslySetInnerHTML: { __html: iconPhoto }
+      }
+    )), /* @__PURE__ */ _$3(
+      "input",
+      {
+        type: "date",
+        ref: dateInputRef,
+        onChange: handleDateChange,
+        style: { position: "absolute", opacity: 0, pointerEvents: "none", width: 0, height: 0 }
+      }
+    ), searchGalleryMode.value ? /* @__PURE__ */ _$3(GalleryPanel, { onClose: () => {
+      searchGalleryMode.value = false;
+    } }) : /* @__PURE__ */ _$3("div", { id: "dollars-search-results", onScroll: handleScroll }, results.value.map((msg) => /* @__PURE__ */ _$3(
+      "div",
+      {
+        key: msg.id,
+        class: "search-result-item",
+        onClick: () => handleResultClick(msg)
+      },
+      /* @__PURE__ */ _$3("img", { src: getAvatarUrl(msg.avatar, "s"), alt: msg.nickname }),
+      /* @__PURE__ */ _$3("div", { class: "dollars-search-content" }, /* @__PURE__ */ _$3("div", { class: "dollars-search-header" }, /* @__PURE__ */ _$3("span", { class: "dollars-search-nickname" }, msg.nickname), /* @__PURE__ */ _$3("span", { class: "dollars-search-timestamp" }, formatDate(msg.timestamp, "full"))), /* @__PURE__ */ _$3("div", { class: "dollars-search-message" }, msg.message.replace(/\[.*?\]/g, " ")))
+    )), loading.value && /* @__PURE__ */ _$3("div", { class: "search-status-msg" }, "搜索中..."), !loading.value && results.value.length === 0 && searchQuery.value && /* @__PURE__ */ _$3("div", { class: "search-status-msg" }, "未找到相关消息")));
   }
 
   function UserProfilePanel() {
@@ -6708,139 +6733,72 @@ ${content}`;
       avatar: item.avatar,
       timestamp: item.timestamp
     }));
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         id: "dollars-user-profile-panel",
-        class: `${isNarrow ? "narrow" : "wide"} ${isVisible ? "visible" : ""} ${isClosing ? "closing" : ""}`,
-        children: [
-          !isNarrow && /* @__PURE__ */ u$2("div", { class: "uprofile-card-header", children: [
-            /* @__PURE__ */ u$2(
-              "button",
+        class: `${isNarrow ? "narrow" : "wide"} ${isVisible ? "visible" : ""} ${isClosing ? "closing" : ""}`
+      },
+      !isNarrow && /* @__PURE__ */ _$3("div", { class: "uprofile-card-header" }, /* @__PURE__ */ _$3(
+        "button",
+        {
+          class: "header-btn dollars-back-btn",
+          title: "返回",
+          "aria-label": "返回",
+          onClick: hideUserProfile
+        }
+      ), /* @__PURE__ */ _$3("span", { class: "uprofile-card-title" }, "用户资料")),
+      /* @__PURE__ */ _$3("div", { class: "uprofile-banner" }, /* @__PURE__ */ _$3(
+        "img",
+        {
+          class: "uprofile-avatar",
+          src: profile ? getAvatarUrl(profile.avatar, "l") : void 0,
+          alt: profile?.nickname ?? userId ?? ""
+        }
+      )),
+      /* @__PURE__ */ _$3("div", { class: "uprofile-content" }, profile && /* @__PURE__ */ _$3("div", { class: "uprofile-body" }, /* @__PURE__ */ _$3("div", { class: "uprofile-name-section" }, /* @__PURE__ */ _$3("div", { class: "uprofile-nickname" }, profile?.nickname ?? userId, isActive && /* @__PURE__ */ _$3("span", { class: "uprofile-status-dot active", "aria-label": "在线", role: "img" })), /* @__PURE__ */ _$3("div", { class: "uprofile-username" }, "@", profile?.username ?? userId), lastActiveText && !isActive && /* @__PURE__ */ _$3("div", { class: "uprofile-last-active" }, "最近活跃 ", lastActiveText)), profile?.stats && /* @__PURE__ */ _$3("div", { class: "uprofile-stats-row" }, /* @__PURE__ */ _$3("div", { class: "uprofile-stat" }, /* @__PURE__ */ _$3("span", { class: "uprofile-stat-num" }, profile.stats.message_count.toLocaleString()), /* @__PURE__ */ _$3("span", { class: "uprofile-stat-label" }, "条消息")), /* @__PURE__ */ _$3("div", { class: "uprofile-stat-divider" }), /* @__PURE__ */ _$3("div", { class: "uprofile-stat" }, /* @__PURE__ */ _$3("span", { class: "uprofile-stat-num" }, profile.stats.average_messages_per_day.toFixed(1)), /* @__PURE__ */ _$3("span", { class: "uprofile-stat-label" }, "条/天"))), profile && /* @__PURE__ */ _$3("div", { class: "uprofile-actions" }, /* @__PURE__ */ _$3("button", { class: "uprofile-action-btn", onClick: handleHistory }, /* @__PURE__ */ _$3("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconHistory } }), "搜索发言"), /* @__PURE__ */ _$3("button", { class: "uprofile-action-btn", onClick: handleHomepage }, /* @__PURE__ */ _$3("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconHome } }), "主页")), (profile?.sign || profile?.stats?.first_message_time) && /* @__PURE__ */ _$3("div", { class: "uprofile-info-section" }, profile.sign && /* @__PURE__ */ _$3("div", { class: "uprofile-info-row" }, /* @__PURE__ */ _$3("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconPen } }), /* @__PURE__ */ _$3("div", { class: "uprofile-info-content" }, /* @__PURE__ */ _$3("div", { class: "uprofile-info-label" }, "个性签名"), /* @__PURE__ */ _$3("div", { class: "uprofile-info-value uprofile-sign-value" }, profile.sign))), profile.stats?.first_message_time && /* @__PURE__ */ _$3("div", { class: "uprofile-info-row" }, /* @__PURE__ */ _$3("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconCalendar } }), /* @__PURE__ */ _$3("div", { class: "uprofile-info-content" }, /* @__PURE__ */ _$3("div", { class: "uprofile-info-label" }, "首次发言"), /* @__PURE__ */ _$3("div", { class: "uprofile-info-value" }, formatDate(new Date(profile.stats.first_message_time).getTime() / 1e3, "full"))))), !mediaLoading && media.length > 0 && /* @__PURE__ */ _$3("div", { class: "uprofile-media-section" }, /* @__PURE__ */ _$3("div", { class: "uprofile-media-header", onClick: handleMedia, style: { cursor: "pointer" } }, /* @__PURE__ */ _$3("span", null, "媒体"), /* @__PURE__ */ _$3("span", { style: { fontSize: "12px", color: "var(--primary-color)", marginLeft: "auto" } }, "查看全部 →")), /* @__PURE__ */ _$3("div", { class: "uprofile-media-grid" }, media.map((item) => {
+        const imageIndex = imageItems.indexOf(item);
+        return /* @__PURE__ */ _$3(
+          "div",
+          {
+            class: "uprofile-media-item",
+            key: `${item.message_id}-${item.url}`
+          },
+          item.type === "video" ? /* @__PURE__ */ _$3(
+            "button",
+            {
+              class: "uprofile-media-video-btn",
+              "aria-label": `播放 ${item.nickname} 分享的视频`,
+              onClick: () => window.open(item.url, "_blank")
+            },
+            /* @__PURE__ */ _$3(
+              "img",
               {
-                class: "header-btn dollars-back-btn",
-                title: "返回",
-                "aria-label": "返回",
-                onClick: hideUserProfile
+                src: item.thumbnailUrl,
+                alt: `${item.nickname} 分享的视频`,
+                loading: "lazy"
               }
             ),
-            /* @__PURE__ */ u$2("span", { class: "uprofile-card-title", children: "用户资料" })
-          ] }),
-          /* @__PURE__ */ u$2("div", { class: "uprofile-banner", children: /* @__PURE__ */ u$2(
+            /* @__PURE__ */ _$3("div", { class: "uprofile-media-video-badge", "aria-hidden": "true" }, /* @__PURE__ */ _$3("svg", { xmlns: "http://www.w3.org/2000/svg", width: "16", height: "16", viewBox: "0 0 24 24", fill: "white" }, /* @__PURE__ */ _$3("polygon", { points: "5 3 19 12 5 21 5 3" })))
+          ) : /* @__PURE__ */ _$3(
             "img",
             {
-              class: "uprofile-avatar",
-              src: profile ? getAvatarUrl(profile.avatar, "l") : void 0,
-              alt: profile?.nickname ?? userId ?? ""
+              src: item.thumbnailUrl,
+              alt: `${item.nickname} 分享的图片`,
+              loading: "lazy",
+              style: "cursor: pointer;",
+              onClick: () => {
+                showImageViewer(viewerItems, imageIndex, "userProfile");
+              },
+              onError: (e) => {
+                const target = e.currentTarget;
+                target.src = "/img/no_img.gif";
+                target.onerror = null;
+              }
             }
-          ) }),
-          /* @__PURE__ */ u$2("div", { class: "uprofile-content", children: profile && /* @__PURE__ */ u$2("div", { class: "uprofile-body", children: [
-            /* @__PURE__ */ u$2("div", { class: "uprofile-name-section", children: [
-              /* @__PURE__ */ u$2("div", { class: "uprofile-nickname", children: [
-                profile?.nickname ?? userId,
-                isActive && /* @__PURE__ */ u$2("span", { class: "uprofile-status-dot active", "aria-label": "在线", role: "img" })
-              ] }),
-              /* @__PURE__ */ u$2("div", { class: "uprofile-username", children: [
-                "@",
-                profile?.username ?? userId
-              ] }),
-              lastActiveText && !isActive && /* @__PURE__ */ u$2("div", { class: "uprofile-last-active", children: [
-                "最近活跃 ",
-                lastActiveText
-              ] })
-            ] }),
-            profile?.stats && /* @__PURE__ */ u$2("div", { class: "uprofile-stats-row", children: [
-              /* @__PURE__ */ u$2("div", { class: "uprofile-stat", children: [
-                /* @__PURE__ */ u$2("span", { class: "uprofile-stat-num", children: profile.stats.message_count.toLocaleString() }),
-                /* @__PURE__ */ u$2("span", { class: "uprofile-stat-label", children: "条消息" })
-              ] }),
-              /* @__PURE__ */ u$2("div", { class: "uprofile-stat-divider" }),
-              /* @__PURE__ */ u$2("div", { class: "uprofile-stat", children: [
-                /* @__PURE__ */ u$2("span", { class: "uprofile-stat-num", children: profile.stats.average_messages_per_day.toFixed(1) }),
-                /* @__PURE__ */ u$2("span", { class: "uprofile-stat-label", children: "条/天" })
-              ] })
-            ] }),
-            profile && /* @__PURE__ */ u$2("div", { class: "uprofile-actions", children: [
-              /* @__PURE__ */ u$2("button", { class: "uprofile-action-btn", onClick: handleHistory, children: [
-                /* @__PURE__ */ u$2("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconHistory } }),
-                "搜索发言"
-              ] }),
-              /* @__PURE__ */ u$2("button", { class: "uprofile-action-btn", onClick: handleHomepage, children: [
-                /* @__PURE__ */ u$2("span", { "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconHome } }),
-                "主页"
-              ] })
-            ] }),
-            (profile?.sign || profile?.stats?.first_message_time) && /* @__PURE__ */ u$2("div", { class: "uprofile-info-section", children: [
-              profile.sign && /* @__PURE__ */ u$2("div", { class: "uprofile-info-row", children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconPen } }),
-                /* @__PURE__ */ u$2("div", { class: "uprofile-info-content", children: [
-                  /* @__PURE__ */ u$2("div", { class: "uprofile-info-label", children: "个性签名" }),
-                  /* @__PURE__ */ u$2("div", { class: "uprofile-info-value uprofile-sign-value", children: profile.sign })
-                ] })
-              ] }),
-              profile.stats?.first_message_time && /* @__PURE__ */ u$2("div", { class: "uprofile-info-row", children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", "aria-hidden": "true", dangerouslySetInnerHTML: { __html: iconCalendar } }),
-                /* @__PURE__ */ u$2("div", { class: "uprofile-info-content", children: [
-                  /* @__PURE__ */ u$2("div", { class: "uprofile-info-label", children: "首次发言" }),
-                  /* @__PURE__ */ u$2("div", { class: "uprofile-info-value", children: formatDate(new Date(profile.stats.first_message_time).getTime() / 1e3, "full") })
-                ] })
-              ] })
-            ] }),
-            !mediaLoading && media.length > 0 && /* @__PURE__ */ u$2("div", { class: "uprofile-media-section", children: [
-              /* @__PURE__ */ u$2("div", { class: "uprofile-media-header", onClick: handleMedia, style: { cursor: "pointer" }, children: [
-                /* @__PURE__ */ u$2("span", { children: "媒体" }),
-                /* @__PURE__ */ u$2("span", { style: { fontSize: "12px", color: "var(--primary-color)", marginLeft: "auto" }, children: "查看全部 →" })
-              ] }),
-              /* @__PURE__ */ u$2("div", { class: "uprofile-media-grid", children: media.map((item) => {
-                const imageIndex = imageItems.indexOf(item);
-                return /* @__PURE__ */ u$2(
-                  "div",
-                  {
-                    class: "uprofile-media-item",
-                    children: item.type === "video" ? /* @__PURE__ */ u$2(
-                      "button",
-                      {
-                        class: "uprofile-media-video-btn",
-                        "aria-label": `播放 ${item.nickname} 分享的视频`,
-                        onClick: () => window.open(item.url, "_blank"),
-                        children: [
-                          /* @__PURE__ */ u$2(
-                            "img",
-                            {
-                              src: item.thumbnailUrl,
-                              alt: `${item.nickname} 分享的视频`,
-                              loading: "lazy"
-                            }
-                          ),
-                          /* @__PURE__ */ u$2("div", { class: "uprofile-media-video-badge", "aria-hidden": "true", children: /* @__PURE__ */ u$2("svg", { xmlns: "http://www.w3.org/2000/svg", width: "16", height: "16", viewBox: "0 0 24 24", fill: "white", children: /* @__PURE__ */ u$2("polygon", { points: "5 3 19 12 5 21 5 3" }) }) })
-                        ]
-                      }
-                    ) : /* @__PURE__ */ u$2(
-                      "img",
-                      {
-                        src: item.thumbnailUrl,
-                        alt: `${item.nickname} 分享的图片`,
-                        loading: "lazy",
-                        style: "cursor: pointer;",
-                        onClick: () => {
-                          showImageViewer(viewerItems, imageIndex, "userProfile");
-                        },
-                        onError: (e) => {
-                          const target = e.currentTarget;
-                          target.src = "/img/no_img.gif";
-                          target.onerror = null;
-                        }
-                      }
-                    )
-                  },
-                  `${item.message_id}-${item.url}`
-                );
-              }) })
-            ] }),
-            !profile?.stats && profile && /* @__PURE__ */ u$2("div", { class: "uprofile-empty-hint", children: "暂无发言记录" })
-          ] }) })
-        ]
-      }
+          )
+        );
+      }))), !profile?.stats && profile && /* @__PURE__ */ _$3("div", { class: "uprofile-empty-hint" }, "暂无发言记录")))
     );
   }
 
@@ -6913,41 +6871,29 @@ ${content}`;
     const getTooltip = () => {
       return scrollButtonMode.value === "to-unread" ? "跳转到未读消息" : "跳转到最新消息";
     };
-    return /* @__PURE__ */ u$2(k$1, { children: [
-      /* @__PURE__ */ u$2("div", { id: "dollars-floating-date", class: isDateVisible.value ? "visible" : "", children: lastDateLabel.current || currentDateLabel.value }),
-      /* @__PURE__ */ u$2(
-        "div",
-        {
-          id: "dollars-scroll-mention-btn",
-          class: `nav-btn ${showMentionBtn ? "visible" : ""}`,
-          onClick: handleScrollToMention,
-          style: { bottom: `${mentionBtnBottom}px` },
-          title: "跳转到提及消息",
-          children: [
-            /* @__PURE__ */ u$2("svg", { xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", children: [
-              /* @__PURE__ */ u$2("path", { stroke: "none", d: "M0 0h24v24H0z", fill: "none" }),
-              /* @__PURE__ */ u$2("path", { d: "M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" }),
-              /* @__PURE__ */ u$2("path", { d: "M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28" })
-            ] }),
-            showMentionBtn && /* @__PURE__ */ u$2("div", { id: "dollars-mention-badge", class: "nav-btn-badge", children: jumpList.length > 99 ? "99+" : jumpList.length })
-          ]
-        }
-      ),
-      /* @__PURE__ */ u$2(
-        "div",
-        {
-          id: "dollars-scroll-bottom-btn",
-          class: scrollBtnClasses,
-          onClick: handleScrollBottom,
-          style: { bottom: `${bottomBtnBottom}px` },
-          title: getTooltip(),
-          children: [
-            /* @__PURE__ */ u$2("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "3", "stroke-linecap": "round", "stroke-linejoin": "round", children: /* @__PURE__ */ u$2("path", { d: "M12 5v14m-7-7l7 7 7-7" }) }),
-            currentUnreadCount > 0 && /* @__PURE__ */ u$2("div", { id: "dollars-unread-badge", class: "nav-btn-badge", children: currentUnreadCount > 99 ? "99+" : currentUnreadCount })
-          ]
-        }
-      )
-    ] });
+    return /* @__PURE__ */ _$3(k$1, null, /* @__PURE__ */ _$3("div", { id: "dollars-floating-date", class: isDateVisible.value ? "visible" : "" }, lastDateLabel.current || currentDateLabel.value), /* @__PURE__ */ _$3(
+      "div",
+      {
+        id: "dollars-scroll-mention-btn",
+        class: `nav-btn ${showMentionBtn ? "visible" : ""}`,
+        onClick: handleScrollToMention,
+        style: { bottom: `${mentionBtnBottom}px` },
+        title: "跳转到提及消息"
+      },
+      /* @__PURE__ */ _$3("svg", { xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round" }, /* @__PURE__ */ _$3("path", { stroke: "none", d: "M0 0h24v24H0z", fill: "none" }), /* @__PURE__ */ _$3("path", { d: "M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" }), /* @__PURE__ */ _$3("path", { d: "M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28" })),
+      showMentionBtn && /* @__PURE__ */ _$3("div", { id: "dollars-mention-badge", class: "nav-btn-badge" }, jumpList.length > 99 ? "99+" : jumpList.length)
+    ), /* @__PURE__ */ _$3(
+      "div",
+      {
+        id: "dollars-scroll-bottom-btn",
+        class: scrollBtnClasses,
+        onClick: handleScrollBottom,
+        style: { bottom: `${bottomBtnBottom}px` },
+        title: getTooltip()
+      },
+      /* @__PURE__ */ _$3("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "3", "stroke-linecap": "round", "stroke-linejoin": "round" }, /* @__PURE__ */ _$3("path", { d: "M12 5v14m-7-7l7 7 7-7" })),
+      currentUnreadCount > 0 && /* @__PURE__ */ _$3("div", { id: "dollars-unread-badge", class: "nav-btn-badge" }, currentUnreadCount > 99 ? "99+" : currentUnreadCount)
+    ));
   }
 
   function ConversationList({ searchTerm = "" }) {
@@ -6968,54 +6914,38 @@ ${content}`;
         setMobileChatView(true);
       }
     };
-    return /* @__PURE__ */ u$2("div", { id: "dollars-conversation-list", children: [
-      extensionItems.map((item) => {
-        const isActive = item.id === activeExtensionId.value;
-        return /* @__PURE__ */ u$2(
-          "div",
-          {
-            class: `conversation-item extension-item ${isActive ? "active" : ""}`,
-            onClick: () => handleExtensionClick(item),
-            children: [
-              /* @__PURE__ */ u$2("img", { src: item.avatar, class: "avatar", alt: item.title, loading: "lazy" }),
-              /* @__PURE__ */ u$2("div", { class: "dollars-conv-content", children: [
-                /* @__PURE__ */ u$2("div", { class: "dollars-conv-title", children: /* @__PURE__ */ u$2("span", { class: "dollars-conv-nickname", children: item.title }) }),
-                item.subtitle && /* @__PURE__ */ u$2("div", { class: "dollars-conv-last-message", children: item.subtitle })
-              ] }),
-              item.badge && /* @__PURE__ */ u$2("div", { class: "unread-badge", children: item.badge })
-            ]
-          },
-          `ext-${item.id}`
-        );
-      }),
-      filteredConversations.map((conv) => {
-        const isActive = conv.id === activeConversationId.value;
-        const title = conv.type === "channel" ? conv.title : conv.user?.nickname || conv.title;
-        const avatarUrl = conv.type === "channel" ? conv.avatar : conv.user?.avatar || conv.avatar;
-        const lastMessageText = (conv.lastMessage.text || "").replace(/\[.*?\]/g, "").trim();
-        const timeText = conv.lastMessage.timestamp ? formatDate(conv.lastMessage.timestamp, "time") : "";
-        return /* @__PURE__ */ u$2(
-          "div",
-          {
-            class: `conversation-item ${isActive ? "active" : ""}`,
-            "data-conversation-id": conv.id,
-            onClick: () => handleClick(conv.id),
-            children: [
-              /* @__PURE__ */ u$2("img", { src: avatarUrl, class: "avatar", alt: title, loading: "lazy" }),
-              /* @__PURE__ */ u$2("div", { class: "dollars-conv-content", children: [
-                /* @__PURE__ */ u$2("div", { class: "dollars-conv-title", children: [
-                  /* @__PURE__ */ u$2("span", { class: "dollars-conv-nickname", children: title }),
-                  /* @__PURE__ */ u$2("span", { class: "dollars-conv-timestamp", children: timeText })
-                ] }),
-                /* @__PURE__ */ u$2("div", { class: "dollars-conv-last-message", children: lastMessageText || " " })
-              ] }),
-              conv.unreadCount > 0 && /* @__PURE__ */ u$2("div", { class: "unread-badge", children: conv.unreadCount })
-            ]
-          },
-          conv.id
-        );
-      })
-    ] });
+    return /* @__PURE__ */ _$3("div", { id: "dollars-conversation-list" }, extensionItems.map((item) => {
+      const isActive = item.id === activeExtensionId.value;
+      return /* @__PURE__ */ _$3(
+        "div",
+        {
+          key: `ext-${item.id}`,
+          class: `conversation-item extension-item ${isActive ? "active" : ""}`,
+          onClick: () => handleExtensionClick(item)
+        },
+        /* @__PURE__ */ _$3("img", { src: item.avatar, class: "avatar", alt: item.title, loading: "lazy" }),
+        /* @__PURE__ */ _$3("div", { class: "dollars-conv-content" }, /* @__PURE__ */ _$3("div", { class: "dollars-conv-title" }, /* @__PURE__ */ _$3("span", { class: "dollars-conv-nickname" }, item.title)), item.subtitle && /* @__PURE__ */ _$3("div", { class: "dollars-conv-last-message" }, item.subtitle)),
+        item.badge && /* @__PURE__ */ _$3("div", { class: "unread-badge" }, item.badge)
+      );
+    }), filteredConversations.map((conv) => {
+      const isActive = conv.id === activeConversationId.value;
+      const title = conv.type === "channel" ? conv.title : conv.user?.nickname || conv.title;
+      const avatarUrl = conv.type === "channel" ? conv.avatar : conv.user?.avatar || conv.avatar;
+      const lastMessageText = (conv.lastMessage.text || "").replace(/\[.*?\]/g, "").trim();
+      const timeText = conv.lastMessage.timestamp ? formatDate(conv.lastMessage.timestamp, "time") : "";
+      return /* @__PURE__ */ _$3(
+        "div",
+        {
+          key: conv.id,
+          class: `conversation-item ${isActive ? "active" : ""}`,
+          "data-conversation-id": conv.id,
+          onClick: () => handleClick(conv.id)
+        },
+        /* @__PURE__ */ _$3("img", { src: avatarUrl, class: "avatar", alt: title, loading: "lazy" }),
+        /* @__PURE__ */ _$3("div", { class: "dollars-conv-content" }, /* @__PURE__ */ _$3("div", { class: "dollars-conv-title" }, /* @__PURE__ */ _$3("span", { class: "dollars-conv-nickname" }, title), /* @__PURE__ */ _$3("span", { class: "dollars-conv-timestamp" }, timeText)), /* @__PURE__ */ _$3("div", { class: "dollars-conv-last-message" }, lastMessageText || " ")),
+        conv.unreadCount > 0 && /* @__PURE__ */ _$3("div", { class: "unread-badge" }, conv.unreadCount)
+      );
+    }));
   }
 
   function Sidebar() {
@@ -7024,19 +6954,16 @@ ${content}`;
       const target = e.target;
       setSearchTerm(target.value);
     };
-    return /* @__PURE__ */ u$2("div", { id: "dollars-sidebar", children: [
-      /* @__PURE__ */ u$2("div", { id: "dollars-sidebar-search-container", children: /* @__PURE__ */ u$2(
-        "input",
-        {
-          type: "search",
-          id: "dollars-sidebar-search-input",
-          placeholder: "搜索对话...",
-          value: searchTerm,
-          onInput: handleSearchInput
-        }
-      ) }),
-      /* @__PURE__ */ u$2(ConversationList, { searchTerm })
-    ] });
+    return /* @__PURE__ */ _$3("div", { id: "dollars-sidebar" }, /* @__PURE__ */ _$3("div", { id: "dollars-sidebar-search-container" }, /* @__PURE__ */ _$3(
+      "input",
+      {
+        type: "search",
+        id: "dollars-sidebar-search-input",
+        placeholder: "搜索对话...",
+        value: searchTerm,
+        onInput: handleSearchInput
+      }
+    )), /* @__PURE__ */ _$3(ConversationList, { searchTerm }));
   }
 
   const BMO_RENDER_OPTIONS = { width: 21, height: 21 };
@@ -7245,15 +7172,7 @@ ${content}`;
         persistWindowPosition(windowRef.current);
       }
     };
-    const className = [
-      "dollars-chat-window",
-      animateIn && isChatOpen.value && "visible",
-      isMobileViewport.value && "mobile",
-      isMaximized.value && "maximized",
-      isSearchActive.value && "search-active",
-      isNarrowLayout.value && "is-narrow",
-      mobileChatViewActive.value && "mobile-chat-active"
-    ].filter(Boolean).join(" ");
+    const className = "dollars-chat-window" + (animateIn && isChatOpen.value ? " visible" : "") + (isMobileViewport.value ? " mobile" : "") + (isMaximized.value ? " maximized" : "") + (isSearchActive.value ? " search-active" : "") + (isNarrowLayout.value ? " is-narrow" : "") + (mobileChatViewActive.value ? " mobile-chat-active" : "");
     y$1(() => {
       const container = windowRef.current;
       if (!container) return;
@@ -7279,37 +7198,26 @@ ${content}`;
         }
       };
     }, []);
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         id: "dollars-chat-window",
         ref: windowRef,
         class: className,
         onMouseDown: handleDragStart,
-        onTouchStart: handleDragStart,
-        children: [
-          /* @__PURE__ */ u$2(
-            "div",
-            {
-              id: "dollars-resize-handle",
-              title: "调整窗口大小",
-              onMouseDown: handleResizeStart,
-              onTouchStart: handleResizeStart
-            }
-          ),
-          /* @__PURE__ */ u$2(ChatHeader, {}),
-          /* @__PURE__ */ u$2("div", { id: "dollars-content-panes", children: [
-            /* @__PURE__ */ u$2(Sidebar, {}),
-            /* @__PURE__ */ u$2("div", { id: "dollars-main-chat", children: [
-              /* @__PURE__ */ u$2(SearchPanel, {}),
-              /* @__PURE__ */ u$2(UserProfilePanel, {}),
-              /* @__PURE__ */ u$2(ChatBody, {}),
-              /* @__PURE__ */ u$2(FloatingUI, {}),
-              /* @__PURE__ */ u$2(ChatInput, {})
-            ] })
-          ] })
-        ]
-      }
+        onTouchStart: handleDragStart
+      },
+      /* @__PURE__ */ _$3(
+        "div",
+        {
+          id: "dollars-resize-handle",
+          title: "调整窗口大小",
+          onMouseDown: handleResizeStart,
+          onTouchStart: handleResizeStart
+        }
+      ),
+      /* @__PURE__ */ _$3(ChatHeader, null),
+      /* @__PURE__ */ _$3("div", { id: "dollars-content-panes" }, /* @__PURE__ */ _$3(Sidebar, null), /* @__PURE__ */ _$3("div", { id: "dollars-main-chat" }, /* @__PURE__ */ _$3(SearchPanel, null), /* @__PURE__ */ _$3(UserProfilePanel, null), /* @__PURE__ */ _$3(ChatBody, null), /* @__PURE__ */ _$3(FloatingUI, null), /* @__PURE__ */ _$3(ChatInput, null)))
     );
   }
 
@@ -7389,7 +7297,7 @@ ${content}`;
     let smileys = [];
     let specialContent = null;
     if (activeTab === "BMO") {
-      specialContent = /* @__PURE__ */ u$2("div", { style: { display: "contents" }, children: bmoItems.length > 0 ? bmoItems.map((item) => /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
+      specialContent = /* @__PURE__ */ _$3("div", { style: { display: "contents" } }, bmoItems.length > 0 ? bmoItems.map((item) => /* @__PURE__ */ _$3("li", { key: item.code, class: "smiley-item" }, /* @__PURE__ */ _$3(
         "a",
         {
           href: "#",
@@ -7398,62 +7306,57 @@ ${content}`;
           onClick: (e) => {
             e.preventDefault();
             handleReaction(item.code);
-          },
-          children: /* @__PURE__ */ u$2("span", { class: "bmo", "data-code": item.code })
-        }
-      ) }, item.code)) : /* @__PURE__ */ u$2("p", { style: { width: "100%", textAlign: "center", color: "var(--dollars-text-secondary)", fontSize: "12px", marginTop: "20px", padding: "0 10px" }, children: "暂无保存的 BMO 表情" }) });
+          }
+        },
+        /* @__PURE__ */ _$3("span", { class: "bmo", "data-code": item.code })
+      ))) : /* @__PURE__ */ _$3("p", { style: { width: "100%", textAlign: "center", color: "var(--dollars-text-secondary)", fontSize: "12px", marginTop: "20px", padding: "0 10px" } }, "暂无保存的 BMO 表情"));
     } else {
       smileys = generateSmileyCodes(activeTab);
     }
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         id: "dollars-reaction-picker-floating",
         class: `open ${isReactionPickerClosing.value ? "closing" : ""}`,
         ref: containerRef,
-        style: { left: `${x}px`, top: `${y}px`, width: `${width}px` },
-        children: [
-          /* @__PURE__ */ u$2("div", { class: "reaction-picker-tabs", children: smileyRangesWithoutFavorites.map((range) => {
-            let textContent = range.name;
-            if (range.name === "BMO") {
-              textContent = /* @__PURE__ */ u$2("span", { class: "bmo", "data-code": "(bmoCgASACIBLgCg)", style: { verticalAlign: "middle" } });
-            } else if (range.path && range.start) {
-              const iconId = range.tabIconId ?? range.start;
-              textContent = /* @__PURE__ */ u$2("img", { src: range.path(iconId), alt: range.name, style: { width: "21px", height: "21px", verticalAlign: "middle" } });
-            }
-            return /* @__PURE__ */ u$2(
-              "button",
-              {
-                class: `reaction-picker-tab-btn ${activeTab === range.name ? "active" : ""}`,
-                "data-group": range.name,
-                onClick: () => setActiveTab(range.name),
-                title: range.name,
-                children: textContent
-              },
-              range.name
-            );
-          }) }),
-          /* @__PURE__ */ u$2("div", { class: "reaction-picker-content", ref: contentRef, children: [
-            specialContent,
-            smileys.map((code) => {
-              const url = getSmileyUrl(code);
-              return /* @__PURE__ */ u$2("li", { class: "smiley-item", children: /* @__PURE__ */ u$2(
-                "a",
-                {
-                  href: "#",
-                  "data-smiley": code,
-                  onClick: (e) => {
-                    e.preventDefault();
-                    handleReaction(code);
-                  },
-                  style: url ? { backgroundImage: `url('${url}')` } : void 0,
-                  title: code
-                }
-              ) }, code);
-            })
-          ] })
-        ]
-      }
+        style: { left: `${x}px`, top: `${y}px`, width: `${width}px` }
+      },
+      /* @__PURE__ */ _$3("div", { class: "reaction-picker-tabs" }, smileyRangesWithoutFavorites.map((range) => {
+        let textContent = range.name;
+        if (range.name === "BMO") {
+          textContent = /* @__PURE__ */ _$3("span", { class: "bmo", "data-code": "(bmoCgASACIBLgCg)", style: { verticalAlign: "middle" } });
+        } else if (range.path && range.start) {
+          const iconId = range.tabIconId ?? range.start;
+          textContent = /* @__PURE__ */ _$3("img", { src: range.path(iconId), alt: range.name, style: { width: "21px", height: "21px", verticalAlign: "middle" } });
+        }
+        return /* @__PURE__ */ _$3(
+          "button",
+          {
+            key: range.name,
+            class: `reaction-picker-tab-btn ${activeTab === range.name ? "active" : ""}`,
+            "data-group": range.name,
+            onClick: () => setActiveTab(range.name),
+            title: range.name
+          },
+          textContent
+        );
+      })),
+      /* @__PURE__ */ _$3("div", { class: "reaction-picker-content", ref: contentRef }, specialContent, smileys.map((code) => {
+        const url = getSmileyUrl(code);
+        return /* @__PURE__ */ _$3("li", { key: code, class: "smiley-item" }, /* @__PURE__ */ _$3(
+          "a",
+          {
+            href: "#",
+            "data-smiley": code,
+            onClick: (e) => {
+              e.preventDefault();
+              handleReaction(code);
+            },
+            style: url ? { backgroundImage: `url('${url}')` } : void 0,
+            title: code
+          }
+        ));
+      }))
     );
   }
 
@@ -7640,72 +7543,39 @@ ${content}`;
     const msg = targetId ? messageMap.value.get(Number(targetId)) : null;
     const isSelf = msg && String(msg.uid) === String(userInfo.value.id);
     const hasImage = !!contextMenuImageUrl.value || !!contextMenuBmoCode.value;
-    return /* @__PURE__ */ u$2(k$1, { children: [
-      /* @__PURE__ */ u$2(
-        "div",
+    return /* @__PURE__ */ _$3(k$1, null, /* @__PURE__ */ _$3(
+      "div",
+      {
+        id: "dollars-context-menu",
+        ref: menuRef,
+        class: `visible has-items-wrapper ${hasImage ? "image-mode" : ""} ${isContextMenuClosing.value ? "closing" : ""}`,
+        style: { left: `${x}px`, top: `${y}px`, pointerEvents: "auto" }
+      },
+      targetId && /* @__PURE__ */ _$3("div", { class: "context-menu-reactions" }, CONTEXT_MENU_REACTIONS.map((emoji) => {
+        const url = getSmileyUrl(emoji);
+        const isBmo = emoji.startsWith("(bmo");
+        return /* @__PURE__ */ _$3(
+          "div",
+          {
+            key: emoji,
+            class: "reaction-item",
+            "data-emoji": emoji,
+            onClick: () => handleReaction(emoji)
+          },
+          url && /* @__PURE__ */ _$3("img", { src: url, alt: emoji }),
+          isBmo && /* @__PURE__ */ _$3("span", { class: "bmo", "data-code": emoji })
+        );
+      }), /* @__PURE__ */ _$3(
+        "button",
         {
-          id: "dollars-context-menu",
-          ref: menuRef,
-          class: `visible has-items-wrapper ${hasImage ? "image-mode" : ""} ${isContextMenuClosing.value ? "closing" : ""}`,
-          style: { left: `${x}px`, top: `${y}px`, pointerEvents: "auto" },
-          children: [
-            targetId && /* @__PURE__ */ u$2("div", { class: "context-menu-reactions", children: [
-              CONTEXT_MENU_REACTIONS.map((emoji) => {
-                const url = getSmileyUrl(emoji);
-                const isBmo = emoji.startsWith("(bmo");
-                return /* @__PURE__ */ u$2(
-                  "div",
-                  {
-                    class: "reaction-item",
-                    "data-emoji": emoji,
-                    onClick: () => handleReaction(emoji),
-                    children: [
-                      url && /* @__PURE__ */ u$2("img", { src: url, alt: emoji }),
-                      isBmo && /* @__PURE__ */ u$2("span", { class: "bmo", "data-code": emoji })
-                    ]
-                  },
-                  emoji
-                );
-              }),
-              /* @__PURE__ */ u$2(
-                "button",
-                {
-                  class: `context-menu-reactions-more ${isReactionPickerOpen.value ? "expanded" : ""}`,
-                  onClick: handleMoreReactions,
-                  title: "更多表情",
-                  dangerouslySetInnerHTML: { __html: iconExpand }
-                }
-              )
-            ] }),
-            !isReactionPickerOpen.value && /* @__PURE__ */ u$2("div", { class: "context-menu-items", children: [
-              /* @__PURE__ */ u$2("button", { "data-action": "reply", onClick: handleReply, children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconReply } }),
-                /* @__PURE__ */ u$2("span", { children: "回复" })
-              ] }),
-              /* @__PURE__ */ u$2("button", { "data-action": "copy", onClick: handleCopy, children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconCopy } }),
-                /* @__PURE__ */ u$2("span", { children: "复制" })
-              ] }),
-              hasImage && /* @__PURE__ */ u$2("button", { class: "image-action", "data-action": "favorite", onClick: handleFavorite, children: [
-                /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconFavorite } }),
-                /* @__PURE__ */ u$2("span", { children: "收藏表情" })
-              ] }),
-              isSelf && /* @__PURE__ */ u$2(k$1, { children: [
-                /* @__PURE__ */ u$2("button", { class: "auth-action", "data-action": "edit", onClick: handleEdit, children: [
-                  /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconEdit } }),
-                  /* @__PURE__ */ u$2("span", { children: "编辑" })
-                ] }),
-                /* @__PURE__ */ u$2("button", { class: "auth-action danger", "data-action": "delete", onClick: handleDelete, children: [
-                  /* @__PURE__ */ u$2("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconDelete } }),
-                  /* @__PURE__ */ u$2("span", { children: "撤回" })
-                ] })
-              ] })
-            ] })
-          ]
+          class: `context-menu-reactions-more ${isReactionPickerOpen.value ? "expanded" : ""}`,
+          onClick: handleMoreReactions,
+          title: "更多表情",
+          dangerouslySetInnerHTML: { __html: iconExpand }
         }
-      ),
-      /* @__PURE__ */ u$2(ReactionPickerFloating, {})
-    ] });
+      )),
+      !isReactionPickerOpen.value && /* @__PURE__ */ _$3("div", { class: "context-menu-items" }, /* @__PURE__ */ _$3("button", { "data-action": "reply", onClick: handleReply }, /* @__PURE__ */ _$3("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconReply } }), /* @__PURE__ */ _$3("span", null, "回复")), /* @__PURE__ */ _$3("button", { "data-action": "copy", onClick: handleCopy }, /* @__PURE__ */ _$3("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconCopy } }), /* @__PURE__ */ _$3("span", null, "复制")), hasImage && /* @__PURE__ */ _$3("button", { class: "image-action", "data-action": "favorite", onClick: handleFavorite }, /* @__PURE__ */ _$3("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconFavorite } }), /* @__PURE__ */ _$3("span", null, "收藏表情")), isSelf && /* @__PURE__ */ _$3(k$1, null, /* @__PURE__ */ _$3("button", { class: "auth-action", "data-action": "edit", onClick: handleEdit }, /* @__PURE__ */ _$3("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconEdit } }), /* @__PURE__ */ _$3("span", null, "编辑")), /* @__PURE__ */ _$3("button", { class: "auth-action danger", "data-action": "delete", onClick: handleDelete }, /* @__PURE__ */ _$3("span", { class: "context-icon", dangerouslySetInnerHTML: { __html: iconDelete } }), /* @__PURE__ */ _$3("span", null, "撤回"))))
+    ), /* @__PURE__ */ _$3(ReactionPickerFloating, null));
   }
 
   function ProfileCard() {
@@ -7785,62 +7655,76 @@ ${content}`;
         hideProfileCard();
       }
     };
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         id: "dollars-profile-card",
         ref: cardRef,
-        class: `${userId ? "visible" : ""} ${isProfileCardClosing.value ? "closing" : ""}`,
-        children: [
-          /* @__PURE__ */ u$2("div", { class: "dollars-profile-banner" }),
-          /* @__PURE__ */ u$2("div", { class: "dollars-profile-body", children: [
-            /* @__PURE__ */ u$2("div", { class: "dollars-profile-top-row", children: [
-              /* @__PURE__ */ u$2("div", { class: "dollars-profile-identity", children: [
-                /* @__PURE__ */ u$2(
-                  "img",
-                  {
-                    class: `dollars-profile-avatar ${active ? "active" : ""}`,
-                    src: profile ? getAvatarUrl(profile.avatar, "l") : void 0,
-                    alt: profile?.nickname ?? userId ?? ""
-                  }
-                ),
-                /* @__PURE__ */ u$2("div", { class: "dollars-profile-names", children: [
-                  /* @__PURE__ */ u$2("div", { class: "dollars-profile-nickname", children: profile?.nickname }),
-                  /* @__PURE__ */ u$2("div", { class: "dollars-profile-username", children: [
-                    "@",
-                    profile?.username ?? userId
-                  ] })
-                ] })
-              ] }),
-              /* @__PURE__ */ u$2("div", { class: "dollars-profile-actions", children: [
-                /* @__PURE__ */ u$2(
-                  "button",
-                  {
-                    class: "dollars-profile-btn",
-                    title: "搜索历史发言",
-                    onClick: handleHistory,
-                    dangerouslySetInnerHTML: { __html: iconHistory }
-                  }
-                ),
-                /* @__PURE__ */ u$2(
-                  "button",
-                  {
-                    class: "dollars-profile-btn",
-                    title: "主页",
-                    onClick: handleHomepage,
-                    dangerouslySetInnerHTML: { __html: iconHome }
-                  }
-                )
-              ] })
-            ] }),
-            /* @__PURE__ */ u$2("div", { class: "dollars-profile-sign", children: profile?.sign || "这个人很懒，什么都没有写..." }),
-            /* @__PURE__ */ u$2("div", { class: `dollars-profile-footer ${active ? "active" : ""}`, children: loading ? "加载中..." : lastActiveText ?? "暂无发言记录" })
-          ] })
-        ]
-      }
+        class: `${userId ? "visible" : ""} ${isProfileCardClosing.value ? "closing" : ""}`
+      },
+      /* @__PURE__ */ _$3("div", { class: "dollars-profile-banner" }),
+      /* @__PURE__ */ _$3("div", { class: "dollars-profile-body" }, /* @__PURE__ */ _$3("div", { class: "dollars-profile-top-row" }, /* @__PURE__ */ _$3("div", { class: "dollars-profile-identity" }, /* @__PURE__ */ _$3(
+        "img",
+        {
+          class: `dollars-profile-avatar ${active ? "active" : ""}`,
+          src: profile ? getAvatarUrl(profile.avatar, "l") : void 0,
+          alt: profile?.nickname ?? userId ?? ""
+        }
+      ), /* @__PURE__ */ _$3("div", { class: "dollars-profile-names" }, /* @__PURE__ */ _$3("div", { class: "dollars-profile-nickname" }, profile?.nickname), /* @__PURE__ */ _$3("div", { class: "dollars-profile-username" }, "@", profile?.username ?? userId))), /* @__PURE__ */ _$3("div", { class: "dollars-profile-actions" }, /* @__PURE__ */ _$3(
+        "button",
+        {
+          class: "dollars-profile-btn",
+          title: "搜索历史发言",
+          onClick: handleHistory,
+          dangerouslySetInnerHTML: { __html: iconHistory }
+        }
+      ), /* @__PURE__ */ _$3(
+        "button",
+        {
+          class: "dollars-profile-btn",
+          title: "主页",
+          onClick: handleHomepage,
+          dangerouslySetInnerHTML: { __html: iconHome }
+        }
+      ))), /* @__PURE__ */ _$3("div", { class: "dollars-profile-sign" }, profile?.sign || "这个人很懒，什么都没有写..."), /* @__PURE__ */ _$3("div", { class: `dollars-profile-footer ${active ? "active" : ""}` }, loading ? "加载中..." : lastActiveText ?? "暂无发言记录"))
     );
   }
 
+  const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.05 20.1l-3.05 -6.1l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5l-3.312 9.173" /><path d="M19 16l-2 3h4l-2 3" /></svg>`;
+  const svgDataUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svgString)}`;
+  function updateBadge(link, count) {
+    let badge = link.querySelector(".dock-notif-badge");
+    if (count > 0) {
+      if (!badge) {
+        badge = document.createElement("span");
+        badge.className = "dock-notif-badge";
+        link.appendChild(badge);
+      }
+      badge.textContent = count > 99 ? "99+" : String(count);
+      badge.style.display = "block";
+    } else if (badge) {
+      badge.style.display = "none";
+    }
+  }
+  function createDockLink() {
+    const link = document.createElement("a");
+    link.href = "#";
+    link.id = "dock-chat-link";
+    link.title = "打开聊天窗口";
+    const icon = document.createElement("span");
+    icon.className = "ico ico-sq ico_robot_open";
+    icon.style.backgroundImage = `url('${svgDataUrl}')`;
+    icon.textContent = "聊天";
+    link.appendChild(icon);
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleChat(!isChatOpen.value);
+      if (!isChatOpen.value) {
+        stopDockFlashing();
+      }
+    });
+    return link;
+  }
   function DockButton() {
     y$1(() => {
       const notifyLink = document.querySelector('#dock a[href*="/notify/all"]');
@@ -7849,106 +7733,51 @@ ${content}`;
       if (!parentLi) return;
       const li = document.createElement("li");
       li.className = "chat";
+      const link = createDockLink();
+      li.appendChild(link);
       parentLi.before(li);
-      G(/* @__PURE__ */ u$2(DockButtonContent, {}), li);
+      const unsubscribe = dockIconFlashing.subscribe((flashing) => {
+        link.classList.toggle("flashing", flashing);
+      });
+      const unsubscribeCount = notifications.subscribe((items) => updateBadge(link, items.length));
       return () => {
-        G(null, li);
+        unsubscribe();
+        unsubscribeCount();
         li.remove();
       };
     }, []);
     return null;
   }
-  const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.05 20.1l-3.05 -6.1l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5l-3.312 9.173" /><path d="M19 16l-2 3h4l-2 3" /></svg>`;
-  const svgDataUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svgString)}`;
-  function DockButtonContent() {
-    const linkRef = A(null);
-    y$1(() => {
-      const unsubscribe = dockIconFlashing.subscribe((flashing) => {
-        const link = linkRef.current;
-        if (!link) return;
-        if (flashing) {
-          link.classList.add("flashing");
-        } else {
-          link.classList.remove("flashing");
-        }
-      });
-      return unsubscribe;
-    }, []);
-    y$1(() => {
-      const unsubscribe = notificationCount.subscribe((count) => {
-        const link = linkRef.current;
-        if (!link) return;
-        let badge = link.querySelector(".dock-notif-badge");
-        if (count > 0) {
-          if (!badge) {
-            badge = document.createElement("span");
-            badge.className = "dock-notif-badge";
-            link.appendChild(badge);
-          }
-          badge.textContent = count > 99 ? "99+" : String(count);
-          badge.style.display = "block";
-        } else if (badge) {
-          badge.style.display = "none";
-        }
-      });
-      return unsubscribe;
-    }, []);
-    const handleClick = (e) => {
-      e.preventDefault();
-      toggleChat(!isChatOpen.value);
-      if (!isChatOpen.value) {
-        stopDockFlashing();
-      }
-    };
-    return /* @__PURE__ */ u$2("a", { ref: linkRef, href: "#", id: "dock-chat-link", title: "打开聊天窗口", onClick: handleClick, children: /* @__PURE__ */ u$2(
-      "span",
-      {
-        class: "ico ico-sq ico_robot_open",
-        style: { backgroundImage: `url('${svgDataUrl}')` },
-        children: "聊天"
-      }
-    ) });
-  }
 
   class ErrorBoundary extends x {
     state = {
-      hasError: false,
-      error: null
+      hasError: false
     };
-    static getDerivedStateFromError(error) {
-      return { hasError: true, error };
-    }
-    componentDidCatch(_error, _errorInfo) {
+    static getDerivedStateFromError() {
+      return { hasError: true };
     }
     render() {
       if (this.state.hasError) {
-        if (this.props.fallback) {
-          return this.props.fallback;
-        }
-        return /* @__PURE__ */ u$2("div", { class: "error-fallback", style: {
+        return /* @__PURE__ */ _$3("div", { class: "error-fallback", style: {
           padding: "20px",
           textAlign: "center",
           color: "var(--dollars-text-secondary, #888)"
-        }, children: [
-          /* @__PURE__ */ u$2("div", { style: { fontSize: "24px", marginBottom: "10px" }, children: "😢" }),
-          /* @__PURE__ */ u$2("div", { children: "加载出错了" }),
-          /* @__PURE__ */ u$2(
-            "button",
-            {
-              style: {
-                marginTop: "10px",
-                padding: "8px 16px",
-                border: "none",
-                borderRadius: "4px",
-                background: "var(--primary-color, #f09199)",
-                color: "white",
-                cursor: "pointer"
-              },
-              onClick: () => this.setState({ hasError: false, error: null }),
-              children: "重试"
-            }
-          )
-        ] });
+        } }, /* @__PURE__ */ _$3("div", { style: { fontSize: "24px", marginBottom: "10px" } }, "😢"), /* @__PURE__ */ _$3("div", null, "加载出错了"), /* @__PURE__ */ _$3(
+          "button",
+          {
+            style: {
+              marginTop: "10px",
+              padding: "8px 16px",
+              border: "none",
+              borderRadius: "4px",
+              background: "var(--primary-color, #f09199)",
+              color: "white",
+              cursor: "pointer"
+            },
+            onClick: () => this.setState({ hasError: false })
+          },
+          "重试"
+        ));
       }
       return this.props.children;
     }
@@ -8021,11 +7850,10 @@ ${content}`;
     const swipeStartY = A(0);
     const closing = A(false);
     const items = imageViewerItems.value;
-    const images = imageViewerImages.value;
     const index = imageViewerIndex.value;
     const source = imageViewerSource.value;
     const visible = isImageViewerOpen.value;
-    const total = images.length;
+    const total = items.length;
     const currentItem = items[index];
     const handleCapsuleClick = q((e) => {
       e.stopPropagation();
@@ -8128,7 +7956,7 @@ ${content}`;
     }, [visible, index, resetTransform]);
     y$1(injectStyles$1, []);
     if (!visible || total === 0) return null;
-    const src = images[index];
+    const src = currentItem.src;
     const onTouchStart = (e) => {
       const touches = e.touches;
       hasMoved.current = false;
@@ -8235,68 +8063,49 @@ ${content}`;
       e.stopPropagation();
       toggleZoomAtPoint(e.clientX, e.clientY);
     };
-    return /* @__PURE__ */ u$2(
+    return /* @__PURE__ */ _$3(
       "div",
       {
         ref: overlayRef,
         class: "lb-overlay",
-        onClick: onBackdropClick,
-        children: [
-          /* @__PURE__ */ u$2("button", { class: "lb-close", onClick: close, "aria-label": "Close", children: /* @__PURE__ */ u$2("svg", { width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", children: /* @__PURE__ */ u$2("path", { d: "M18 6L6 18M6 6l12 12" }) }) }),
-          total > 1 && /* @__PURE__ */ u$2("div", { class: "lb-counter", children: [
-            index + 1,
-            " / ",
-            total
-          ] }),
-          total > 1 && /* @__PURE__ */ u$2(k$1, { children: [
-            /* @__PURE__ */ u$2("button", { class: "lb-nav lb-prev", onClick: () => navigate(-1), "aria-label": "Previous", children: /* @__PURE__ */ u$2("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", children: /* @__PURE__ */ u$2("polyline", { points: "15 18 9 12 15 6" }) }) }),
-            /* @__PURE__ */ u$2("button", { class: "lb-nav lb-next", onClick: () => navigate(1), "aria-label": "Next", children: /* @__PURE__ */ u$2("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", children: /* @__PURE__ */ u$2("polyline", { points: "9 18 15 12 9 6" }) }) })
-          ] }),
-          currentItem?.messageId && currentItem.nickname && currentItem.timestamp != null && /* @__PURE__ */ u$2("button", { class: "lb-capsule", onClick: handleCapsuleClick, children: [
-            /* @__PURE__ */ u$2(
-              "img",
-              {
-                class: "lb-capsule-avatar",
-                src: getAvatarUrl(currentItem.avatar || "", "s"),
-                alt: currentItem.nickname
-              }
-            ),
-            /* @__PURE__ */ u$2("span", { class: "lb-capsule-info", children: [
-              /* @__PURE__ */ u$2("span", { class: "lb-capsule-nickname", children: currentItem.nickname }),
-              /* @__PURE__ */ u$2("span", { class: "lb-capsule-date", children: formatDate(currentItem.timestamp, "full") })
-            ] })
-          ] }),
-          /* @__PURE__ */ u$2(
-            "div",
-            {
-              class: "lb-img-wrap",
-              children: /* @__PURE__ */ u$2(
-                "img",
-                {
-                  ref: imgRef,
-                  class: "lb-img",
-                  src,
-                  alt: "",
-                  draggable: false,
-                  onDblClick: onImageDoubleClick,
-                  onTouchStart,
-                  onTouchMove,
-                  onTouchEnd,
-                  onWheel,
-                  onError: (e) => {
-                    e.currentTarget.src = "/img/no_img.gif";
-                  }
-                }
-              )
+        onClick: onBackdropClick
+      },
+      /* @__PURE__ */ _$3("button", { class: "lb-close", onClick: close, "aria-label": "Close" }, /* @__PURE__ */ _$3("svg", { width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round" }, /* @__PURE__ */ _$3("path", { d: "M18 6L6 18M6 6l12 12" }))),
+      total > 1 && /* @__PURE__ */ _$3("div", { class: "lb-counter" }, index + 1, " / ", total),
+      total > 1 && /* @__PURE__ */ _$3(k$1, null, /* @__PURE__ */ _$3("button", { class: "lb-nav lb-prev", onClick: () => navigate(-1), "aria-label": "Previous" }, /* @__PURE__ */ _$3("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round" }, /* @__PURE__ */ _$3("polyline", { points: "15 18 9 12 15 6" }))), /* @__PURE__ */ _$3("button", { class: "lb-nav lb-next", onClick: () => navigate(1), "aria-label": "Next" }, /* @__PURE__ */ _$3("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round" }, /* @__PURE__ */ _$3("polyline", { points: "9 18 15 12 9 6" })))),
+      currentItem?.messageId && currentItem.nickname && currentItem.timestamp != null && /* @__PURE__ */ _$3("button", { class: "lb-capsule", onClick: handleCapsuleClick }, /* @__PURE__ */ _$3(
+        "img",
+        {
+          class: "lb-capsule-avatar",
+          src: getAvatarUrl(currentItem.avatar || "", "s"),
+          alt: currentItem.nickname
+        }
+      ), /* @__PURE__ */ _$3("span", { class: "lb-capsule-info" }, /* @__PURE__ */ _$3("span", { class: "lb-capsule-nickname" }, currentItem.nickname), /* @__PURE__ */ _$3("span", { class: "lb-capsule-date" }, formatDate(currentItem.timestamp, "full")))),
+      /* @__PURE__ */ _$3(
+        "div",
+        {
+          class: "lb-img-wrap"
+        },
+        /* @__PURE__ */ _$3(
+          "img",
+          {
+            ref: imgRef,
+            class: "lb-img",
+            src,
+            alt: "",
+            draggable: false,
+            onDblClick: onImageDoubleClick,
+            onTouchStart,
+            onTouchMove,
+            onTouchEnd,
+            onWheel,
+            onError: (e) => {
+              e.currentTarget.src = "/img/no_img.gif";
             }
-          )
-        ]
-      }
+          }
+        )
+      )
     );
-  }
-
-  function ImageViewer() {
-    return /* @__PURE__ */ u$2(LightboxViewer, {});
   }
 
   const settingsLoaded = d$1(false);
@@ -8350,16 +8159,7 @@ ${content}`;
     if (hasEverOpened.current) {
       wasOpenOnMount.current = false;
     }
-    return /* @__PURE__ */ u$2("div", { id: "dollars-chat-root", "data-bg-mode": settings.value.backgroundMode, children: [
-      /* @__PURE__ */ u$2(DockButton, {}),
-      /* @__PURE__ */ u$2(NotificationManager, {}),
-      hasEverOpened.current && /* @__PURE__ */ u$2(ErrorBoundary, { children: [
-        /* @__PURE__ */ u$2(ChatWindow, { skipEntryAnimation: !needsEntryAnimation && isChatOpen.value }),
-        /* @__PURE__ */ u$2(ContextMenu, {}),
-        /* @__PURE__ */ u$2(ProfileCard, {}),
-        /* @__PURE__ */ u$2(ImageViewer, {})
-      ] })
-    ] });
+    return /* @__PURE__ */ _$3("div", { id: "dollars-chat-root", "data-bg-mode": settings.value.backgroundMode }, /* @__PURE__ */ _$3(DockButton, null), /* @__PURE__ */ _$3(NotificationManager, null), hasEverOpened.current && /* @__PURE__ */ _$3(ErrorBoundary, null, /* @__PURE__ */ _$3(ChatWindow, { skipEntryAnimation: !needsEntryAnimation && isChatOpen.value }), /* @__PURE__ */ _$3(ContextMenu, null), /* @__PURE__ */ _$3(ProfileCard, null), /* @__PURE__ */ _$3(LightboxViewer, null)));
   }
 
   const API_VERSION = "1.0.0";
@@ -8430,7 +8230,4042 @@ ${content}`;
     });
   }
 
-  const cssContent = ":root {\n  --dollars-z-index-base: 90;\n  --dollars-z-index-smiley: 99;\n  --dollars-z-index-context: 95;\n  --dollars-z-index-overlay: 110;\n  --dollars-z-index-modal: 2000;\n  --dollars-bg: #fff;\n  --dollars-bg-hover: rgba(0, 0, 0, 0.04);\n  --dollars-border: rgba(0, 0, 0, 0.08);\n  --dollars-shadow: rgba(0, 0, 0, 0.1);\n  --dollars-bg-pattern: none;\n  --dollars-bg-pattern-url: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  --dollars-text: #333;\n  --dollars-text-secondary: #666;\n  --dollars-text-placeholder: #999;\n  --dollars-icon-color: #555;\n  --dollars-icon-color-secondary: #888;\n  --dollars-color-online: #4CAF50;\n  --dollars-color-danger: #ef4444;\n  --dollars-glass-border: rgba(255, 255, 255, 0.3);\n  --dollars-glass-highlight: rgba(255, 255, 255, 0.3);\n  --dollars-glass-bg: rgba(255, 255, 255, 0.55);\n  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.03);\n  --dollars-glass-shadow:\n    0 8px 32px 0 rgba(31, 38, 135, 0.12),\n    0 2px 16px 0 rgba(31, 38, 135, 0.06),\n    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),\n    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);\n  --dollars-glass-border-color: rgba(255, 255, 255, 0.4);\n}\n#dollars-chat-window.visible {\n  --dollars-bg-pattern: var(--dollars-bg-pattern-url);\n}\nhtml[data-theme=\"dark\"] {\n  --dollars-bg: #1a1a1a;\n  --dollars-bg-hover: rgba(255, 255, 255, 0.08);\n  --dollars-border: rgba(255, 255, 255, 0.12);\n  --dollars-shadow: rgba(0, 0, 0, 0.3);\n  --dollars-text: #e0e0e0;\n  --dollars-text-secondary: #999;\n  --dollars-text-placeholder: #666;\n  --dollars-icon-color: #bbb;\n  --dollars-icon-color-secondary: #bbb;\n  --dollars-glass-border: rgba(255, 255, 255, 0.1);\n  --dollars-glass-highlight: rgba(255, 255, 255, 0.1);\n  --dollars-glass-bg: rgba(30, 30, 30, 0.65);\n  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.1);\n  --dollars-glass-shadow:\n    0 8px 32px 0 rgba(0, 0, 0, 0.3),\n    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),\n    inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);\n  --dollars-glass-border-color: rgba(255, 255, 255, 0.12);\n}\n#dollars-chat-root.disable-blur {\n  --dollars-glass-blur: none !important;\n  --dollars-glass-bg: rgba(255, 255, 255, 0.95);\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root.disable-blur {\n  --dollars-glass-bg: rgba(30, 30, 30, 0.95);\n}\n#dollars-chat-root *::-webkit-scrollbar {\n  width: 5px;\n  height: 5px;\n}\n#dollars-chat-root *::-webkit-scrollbar-track {\n  background: transparent;\n}\n#dollars-chat-root *::-webkit-scrollbar-thumb {\n  background: color-mix(in srgb, var(--primary-color), transparent 75%);\n  border-radius: 10px;\n}\n#dollars-chat-root *::-webkit-scrollbar-thumb:hover {\n  background: color-mix(in srgb, var(--primary-color), transparent 50%);\n}\n#dollars-chat-root * {\n  box-sizing: border-box;\n  scrollbar-width: thin;\n  scrollbar-color: color-mix(in srgb, var(--primary-color), transparent 75%) transparent;\n}\n#dollars-chat-root {\n  color: var(--dollars-text);\n}\n#dollars-chat-window {\n  position: fixed;\n  bottom: 80px;\n  right: 20px;\n  width: 400px;\n  height: 550px;\n  z-index: var(--dollars-z-index-base);\n  display: flex;\n  flex-direction: column;\n  border-radius: 15px;\n  background: rgba(255, 255, 255, 0.85);\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  background-clip: padding-box;\n  overflow: hidden;\n  opacity: 0;\n  pointer-events: none;\n  transform: translateY(20px) scale(0.9);\n  transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);\n}\n#dollars-chat-window.visible {\n  opacity: 1;\n  pointer-events: auto;\n  transform: translateY(0) scale(1);\n}\nhtml[data-theme=\"dark\"] #dollars-chat-window {\n  background: rgba(30, 30, 30, 0.9);\n  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);\n}\n#dollars-chat-window.maximized {\n  top: 10px !important;\n  left: 10px !important;\n  right: 10px !important;\n  bottom: 10px !important;\n  width: auto !important;\n  height: auto !important;\n  max-width: none !important;\n  max-height: none !important;\n  border-radius: 12px;\n  transform: none !important;\n}\n#dollars-chat-window.mobile {\n  top: 4vh !important;\n  left: 0 !important;\n  right: 0 !important;\n  bottom: auto !important;\n  width: 95vw !important;\n  height: 92vh !important;\n  max-width: 600px;\n  margin-left: auto !important;\n  margin-right: auto !important;\n  border-radius: 20px;\n}\n#dollars-chat-window.mobile.maximized {\n  top: 0px !important;\n  left: 0px !important;\n  right: 0px !important;\n  bottom: 0px !important;\n  width: 100vw !important;\n  height: 100vh !important;\n  height: 100dvh !important;\n  max-width: none !important;\n  margin-left: 0 !important;\n  margin-right: 0 !important;\n  border-radius: 0;\n  z-index: 98 !important;\n}\n#dollars-chat-window.mobile.visible {\n  transform: translateY(0) scale(1);\n}\n#dollars-content-panes {\n  display: flex;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n#dollars-sidebar {\n  width: 25%;\n  height: 100%;\n  max-width: 320px;\n  display: flex;\n  flex-direction: column;\n  flex-shrink: 0;\n  border-right: none;\n  box-shadow: inset -1px 0 0 0 rgba(0, 0, 0, 0.03);\n  background-color: var(--dollars-bg);\n}\n#dollars-sidebar-search-container {\n  padding: 8px;\n  padding-top: 48px;\n  border-bottom: 1px solid var(--dollars-border);\n  flex-shrink: 0;\n}\n#dollars-sidebar-search-input {\n  display: flex;\n  align-items: center;\n  position: relative;\n  border-radius: 100px;\n  border: 1px solid var(--dollars-border);\n  background-color: var(--dollars-bg);\n  transition: 0.3s ease-in-out;\n  padding: 6px 12px;\n  width: 100%;\n  box-sizing: border-box;\n  font-size: 13px;\n  color: var(--dollars-text);\n}\n#dollars-sidebar-search-input:focus {\n  outline: 0;\n  border-color: var(--primary-color);\n  box-shadow: 0 0 10px rgba(240, 145, 153, 0.6);\n}\nhtml[data-theme=\"dark\"] #dollars-sidebar-search-input {\n  background-color: #3a3a3a;\n}\n#dollars-sidebar-search-input::placeholder {\n  color: var(--dollars-text-placeholder);\n}\n#dollars-conversation-list {\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  padding: 4px;\n}\n.conversation-item {\n  display: flex;\n  align-items: center;\n  padding: 5px 10px;\n  gap: 12px;\n  cursor: pointer;\n  position: relative;\n  border-radius: 15px;\n  transition: background-color 0.2s, box-shadow 0.2s;\n}\n.conversation-item:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.conversation-item.active {\n  background: color-mix(in srgb, var(--primary-color), #ffffff 30%);\n  color: #fff;\n}\nhtml[data-theme=\"dark\"] .conversation-item.active {\n  background: color-mix(in srgb, var(--primary-color), #180518 60%);\n}\n.conversation-item.active .dollars-conv-last-message,\n.conversation-item.active .dollars-conv-nickname,\n.conversation-item.active .dollars-conv-timestamp {\n  color: #fff;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);\n}\n.conversation-item .avatar {\n  width: 46px;\n  height: 46px;\n  border-radius: 50%;\n  flex-shrink: 0;\n  object-fit: cover;\n  background-color: #f3f3f3;\n}\nhtml[data-theme=\"dark\"] .conversation-item .avatar {\n  background-color: #444;\n}\n.conversation-item .dollars-conv-content {\n  flex-grow: 1;\n  overflow: hidden;\n}\n.conversation-item .dollars-conv-title {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  font-weight: 700;\n  font-size: 13px;\n}\n.conversation-item .dollars-conv-nickname {\n  color: var(--dollars-text);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.conversation-item .dollars-conv-timestamp {\n  font-size: 11px;\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  margin-left: 8px;\n}\n.conversation-item .dollars-conv-last-message {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  margin-top: 2px;\n}\n.conversation-item .unread-badge {\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  transform: translateY(-50%);\n  background-color: var(--primary-color);\n  color: #fff;\n  font-size: 10px;\n  font-weight: bold;\n  padding: 2px 6px;\n  border-radius: 10px;\n  min-width: 16px;\n  text-align: center;\n}\n#dollars-chat-window.is-narrow #dollars-sidebar {\n  width: 100%;\n  max-width: none;\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n#dollars-chat-window.is-narrow.mobile-chat-active #dollars-sidebar {\n  transform: translateX(-100%);\n}\n#dollars-chat-window.is-narrow #dollars-main-chat {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  transform: translateX(100%);\n  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n#dollars-chat-window.is-narrow.mobile-chat-active #dollars-main-chat {\n  transform: translateX(0);\n}\n#dollars-chat-window.is-narrow #dollars-content-panes {\n  overflow: hidden;\n}\n#dollars-main-chat {\n  display: flex;\n  flex-direction: column;\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n  background-color: var(--dollars-bg);\n  isolation: isolate;\n  z-index: 0;\n}\n#dollars-main-chat::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  pointer-events: none;\n  will-change: opacity;\n  opacity: 0;\n  transition: opacity 0.3s ease;\n}\n#dollars-chat-root[data-bg-mode=\"transparent\"] #dollars-main-chat::before {\n  display: none !important;\n}\n#dollars-chat-root[data-bg-mode=\"tint\"] #dollars-main-chat::before {\n  background-image:\n    var(--dollars-bg-pattern),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: center, center;\n  background-size: 400px, cover;\n  background-blend-mode: overlay, normal;\n  opacity: 0.65;\n}\n#dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::before {\n  background-image: none;\n  background-color: color-mix(in srgb, var(--primary-color), #ffffff 94%);\n  opacity: 0.2;\n}\n#dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::after {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-color: color-mix(in srgb, var(--primary-color), #ffffff 70%);\n  -webkit-mask-image: var(--dollars-bg-pattern);\n  mask-image: var(--dollars-bg-pattern);\n  -webkit-mask-repeat: repeat;\n  mask-repeat: repeat;\n  -webkit-mask-size: 400px;\n  opacity: 0.7;\n  z-index: -1;\n  pointer-events: none;\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::after {\n  opacity: 0.1;\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"lines\"] #dollars-main-chat::before {\n  background-image: none !important;\n  background-color: transparent !important;\n  -webkit-mask-image: none !important;\n  mask-image: none !important;\n  opacity: 0.25;\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root[data-bg-mode=\"tint\"] #dollars-main-chat::before {\n  background-image:\n    var(--dollars-bg-pattern),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: center, center;\n  background-size: 400px, cover;\n  background-blend-mode: overlay, normal;\n  -webkit-mask-image: none;\n  mask-image: none;\n  opacity: 0.3;\n}\n.chat-header {\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  border-bottom: none;\n  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.02);\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 2px 15px;\n  cursor: move;\n  touch-action: none;\n  flex-shrink: 0;\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  width: 100%;\n  height: 40px;\n  box-sizing: border-box;\n  z-index: 10002;\n}\nhtml[data-theme=\"dark\"] .chat-header {\n  background: var(--dollars-bg);\n  border-bottom: none;\n  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.02);\n}\n.chat-header .title-wrapper {\n  flex-grow: 1;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: flex-start;\n  min-width: 0;\n  padding: 0 4px;\n  gap: 8px;\n  pointer-events: none;\n}\n.chat-header-left-pane {\n  width: 25%;\n  max-width: 320px;\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  padding-left: 5px;\n  gap: 4px;\n  margin-right: 8px;\n}\n#dollars-chat-window.is-narrow .chat-header-left-pane {\n  width: auto;\n  max-width: none;\n}\n.header-chat-icon {\n  width: 30px;\n  height: 30px;\n  border-radius: 50%;\n  object-fit: cover;\n  flex-shrink: 0;\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n}\n.header-text-column {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  min-width: 0;\n  justify-content: center;\n}\n.chat-header .title,\n.header-main-title {\n  font-size: 13px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  letter-spacing: 0.2px;\n  line-height: 1.2;\n}\n.chat-header .online-status {\n  font-size: 10px;\n  color: var(--dollars-text-secondary);\n  display: flex;\n  align-items: center;\n  gap: 3px;\n  opacity: 0.85;\n  line-height: 1.2;\n}\n.chat-header .online-dot {\n  width: 6px;\n  height: 6px;\n  background-color: var(--dollars-color-online);\n  border-radius: 50%;\n  flex-shrink: 0;\n}\n.chat-header .header-buttons {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.chat-header .header-btn {\n  width: 24px;\n  height: 24px;\n  border: none;\n  background: transparent;\n  border-radius: 4px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: background-color 0.2s;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: 18px;\n}\n.chat-header .header-btn:hover {\n  background-color: rgba(0, 0, 0, 0.05);\n}\nhtml[data-theme=\"dark\"] .chat-header .header-btn:hover {\n  background-color: rgba(255, 255, 255, 0.08);\n}\n#dollars-search-btn,\n#dollars-maximize-btn,\n.chat-header .close-btn {\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  -webkit-mask-size: 18px;\n  mask-size: 18px;\n}\n#dollars-search-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg>');\n}\n#dollars-maximize-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3\"/></svg>');\n}\n#dollars-chat-window.maximized #dollars-maximize-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3\"/></svg>');\n}\n.chat-header .close-btn {\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>');\n}\n.chat-header .header-btn svg {\n  width: 18px;\n  height: 18px;\n}\n.chat-body {\n  contain: layout style paint;\n  flex-grow: 1;\n  overflow-y: scroll;\n  overflow-x: hidden;\n  padding: 10px;\n  padding-top: 50px;\n  padding-bottom: 80px;\n  display: flex;\n  flex-direction: column;\n  position: relative;\n  -webkit-overflow-scrolling: touch;\n  overscroll-behavior: contain;\n  min-height: 0;\n  overflow-anchor: auto;\n  background: transparent;\n}\n.chat-body.loading .chat-list {\n  opacity: 0;\n  transition: opacity 0.3s;\n}\n.chat-body.context-loading .chat-list {\n  opacity: 0 !important;\n  transition: opacity 0.05s ease;\n}\n.chat-list {\n  display: flex;\n  flex-direction: column;\n  contain: layout style;\n  transition: opacity 0.3s ease;\n}\n.chat-message {\n  position: relative;\n  overflow: visible !important;\n  content-visibility: auto;\n  contain-intrinsic-size: 80px;\n  overflow-clip-margin: 5px;\n  display: flex;\n  gap: 8px;\n  margin-bottom: 12px;\n  align-items: flex-start;\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease-out;\n  will-change: transform, opacity;\n  transform-origin: center bottom;\n}\n.chat-message.self {\n  flex-direction: row-reverse;\n}\n.chat-message.self .message-content {\n  align-items: flex-end;\n}\n.chat-message.pending {\n  opacity: 0.7;\n}\n.chat-message.pending .bubble {\n  animation: pending-pulse 1.5s ease-in-out infinite;\n}\n@keyframes pending-pulse {\n  0%,\n  100% {\n    opacity: 0.7;\n  }\n  50% {\n    opacity: 1;\n  }\n}\n.chat-message.failed {\n  opacity: 0.9;\n}\n.chat-message.failed .bubble {\n  border: 1px solid rgba(239, 68, 68, 0.5);\n  position: relative;\n}\n.chat-message.failed .bubble::after {\n  content: \"发送失败，点击重试\";\n  position: absolute;\n  bottom: -18px;\n  right: 0;\n  font-size: 11px;\n  color: var(--dollars-color-danger);\n  opacity: 0;\n  transition: opacity 0.2s;\n  white-space: nowrap;\n}\n.chat-message.failed:hover .bubble::after,\n.chat-message.failed:active .bubble::after {\n  opacity: 1;\n}\n.chat-message.is-grouped-with-next {\n  margin-bottom: 2px;\n}\n.chat-message.is-grouped-with-prev .avatar {\n  visibility: hidden;\n  height: 0 !important;\n  margin: 0 !important;\n  border: none !important;\n}\n.chat-message .nickname {\n  display: none !important;\n}\n.chat-message .avatar {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  cursor: pointer;\n  flex-shrink: 0;\n  object-fit: cover;\n  background-color: #f3f3f3;\n  transition: box-shadow 0.3s;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\nhtml[data-theme=\"dark\"] .chat-message .avatar {\n  background-color: #444;\n}\n.chat-message::after {\n  content: \"\";\n  position: absolute;\n  width: 8px;\n  height: 8px;\n  background-color: var(--dollars-color-online);\n  border: 2px solid var(--dollars-bg);\n  border-radius: 50%;\n  z-index: 5;\n  top: 23px;\n  left: 23px;\n  pointer-events: none;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);\n  opacity: 0;\n  transform: scale(0);\n  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;\n}\n.chat-message:has(.avatar.online)::after {\n  opacity: 1;\n  transform: scale(1);\n}\n.chat-message.self::after {\n  left: auto;\n  right: -2px;\n}\n.chat-message.is-grouped-with-prev::after {\n  opacity: 0 !important;\n  transform: scale(0) !important;\n}\n.chat-message .message-content {\n  max-width: 75%;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n}\n.chat-list.focus-mode .chat-message:not(.message-highlight) {\n  filter: blur(4px);\n  opacity: 0.6;\n  transition: filter 0.3s ease, opacity 0.3s ease;\n}\n.chat-message.message-highlight {\n  position: relative;\n  z-index: 10;\n  transform: scale(1.02);\n  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n.chat-message.message-highlight .bubble {\n  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);\n}\n.chat-message .bubble {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-start;\n  padding: 6px 10px 6px;\n  border-radius: 0 12px 12px 12px;\n  word-wrap: break-word;\n  overflow-wrap: anywhere;\n  background-color: #fff;\n  box-shadow: 0 1px 2px rgba(16, 35, 47, 0.15);\n  color: var(--dollars-text);\n  font-size: 14px;\n  max-width: min(40dvh, 100%);\n  position: relative;\n  transition: background 0.3s ease;\n}\nhtml[data-theme=\"dark\"] .chat-message .bubble {\n  background-color: #212121;\n}\n.chat-message.self .bubble {\n  border-radius: 12px 0 12px 12px;\n  background: color-mix(in srgb, var(--primary-color), #ffffff 80%);\n}\nhtml[data-theme=\"dark\"] .chat-message.self .bubble {\n  background-color: color-mix(in srgb, var(--primary-color), #180518 60%);\n}\n.chat-message:not(.self).is-grouped-with-prev .bubble {\n  border-top-left-radius: 4px !important;\n}\n.chat-message.self.is-grouped-with-prev .bubble {\n  border-top-right-radius: 4px !important;\n}\n.bubble.sticker-mode {\n  background: transparent !important;\n  box-shadow: none !important;\n  padding: 0 !important;\n  border: none !important;\n}\n.bubble-nickname {\n  display: block;\n  width: 100%;\n  font-size: 12px;\n  margin-bottom: 4px;\n  line-height: 1.2;\n  user-select: none;\n  color: var(--nick-color, var(--primary-color));\n}\nhtml[data-theme=\"dark\"] .bubble-nickname {\n  color: color-mix(in srgb, var(--nick-color, var(--primary-color)), #fff 60%) !important;\n}\n.chat-message.self .bubble-nickname {\n  display: none;\n}\n.chat-message .swipe-reply-indicator {\n  position: absolute;\n  left: 100%;\n  top: 50%;\n  transform: translateY(-50%) scale(0.5);\n  margin-left: 10px;\n  opacity: 0;\n  width: 32px;\n  height: 32px;\n  background-color: var(--dollars-icon-color-secondary);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M9 14l-4 -4l4 -4\" /><path d=\"M5 10h11a4 4 0 1 1 0 8h-1\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M9 14l-4 -4l4 -4\" /><path d=\"M5 10h11a4 4 0 1 1 0 8h-1\" /></svg>');\n  -webkit-mask-size: 24px;\n  mask-size: 24px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;\n  pointer-events: none;\n}\n.chat-message.is-grouped-with-prev .bubble-nickname {\n  display: none;\n}\n.bubble.sticker-mode .bubble-nickname {\n  display: none !important;\n}\n.bubble-timestamp {\n  font-size: 10px;\n  opacity: 0.58;\n  user-select: none;\n  cursor: default;\n  color: var(--dollars-text-secondary);\n  line-height: 1.2;\n  white-space: nowrap;\n  pointer-events: none;\n  max-width: 100%;\n}\n.text-content {\n  display: block;\n  width: 100%;\n  line-height: 1.6;\n}\n.text-content > :first-child {\n  margin-top: 0;\n}\n.text-content > :last-child {\n  margin-bottom: 0;\n}\nhtml[data-theme=\"dark\"] .bubble-timestamp {\n  color: color-mix(in srgb, var(--primary-color), #fff 60%);\n}\n.bubble.has-trailing-timestamp {\n  display: flow-root;\n}\n.bubble.has-trailing-timestamp .text-content {\n  display: inline;\n  width: auto;\n}\n.bubble.has-trailing-timestamp .bubble-timestamp.is-trailing {\n  float: right;\n  margin-left: 8px;\n  margin-top: 8px;\n  text-align: right;\n}\n.bubble.has-stacked-timestamp .bubble-timestamp.is-stacked {\n  align-self: flex-end;\n  margin-top: 6px;\n  text-align: right;\n}\n.bubble.has-stacked-timestamp .expand-toggle-btn + .bubble-timestamp.is-stacked {\n  margin-top: 4px;\n}\n.bubble.sticker-mode .bubble-timestamp.is-overlay {\n  position: absolute;\n  right: 6px;\n  bottom: 6px;\n  background: rgba(0, 0, 0, 0.4);\n  backdrop-filter: blur(4px);\n  -webkit-backdrop-filter: blur(4px);\n  color: rgba(255, 255, 255, 0.9);\n  padding: 2px 6px;\n  border-radius: 999px;\n  font-size: 10px;\n  line-height: 1.2;\n  opacity: 0;\n  transition: opacity 0.2s ease;\n  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);\n  z-index: 10;\n}\n@media (hover: hover) and (pointer: fine) {\n  .chat-message:hover .bubble.sticker-mode .bubble-timestamp.is-overlay,\n  .chat-message:focus-within .bubble.sticker-mode .bubble-timestamp.is-overlay {\n    opacity: 1;\n  }\n}\n@media (hover: none), (pointer: coarse) {\n  .bubble.sticker-mode .bubble-timestamp.is-overlay {\n    opacity: 1;\n  }\n}\n.chat-message.failed .bubble.sticker-mode .bubble-timestamp.is-overlay {\n  opacity: 1;\n}\n.bubble-tail {\n  position: absolute;\n  top: 0;\n  width: 11px;\n  height: 20px;\n  pointer-events: none;\n  z-index: 1;\n}\n.chat-message:not(.self) .bubble-tail {\n  left: -9px;\n  top: -1px;\n  color: #fff;\n  transform: scaleY(-1);\n}\nhtml[data-theme=\"dark\"] .chat-message:not(.self) .bubble-tail {\n  color: #212121;\n}\n.chat-message.self .bubble-tail {\n  right: -9px;\n  top: -1px;\n  transform: scale(-1, -1);\n  color: color-mix(in srgb, var(--primary-color), #ffffff 80%);\n}\nhtml[data-theme=\"dark\"] .chat-message.self .bubble-tail {\n  color: color-mix(in srgb, var(--primary-color), #180518 60%) !important;\n}\n.chat-message.is-grouped-with-prev .bubble-tail {\n  display: none;\n}\n.bubble.sticker-mode .bubble-tail {\n  display: none;\n}\n.bubble .text-content.deleted {\n  font-style: italic !important;\n  color: var(--dollars-text-secondary) !important;\n}\n.bubble .text-content.is-collapsed {\n  display: block !important;\n  max-height: var(--collapse-max-height, 300px);\n  overflow: hidden;\n  position: relative;\n  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);\n  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);\n}\n.expand-toggle-btn {\n  display: inline-block;\n  align-self: center;\n  max-width: 100%;\n  background: color-mix(in srgb, var(--primary-color), transparent 90%);\n  border: 0;\n  border-radius: 999px;\n  color: var(--primary-color);\n  font-size: 12px;\n  font-weight: 600;\n  line-height: 1.2;\n  cursor: pointer;\n  padding: 4px 10px;\n  margin-top: 8px;\n  text-align: center;\n  transition: background-color 0.2s ease;\n}\n.expand-toggle-btn:hover {\n  background: color-mix(in srgb, var(--primary-color), transparent 84%);\n  text-decoration: none;\n}\n.expand-toggle-btn:focus-visible {\n  outline: 2px solid color-mix(in srgb, var(--primary-color), #fff 15%);\n  outline-offset: 2px;\n}\n.bubble a {\n  color: #0084b4 !important;\n}\n.bubble a:hover {\n  text-decoration: underline;\n}\n.bubble img.smiley {\n  display: inline-block;\n  width: 21px;\n  height: 21px;\n  margin: 0 1px;\n  vertical-align: text-bottom;\n  image-rendering: pixelated;\n}\n.bubble img.custom-emoji {\n  max-width: 150px;\n  max-height: 150px;\n  border-radius: 8px;\n}\n.bubble img.smiley-musume,\n.bubble img.smiley-blake {\n  width: 60px;\n  height: 60px;\n  image-rendering: auto;\n  vertical-align: bottom;\n}\n.bubble.sticker-mode .custom-emoji {\n  max-width: 120px;\n  max-height: 120px;\n  margin: 2px 0;\n  display: block;\n}\n.bubble.sticker-mode .smiley-musume,\n.bubble.sticker-mode .smiley-blake {\n  width: 100px;\n  height: 100px;\n  display: block;\n  margin: 2px 0;\n}\n.bubble .message-media-block {\n  max-width: 100%;\n  margin: 10px 0 6px;\n}\n.bubble .message-media-block:first-child {\n  margin-top: 2px;\n}\n.bubble .message-media-block:last-child {\n  margin-bottom: 0;\n}\n.bubble .message-media-block {\n  display: flex;\n  align-items: flex-start;\n}\n.chat-message.self .bubble .message-media-block {\n  justify-content: flex-end;\n}\n.bubble .message-media-grid {\n  display: grid;\n  gap: 3px;\n  max-width: 320px;\n  border-radius: 8px;\n  overflow: hidden;\n}\n.bubble .message-media-grid[style*=\"--media-count: 2\"] {\n  grid-template-columns: repeat(2, 1fr);\n}\n.bubble .message-media-grid[style*=\"--media-count: 3\"],\n.bubble .message-media-grid[style*=\"--media-count: 4\"] {\n  grid-template-columns: repeat(2, 1fr);\n}\n.bubble .message-media-grid[style*=\"--media-count: 5\"],\n.bubble .message-media-grid[style*=\"--media-count: 6\"],\n.bubble .message-media-grid[style*=\"--media-count: 7\"],\n.bubble .message-media-grid[style*=\"--media-count: 8\"],\n.bubble .message-media-grid[style*=\"--media-count: 9\"] {\n  grid-template-columns: repeat(3, 1fr);\n}\n.bubble .message-media-grid .image-container {\n  width: 100% !important;\n  max-height: none;\n  border-radius: 0;\n  aspect-ratio: 1 / 1;\n}\n.bubble .message-media-grid .image-container .full-image {\n  object-fit: cover;\n}\n.bubble .image-container {\n  position: relative;\n  display: grid;\n  overflow: hidden;\n  border-radius: 5px;\n  cursor: pointer;\n  max-height: 350px;\n  background: color-mix(in srgb, var(--dollars-bg-hover), transparent 8%);\n}\n.bubble .image-container .full-image {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  opacity: 0;\n  grid-area: 1/1;\n  transition: opacity 0.3s ease-out;\n  z-index: 2;\n}\n.bubble .image-container .full-image.is-loaded {\n  opacity: 1;\n}\n.bubble .image-container .full-image.load-failed {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  background-color: var(--dollars-bg-hover);\n  border-radius: 14px;\n}\n.bubble .image-container.image-placeholder {\n  cursor: default;\n}\n.bubble .image-container.image-placeholder .image-load-hint {\n  position: absolute;\n  right: 10px;\n  bottom: 10px;\n  z-index: 3;\n  background: rgba(0, 0, 0, 0.5);\n  color: #fff;\n  padding: 6px 12px;\n  border-radius: 16px;\n  font-size: 12px;\n  white-space: nowrap;\n  pointer-events: none;\n  backdrop-filter: blur(4px);\n  -webkit-backdrop-filter: blur(4px);\n  transition: opacity 0.2s ease;\n}\n.bubble .image-container.image-placeholder:hover .image-load-hint {\n  background: rgba(0, 0, 0, 0.7);\n}\n.bubble .image-container.image-masked .full-image {\n  filter: blur(24px) brightness(0.45);\n  transform: scale(1.08);\n}\n.bubble .image-container.image-masked {\n  cursor: default;\n}\n.bubble .image-container.image-masked .image-load-hint {\n  background: rgba(0, 0, 0, 0.68);\n}\n.bubble .chat-file-link {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  margin: 4px 0;\n  padding: 2px 0;\n  font-size: 13px;\n  font-weight: 600;\n  line-height: 1.5;\n  max-width: 100%;\n  color: var(--primary-color) !important;\n  text-decoration: none !important;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.bubble .chat-file-link::before {\n  content: \"附件\";\n  flex-shrink: 0;\n  padding: 1px 6px;\n  border-radius: 999px;\n  font-size: 11px;\n  font-weight: 700;\n  color: var(--primary-color);\n  background: color-mix(in srgb, var(--primary-color), transparent 88%);\n}\n.bubble .chat-file-link:hover {\n  text-decoration: underline !important;\n}\n.chat-quote {\n  padding: 6px 8px;\n  border-left: 3px solid var(--primary-color);\n  background: linear-gradient(#ffffffe6, #ffffffe6), var(--primary-color);\n  border-radius: 5px;\n  margin-bottom: 8px;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  cursor: pointer;\n  max-width: 100%;\n  width: 100%;\n  box-sizing: border-box;\n  transition: opacity 0.2s, transform 0.15s ease, background 0.2s;\n}\nhtml[data-theme=\"dark\"] .chat-quote {\n  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), var(--primary-color);\n}\n.chat-quote:hover {\n  opacity: 0.9;\n  transform: scale(1.01);\n}\n#dollars-toast {\n  position: absolute;\n  bottom: 80px;\n  left: 50%;\n  transform: translateX(-50%) translateY(12px);\n  background: var(--dollars-glass-bg);\n  color: var(--dollars-text);\n  font-size: 13px;\n  font-weight: 700;\n  line-height: 1.4;\n  padding: 8px 18px;\n  border-radius: 999px;\n  border: 1px solid var(--dollars-glass-border-color);\n  white-space: nowrap;\n  pointer-events: none;\n  z-index: 200;\n  opacity: 0;\n  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n}\n#dollars-toast.dollars-toast-visible {\n  opacity: 1;\n  transform: translateX(-50%) translateY(0);\n}\n.quote-avatar {\n  width: 14px;\n  height: 14px;\n  border-radius: 50%;\n  object-fit: cover;\n  flex-shrink: 0;\n  margin-right: 4px;\n}\n.quote-thumbnail {\n  width: 36px;\n  height: 36px;\n  border-radius: 4px;\n  object-fit: cover;\n  margin-bottom: 2px;\n  display: block;\n}\n.quote-nickname {\n  font-weight: 700;\n  color: var(--primary-color);\n  font-size: 12px;\n}\n.quote-text-wrapper {\n  min-width: 0;\n  flex: 1;\n}\n.quote-content {\n  font-size: 12px;\n  color: var(--dollars-text);\n  opacity: 0.8;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  overflow-wrap: break-word;\n}\n.chat-input-container {\n  position: absolute;\n  bottom: 12px;\n  left: 12px;\n  right: 12px;\n  width: auto;\n  z-index: 100;\n  transition: transform 0.2s ease;\n}\n.chat-input-container:hover {\n  transform: translateY(-2px);\n}\n.chat-input-area {\n  position: relative;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  border: none;\n  box-shadow:\n    var(--dollars-glass-shadow),\n    inset 0 0 0 1px var(--dollars-glass-border-color, rgba(255, 255, 255, 0.35));\n  border-radius: 24px;\n  padding: 6px 8px;\n  transition: box-shadow 0.2s ease;\n}\n.reply-preview {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 8px 4px 8px;\n  margin: 0 4px 4px 4px;\n  border-bottom: 1px solid var(--dollars-glass-border);\n  height: 0;\n  opacity: 0;\n  overflow: hidden;\n  transition: height 0.2s ease-out, opacity 0.2s ease-out;\n}\n.reply-preview.visible {\n  height: 42px;\n  opacity: 1;\n}\n.reply-preview .reply-bar {\n  width: 3px;\n  height: 70%;\n  background-color: var(--primary-color);\n  border-radius: 2px;\n}\n.reply-preview .reply-avatar {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n}\n.reply-preview .reply-info {\n  flex: 1;\n  min-width: 0;\n  font-size: 12px;\n  line-height: 1.4;\n}\n.reply-preview .reply-user {\n  font-weight: 700;\n  color: var(--primary-color);\n}\n.reply-preview .reaction-item .num {\n  color: var(--dollars-text-secondary);\n}\n@keyframes pop {\n  0% {\n    transform: scale(1);\n  }\n  50% {\n    transform: scale(1.4);\n  }\n  100% {\n    transform: scale(1);\n  }\n}\n.reaction-item.live_selected .emoji {\n  animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);\n}\n.reply-preview .reply-text {\n  color: var(--dollars-text-secondary);\n  display: block;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.reply-preview .reply-cancel-btn {\n  background: none;\n  border: none;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  font-size: 20px;\n  padding: 0;\n}\n.image-preview-container {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 8px;\n  margin: 0 4px;\n  border-bottom: 1px solid var(--dollars-glass-border);\n  height: 0;\n  opacity: 0;\n  overflow-x: auto;\n  overflow-y: hidden;\n  transition: height 0.2s ease-out, opacity 0.2s ease-out, padding 0.2s ease-out, margin 0.2s ease-out;\n  scrollbar-width: none;\n}\n.image-preview-container.visible {\n  height: 80px;\n  opacity: 1;\n  padding-bottom: 8px;\n  margin-bottom: 4px;\n  margin-top: 4px;\n}\n.image-preview-container::-webkit-scrollbar {\n  display: none;\n}\n.image-preview-item {\n  position: relative;\n  flex-shrink: 0;\n  width: 64px;\n  height: 64px;\n  border-radius: 8px;\n  overflow: hidden;\n  border: 1px solid var(--dollars-border);\n  background: var(--dollars-bg);\n  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n}\n.preview-image {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.2s;\n}\n.image-preview-item:hover .preview-image {\n  transform: scale(1.05);\n}\n.preview-remove-btn {\n  position: absolute;\n  top: 2px;\n  right: 2px;\n  width: 18px;\n  height: 18px;\n  background: rgba(0, 0, 0, 0.5);\n  border-radius: 50%;\n  color: #fff;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n  cursor: pointer;\n  border: none;\n  backdrop-filter: blur(2px);\n  transition: background 0.2s, transform 0.1s;\n  padding: 0;\n  line-height: 1;\n}\n.preview-remove-btn:hover {\n  background: rgba(244, 67, 54, 0.9);\n  transform: scale(1.1);\n}\n.video-preview-item {\n  position: relative;\n}\n.preview-video {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.2s;\n}\n.video-preview-item:hover .preview-video {\n  transform: scale(1.05);\n}\n.video-play-overlay {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  width: 32px;\n  height: 32px;\n  background: rgba(0, 0, 0, 0.6);\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  pointer-events: none;\n  backdrop-filter: blur(2px);\n}\n.video-play-overlay svg {\n  margin-left: 2px;\n}\n.input-wrapper {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  position: relative;\n}\n.dollars-input-wrapper {\n  flex-grow: 1;\n  display: flex;\n  align-items: stretch;\n  border-radius: 18px;\n  min-width: 0;\n  background-color: rgba(255, 255, 255, 0.25);\n  border: none;\n  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);\n  transition: all 0.2s ease;\n  backdrop-filter: blur(5px);\n  padding-left: 0;\n  position: relative;\n}\nhtml[data-theme=\"dark\"] .dollars-input-wrapper {\n  background-color: rgba(0, 0, 0, 0.3);\n}\n.dollars-input-wrapper:focus-within {\n  background-color: rgba(255, 255, 255, 0.5);\n  border-color: var(--primary-color);\n  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px color-mix(in srgb, var(--primary-color), transparent 40%) !important;\n}\nhtml[data-theme=\"dark\"] .dollars-input-wrapper:focus-within {\n  background-color: rgba(0, 0, 0, 0.5);\n}\n.chat-textarea {\n  flex: 1;\n  border: none;\n  outline: none;\n  background: transparent;\n  border-radius: 18px;\n  padding: 8px 14px;\n  resize: none;\n  font-size: 14px;\n  line-height: 1.4;\n  height: 38px;\n  max-height: 150px;\n  color: var(--dollars-text);\n  outline: none;\n  font-family: inherit;\n  box-sizing: border-box;\n  width: 100%;\n  display: block;\n  white-space: pre-wrap;\n  word-break: break-word;\n  overflow-wrap: anywhere;\n  overflow-y: hidden;\n}\nhtml[data-theme=\"dark\"] .chat-textarea {\n  background: none !important;\n}\n.chat-textarea:focus {\n  outline: none;\n  box-shadow: none !important;\n}\n.chat-rich-editor {\n  min-height: 38px;\n  caret-color: var(--dollars-text);\n  line-height: 1.5;\n}\n.chat-rich-editor.is-overflowing {\n  overflow-y: auto;\n}\n.chat-rich-editor:empty::before {\n  content: attr(data-placeholder);\n  color: var(--dollars-text-placeholder);\n  pointer-events: none;\n}\n.chat-textarea-proxy {\n  position: absolute;\n  inset: 0;\n  opacity: 0;\n  pointer-events: none;\n  resize: none;\n}\n.chat-input-token {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  vertical-align: middle;\n  max-width: 100%;\n  user-select: all;\n  margin-block: 2px;\n}\n.chat-input-token img,\n.chat-input-token .bmoji-image {\n  display: block;\n  pointer-events: none;\n}\n.chat-input-token-smiley .chat-input-inline-smiley:not(.chat-input-inline-large),\n.chat-input-token-bmo .bmoji-image {\n  image-rendering: pixelated;\n}\n.chat-input-token-smiley .chat-input-inline-large,\n.chat-input-token-image .chat-input-inline-sticker {\n  image-rendering: auto;\n}\n.chat-input-inline-smiley {\n  width: 21px;\n  height: 21px;\n}\n.chat-input-inline-large {\n  width: 60px;\n  height: 60px;\n}\n.chat-input-inline-sticker {\n  width: auto;\n  height: 60px;\n  max-width: min(180px, 100%);\n  max-height: 60px;\n  border-radius: 10px;\n}\n.input-actions {\n  display: flex;\n  gap: 4px;\n}\n.action-btn {\n  flex-shrink: 0;\n  width: 38px;\n  height: 38px;\n  border: none;\n  border-radius: 50%;\n  background-color: transparent;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);\n  background-repeat: no-repeat;\n  background-position: center;\n}\n.action-btn:hover {\n  background-color: var(--dollars-glass-highlight);\n  transform: scale(1.1);\n}\n.action-btn:active {\n  transform: scale(0.95);\n}\n.action-btn svg {\n  width: 20px;\n  height: 20px;\n}\n.send-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background: var(--primary-color);\n  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z\" /><path d=\"M6.5 12h14.5\" /></svg>');\n  background-size: 20px;\n  background-repeat: no-repeat;\n  background-position: center;\n  border-radius: 50%;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: white;\n  transition: background-color .2s, filter .2s, box-shadow 0.2s, transform 0.15s ease;\n  box-shadow: 0 0 10px color-mix(in srgb, var(--primary-color), transparent 20%);\n}\n.send-btn:hover {\n  filter: brightness(1.1);\n  transform: scale(1.05);\n}\n.send-btn:disabled {\n  background-color: #ccc;\n  cursor: not-allowed;\n  filter: none;\n  box-shadow: none;\n}\n.send-btn svg {\n  width: 18px;\n  height: 18px;\n}\n#dollars-smiles-floating {\n  --item-size: 32px;\n  --icon-size: 21px;\n  --item-hover-bg: rgba(255, 255, 255, 0.3);\n  --item-hover-scale: 1.1;\n  --transition-speed: 0.2s;\n  --panel-height: 320px;\n  --border-color: var(--dollars-border);\n  position: absolute;\n  bottom: calc(100% + 5px);\n  z-index: var(--dollars-z-index-smiley);\n  height: var(--panel-height);\n  width: 100%;\n  left: 0;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  box-sizing: border-box;\n  overflow: hidden;\n  opacity: 0;\n  transform: translateY(10px) scale(0.95);\n  transition: opacity 0.2s, transform 0.2s;\n  pointer-events: none;\n  transform-origin: bottom left;\n}\nhtml[data-theme=\"dark\"] #dollars-smiles-floating {\n  --item-hover-bg: rgba(255, 255, 255, 0.1);\n}\n@keyframes dollars-panel-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(15px) scale(0.95);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-smiles-floating.open {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  animation: dollars-panel-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n#dollars-smiles-tabs {\n  display: flex;\n  flex-shrink: 0;\n  padding: 4px;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.2);\n  background-color: transparent;\n  overflow-x: auto;\n  overflow-y: hidden;\n  scrollbar-width: none;\n}\n#dollars-smiles-tabs::-webkit-scrollbar {\n  display: none;\n}\n.smiley-tab-btn {\n  padding: 4px 12px;\n  border: 1px solid transparent;\n  border-radius: 15px;\n  background: none;\n  cursor: pointer;\n  color: var(--primary-color);\n  font-size: 13px;\n  flex-shrink: 0;\n  transition: background-color var(--transition-speed), color var(--transition-speed);\n  image-rendering: pixelated;\n}\n.smiley-tab-btn:hover {\n  background-color: var(--item-hover-bg);\n}\n.smiley-tab-btn.active {\n  background-color: transparent;\n  color: var(--primary-color);\n  border-color: var(--dollars-border);\n  font-weight: 700;\n}\n#dollars-smiles-content {\n  padding: 8px;\n  overflow-y: auto;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  justify-content: flex-start;\n  overscroll-behavior: contain;\n}\n#dollars-smiles-content.grouped-content {\n  display: block;\n  padding: 10px;\n}\n.smiley-group-section + .smiley-group-section {\n  margin-top: 12px;\n  padding-top: 10px;\n  border-top: 1px solid rgba(127, 127, 127, 0.18);\n}\n.smiley-group-title {\n  margin: 0 0 8px 2px;\n  color: var(--dollars-text-secondary);\n  font-size: 12px;\n  font-weight: 700;\n  line-height: 1.3;\n}\n.smiley-group-grid {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n}\n.smiley-item {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  width: var(--item-size);\n  height: var(--item-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n}\n.smiley-item a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: var(--icon-size) var(--icon-size);\n  font-size: 0;\n  transition: background-color var(--transition-speed), transform calc(var(--transition-speed) / 2);\n  image-rendering: pixelated;\n}\n#dollars-smiles-floating .bmo,\n#dollars-reaction-picker-floating .bmo {\n  vertical-align: middle;\n}\n.smiley-item a:hover {\n  background-color: var(--item-hover-bg);\n  transform: scale(var(--item-hover-scale));\n}\n.smiley-item.favorite-item {\n  width: 64px;\n  height: 64px;\n  border-radius: 8px;\n}\n.smiley-item.favorite-item a {\n  background-size: contain;\n  background-color: rgba(0, 0, 0, 0.03);\n}\nhtml[data-theme=\"dark\"] .smiley-item.favorite-item a {\n  background-color: rgba(255, 255, 255, 0.05);\n}\n.smiley-item.favorite-item .remove-favorite-btn {\n  position: absolute;\n  top: -4px;\n  right: -4px;\n  width: 16px;\n  height: 16px;\n  background: rgba(0, 0, 0, 0.5);\n  color: white;\n  border-radius: 50%;\n  border: none;\n  font-size: 12px;\n  line-height: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: pointer;\n  opacity: 0;\n  transition: opacity 0.2s;\n}\n.smiley-item.favorite-item:hover .remove-favorite-btn {\n  opacity: 1;\n}\n#dollars-smiles-floating.large-smiley-mode {\n  --item-size: 56px;\n  --icon-size: 48px;\n}\n#dollars-smiles-floating.large-smiley-mode .smiley-item a {\n  image-rendering: auto;\n}\n#dollars-context-menu {\n  position: fixed;\n  z-index: var(--dollars-z-index-overlay);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  min-width: unset;\n  opacity: 0;\n  transform: scale(0.95);\n  pointer-events: none;\n  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease-out;\n}\nhtml[data-theme=\"dark\"] #dollars-context-menu {\n  background: transparent;\n  box-shadow: none;\n}\n#dollars-context-menu.visible {\n  opacity: 1;\n  transform: scale(1);\n  pointer-events: auto;\n}\n#dollars-context-menu.has-items-wrapper {\n  padding: 0;\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  align-items: flex-start;\n}\n.context-menu-reactions {\n  display: flex;\n  align-items: center;\n  padding: 6px;\n  gap: 4px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 40px;\n}\n.context-menu-reactions .reaction-item {\n  width: 30px;\n  height: 30px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 50%;\n  cursor: pointer;\n  transition: transform 0.1s ease, background-color 0.15s ease;\n  -webkit-touch-callout: none;\n  user-select: none;\n}\n.context-menu-reactions .reaction-item:hover {\n  background-color: var(--dollars-bg-hover);\n  transform: scale(1.15);\n}\n.context-menu-reactions .reaction-item:active {\n  transform: scale(0.95);\n}\n.context-menu-reactions .reaction-item img {\n  width: 20px;\n  height: 20px;\n  display: block;\n  image-rendering: pixelated;\n}\n.context-menu-reactions .reaction-item .bmoji-image,\n.reaction-item .bmoji-image {\n  width: 18px !important;\n  height: 18px !important;\n}\n.context-menu-reactions-more {\n  width: 30px;\n  height: 30px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: none;\n  border-radius: 50%;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  transition: background-color 0.15s ease, transform 0.1s ease;\n  flex-shrink: 0;\n}\n.context-menu-reactions-more:hover {\n  background-color: var(--dollars-bg-hover);\n  transform: scale(1.1);\n}\n.context-menu-reactions-more:active {\n  transform: scale(0.95);\n}\n.context-menu-reactions-more svg {\n  width: 20px;\n  height: 20px;\n  transition: transform 0.3s ease;\n}\n.context-menu-reactions-more.expanded svg {\n  transform: rotate(180deg);\n}\n.context-menu-items {\n  padding: 5px 0;\n  min-width: 160px;\n  max-width: 220px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  overflow: hidden;\n}\n.context-menu-items button {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  padding: 8px 12px;\n  border: none;\n  background: none;\n  text-align: left;\n  cursor: pointer;\n  color: var(--dollars-text);\n  font-size: 14px;\n  line-height: 20px;\n  transition: background-color 0.1s ease;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.context-menu-items button span:not(.context-icon) {\n  flex: 1;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.context-icon {\n  width: 20px;\n  height: 20px;\n  margin-right: 10px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  color: var(--dollars-text-secondary);\n}\nhtml[data-theme=\"dark\"] .context-icon {\n  color: #aaa;\n}\n.context-icon svg {\n  width: 20px;\n  height: 20px;\n}\n.context-menu-items button.danger .context-icon {\n  color: #f5222d;\n}\n.context-menu-items button:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.context-menu-items button.danger {\n  color: #f5222d;\n}\n.context-menu-items button.image-action {\n  display: none;\n}\n#dollars-context-menu.image-mode .context-menu-items button.image-action {\n  display: flex;\n}\n#dollars-reaction-picker-floating {\n  --item-size: 32px;\n  --icon-size: 21px;\n  --item-hover-bg: rgba(255, 255, 255, 0.3);\n  --panel-height: 260px;\n  position: fixed;\n  z-index: calc(var(--dollars-z-index-overlay) + 1);\n  height: var(--panel-height);\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 18px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  overflow: hidden;\n  opacity: 0;\n  transform: translateY(-5px) scale(0.95);\n  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n}\nhtml[data-theme=\"dark\"] #dollars-reaction-picker-floating {\n  --item-hover-bg: rgba(255, 255, 255, 0.1);\n}\n@keyframes dollars-picker-slide-down {\n  0% {\n    opacity: 0;\n    transform: translateY(-15px) scale(0.95);\n  }\n  60% {\n    transform: translateY(3px) scale(1.01);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-reaction-picker-floating.open {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  animation: dollars-picker-slide-down 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n.reaction-picker-tabs {\n  display: flex;\n  flex-shrink: 0;\n  padding: 4px;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.2);\n  background-color: transparent;\n  gap: 2px;\n}\n.reaction-picker-tab-btn {\n  padding: 4px 10px;\n  border: 1px solid transparent;\n  border-radius: 12px;\n  background: none;\n  cursor: pointer;\n  color: var(--dollars-text-secondary);\n  font-size: 13px;\n  transition: background-color 0.15s, color 0.15s;\n  image-rendering: pixelated;\n}\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn {\n  color: #aaa;\n}\n.reaction-picker-tab-btn:hover {\n  background-color: var(--item-hover-bg);\n}\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn:hover {\n  background-color: #444;\n}\n.reaction-picker-tab-btn.active {\n  background-color: var(--dollars-bg);\n  color: var(--dollars-text);\n  border-color: var(--dollars-border);\n  font-weight: 700;\n}\nhtml[data-theme=\"dark\"] .reaction-picker-tab-btn.active {\n  background-color: #3a3a3a;\n  color: #eee;\n  border-color: #555;\n}\n.reaction-picker-content {\n  padding: 8px;\n  overflow-y: auto;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  justify-content: flex-start;\n  overscroll-behavior: contain;\n}\n.reaction-picker-content .smiley-item {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  width: var(--item-size);\n  height: var(--item-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: relative;\n}\n.reaction-picker-content .smiley-item a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  border-radius: 6px;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: var(--icon-size) var(--icon-size);\n  font-size: 0;\n  transition: background-color 0.15s, transform 0.1s;\n  image-rendering: pixelated;\n}\n.reaction-picker-content .smiley-item a:hover {\n  background-color: var(--item-hover-bg);\n  transform: scale(1.1);\n}\n.user-mention {\n  color: var(--primary-color);\n  font-weight: 500;\n}\n.user-mention:hover {\n  text-decoration: underline;\n}\n.chat-tag {\n  color: var(--primary-color);\n  cursor: pointer;\n  margin-right: 2px;\n  display: inline-block;\n}\n.chat-tag:hover {\n  opacity: 0.8;\n}\n#dollars-floating-date {\n  position: absolute;\n  top: 55px;\n  left: 50%;\n  transform: translateX(-50%);\n  z-index: 10;\n  pointer-events: none;\n  opacity: 0;\n  transition: opacity 0.2s ease;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  color: var(--primary-color);\n  padding: 4px 12px;\n  border-radius: 20px;\n  font-size: 12px;\n  font-weight: 700;\n  text-shadow: none;\n  white-space: nowrap;\n}\n#dollars-floating-date.visible {\n  opacity: 1;\n}\n#dollars-typing-indicator {\n  position: absolute;\n  top: -30px;\n  left: 10px;\n  height: auto;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  padding: 4px 10px;\n  border-radius: 12px;\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  font-style: italic;\n  opacity: 0;\n  transition: opacity 0.2s, transform 0.2s;\n  line-height: 1.5;\n  pointer-events: none;\n  transform: translateY(5px);\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n#dollars-typing-indicator.visible {\n  opacity: 1;\n  transform: translateY(0);\n}\nhtml[data-theme=dark] #dollars-typing-indicator {\n  color: #fff;\n}\nspan.text_mask {\n  background-color: #555;\n}\n@media (max-width: 768px) {\n  #dollars-chat-window {\n    width: auto;\n    max-width: calc(100vw - 20px);\n    height: calc(100dvh - 60px);\n    max-height: calc(100dvh - 60px);\n    left: 10px;\n    right: 10px;\n    bottom: 30px;\n    top: auto;\n  }\n  .chat-message {\n    content-visibility: visible;\n    contain-intrinsic-size: auto;\n  }\n  .bubble .message-media-block {\n    margin: 8px 0 5px;\n  }\n}\n@media (prefers-reduced-motion: reduce) {\n  #dollars-chat-window,\n  #dollars-chat-window .chat-header .close-btn,\n  #dollars-chat-window .chat-message,\n  #dollars-chat-window .send-btn {\n    transition: none !important;\n  }\n}\n#dollars-profile-card {\n  position: fixed;\n  z-index: var(--dollars-z-index-overlay);\n  width: 280px;\n  padding: 0;\n  border-radius: 20px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  color: var(--dollars-text);\n  opacity: 0;\n  transform: scale(0.95) translateY(5px);\n  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid var(--dollars-glass-border-color);\n}\n@keyframes dollars-profile-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(15px) scale(0.95);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-profile-card.visible {\n  opacity: 1;\n  transform: scale(1) translateY(0);\n  pointer-events: auto;\n  transition: none;\n  animation: dollars-profile-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);\n}\n.dollars-profile-banner {\n  height: 60px;\n  width: 100%;\n  background: linear-gradient(160deg,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);\n  position: relative;\n}\n.dollars-profile-banner::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-image: var(--dollars-bg-pattern-url);\n  background-size: 300px;\n  opacity: 0.6;\n  mix-blend-mode: overlay;\n}\nhtml[data-theme=dark] .dollars-profile-banner::before {\n  opacity: 0.2;\n}\n.dollars-profile-body {\n  padding: 0 20px 15px 20px;\n  position: relative;\n  display: flex;\n  flex-direction: column;\n}\n.dollars-profile-top-row {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-end;\n  margin-top: -30px;\n  margin-bottom: 12px;\n  position: relative;\n  z-index: 2;\n}\n.dollars-profile-identity {\n  display: flex;\n  align-items: flex-end;\n  gap: 12px;\n  flex-grow: 1;\n  min-width: 0;\n  margin-right: 8px;\n}\n.dollars-profile-avatar {\n  width: 64px;\n  height: 64px;\n  border-radius: 50%;\n  border: 3px solid var(--dollars-bg);\n  background-color: var(--dollars-bg);\n  object-fit: cover;\n  box-shadow: 0 4px 8px var(--dollars-shadow);\n  flex-shrink: 0;\n  transition: border-color 0.2s;\n}\n.dollars-profile-avatar.active {\n  border-color: var(--dollars-color-online);\n  box-shadow: 0 0 0 2px var(--dollars-bg), 0 0 0 4px var(--dollars-color-online);\n}\n.dollars-profile-names {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n}\n.dollars-profile-nickname {\n  font-size: 16px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  line-height: 1.2;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.dollars-profile-username {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  font-family: monospace;\n  opacity: 0.7;\n}\n.dollars-profile-actions {\n  display: flex;\n  gap: 6px;\n  flex-shrink: 0;\n}\n.dollars-profile-btn {\n  width: 36px;\n  height: 36px;\n  border-radius: 50%;\n  background: transparent;\n  border: 1px solid var(--dollars-border);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s;\n  cursor: pointer;\n  position: relative;\n}\n.dollars-profile-btn:hover {\n  background: var(--primary-color);\n  color: var(--dollars-bg);\n  border-color: var(--primary-color);\n  transform: translateY(-2px);\n  box-shadow: 0 2px 8px var(--dollars-shadow);\n}\n.dollars-profile-btn svg {\n  width: 15px;\n  height: 15px;\n  stroke: currentColor;\n}\n.dollars-profile-sign {\n  font-size: 12px;\n  line-height: 1.6;\n  color: var(--dollars-text-secondary);\n  margin-bottom: 12px;\n  padding: 6px 10px;\n  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border-radius: 0 6px 6px 0;\n  word-wrap: break-word;\n}\n.dollars-profile-footer {\n  font-size: 10px;\n  color: var(--dollars-text-placeholder);\n  padding-top: 8px;\n  border-top: 1px solid var(--dollars-border);\n  margin-top: auto;\n  display: flex;\n  align-items: center;\n  gap: 4px;\n}\n.dollars-profile-footer::before {\n  content: \"\";\n  display: block;\n  width: 10px;\n  height: 10px;\n  border-radius: 50%;\n  background-color: var(--dollars-border);\n}\n.dollars-profile-footer.active::before {\n  background-color: var(--dollars-color-online);\n}\n#dollars-emoji-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background-color: var(--dollars-icon-color);\n  cursor: pointer;\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z\" /><path d=\"M16 3l-4 4l-4 -4\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z\" /><path d=\"M16 3l-4 4l-4 -4\" /></svg>');\n  -webkit-mask-size: 23px;\n  mask-size: 23px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  border-radius: 50%;\n}\n#dollars-emoji-btn svg {\n  display: none !important;\n}\n#dollars-attach-btn {\n  width: 38px;\n  height: 38px;\n  border: none;\n  background-color: var(--dollars-icon-color);\n  cursor: pointer;\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5\" /></svg>');\n  -webkit-mask-size: 23px;\n  mask-size: 23px;\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n  border-radius: 50%;\n}\n#dollars-attach-btn svg {\n  display: none !important;\n}\n.send-btn svg {\n  display: none !important;\n}\n.chat-header .header-buttons,\n.header-buttons {\n  margin-left: auto;\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n.header-btn {\n  cursor: pointer;\n  width: 24px;\n  height: 24px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border-radius: 4px;\n  transition: background-color .2s ease, transform 0.15s ease;\n  border: none;\n  background: transparent;\n}\n#dollars-back-btn,\n.dollars-back-btn {\n  margin-right: 0;\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"15 18 9 12 15 6\"/></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n}\n#dollars-back-btn svg,\n.dollars-back-btn svg {\n  display: none !important;\n}\n#dollars-resize-handle {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 20px;\n  height: 20px;\n  cursor: nw-resize;\n  z-index: 10003;\n  touch-action: none;\n  background-color: var(--dollars-icon-color-secondary);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M10 2L2 10\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/><path d=\"M14 6L6 14\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M10 2L2 10\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/><path d=\"M14 6L6 14\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: 5px 5px;\n  mask-position: 5px 5px;\n  -webkit-mask-size: 10px;\n  mask-size: 10px;\n  opacity: .6;\n  transition: opacity .2s ease;\n}\n#dollars-resize-handle:hover {\n  opacity: 1;\n}\n#dollars-resize-handle::after {\n  display: none !important;\n}\n#dollars-settings-btn-header {\n  background-color: var(--dollars-icon-color);\n  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /></svg>');\n  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z\" /><circle cx=\"12\" cy=\"12\" r=\"3\" /></svg>');\n  -webkit-mask-repeat: no-repeat;\n  mask-repeat: no-repeat;\n  -webkit-mask-position: center;\n  mask-position: center;\n}\n#dollars-text-formatter {\n  position: fixed;\n  z-index: var(--dollars-z-index-context);\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  border-radius: 50px;\n  display: flex;\n  flex-direction: column;\n  padding: 4px;\n  opacity: 0;\n  transform: translateY(10px) scale(0.95);\n  pointer-events: none;\n  transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),\n    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n#dollars-text-formatter.visible {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n}\n.formatter-row {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n.formatter-btn {\n  width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  background: transparent;\n  border-radius: 50px;\n  cursor: pointer;\n  color: var(--dollars-text);\n  transition: background-color 0.15s, transform 0.1s, color 0.15s;\n}\n.formatter-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.formatter-btn.active {\n  color: var(--primary-color);\n}\n.formatter-btn svg {\n  width: 18px;\n  height: 18px;\n}\n.formatter-divider {\n  width: 1px;\n  height: 18px;\n  background-color: var(--dollars-border);\n  margin: 0 4px;\n}\n.formatter-link-input-wrapper {\n  display: none;\n  align-items: center;\n  gap: 4px;\n  padding: 0 2px;\n}\n#dollars-text-formatter.link-mode .main-buttons {\n  display: none;\n}\n#dollars-text-formatter.link-mode .formatter-link-input-wrapper {\n  display: flex;\n}\n.formatter-link-input {\n  background: transparent;\n  border: none;\n  color: var(--dollars-text);\n  font-size: 13px;\n  width: 150px;\n  outline: none;\n  padding: 4px;\n}\n.formatter-link-input::placeholder {\n  color: var(--dollars-text-placeholder);\n}\n#dollars-nav-group {\n  position: absolute;\n  bottom: 90px;\n  right: 20px;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  z-index: 30;\n  pointer-events: none;\n  transition: transform 0.2s, opacity 0.2s;\n}\n#dollars-nav-group.visible {\n  pointer-events: auto;\n}\n.nav-btn {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  border: 1px solid var(--dollars-glass-border-color);\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  color: var(--primary-color);\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  opacity: 0;\n  transform: scale(0.8);\n  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);\n  pointer-events: none;\n}\n.nav-btn.visible {\n  opacity: 1;\n  transform: scale(1);\n  pointer-events: auto;\n}\n.nav-btn:hover {\n  background: var(--dollars-glass-bg);\n  transform: scale(1.1);\n  box-shadow: var(--dollars-glass-shadow), 0 0 0 2px color-mix(in srgb, var(--primary-color), transparent 70%);\n}\n.nav-btn:active {\n  transform: scale(0.95);\n}\n.nav-btn svg {\n  width: 24px;\n  height: 24px;\n  stroke-width: 2.5;\n}\n#dollars-scroll-bottom-btn {\n  position: absolute;\n  bottom: 80px;\n  right: 20px;\n  z-index: 95;\n}\n#dollars-scroll-mention-btn {\n  position: absolute;\n  right: 20px;\n  z-index: 95;\n}\n#dollars-scroll-mention-btn svg {\n  transform: rotate(180deg);\n}\n.nav-btn-badge {\n  position: absolute;\n  top: -5px;\n  right: -5px;\n  min-width: 18px;\n  height: 18px;\n  border-radius: 9px;\n  background-color: var(--primary-color);\n  color: #fff;\n  font-size: 11px;\n  font-weight: 700;\n  line-height: 18px;\n  text-align: center;\n  padding: 0 5px;\n  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);\n  z-index: 31;\n}\n#dollars-mention-list {\n  position: absolute;\n  bottom: calc(100% + 5px);\n  left: 0;\n  width: 100%;\n  max-height: 220px;\n  overflow-y: auto;\n  border-radius: 18px;\n  display: none;\n  flex-direction: column;\n  z-index: var(--dollars-z-index-smiley);\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  box-shadow: var(--dollars-glass-shadow);\n  border: 1px solid var(--dollars-glass-border-color);\n  gap: 4px;\n  transition: bottom 0.2s ease;\n}\n#dollars-mention-list.visible {\n  display: flex;\n  animation: dollars-slide-up 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n@keyframes dollars-slide-up {\n  from {\n    opacity: 0;\n    transform: translateY(10px) scale(0.98);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n@keyframes dollars-item-slide-in {\n  0% {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.mention-item {\n  display: flex;\n  align-items: center;\n  padding: 4px 8px;\n  border-radius: 15px;\n  cursor: pointer;\n  transition: background-color 0.2s;\n  gap: 8px;\n  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n.mention-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n.mention-item:nth-child(2) {\n  animation-delay: 30ms;\n}\n.mention-item:nth-child(3) {\n  animation-delay: 60ms;\n}\n.mention-item:nth-child(4) {\n  animation-delay: 90ms;\n}\n.mention-item:nth-child(5) {\n  animation-delay: 120ms;\n}\n.mention-item:nth-child(6) {\n  animation-delay: 150ms;\n}\n.mention-item:hover,\n.mention-item.active {\n  background-color: rgba(255, 255, 255, 0.3);\n}\nhtml[data-theme=\"dark\"] .mention-item:hover,\nhtml[data-theme=\"dark\"] .mention-item.active {\n  background-color: rgba(255, 255, 255, 0.1);\n}\n.mention-item img {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  object-fit: cover;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n}\n.mention-item-info {\n  display: flex;\n  align-items: baseline;\n  gap: 6px;\n  overflow: hidden;\n  min-width: 0;\n  line-height: 1.2;\n}\n.mention-item-nick {\n  font-size: 12px;\n  font-weight: 700;\n  color: var(--dollars-text);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.mention-item-user {\n  font-size: 10px;\n  color: var(--dollars-text-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  opacity: 0.8;\n}\n.dollars-preview-card {\n  background-color: var(--dollars-bg);\n  border: 1px solid var(--dollars-border);\n  border-radius: 8px;\n  padding: 10px;\n  display: flex;\n  gap: 12px;\n  text-decoration: none !important;\n  transition: all 0.2s;\n  box-sizing: border-box;\n  max-width: 100% !important;\n  height: 100px;\n  width: 300px;\n  overflow: hidden;\n  position: relative;\n  min-width: 0;\n}\n.dollars-preview-card .cover {\n  width: 80px;\n  height: 80px;\n  flex-shrink: 0;\n  border-radius: 6px;\n  background-color: var(--dollars-bg);\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.dollars-preview-card .cover img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  border-radius: 0 !important;\n}\n.dollars-preview-card[data-entity-type=character] .cover img,\n.dollars-preview-card[data-entity-type=person] .cover img {\n  object-fit: contain !important;\n}\n.dollars-preview-card[data-entity-type=generic] .cover {\n  background-color: var(--dollars-bg);\n  border-radius: 5px;\n}\n.dollars-preview-card[data-entity-type=generic] .cover img {\n  object-fit: cover;\n}\n.dollars-preview-card .inner {\n  flex: 1;\n  min-width: 0;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  overflow: hidden;\n}\n.dollars-preview-card .title {\n  font-size: 14px;\n  font-weight: bold;\n  color: var(--dollars-text) !important;\n  margin: 0 0 4px 0;\n  line-height: 1.4;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.dollars-preview-card .info {\n  font-size: 12px;\n  color: var(--dollars-text-secondary);\n  margin: 0;\n  line-height: 1.5;\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n.dollars-preview-card[data-entity-type=generic] .info {\n  margin-top: 4px;\n  margin-bottom: 0;\n}\n.dollars-preview-card .rateInfo {\n  margin-top: 6px;\n  font-size: 11px;\n  color: var(--dollars-text-placeholder);\n  display: flex;\n  align-items: center;\n  gap: 5px;\n}\n@media (prefers-reduced-motion: reduce) {\n  .uprofile-action-btn,\n  .uprofile-action-btn:active {\n    transition: none;\n    transform: none;\n  }\n  .uprofile-info-row {\n    transition: none;\n  }\n  .uprofile-media-item img {\n    transition: none;\n  }\n  #dollars-user-profile-panel.narrow,\n  #dollars-user-profile-panel.narrow.visible,\n  #dollars-user-profile-panel.narrow.closing {\n    transition: none;\n  }\n  #dollars-user-profile-panel.wide,\n  #dollars-user-profile-panel.wide.visible,\n  #dollars-user-profile-panel.wide.closing {\n    transition: none;\n  }\n}\n#dollars-user-profile-panel {\n  position: absolute;\n  z-index: 100;\n  display: flex;\n  flex-direction: column;\n  background: var(--dollars-bg);\n  overflow: hidden;\n}\n#dollars-user-profile-panel.narrow {\n  inset: 0;\n  transform: translateX(100%);\n  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n#dollars-user-profile-panel.narrow.visible {\n  transform: translateX(0);\n}\n#dollars-user-profile-panel.narrow.closing {\n  transform: translateX(100%);\n}\n#dollars-user-profile-panel.wide {\n  top: calc(40px + 16px);\n  right: 16px;\n  bottom: 16px;\n  left: 16px;\n  z-index: 101;\n  border-radius: 16px;\n  border: 1px solid var(--dollars-border);\n  box-shadow: 0 8px 40px -8px var(--dollars-shadow);\n  opacity: 0;\n  transform: translateY(4px);\n  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n  pointer-events: none;\n}\n#dollars-user-profile-panel.wide.visible {\n  opacity: 1;\n  transform: translateY(0);\n  pointer-events: auto;\n}\n#dollars-user-profile-panel.wide.closing {\n  opacity: 0;\n  transform: translateY(4px);\n  pointer-events: none;\n}\n.uprofile-card-header {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  padding: 8px 12px 8px 8px;\n  flex-shrink: 0;\n  border-bottom: 1px solid var(--dollars-border);\n}\n.uprofile-card-title {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n.uprofile-banner {\n  height: 120px;\n  flex-shrink: 0;\n  background: linear-gradient(160deg,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,\n    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);\n  position: relative;\n  display: flex;\n  align-items: flex-end;\n  justify-content: center;\n}\n.uprofile-banner::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  background-image: var(--dollars-bg-pattern-url);\n  background-size: 300px;\n  opacity: 0.6;\n  mix-blend-mode: overlay;\n}\nhtml[data-theme=dark] .uprofile-banner::before {\n  opacity: 0.2;\n}\n.uprofile-avatar {\n  width: 88px;\n  height: 88px;\n  border-radius: 50%;\n  border: 3px solid var(--dollars-bg);\n  background-color: var(--dollars-bg);\n  object-fit: cover;\n  box-shadow: 0 4px 16px var(--dollars-shadow);\n  position: relative;\n  z-index: 1;\n  transform: translateY(44px);\n  flex-shrink: 0;\n}\n.uprofile-content {\n  flex: 1;\n  overflow-y: auto;\n  padding: 52px 20px 24px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.uprofile-body {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.uprofile-name-section {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 2px;\n}\n.uprofile-nickname {\n  font-size: 20px;\n  font-weight: 800;\n  color: var(--dollars-text);\n  line-height: 1.3;\n  word-break: break-word;\n  text-align: center;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n}\n.uprofile-status-dot {\n  display: inline-block;\n  width: 9px;\n  height: 9px;\n  border-radius: 50%;\n  background-color: var(--dollars-color-online);\n  flex-shrink: 0;\n  box-shadow: 0 0 0 2px var(--dollars-bg);\n  position: relative;\n}\n.uprofile-status-dot.active::after {\n  content: none;\n}\n.uprofile-username {\n  font-size: 13px;\n  color: var(--dollars-text-secondary);\n  font-family: monospace;\n  text-align: center;\n}\n.uprofile-last-active {\n  font-size: 12px;\n  color: var(--dollars-text-placeholder);\n  margin-top: 2px;\n}\n.uprofile-stats-row {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0;\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border: 1px solid color-mix(in srgb, var(--primary-color), transparent 80%);\n  border-radius: 12px;\n  padding: 10px 8px;\n}\n.uprofile-stat {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 2px;\n}\n.uprofile-stat-num {\n  font-size: 17px;\n  font-weight: 700;\n  color: var(--primary-color);\n  line-height: 1;\n  letter-spacing: -0.3px;\n  display: inline-block;\n}\n.uprofile-stat-label {\n  font-size: 11px;\n  color: var(--dollars-text-placeholder);\n  line-height: 1;\n}\n.uprofile-stat-divider {\n  width: 1px;\n  height: 28px;\n  background: color-mix(in srgb, var(--primary-color), transparent 70%);\n  flex-shrink: 0;\n}\n.uprofile-actions {\n  display: flex;\n  gap: 8px;\n}\n.uprofile-action-btn {\n  flex: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 10px 12px;\n  border-radius: 10px;\n  background: var(--dollars-glass-bg);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text);\n  font-size: 13px;\n  cursor: pointer;\n  transition: background-color 0.14s ease-out, color 0.14s ease-out, border-color 0.14s ease-out;\n  white-space: nowrap;\n}\n.uprofile-action-btn:hover {\n  background: var(--primary-color);\n  color: var(--dollars-bg);\n  border-color: var(--primary-color);\n}\n.uprofile-action-btn:focus-visible {\n  outline: 2px solid var(--primary-color);\n  outline-offset: 2px;\n}\n.uprofile-action-btn span {\n  display: flex;\n  align-items: center;\n  flex-shrink: 0;\n}\n.uprofile-action-btn svg {\n  width: 16px;\n  height: 16px;\n  stroke: currentColor;\n}\n.uprofile-info-section {\n  display: flex;\n  flex-direction: column;\n  border-top: 1px solid var(--dollars-border);\n  padding-top: 12px;\n}\n.uprofile-info-row {\n  display: flex;\n  align-items: flex-start;\n  gap: 12px;\n  padding: 10px 8px;\n  border-radius: 8px;\n  transition: background-color 0.15s;\n}\n.uprofile-info-row:hover {\n  background: var(--dollars-bg-hover);\n}\n.uprofile-info-row + .uprofile-info-row {\n  border-top: 1px solid color-mix(in srgb, var(--dollars-border), transparent 50%);\n}\n.uprofile-info-content {\n  flex: 1;\n  min-width: 0;\n}\n.uprofile-info-label {\n  font-size: 11px;\n  color: var(--primary-color);\n  opacity: 0.8;\n  font-weight: 500;\n  margin-bottom: 2px;\n}\n.uprofile-info-value {\n  font-size: 13px;\n  color: var(--dollars-text);\n  line-height: 1.5;\n  word-break: break-word;\n}\n.uprofile-sign-value {\n  padding: 4px 8px;\n  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);\n  background: color-mix(in srgb, var(--primary-color), transparent 92%);\n  border-radius: 0 6px 6px 0;\n  color: var(--dollars-text-secondary);\n}\n.uprofile-media-section {\n  border-top: 1px solid var(--dollars-border);\n  padding-top: 12px;\n}\n.uprofile-media-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 10px;\n  padding: 0 4px;\n}\n.uprofile-media-header span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n.uprofile-media-grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 3px;\n  border-radius: 10px;\n  overflow: hidden;\n}\n.uprofile-media-item {\n  position: relative;\n  aspect-ratio: 1;\n  cursor: pointer;\n  overflow: hidden;\n  background: var(--dollars-border);\n}\n.uprofile-media-item img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  transition: transform 0.16s ease-out;\n}\n.uprofile-media-item:hover img {\n  transform: scale(1.02);\n}\n.uprofile-media-video-btn {\n  display: block;\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  border: none;\n  background: none;\n  cursor: pointer;\n  position: relative;\n}\n.uprofile-media-video-badge {\n  position: absolute;\n  bottom: 4px;\n  left: 4px;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.uprofile-media-video-badge svg {\n  margin-left: 2px;\n}\n.uprofile-empty-hint {\n  text-align: center;\n  color: var(--dollars-text-placeholder);\n  font-size: 13px;\n  padding: 16px 0;\n}\n#dollars-search-ui {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  min-height: 0;\n  gap: 8px;\n  padding: 52px 12px 12px 12px;\n  background: var(--dollars-glass-bg);\n  backdrop-filter: var(--dollars-glass-blur);\n  -webkit-backdrop-filter: var(--dollars-glass-blur);\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 100;\n}\n#dollars-search-ui~.chat-input-container,\n#dollars-user-profile-panel.visible~.chat-input-container {\n  display: none;\n}\n#dollars-search-ui .search-panel-row {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  opacity: 0.8\n}\n#dollars-search-ui .search-calendar-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-left: 5px;\n  width: 35px;\n  height: 35px;\n  border-radius: 50%;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  transition: all 0.2s;\n}\n#dollars-search-ui .search-bar {\n  height: 35px;\n  display: flex;\n  align-items: center;\n  min-width: 0;\n  position: relative;\n  border-radius: 100px;\n  border: 1px solid var(--dollars-border);\n  background-color: var(--dollars-bg);\n  transition: all .3s ease-in-out;\n  padding: 0 6px 0 6px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n}\n#dollars-search-ui .search-bar:focus-within {\n  border-color: var(--primary-color);\n  box-shadow: 0 0 10px rgba(240, 145, 153, .6);\n}\n#dollars-search-ui input {\n  flex-grow: 1;\n  min-width: 0;\n  padding: 6px 0;\n  border: none;\n  border-radius: 0;\n  background-color: transparent;\n  outline: 0;\n  color: var(--dollars-text);\n}\n#dollars-search-ui .search-close-btn {\n  flex-shrink: 0;\n  cursor: pointer;\n  font-size: 20px;\n  color: var(--dollars-text-secondary);\n  align-items: center;\n  opacity: 0.5;\n  z-index: 1;\n  display: flex;\n}\n#dollars-search-ui .search-icon {\n  flex-shrink: 0;\n}\n#dollars-search-ui input[type=search]::-webkit-search-cancel-button,\n#dollars-search-ui input[type=search]::-webkit-search-decoration {\n  -webkit-appearance: none;\n  appearance: none;\n  display: none;\n}\n#dollars-search-results {\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.search-status-msg {\n  text-align: center;\n  padding: 20px;\n  color: var(--dollars-text-placeholder);\n}\n.search-result-item {\n  display: flex;\n  align-items: flex-start;\n  gap: 8px;\n  padding: 8px;\n  border-radius: 8px;\n  cursor: pointer;\n  transition: background-color .2s;\n}\n.search-result-item:hover {\n  background-color: var(--dollars-bg-hover);\n}\n.search-result-item img {\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n}\n.search-result-item .dollars-search-content {\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n.search-result-item .dollars-search-header {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  font-size: 12px;\n}\n.search-result-item .dollars-search-nickname {\n  font-weight: 700;\n  color: var(--dollars-text);\n}\n.search-result-item .dollars-search-timestamp {\n  color: var(--dollars-text-secondary);\n}\n.search-result-item .dollars-search-message {\n  font-size: 13px;\n  color: var(--dollars-text-secondary);\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n#dollars-search-ui .search-gallery-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-left: 5px;\n  width: 35px;\n  height: 35px;\n  border-radius: 50%;\n  background-color: var(--dollars-bg);\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid var(--dollars-border);\n  color: var(--dollars-text-secondary);\n  flex-shrink: 0;\n  transition: all 0.2s;\n}\n#dollars-search-ui .search-gallery-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n#dollars-search-ui .search-gallery-btn.active {\n  background-color: var(--primary-color);\n  color: #fff;\n  border-color: var(--primary-color);\n}\n#dollars-search-ui .search-calendar-btn svg,\n#dollars-search-ui .search-gallery-btn svg {\n  width: 20px;\n  height: 20px;\n}\n#dollars-search-ui .gallery-container {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  min-height: 0;\n  overflow: hidden;\n}\n#dollars-search-ui .gallery-header {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  margin-bottom: 8px;\n}\n#dollars-search-ui .gallery-title {\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--dollars-text);\n}\n#dollars-search-ui .gallery-close-btn {\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 28px;\n  height: 28px;\n  border-radius: 50%;\n  color: var(--dollars-text-secondary);\n  transition: all 0.2s;\n}\n#dollars-search-ui .gallery-close-btn:hover {\n  background-color: var(--dollars-bg-hover);\n}\n#dollars-search-ui .gallery-grid {\n  display: grid;\n  grid-template-columns: repeat(5, 1fr);\n  gap: 4px;\n  flex-grow: 1;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n  align-content: start;\n}\n#dollars-search-ui .gallery-item {\n  position: relative;\n  width: 100%;\n  padding-bottom: 100%;\n  cursor: pointer;\n  overflow: hidden;\n  border-radius: 6px;\n  background-color: var(--dollars-bg);\n}\n#dollars-search-ui .gallery-item a {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  display: block;\n}\n#dollars-search-ui .gallery-item img,\n#dollars-search-ui .gallery-item video {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n#dollars-search-ui .gallery-item .video-overlay {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: rgba(0, 0, 0, 0.3);\n  pointer-events: none;\n}\n#dollars-search-ui .gallery-item:hover .video-overlay {\n  background-color: rgba(0, 0, 0, 0.4);\n}\n#dollars-search-ui .gallery-loading {\n  grid-column: 1 / -1;\n  text-align: center;\n  padding: 20px;\n  color: var(--dollars-text-secondary);\n}\n.dollars-tooltip {\n  pointer-events: auto !important;\n}\n.dollars-tooltip .tooltip-inner a {\n  color: #eee !important;\n  text-decoration: none !important;\n  transition: color .2s;\n  cursor: pointer;\n}\n.dollars-tooltip .tooltip-inner a:hover {\n  color: #fff !important;\n  border-bottom-color: #fff;\n  text-decoration: none !important;\n}\n@keyframes dollars-message-in {\n  0% {\n    opacity: 0;\n    transform: translateY(16px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@keyframes dollars-scale-out {\n  from {\n    opacity: 1;\n    transform: scale(1);\n  }\n  to {\n    opacity: 0;\n    transform: scale(0.95);\n  }\n}\n@keyframes dollars-slide-down-out {\n  from {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  to {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n}\n#dollars-context-menu.closing {\n  animation: dollars-scale-out 0.15s ease-out forwards;\n  pointer-events: none;\n}\n@keyframes dollars-profile-slide-out {\n  0% {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(10px) scale(0.95);\n  }\n}\n#dollars-profile-card.closing {\n  animation: dollars-profile-slide-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;\n  pointer-events: none;\n  transition: none;\n}\n#dollars-smiles-floating.closing {\n  animation: dollars-slide-down-out 0.2s ease-out forwards;\n  pointer-events: none;\n}\n#dollars-reaction-picker-floating.closing {\n  animation: dollars-scale-out 0.15s ease-out forwards;\n  pointer-events: none;\n}\n.chat-message.new-message {\n  animation: dollars-message-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;\n  transition: none;\n  opacity: 0;\n  transform: translateY(16px);\n}\n.chat-message.pending.new-message {\n  opacity: 0.75;\n}\n.chat-message.pending {\n  opacity: 0.7;\n  transition: opacity 0.25s ease-out !important;\n}\n.chat-message.pending .bubble::after {\n  content: '';\n  position: absolute;\n  right: 6px;\n  bottom: 4px;\n  width: 12px;\n  height: 12px;\n  border: 2px solid var(--dollars-text-secondary);\n  border-top-color: transparent;\n  border-radius: 50%;\n  animation: dollars-spin 0.7s ease-in-out infinite, dollars-spinner-fade-in 0.2s ease-out forwards;\n  will-change: transform;\n}\n@keyframes dollars-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n@keyframes dollars-spinner-fade-in {\n  from {\n    opacity: 0;\n    transform: scale(0.5) rotate(0deg);\n  }\n  to {\n    opacity: 1;\n    transform: scale(1) rotate(0deg);\n  }\n}\n#dollars-chat-root .likes_grid {\n  opacity: 1;\n}\n#dollars-chat-root .likes_grid .item {\n  gap: 3px;\n  background: rgba(255, 255, 255, 0.85);\n}\nhtml[data-theme=\"dark\"] #dollars-chat-root .likes_grid .item {\n  background: rgba(255, 255, 255, 0.15);\n}\n.reaction-avatars {\n  display: inline-flex;\n  align-items: center;\n  margin-left: 3px;\n  flex-shrink: 0;\n}\n.reaction-avatar {\n  width: 21px;\n  height: 21px;\n  border-radius: 50%;\n  margin-left: -5px;\n  object-fit: cover;\n  background-color: var(--dollars-bg);\n  position: relative;\n  flex-shrink: 0;\n  transition: transform 0.15s ease;\n}\n.reaction-avatar:first-child {\n  margin-left: 0;\n}\n.reaction-item:hover .reaction-avatar {\n  border-color: #369cf8;\n}\n.reaction-item .num.extra {\n  font-size: 10px;\n  margin-left: 2px;\n  color: var(--dollars-text-secondary);\n}\n.reaction-item:hover .num.extra {\n  color: #fff;\n}\n@keyframes dollars-stagger-fade {\n  from {\n    opacity: 0;\n    transform: scale(0.85);\n  }\n  to {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n#dollars-smiles-floating.open .smiley-item,\n#dollars-reaction-picker-floating.open .smiley-item {\n  animation: dollars-stagger-fade 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n@keyframes dollars-menu-cascade {\n  from {\n    opacity: 0;\n    transform: translateX(-8px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n#dollars-context-menu.visible .context-menu-items button {\n  animation: dollars-menu-cascade 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(1) {\n  animation-delay: 0ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(2) {\n  animation-delay: 25ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(3) {\n  animation-delay: 50ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(4) {\n  animation-delay: 75ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(5) {\n  animation-delay: 100ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(6) {\n  animation-delay: 125ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(7) {\n  animation-delay: 150ms;\n}\n#dollars-context-menu.visible .context-menu-items button:nth-child(8) {\n  animation-delay: 175ms;\n}\n@keyframes dollars-reaction-bounce {\n  0% {\n    opacity: 0;\n    transform: scale(0.3) translateY(15px);\n  }\n  40% {\n    transform: scale(1.2) translateY(-10px);\n  }\n  65% {\n    transform: scale(0.92) translateY(2px);\n  }\n  85% {\n    transform: scale(1.05) translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: scale(1) translateY(0);\n  }\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item {\n  animation: dollars-reaction-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(2) {\n  animation-delay: 35ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(3) {\n  animation-delay: 70ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(4) {\n  animation-delay: 105ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(5) {\n  animation-delay: 140ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(6) {\n  animation-delay: 175ms;\n}\n#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(7) {\n  animation-delay: 210ms;\n}\n.reply-preview.visible {\n  animation: dollars-slide-up 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.search-result-item {\n  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;\n}\n.search-result-item:nth-child(1) {\n  animation-delay: 0ms;\n}\n.search-result-item:nth-child(2) {\n  animation-delay: 30ms;\n}\n.search-result-item:nth-child(3) {\n  animation-delay: 60ms;\n}\n.search-result-item:nth-child(4) {\n  animation-delay: 90ms;\n}\n.search-result-item:nth-child(5) {\n  animation-delay: 120ms;\n}\n.search-result-item:nth-child(6) {\n  animation-delay: 150ms;\n}\n.search-result-item:nth-child(7) {\n  animation-delay: 180ms;\n}\n.search-result-item:nth-child(8) {\n  animation-delay: 210ms;\n}\n.conversation-item {\n  transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.conversation-item:hover {\n  transform: scale(1.02);\n}\n.conversation-item:active {\n  transform: scale(0.98);\n}\n.send-btn:active {\n  transform: scale(0.9) !important;\n}\n.header-btn:active {\n  transform: scale(0.92);\n}\n@keyframes dollars-date-slide {\n  from {\n    opacity: 0;\n    transform: translateX(-50%) translateY(-10px);\n  }\n  to {\n    opacity: 1;\n    transform: translateX(-50%) translateY(0);\n  }\n}\n#dollars-floating-date.visible {\n  animation: dollars-date-slide 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n@keyframes dollars-btn-bounce-in {\n  0% {\n    opacity: 0;\n    transform: scale(0.5);\n  }\n  60% {\n    transform: scale(1.1);\n  }\n  100% {\n    opacity: 1;\n    transform: scale(1);\n  }\n}\n.nav-btn.visible {\n  animation: dollars-btn-bounce-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);\n}\n.dollars-preview-card {\n  animation: dollars-item-slide-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.smiley-tab-btn,\n.reaction-picker-tab-btn {\n  transition: background-color 0.15s, color 0.15s, transform 0.1s;\n}\n.smiley-tab-btn:active,\n.reaction-picker-tab-btn:active {\n  transform: scale(0.95);\n}\n@keyframes dollars-formatter-in {\n  from {\n    opacity: 0;\n    transform: translateY(8px) scale(0.9);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0) scale(1);\n  }\n}\n#dollars-text-formatter.visible {\n  animation: dollars-formatter-in 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);\n}\n.formatter-btn:active {\n  transform: scale(0.9);\n}\n@media (prefers-reduced-motion: reduce) {\n  *,\n  *::before,\n  *::after {\n    animation-duration: 0.01ms !important;\n    animation-iteration-count: 1 !important;\n    transition-duration: 0.01ms !important;\n  }\n}\n#unified-notifier {\n  position: fixed;\n  bottom: 40px;\n  right: 30px;\n  width: 223px;\n  z-index: 10001;\n  border-radius: 15px;\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  overflow: hidden;\n  transform: translateX(calc(100% + 30px));\n  transition: all .4s ease-in-out;\n  background-color: rgba(254, 254, 254, .9);\n  color: #000;\n  border: 1px solid rgba(0, 0, 0, .1);\n  box-shadow: 0 5px 25px -5px rgba(80, 80, 80, .3);\n  display: flex;\n  flex-direction: column;\n}\nhtml[data-theme=dark] #unified-notifier {\n  background-color: rgba(45, 46, 47, .9);\n  color: #e0e0e1;\n  border: 1px solid rgba(255, 255, 255, .15);\n}\n#unified-notifier.show {\n  transform: translateX(0);\n}\n.un-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 0 15px;\n  height: 32px;\n  font-size: 14px;\n  font-weight: 700;\n  color: var(--primary-color);\n  border-bottom: 1px solid #eee;\n}\nhtml[data-theme=dark] .un-header {\n  border-bottom: 1px solid #444;\n}\n.un-body {\n  padding: 0;\n  max-height: 400px;\n  overflow-y: auto;\n}\n.un-item {\n  display: flex;\n  align-items: flex-start;\n  padding: 10px 15px;\n}\n.un-item:not(:last-child) {\n  border-bottom: 1px solid #eee;\n}\nhtml[data-theme=dark] .un-item:not(:last-child) {\n  border-bottom: 1px solid #444;\n}\n.un-item .avatarNeue {\n  margin-right: 12px;\n  flex-shrink: 0;\n  width: 40px;\n  height: 40px;\n  background-size: cover;\n  border-radius: 50%;\n}\n.un-item .content {\n  flex-grow: 1;\n  font-size: 13px;\n  overflow: hidden;\n}\n.un-item .actions {\n  margin-top: 8px;\n}\n.un-action-btn {\n  cursor: pointer;\n  display: inline-block;\n  padding: 2px 8px;\n  border-radius: 4px;\n  font-size: 12px;\n  text-decoration: none !important;\n  transition: background-color 0.2s;\n}\n.un-action-btn.btnRedSmall {\n  background-color: var(--primary-color);\n  color: #fff !important;\n}\n.un-action-btn.btnRedSmall:hover {\n  background-color: #369cf8;\n}\n.un-action-btn.btnGraySmall {\n  background-color: #eee;\n  color: #666 !important;\n}\n.un-action-btn.btnGraySmall:hover {\n  background-color: #ddd;\n}\nhtml[data-theme=dark] .un-action-btn.btnGraySmall {\n  background-color: #444;\n  color: #ccc !important;\n}\nhtml[data-theme=dark] .un-action-btn.btnGraySmall:hover {\n  background-color: #555;\n}\n.un-widget-title {\n  color: #3e3e3e;\n  display: block;\n  margin-bottom: 4px;\n}\n.un-widget-message {\n  color: #666;\n  display: block;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  margin-bottom: 4px;\n}\nhtml[data-theme=dark] .un-widget-title {\n  color: #e9e9e9;\n}\nhtml[data-theme=dark] .un-widget-message {\n  color: #aaa;\n}\n.un-clear-all {\n  font-size: 12px;\n  color: var(--dollars-text-placeholder) !important;\n  text-decoration: none !important;\n}\n.un-clear-all:hover {\n  color: var(--primary-color) !important;\n}\n@keyframes dollars-fade-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n.browse-separator {\n  display: block;\n  position: relative;\n  text-align: center;\n  margin: 12px -19px;\n  width: calc(100% + 38px);\n  height: 30px;\n  line-height: 30px;\n  background-color: rgba(var(--primary-color-rgb, 249, 109, 142), 0.1);\n  z-index: 2;\n  pointer-events: none;\n  animation: dollars-fade-in 0.3s ease;\n}\n.browse-separator span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--primary-color);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  padding: 0 12px;\n}\nhtml[data-theme='dark'] .browse-separator {\n  background-color: rgba(249, 109, 142, 0.15);\n}\n.unread-separator {\n  display: block;\n  position: relative;\n  text-align: center;\n  margin: 12px -19px;\n  width: calc(100% + 38px);\n  height: 30px;\n  line-height: 30px;\n  background-color: rgba(255, 255, 255, 0.9);\n  z-index: 2;\n  pointer-events: none;\n  animation: dollars-fade-in 0.3s ease;\n}\n.unread-separator span {\n  font-size: 13px;\n  font-weight: 600;\n  color: var(--primary-color);\n  background: transparent;\n  border: none;\n  box-shadow: none;\n  padding: 0 12px;\n}\nhtml[data-theme='dark'] .unread-separator {\n  background-color: rgba(60, 62, 64, 0.9);\n}\n#dollars-card {\n  transition: transform 0.1s ease-out, box-shadow 0.3s ease;\n  transform-style: preserve-3d;\n  perspective: 1000px;\n  border: 1px solid var(--primary-color) !important;\n  background-color: var(--dollars-bg);\n  cursor: pointer;\n}\n#dollars-card::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  z-index: -1;\n  pointer-events: none;\n  background-image:\n    url('https://lsky.ry.mk/i/2026/01/03/background.svg'),\n    linear-gradient(160deg,\n      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,\n      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,\n      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);\n  background-repeat: repeat, no-repeat;\n  background-position: 300px, center;\n  background-size: 300px auto, cover;\n  background-blend-mode: overlay, normal;\n  opacity: 1;\n  transition: opacity 0.3s ease, background-position 0.1s ease-out;\n}\nhtml[data-theme='dark'] #dollars-card {\n  border: 1px solid var(--primary-color);\n  background: initial;\n}\nhtml[data-theme='dark'] #dollars-card::before {\n  background: linear-gradient(160deg,\n      var(--primary-color) 0%,\n      color-mix(in srgb, var(--primary-color), transparent 40%) 100%);\n  -webkit-mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');\n  mask-repeat: repeat;\n  mask-size: 300px;\n  mask-position: 300px;\n}\n#dollars-card:hover {\n  transform: scale(1.02);\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);\n}\n#dock-chat-link {\n  position: relative;\n}\n#dock-chat-link.flashing {\n  animation: dock-flash 1s ease-in-out infinite;\n}\n@keyframes dock-flash {\n  0%,\n  100% {\n    opacity: 1;\n  }\n  50% {\n    opacity: 0.3;\n  }\n}\n.dock-notif-badge {\n  position: absolute;\n  top: -4px;\n  right: -4px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: 8px;\n  background-color: #f96d8e;\n  color: #fff;\n  font-size: 10px;\n  font-weight: 700;\n  line-height: 16px;\n  text-align: center;\n  display: none;\n  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);\n}\n";
+  const cssContent = `:root {
+  --dollars-z-index-base: 90;
+  --dollars-z-index-smiley: 99;
+  --dollars-z-index-context: 95;
+  --dollars-z-index-overlay: 110;
+  --dollars-z-index-modal: 2000;
+  --dollars-bg: #fff;
+  --dollars-bg-hover: rgba(0, 0, 0, 0.04);
+  --dollars-border: rgba(0, 0, 0, 0.08);
+  --dollars-shadow: rgba(0, 0, 0, 0.1);
+  --dollars-bg-pattern: none;
+  --dollars-bg-pattern-url: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
+  --dollars-text: #333;
+  --dollars-text-secondary: #666;
+  --dollars-text-placeholder: #999;
+  --dollars-icon-color: #555;
+  --dollars-icon-color-secondary: #888;
+  --dollars-color-online: #4CAF50;
+  --dollars-color-danger: #ef4444;
+  --dollars-glass-border: rgba(255, 255, 255, 0.3);
+  --dollars-glass-highlight: rgba(255, 255, 255, 0.3);
+  --dollars-glass-bg: rgba(255, 255, 255, 0.55);
+  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.03);
+  --dollars-glass-shadow:
+    0 8px 32px 0 rgba(31, 38, 135, 0.12),
+    0 2px 16px 0 rgba(31, 38, 135, 0.06),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+  --dollars-glass-border-color: rgba(255, 255, 255, 0.4);
+}
+#dollars-chat-window.visible {
+  --dollars-bg-pattern: var(--dollars-bg-pattern-url);
+}
+html[data-theme="dark"] {
+  --dollars-bg: #1a1a1a;
+  --dollars-bg-hover: rgba(255, 255, 255, 0.08);
+  --dollars-border: rgba(255, 255, 255, 0.12);
+  --dollars-shadow: rgba(0, 0, 0, 0.3);
+  --dollars-text: #e0e0e0;
+  --dollars-text-secondary: #999;
+  --dollars-text-placeholder: #666;
+  --dollars-icon-color: #bbb;
+  --dollars-icon-color-secondary: #bbb;
+  --dollars-glass-border: rgba(255, 255, 255, 0.1);
+  --dollars-glass-highlight: rgba(255, 255, 255, 0.1);
+  --dollars-glass-bg: rgba(30, 30, 30, 0.65);
+  --dollars-glass-blur: blur(16px) saturate(1.6) brightness(1.1);
+  --dollars-glass-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
+  --dollars-glass-border-color: rgba(255, 255, 255, 0.12);
+}
+#dollars-chat-root.disable-blur {
+  --dollars-glass-blur: none !important;
+  --dollars-glass-bg: rgba(255, 255, 255, 0.95);
+}
+html[data-theme="dark"] #dollars-chat-root.disable-blur {
+  --dollars-glass-bg: rgba(30, 30, 30, 0.95);
+}
+#dollars-chat-root *::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+#dollars-chat-root *::-webkit-scrollbar-track {
+  background: transparent;
+}
+#dollars-chat-root *::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--primary-color), transparent 75%);
+  border-radius: 10px;
+}
+#dollars-chat-root *::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--primary-color), transparent 50%);
+}
+#dollars-chat-root * {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--primary-color), transparent 75%) transparent;
+}
+#dollars-chat-root {
+  color: var(--dollars-text);
+}
+#dollars-chat-window {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 400px;
+  height: 550px;
+  z-index: var(--dollars-z-index-base);
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-clip: padding-box;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px) scale(0.9);
+  transition: opacity 0.3s ease-out, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#dollars-chat-window.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+html[data-theme="dark"] #dollars-chat-window {
+  background: rgba(30, 30, 30, 0.9);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+#dollars-chat-window.maximized {
+  top: 10px !important;
+  left: 10px !important;
+  right: 10px !important;
+  bottom: 10px !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  border-radius: 12px;
+  transform: none !important;
+}
+#dollars-chat-window.mobile {
+  top: 4vh !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: auto !important;
+  width: 95vw !important;
+  height: 92vh !important;
+  max-width: 600px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 20px;
+}
+#dollars-chat-window.mobile.maximized {
+  top: 0px !important;
+  left: 0px !important;
+  right: 0px !important;
+  bottom: 0px !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  border-radius: 0;
+  z-index: 98 !important;
+}
+#dollars-chat-window.mobile.visible {
+  transform: translateY(0) scale(1);
+}
+#dollars-content-panes {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+#dollars-sidebar {
+  width: 25%;
+  height: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: none;
+  box-shadow: inset -1px 0 0 0 rgba(0, 0, 0, 0.03);
+  background-color: var(--dollars-bg);
+}
+#dollars-sidebar-search-container {
+  padding: 8px;
+  padding-top: 48px;
+  border-bottom: 1px solid var(--dollars-border);
+  flex-shrink: 0;
+}
+#dollars-sidebar-search-input {
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-radius: 100px;
+  border: 1px solid var(--dollars-border);
+  background-color: var(--dollars-bg);
+  transition: 0.3s ease-in-out;
+  padding: 6px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  color: var(--dollars-text);
+}
+#dollars-sidebar-search-input:focus {
+  outline: 0;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(240, 145, 153, 0.6);
+}
+html[data-theme="dark"] #dollars-sidebar-search-input {
+  background-color: #3a3a3a;
+}
+#dollars-sidebar-search-input::placeholder {
+  color: var(--dollars-text-placeholder);
+}
+#dollars-conversation-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+}
+.conversation-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  gap: 12px;
+  cursor: pointer;
+  position: relative;
+  border-radius: 15px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+.conversation-item:hover {
+  background-color: var(--dollars-bg-hover);
+}
+.conversation-item.active {
+  background: color-mix(in srgb, var(--primary-color), #ffffff 30%);
+  color: #fff;
+}
+html[data-theme="dark"] .conversation-item.active {
+  background: color-mix(in srgb, var(--primary-color), #180518 60%);
+}
+.conversation-item.active .dollars-conv-last-message,
+.conversation-item.active .dollars-conv-nickname,
+.conversation-item.active .dollars-conv-timestamp {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.conversation-item .avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  background-color: #f3f3f3;
+}
+html[data-theme="dark"] .conversation-item .avatar {
+  background-color: #444;
+}
+.conversation-item .dollars-conv-content {
+  flex-grow: 1;
+  overflow: hidden;
+}
+.conversation-item .dollars-conv-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+.conversation-item .dollars-conv-nickname {
+  color: var(--dollars-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.conversation-item .dollars-conv-timestamp {
+  font-size: 11px;
+  color: var(--dollars-text-secondary);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+.conversation-item .dollars-conv-last-message {
+  font-size: 12px;
+  color: var(--dollars-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.conversation-item .unread-badge {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 16px;
+  text-align: center;
+}
+#dollars-chat-window.is-narrow #dollars-sidebar {
+  width: 100%;
+  max-width: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#dollars-chat-window.is-narrow.mobile-chat-active #dollars-sidebar {
+  transform: translateX(-100%);
+}
+#dollars-chat-window.is-narrow #dollars-main-chat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#dollars-chat-window.is-narrow.mobile-chat-active #dollars-main-chat {
+  transform: translateX(0);
+}
+#dollars-chat-window.is-narrow #dollars-content-panes {
+  overflow: hidden;
+}
+#dollars-main-chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--dollars-bg);
+  isolation: isolate;
+  z-index: 0;
+}
+#dollars-main-chat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  will-change: opacity;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#dollars-chat-root[data-bg-mode="transparent"] #dollars-main-chat::before {
+  display: none !important;
+}
+#dollars-chat-root[data-bg-mode="tint"] #dollars-main-chat::before {
+  background-image:
+    var(--dollars-bg-pattern),
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,
+      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,
+      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);
+  background-repeat: repeat, no-repeat;
+  background-position: center, center;
+  background-size: 400px, cover;
+  background-blend-mode: overlay, normal;
+  opacity: 0.65;
+}
+#dollars-chat-root[data-bg-mode="lines"] #dollars-main-chat::before {
+  background-image: none;
+  background-color: color-mix(in srgb, var(--primary-color), #ffffff 94%);
+  opacity: 0.2;
+}
+#dollars-chat-root[data-bg-mode="lines"] #dollars-main-chat::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: color-mix(in srgb, var(--primary-color), #ffffff 70%);
+  -webkit-mask-image: var(--dollars-bg-pattern);
+  mask-image: var(--dollars-bg-pattern);
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-size: 400px;
+  opacity: 0.7;
+  z-index: -1;
+  pointer-events: none;
+}
+html[data-theme="dark"] #dollars-chat-root[data-bg-mode="lines"] #dollars-main-chat::after {
+  opacity: 0.1;
+}
+html[data-theme="dark"] #dollars-chat-root[data-bg-mode="lines"] #dollars-main-chat::before {
+  background-image: none !important;
+  background-color: transparent !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  opacity: 0.25;
+}
+html[data-theme="dark"] #dollars-chat-root[data-bg-mode="tint"] #dollars-main-chat::before {
+  background-image:
+    var(--dollars-bg-pattern),
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,
+      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,
+      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);
+  background-repeat: repeat, no-repeat;
+  background-position: center, center;
+  background-size: 400px, cover;
+  background-blend-mode: overlay, normal;
+  -webkit-mask-image: none;
+  mask-image: none;
+  opacity: 0.3;
+}
+.chat-header {
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  border-bottom: none;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 15px;
+  cursor: move;
+  touch-action: none;
+  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  z-index: 10002;
+}
+html[data-theme="dark"] .chat-header {
+  background: var(--dollars-bg);
+  border-bottom: none;
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.02);
+}
+.chat-header .title-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  padding: 0 4px;
+  gap: 8px;
+  pointer-events: none;
+}
+.chat-header-left-pane {
+  width: 25%;
+  max-width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  gap: 4px;
+  margin-right: 8px;
+}
+#dollars-chat-window.is-narrow .chat-header-left-pane {
+  width: auto;
+  max-width: none;
+}
+.header-chat-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.header-text-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  justify-content: center;
+}
+.chat-header .title,
+.header-main-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dollars-text);
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+.chat-header .online-status {
+  font-size: 10px;
+  color: var(--dollars-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.85;
+  line-height: 1.2;
+}
+.chat-header .online-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--dollars-color-online);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.chat-header .header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.chat-header .header-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dollars-text-secondary);
+  transition: background-color 0.2s;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px;
+}
+.chat-header .header-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+html[data-theme="dark"] .chat-header .header-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+#dollars-search-btn,
+#dollars-maximize-btn,
+.chat-header .close-btn {
+  background-color: var(--dollars-icon-color);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 18px;
+  mask-size: 18px;
+}
+#dollars-search-btn {
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+}
+#dollars-maximize-btn {
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>');
+}
+#dollars-chat-window.maximized #dollars-maximize-btn {
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>');
+}
+.chat-header .close-btn {
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>');
+}
+.chat-header .header-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.chat-body {
+  contain: layout style paint;
+  flex-grow: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 10px;
+  padding-top: 50px;
+  padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  min-height: 0;
+  overflow-anchor: auto;
+  background: transparent;
+}
+.chat-body.loading .chat-list {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.chat-body.context-loading .chat-list {
+  opacity: 0 !important;
+  transition: opacity 0.05s ease;
+}
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  contain: layout style;
+  transition: opacity 0.3s ease;
+}
+.chat-message {
+  position: relative;
+  overflow: visible !important;
+  content-visibility: auto;
+  contain-intrinsic-size: 80px;
+  overflow-clip-margin: 5px;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease-out;
+  will-change: transform, opacity;
+  transform-origin: center bottom;
+}
+.chat-message.self {
+  flex-direction: row-reverse;
+}
+.chat-message.self .message-content {
+  align-items: flex-end;
+}
+.chat-message.pending {
+  opacity: 0.7;
+}
+.chat-message.pending .bubble {
+  animation: pending-pulse 1.5s ease-in-out infinite;
+}
+@keyframes pending-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.chat-message.failed {
+  opacity: 0.9;
+}
+.chat-message.failed .bubble {
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  position: relative;
+}
+.chat-message.failed .bubble::after {
+  content: "发送失败，点击重试";
+  position: absolute;
+  bottom: -18px;
+  right: 0;
+  font-size: 11px;
+  color: var(--dollars-color-danger);
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.chat-message.failed:hover .bubble::after,
+.chat-message.failed:active .bubble::after {
+  opacity: 1;
+}
+.chat-message.is-grouped-with-next {
+  margin-bottom: 2px;
+}
+.chat-message.is-grouped-with-prev .avatar {
+  visibility: hidden;
+  height: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+.chat-message .nickname {
+  display: none !important;
+}
+.chat-message .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  object-fit: cover;
+  background-color: #f3f3f3;
+  transition: box-shadow 0.3s;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+html[data-theme="dark"] .chat-message .avatar {
+  background-color: #444;
+}
+.chat-message::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--dollars-color-online);
+  border: 2px solid var(--dollars-bg);
+  border-radius: 50%;
+  z-index: 5;
+  top: 23px;
+  left: 23px;
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: scale(0);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+.chat-message:has(.avatar.online)::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.chat-message.self::after {
+  left: auto;
+  right: -2px;
+}
+.chat-message.is-grouped-with-prev::after {
+  opacity: 0 !important;
+  transform: scale(0) !important;
+}
+.chat-message .message-content {
+  max-width: 75%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.chat-list.focus-mode .chat-message:not(.message-highlight) {
+  filter: blur(4px);
+  opacity: 0.6;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+.chat-message.message-highlight {
+  position: relative;
+  z-index: 10;
+  transform: scale(1.02);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.chat-message.message-highlight .bubble {
+  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4);
+}
+.chat-message .bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 10px 6px;
+  border-radius: 0 12px 12px 12px;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(16, 35, 47, 0.15);
+  color: var(--dollars-text);
+  font-size: 14px;
+  max-width: min(40dvh, 100%);
+  position: relative;
+  transition: background 0.3s ease;
+}
+html[data-theme="dark"] .chat-message .bubble {
+  background-color: #212121;
+}
+.chat-message.self .bubble {
+  border-radius: 12px 0 12px 12px;
+  background: color-mix(in srgb, var(--primary-color), #ffffff 80%);
+}
+html[data-theme="dark"] .chat-message.self .bubble {
+  background-color: color-mix(in srgb, var(--primary-color), #180518 60%);
+}
+.chat-message:not(.self).is-grouped-with-prev .bubble {
+  border-top-left-radius: 4px !important;
+}
+.chat-message.self.is-grouped-with-prev .bubble {
+  border-top-right-radius: 4px !important;
+}
+.bubble.sticker-mode {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border: none !important;
+}
+.bubble-nickname {
+  display: block;
+  width: 100%;
+  font-size: 12px;
+  margin-bottom: 4px;
+  line-height: 1.2;
+  user-select: none;
+  color: var(--nick-color, var(--primary-color));
+}
+html[data-theme="dark"] .bubble-nickname {
+  color: color-mix(in srgb, var(--nick-color, var(--primary-color)), #fff 60%) !important;
+}
+.chat-message.self .bubble-nickname {
+  display: none;
+}
+.chat-message .swipe-reply-indicator {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) scale(0.5);
+  margin-left: 10px;
+  opacity: 0;
+  width: 32px;
+  height: 32px;
+  background-color: var(--dollars-icon-color-secondary);
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 14l-4 -4l4 -4" /><path d="M5 10h11a4 4 0 1 1 0 8h-1" /></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 14l-4 -4l4 -4" /><path d="M5 10h11a4 4 0 1 1 0 8h-1" /></svg>');
+  -webkit-mask-size: 24px;
+  mask-size: 24px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+  pointer-events: none;
+}
+.chat-message.is-grouped-with-prev .bubble-nickname {
+  display: none;
+}
+.bubble.sticker-mode .bubble-nickname {
+  display: none !important;
+}
+.bubble-timestamp {
+  font-size: 10px;
+  opacity: 0.58;
+  user-select: none;
+  cursor: default;
+  color: var(--dollars-text-secondary);
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  max-width: 100%;
+}
+.text-content {
+  display: block;
+  width: 100%;
+  line-height: 1.6;
+}
+.text-content > :first-child {
+  margin-top: 0;
+}
+.text-content > :last-child {
+  margin-bottom: 0;
+}
+html[data-theme="dark"] .bubble-timestamp {
+  color: color-mix(in srgb, var(--primary-color), #fff 60%);
+}
+.bubble.has-trailing-timestamp {
+  display: flow-root;
+}
+.bubble.has-trailing-timestamp .text-content {
+  display: inline;
+  width: auto;
+}
+.bubble.has-trailing-timestamp .bubble-timestamp.is-trailing {
+  float: right;
+  margin-left: 8px;
+  margin-top: 8px;
+  text-align: right;
+}
+.bubble.has-stacked-timestamp .bubble-timestamp.is-stacked {
+  align-self: flex-end;
+  margin-top: 6px;
+  text-align: right;
+}
+.bubble.has-stacked-timestamp .expand-toggle-btn + .bubble-timestamp.is-stacked {
+  margin-top: 4px;
+}
+.bubble.sticker-mode .bubble-timestamp.is-overlay {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1.2;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+@media (hover: hover) and (pointer: fine) {
+  .chat-message:hover .bubble.sticker-mode .bubble-timestamp.is-overlay,
+  .chat-message:focus-within .bubble.sticker-mode .bubble-timestamp.is-overlay {
+    opacity: 1;
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  .bubble.sticker-mode .bubble-timestamp.is-overlay {
+    opacity: 1;
+  }
+}
+.chat-message.failed .bubble.sticker-mode .bubble-timestamp.is-overlay {
+  opacity: 1;
+}
+.bubble-tail {
+  position: absolute;
+  top: 0;
+  width: 11px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 1;
+}
+.chat-message:not(.self) .bubble-tail {
+  left: -9px;
+  top: -3px;
+  color: #fff;
+}
+html[data-theme="dark"] .chat-message:not(.self) .bubble-tail {
+  color: #212121;
+}
+.chat-message.self .bubble-tail {
+  right: -9px;
+  top: -1px;
+  transform: scale(-1, -1);
+  color: color-mix(in srgb, var(--primary-color), #ffffff 80%);
+}
+html[data-theme="dark"] .chat-message.self .bubble-tail {
+  color: color-mix(in srgb, var(--primary-color), #180518 60%) !important;
+}
+.chat-message.is-grouped-with-prev .bubble-tail {
+  display: none;
+}
+.bubble.sticker-mode .bubble-tail {
+  display: none;
+}
+.bubble .text-content.deleted {
+  font-style: italic !important;
+  color: var(--dollars-text-secondary) !important;
+}
+.bubble .text-content.is-collapsed {
+  display: block !important;
+  max-height: var(--collapse-max-height, 300px);
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+.expand-toggle-btn {
+  display: inline-block;
+  align-self: center;
+  max-width: 100%;
+  background: color-mix(in srgb, var(--primary-color), transparent 90%);
+  border: 0;
+  border-radius: 999px;
+  color: var(--primary-color);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  padding: 4px 10px;
+  margin-top: 8px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+.expand-toggle-btn:hover {
+  background: color-mix(in srgb, var(--primary-color), transparent 84%);
+  text-decoration: none;
+}
+.expand-toggle-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary-color), #fff 15%);
+  outline-offset: 2px;
+}
+.bubble a {
+  color: #0084b4 !important;
+}
+.bubble a:hover {
+  text-decoration: underline;
+}
+.bubble img.smiley {
+  display: inline-block;
+  width: 21px;
+  height: 21px;
+  margin: 0 1px;
+  vertical-align: text-bottom;
+  image-rendering: pixelated;
+}
+.bubble img.custom-emoji {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+}
+.bubble img.smiley-musume,
+.bubble img.smiley-blake {
+  width: 60px;
+  height: 60px;
+  image-rendering: auto;
+  vertical-align: bottom;
+}
+.bubble.sticker-mode .custom-emoji {
+  max-width: 120px;
+  max-height: 120px;
+  margin: 2px 0;
+  display: block;
+}
+.bubble.sticker-mode .smiley-musume,
+.bubble.sticker-mode .smiley-blake {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin: 2px 0;
+}
+.bubble .message-media-block {
+  max-width: 100%;
+  margin: 10px 0 6px;
+}
+.bubble .message-media-block:first-child {
+  margin-top: 2px;
+}
+.bubble .message-media-block:last-child {
+  margin-bottom: 0;
+}
+.bubble .message-media-block {
+  display: flex;
+  align-items: flex-start;
+}
+.chat-message.self .bubble .message-media-block {
+  justify-content: flex-end;
+}
+.bubble .message-media-grid {
+  display: grid;
+  gap: 3px;
+  max-width: 320px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.bubble .message-media-grid[style*="--media-count: 2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+.bubble .message-media-grid[style*="--media-count: 3"],
+.bubble .message-media-grid[style*="--media-count: 4"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+.bubble .message-media-grid[style*="--media-count: 5"],
+.bubble .message-media-grid[style*="--media-count: 6"],
+.bubble .message-media-grid[style*="--media-count: 7"],
+.bubble .message-media-grid[style*="--media-count: 8"],
+.bubble .message-media-grid[style*="--media-count: 9"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+.bubble .message-media-grid .image-container {
+  width: 100% !important;
+  max-height: none;
+  border-radius: 0;
+  aspect-ratio: 1 / 1;
+}
+.bubble .message-media-grid .image-container .full-image {
+  object-fit: cover;
+}
+.bubble .image-container {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  border-radius: 5px;
+  cursor: pointer;
+  max-height: 350px;
+  background: color-mix(in srgb, var(--dollars-bg-hover), transparent 8%);
+}
+.bubble .image-container .full-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  grid-area: 1/1;
+  transition: opacity 0.3s ease-out;
+  z-index: 2;
+}
+.bubble .image-container .full-image.is-loaded {
+  opacity: 1;
+}
+.bubble .image-container .full-image.load-failed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-color: var(--dollars-bg-hover);
+  border-radius: 14px;
+}
+.bubble .image-container.image-placeholder {
+  cursor: default;
+}
+.bubble .image-container.image-placeholder .image-load-hint {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity 0.2s ease;
+}
+.bubble .image-container.image-placeholder:hover .image-load-hint {
+  background: rgba(0, 0, 0, 0.7);
+}
+.bubble .image-container.image-masked .full-image {
+  filter: blur(24px) brightness(0.45);
+  transform: scale(1.08);
+}
+.bubble .image-container.image-masked {
+  cursor: default;
+}
+.bubble .image-container.image-masked .image-load-hint {
+  background: rgba(0, 0, 0, 0.68);
+}
+.bubble .chat-file-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+  padding: 2px 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  max-width: 100%;
+  color: var(--primary-color) !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bubble .chat-file-link::before {
+  content: "附件";
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color), transparent 88%);
+}
+.bubble .chat-file-link:hover {
+  text-decoration: underline !important;
+}
+.chat-quote {
+  padding: 6px 8px;
+  border-left: 3px solid var(--primary-color);
+  background: linear-gradient(#ffffffe6, #ffffffe6), var(--primary-color);
+  border-radius: 5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  transition: opacity 0.2s, transform 0.15s ease, background 0.2s;
+}
+html[data-theme="dark"] .chat-quote {
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), var(--primary-color);
+}
+.chat-quote:hover {
+  opacity: 0.9;
+  transform: scale(1.01);
+}
+#dollars-toast {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--dollars-glass-bg);
+  color: var(--dollars-text);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--dollars-glass-border-color);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+}
+#dollars-toast.dollars-toast-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.quote-avatar {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+.quote-thumbnail {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-bottom: 2px;
+  display: block;
+}
+.quote-nickname {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 12px;
+}
+.quote-text-wrapper {
+  min-width: 0;
+  flex: 1;
+}
+.quote-content {
+  font-size: 12px;
+  color: var(--dollars-text);
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+}
+.chat-input-container {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  z-index: 100;
+  transition: transform 0.2s ease;
+}
+.chat-input-container:hover {
+  transform: translateY(-2px);
+}
+.chat-input-area {
+  position: relative;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  border: none;
+  box-shadow:
+    var(--dollars-glass-shadow),
+    inset 0 0 0 1px var(--dollars-glass-border-color, rgba(255, 255, 255, 0.35));
+  border-radius: 24px;
+  padding: 6px 8px;
+  transition: box-shadow 0.2s ease;
+}
+.reply-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 4px 8px;
+  margin: 0 4px 4px 4px;
+  border-bottom: 1px solid var(--dollars-glass-border);
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: height 0.2s ease-out, opacity 0.2s ease-out;
+}
+.reply-preview.visible {
+  height: 42px;
+  opacity: 1;
+}
+.reply-preview .reply-bar {
+  width: 3px;
+  height: 70%;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+.reply-preview .reply-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+.reply-preview .reply-info {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.reply-preview .reply-user {
+  font-weight: 700;
+  color: var(--primary-color);
+}
+.reply-preview .reaction-item .num {
+  color: var(--dollars-text-secondary);
+}
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.reaction-item.live_selected .emoji {
+  animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.reply-preview .reply-text {
+  color: var(--dollars-text-secondary);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.reply-preview .reply-cancel-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--dollars-text-secondary);
+  font-size: 20px;
+  padding: 0;
+}
+.image-preview-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  margin: 0 4px;
+  border-bottom: 1px solid var(--dollars-glass-border);
+  height: 0;
+  opacity: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  transition: height 0.2s ease-out, opacity 0.2s ease-out, padding 0.2s ease-out, margin 0.2s ease-out;
+  scrollbar-width: none;
+}
+.image-preview-container.visible {
+  height: 80px;
+  opacity: 1;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+.image-preview-container::-webkit-scrollbar {
+  display: none;
+}
+.image-preview-item {
+  position: relative;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--dollars-border);
+  background: var(--dollars-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+.image-preview-item:hover .preview-image {
+  transform: scale(1.05);
+}
+.preview-remove-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  backdrop-filter: blur(2px);
+  transition: background 0.2s, transform 0.1s;
+  padding: 0;
+  line-height: 1;
+}
+.preview-remove-btn:hover {
+  background: rgba(244, 67, 54, 0.9);
+  transform: scale(1.1);
+}
+.video-preview-item {
+  position: relative;
+}
+.preview-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+.video-preview-item:hover .preview-video {
+  transform: scale(1.05);
+}
+.video-play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
+}
+.video-play-overlay svg {
+  margin-left: 2px;
+}
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+.dollars-input-wrapper {
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+  border-radius: 18px;
+  min-width: 0;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(5px);
+  padding-left: 0;
+  position: relative;
+}
+html[data-theme="dark"] .dollars-input-wrapper {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.dollars-input-wrapper:focus-within {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--primary-color);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1), 0 0 8px color-mix(in srgb, var(--primary-color), transparent 40%) !important;
+}
+html[data-theme="dark"] .dollars-input-wrapper:focus-within {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.chat-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  border-radius: 18px;
+  padding: 8px 14px;
+  resize: none;
+  font-size: 14px;
+  line-height: 1.4;
+  height: 38px;
+  max-height: 150px;
+  color: var(--dollars-text);
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  width: 100%;
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  overflow-y: hidden;
+}
+html[data-theme="dark"] .chat-textarea {
+  background: none !important;
+}
+.chat-textarea:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+.chat-rich-editor {
+  min-height: 38px;
+  caret-color: var(--dollars-text);
+  line-height: 1.5;
+}
+.chat-rich-editor.is-overflowing {
+  overflow-y: auto;
+}
+.chat-rich-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--dollars-text-placeholder);
+  pointer-events: none;
+}
+.chat-textarea-proxy {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  resize: none;
+}
+.chat-input-token {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  max-width: 100%;
+  user-select: all;
+  margin-block: 2px;
+}
+.chat-input-token img,
+.chat-input-token .bmoji-image {
+  display: block;
+  pointer-events: none;
+}
+.chat-input-token-smiley .chat-input-inline-smiley:not(.chat-input-inline-large),
+.chat-input-token-bmo .bmoji-image {
+  image-rendering: pixelated;
+}
+.chat-input-token-smiley .chat-input-inline-large,
+.chat-input-token-image .chat-input-inline-sticker {
+  image-rendering: auto;
+}
+.chat-input-inline-smiley {
+  width: 21px;
+  height: 21px;
+}
+.chat-input-inline-large {
+  width: 60px;
+  height: 60px;
+}
+.chat-input-inline-sticker {
+  width: auto;
+  height: 60px;
+  max-width: min(180px, 100%);
+  max-height: 60px;
+  border-radius: 10px;
+}
+.input-actions {
+  display: flex;
+  gap: 4px;
+}
+.action-btn {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dollars-text-secondary);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.action-btn:hover {
+  background-color: var(--dollars-glass-highlight);
+  transform: scale(1.1);
+}
+.action-btn:active {
+  transform: scale(0.95);
+}
+.action-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.send-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: var(--primary-color);
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" /><path d="M6.5 12h14.5" /></svg>');
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: background-color .2s, filter .2s, box-shadow 0.2s, transform 0.15s ease;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary-color), transparent 20%);
+}
+.send-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+.send-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  filter: none;
+  box-shadow: none;
+}
+.send-btn svg {
+  width: 18px;
+  height: 18px;
+}
+#dollars-smiles-floating {
+  --item-size: 32px;
+  --icon-size: 21px;
+  --item-hover-bg: rgba(255, 255, 255, 0.3);
+  --item-hover-scale: 1.1;
+  --transition-speed: 0.2s;
+  --panel-height: 320px;
+  --border-color: var(--dollars-border);
+  position: absolute;
+  bottom: calc(100% + 5px);
+  z-index: var(--dollars-z-index-smiley);
+  height: var(--panel-height);
+  width: 100%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--dollars-glass-border-color);
+  border-radius: 18px;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  box-sizing: border-box;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  transform-origin: bottom left;
+}
+html[data-theme="dark"] #dollars-smiles-floating {
+  --item-hover-bg: rgba(255, 255, 255, 0.1);
+}
+@keyframes dollars-panel-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+#dollars-smiles-floating.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  animation: dollars-panel-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#dollars-smiles-tabs {
+  display: flex;
+  flex-shrink: 0;
+  padding: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: transparent;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+#dollars-smiles-tabs::-webkit-scrollbar {
+  display: none;
+}
+.smiley-tab-btn {
+  padding: 4px 12px;
+  border: 1px solid transparent;
+  border-radius: 15px;
+  background: none;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  image-rendering: pixelated;
+}
+.smiley-tab-btn:hover {
+  background-color: var(--item-hover-bg);
+}
+.smiley-tab-btn.active {
+  background-color: transparent;
+  color: var(--primary-color);
+  border-color: var(--dollars-border);
+  font-weight: 700;
+}
+#dollars-smiles-content {
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+  overscroll-behavior: contain;
+}
+#dollars-smiles-content.grouped-content {
+  display: block;
+  padding: 10px;
+}
+.smiley-group-section + .smiley-group-section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(127, 127, 127, 0.18);
+}
+.smiley-group-title {
+  margin: 0 0 8px 2px;
+  color: var(--dollars-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.smiley-group-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.smiley-item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: var(--item-size);
+  height: var(--item-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.smiley-item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--icon-size) var(--icon-size);
+  font-size: 0;
+  transition: background-color var(--transition-speed), transform calc(var(--transition-speed) / 2);
+  image-rendering: pixelated;
+}
+#dollars-smiles-floating .bmo,
+#dollars-reaction-picker-floating .bmo {
+  vertical-align: middle;
+}
+.smiley-item a:hover {
+  background-color: var(--item-hover-bg);
+  transform: scale(var(--item-hover-scale));
+}
+.smiley-item.favorite-item {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+.smiley-item.favorite-item a {
+  background-size: contain;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+html[data-theme="dark"] .smiley-item.favorite-item a {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.smiley-item.favorite-item .remove-favorite-btn {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 50%;
+  border: none;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.smiley-item.favorite-item:hover .remove-favorite-btn {
+  opacity: 1;
+}
+#dollars-smiles-floating.large-smiley-mode {
+  --item-size: 56px;
+  --icon-size: 48px;
+}
+#dollars-smiles-floating.large-smiley-mode .smiley-item a {
+  image-rendering: auto;
+}
+#dollars-context-menu {
+  position: fixed;
+  z-index: var(--dollars-z-index-overlay);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  min-width: unset;
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.15s ease-out;
+}
+html[data-theme="dark"] #dollars-context-menu {
+  background: transparent;
+  box-shadow: none;
+}
+#dollars-context-menu.visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+#dollars-context-menu.has-items-wrapper {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.context-menu-reactions {
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  gap: 4px;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  border: 1px solid var(--dollars-glass-border-color);
+  border-radius: 40px;
+}
+.context-menu-reactions .reaction-item {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.context-menu-reactions .reaction-item:hover {
+  background-color: var(--dollars-bg-hover);
+  transform: scale(1.15);
+}
+.context-menu-reactions .reaction-item:active {
+  transform: scale(0.95);
+}
+.context-menu-reactions .reaction-item img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  image-rendering: pixelated;
+}
+.context-menu-reactions .reaction-item .bmoji-image,
+.reaction-item .bmoji-image {
+  width: 18px !important;
+  height: 18px !important;
+}
+.context-menu-reactions-more {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--dollars-text-secondary);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  flex-shrink: 0;
+}
+.context-menu-reactions-more:hover {
+  background-color: var(--dollars-bg-hover);
+  transform: scale(1.1);
+}
+.context-menu-reactions-more:active {
+  transform: scale(0.95);
+}
+.context-menu-reactions-more svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+.context-menu-reactions-more.expanded svg {
+  transform: rotate(180deg);
+}
+.context-menu-items {
+  padding: 5px 0;
+  min-width: 160px;
+  max-width: 220px;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  border: 1px solid var(--dollars-glass-border-color);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.context-menu-items button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--dollars-text);
+  font-size: 14px;
+  line-height: 20px;
+  transition: background-color 0.1s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.context-menu-items button span:not(.context-icon) {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.context-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--dollars-text-secondary);
+}
+html[data-theme="dark"] .context-icon {
+  color: #aaa;
+}
+.context-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.context-menu-items button.danger .context-icon {
+  color: #f5222d;
+}
+.context-menu-items button:hover {
+  background-color: var(--dollars-bg-hover);
+}
+.context-menu-items button.danger {
+  color: #f5222d;
+}
+.context-menu-items button.image-action {
+  display: none;
+}
+#dollars-context-menu.image-mode .context-menu-items button.image-action {
+  display: flex;
+}
+#dollars-reaction-picker-floating {
+  --item-size: 32px;
+  --icon-size: 21px;
+  --item-hover-bg: rgba(255, 255, 255, 0.3);
+  --panel-height: 260px;
+  position: fixed;
+  z-index: calc(var(--dollars-z-index-overlay) + 1);
+  height: var(--panel-height);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--dollars-glass-border-color);
+  border-radius: 18px;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-5px) scale(0.95);
+  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+html[data-theme="dark"] #dollars-reaction-picker-floating {
+  --item-hover-bg: rgba(255, 255, 255, 0.1);
+}
+@keyframes dollars-picker-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+  }
+  60% {
+    transform: translateY(3px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+#dollars-reaction-picker-floating.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  animation: dollars-picker-slide-down 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.reaction-picker-tabs {
+  display: flex;
+  flex-shrink: 0;
+  padding: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: transparent;
+  gap: 2px;
+}
+.reaction-picker-tab-btn {
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  color: var(--dollars-text-secondary);
+  font-size: 13px;
+  transition: background-color 0.15s, color 0.15s;
+  image-rendering: pixelated;
+}
+html[data-theme="dark"] .reaction-picker-tab-btn {
+  color: #aaa;
+}
+.reaction-picker-tab-btn:hover {
+  background-color: var(--item-hover-bg);
+}
+html[data-theme="dark"] .reaction-picker-tab-btn:hover {
+  background-color: #444;
+}
+.reaction-picker-tab-btn.active {
+  background-color: var(--dollars-bg);
+  color: var(--dollars-text);
+  border-color: var(--dollars-border);
+  font-weight: 700;
+}
+html[data-theme="dark"] .reaction-picker-tab-btn.active {
+  background-color: #3a3a3a;
+  color: #eee;
+  border-color: #555;
+}
+.reaction-picker-content {
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+  overscroll-behavior: contain;
+}
+.reaction-picker-content .smiley-item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: var(--item-size);
+  height: var(--item-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.reaction-picker-content .smiley-item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: var(--icon-size) var(--icon-size);
+  font-size: 0;
+  transition: background-color 0.15s, transform 0.1s;
+  image-rendering: pixelated;
+}
+.reaction-picker-content .smiley-item a:hover {
+  background-color: var(--item-hover-bg);
+  transform: scale(1.1);
+}
+.user-mention {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+.user-mention:hover {
+  text-decoration: underline;
+}
+.chat-tag {
+  color: var(--primary-color);
+  cursor: pointer;
+  margin-right: 2px;
+  display: inline-block;
+}
+.chat-tag:hover {
+  opacity: 0.8;
+}
+#dollars-floating-date {
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  border: 1px solid var(--dollars-glass-border-color);
+  color: var(--primary-color);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-shadow: none;
+  white-space: nowrap;
+}
+#dollars-floating-date.visible {
+  opacity: 1;
+}
+#dollars-typing-indicator {
+  position: absolute;
+  top: -30px;
+  left: 10px;
+  height: auto;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  border: 1px solid var(--dollars-glass-border-color);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--dollars-text-secondary);
+  font-style: italic;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  line-height: 1.5;
+  pointer-events: none;
+  transform: translateY(5px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#dollars-typing-indicator.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+html[data-theme=dark] #dollars-typing-indicator {
+  color: #fff;
+}
+span.text_mask {
+  background-color: #555;
+}
+@media (max-width: 768px) {
+  #dollars-chat-window {
+    width: auto;
+    max-width: calc(100vw - 20px);
+    height: calc(100dvh - 60px);
+    max-height: calc(100dvh - 60px);
+    left: 10px;
+    right: 10px;
+    bottom: 30px;
+    top: auto;
+  }
+  .chat-message {
+    content-visibility: visible;
+    contain-intrinsic-size: auto;
+  }
+  .bubble .message-media-block {
+    margin: 8px 0 5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #dollars-chat-window,
+  #dollars-chat-window .chat-header .close-btn,
+  #dollars-chat-window .chat-message,
+  #dollars-chat-window .send-btn {
+    transition: none !important;
+  }
+}
+#dollars-profile-card {
+  position: fixed;
+  z-index: var(--dollars-z-index-overlay);
+  width: 280px;
+  padding: 0;
+  border-radius: 20px;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  color: var(--dollars-text);
+  opacity: 0;
+  transform: scale(0.95) translateY(5px);
+  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--dollars-glass-border-color);
+}
+@keyframes dollars-profile-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+#dollars-profile-card.visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+  transition: none;
+  animation: dollars-profile-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dollars-profile-banner {
+  height: 60px;
+  width: 100%;
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);
+  position: relative;
+}
+.dollars-profile-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--dollars-bg-pattern-url);
+  background-size: 300px;
+  opacity: 0.6;
+  mix-blend-mode: overlay;
+}
+html[data-theme=dark] .dollars-profile-banner::before {
+  opacity: 0.2;
+}
+.dollars-profile-body {
+  padding: 0 20px 15px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.dollars-profile-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: -30px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 2;
+}
+.dollars-profile-identity {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-grow: 1;
+  min-width: 0;
+  margin-right: 8px;
+}
+.dollars-profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--dollars-bg);
+  background-color: var(--dollars-bg);
+  object-fit: cover;
+  box-shadow: 0 4px 8px var(--dollars-shadow);
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+.dollars-profile-avatar.active {
+  border-color: var(--dollars-color-online);
+  box-shadow: 0 0 0 2px var(--dollars-bg), 0 0 0 4px var(--dollars-color-online);
+}
+.dollars-profile-names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.dollars-profile-nickname {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dollars-text);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dollars-profile-username {
+  font-size: 12px;
+  color: var(--dollars-text-secondary);
+  font-family: monospace;
+  opacity: 0.7;
+}
+.dollars-profile-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.dollars-profile-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--dollars-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dollars-text-secondary);
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.dollars-profile-btn:hover {
+  background: var(--primary-color);
+  color: var(--dollars-bg);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px var(--dollars-shadow);
+}
+.dollars-profile-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+}
+.dollars-profile-sign {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--dollars-text-secondary);
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);
+  background: color-mix(in srgb, var(--primary-color), transparent 92%);
+  border-radius: 0 6px 6px 0;
+  word-wrap: break-word;
+}
+.dollars-profile-footer {
+  font-size: 10px;
+  color: var(--dollars-text-placeholder);
+  padding-top: 8px;
+  border-top: 1px solid var(--dollars-border);
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.dollars-profile-footer::before {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--dollars-border);
+}
+.dollars-profile-footer.active::before {
+  background-color: var(--dollars-color-online);
+}
+#dollars-emoji-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background-color: var(--dollars-icon-color);
+  cursor: pointer;
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M16 3l-4 4l-4 -4" /></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M16 3l-4 4l-4 -4" /></svg>');
+  -webkit-mask-size: 23px;
+  mask-size: 23px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  border-radius: 50%;
+}
+#dollars-emoji-btn svg {
+  display: none !important;
+}
+#dollars-attach-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background-color: var(--dollars-icon-color);
+  cursor: pointer;
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" /></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" /></svg>');
+  -webkit-mask-size: 23px;
+  mask-size: 23px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  border-radius: 50%;
+}
+#dollars-attach-btn svg {
+  display: none !important;
+}
+.send-btn svg {
+  display: none !important;
+}
+.chat-header .header-buttons,
+.header-buttons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.header-btn {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color .2s ease, transform 0.15s ease;
+  border: none;
+  background: transparent;
+}
+#dollars-back-btn,
+.dollars-back-btn {
+  margin-right: 0;
+  background-color: var(--dollars-icon-color);
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+#dollars-back-btn svg,
+.dollars-back-btn svg {
+  display: none !important;
+}
+#dollars-resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nw-resize;
+  z-index: 10003;
+  touch-action: none;
+  background-color: var(--dollars-icon-color-secondary);
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M10 2L2 10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M14 6L6 14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M10 2L2 10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M14 6L6 14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 5px 5px;
+  mask-position: 5px 5px;
+  -webkit-mask-size: 10px;
+  mask-size: 10px;
+  opacity: .6;
+  transition: opacity .2s ease;
+}
+#dollars-resize-handle:hover {
+  opacity: 1;
+}
+#dollars-resize-handle::after {
+  display: none !important;
+}
+#dollars-settings-btn-header {
+  background-color: var(--dollars-icon-color);
+  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><circle cx="12" cy="12" r="3" /></svg>');
+  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><circle cx="12" cy="12" r="3" /></svg>');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+#dollars-text-formatter {
+  position: fixed;
+  z-index: var(--dollars-z-index-context);
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  border: 1px solid var(--dollars-glass-border-color);
+  border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+#dollars-text-formatter.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.formatter-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.formatter-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 50px;
+  cursor: pointer;
+  color: var(--dollars-text);
+  transition: background-color 0.15s, transform 0.1s, color 0.15s;
+}
+.formatter-btn:hover {
+  background-color: var(--dollars-bg-hover);
+}
+.formatter-btn.active {
+  color: var(--primary-color);
+}
+.formatter-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.formatter-divider {
+  width: 1px;
+  height: 18px;
+  background-color: var(--dollars-border);
+  margin: 0 4px;
+}
+.formatter-link-input-wrapper {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  padding: 0 2px;
+}
+#dollars-text-formatter.link-mode .main-buttons {
+  display: none;
+}
+#dollars-text-formatter.link-mode .formatter-link-input-wrapper {
+  display: flex;
+}
+.formatter-link-input {
+  background: transparent;
+  border: none;
+  color: var(--dollars-text);
+  font-size: 13px;
+  width: 150px;
+  outline: none;
+  padding: 4px;
+}
+.formatter-link-input::placeholder {
+  color: var(--dollars-text-placeholder);
+}
+#dollars-nav-group {
+  position: absolute;
+  bottom: 90px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 30;
+  pointer-events: none;
+  transition: transform 0.2s, opacity 0.2s;
+}
+#dollars-nav-group.visible {
+  pointer-events: auto;
+}
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--dollars-glass-border-color);
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  color: var(--primary-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+.nav-btn.visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.nav-btn:hover {
+  background: var(--dollars-glass-bg);
+  transform: scale(1.1);
+  box-shadow: var(--dollars-glass-shadow), 0 0 0 2px color-mix(in srgb, var(--primary-color), transparent 70%);
+}
+.nav-btn:active {
+  transform: scale(0.95);
+}
+.nav-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.5;
+}
+#dollars-scroll-bottom-btn {
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  z-index: 95;
+}
+#dollars-scroll-mention-btn {
+  position: absolute;
+  right: 20px;
+  z-index: 95;
+}
+#dollars-scroll-mention-btn svg {
+  transform: rotate(180deg);
+}
+.nav-btn-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  padding: 0 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 31;
+}
+#dollars-mention-list {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
+  border-radius: 18px;
+  display: none;
+  flex-direction: column;
+  z-index: var(--dollars-z-index-smiley);
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  box-shadow: var(--dollars-glass-shadow);
+  border: 1px solid var(--dollars-glass-border-color);
+  gap: 4px;
+  transition: bottom 0.2s ease;
+}
+#dollars-mention-list.visible {
+  display: flex;
+  animation: dollars-slide-up 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes dollars-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes dollars-item-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mention-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 8px;
+  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.mention-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+.mention-item:nth-child(2) {
+  animation-delay: 30ms;
+}
+.mention-item:nth-child(3) {
+  animation-delay: 60ms;
+}
+.mention-item:nth-child(4) {
+  animation-delay: 90ms;
+}
+.mention-item:nth-child(5) {
+  animation-delay: 120ms;
+}
+.mention-item:nth-child(6) {
+  animation-delay: 150ms;
+}
+.mention-item:hover,
+.mention-item.active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+html[data-theme="dark"] .mention-item:hover,
+html[data-theme="dark"] .mention-item.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.mention-item img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--dollars-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.mention-item-info {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  overflow: hidden;
+  min-width: 0;
+  line-height: 1.2;
+}
+.mention-item-nick {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dollars-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mention-item-user {
+  font-size: 10px;
+  color: var(--dollars-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.8;
+}
+.dollars-preview-card {
+  background-color: var(--dollars-bg);
+  border: 1px solid var(--dollars-border);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  gap: 12px;
+  text-decoration: none !important;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  max-width: 100% !important;
+  height: 100px;
+  width: 300px;
+  overflow: hidden;
+  position: relative;
+  min-width: 0;
+}
+.dollars-preview-card .cover {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background-color: var(--dollars-bg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dollars-preview-card .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0 !important;
+}
+.dollars-preview-card[data-entity-type=character] .cover img,
+.dollars-preview-card[data-entity-type=person] .cover img {
+  object-fit: contain !important;
+}
+.dollars-preview-card[data-entity-type=generic] .cover {
+  background-color: var(--dollars-bg);
+  border-radius: 5px;
+}
+.dollars-preview-card[data-entity-type=generic] .cover img {
+  object-fit: cover;
+}
+.dollars-preview-card .inner {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.dollars-preview-card .title {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--dollars-text) !important;
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dollars-preview-card .info {
+  font-size: 12px;
+  color: var(--dollars-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dollars-preview-card[data-entity-type=generic] .info {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+.dollars-preview-card .rateInfo {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--dollars-text-placeholder);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .uprofile-action-btn,
+  .uprofile-action-btn:active {
+    transition: none;
+    transform: none;
+  }
+  .uprofile-info-row {
+    transition: none;
+  }
+  .uprofile-media-item img {
+    transition: none;
+  }
+  #dollars-user-profile-panel.narrow,
+  #dollars-user-profile-panel.narrow.visible,
+  #dollars-user-profile-panel.narrow.closing {
+    transition: none;
+  }
+  #dollars-user-profile-panel.wide,
+  #dollars-user-profile-panel.wide.visible,
+  #dollars-user-profile-panel.wide.closing {
+    transition: none;
+  }
+}
+#dollars-user-profile-panel {
+  position: absolute;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: var(--dollars-bg);
+  overflow: hidden;
+}
+#dollars-user-profile-panel.narrow {
+  inset: 0;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+#dollars-user-profile-panel.narrow.visible {
+  transform: translateX(0);
+}
+#dollars-user-profile-panel.narrow.closing {
+  transform: translateX(100%);
+}
+#dollars-user-profile-panel.wide {
+  top: calc(40px + 16px);
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 101;
+  border-radius: 16px;
+  border: 1px solid var(--dollars-border);
+  box-shadow: 0 8px 40px -8px var(--dollars-shadow);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+#dollars-user-profile-panel.wide.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#dollars-user-profile-panel.wide.closing {
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+}
+.uprofile-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 8px 8px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--dollars-border);
+}
+.uprofile-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dollars-text);
+}
+.uprofile-banner {
+  height: 120px;
+  flex-shrink: 0;
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,
+    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.uprofile-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--dollars-bg-pattern-url);
+  background-size: 300px;
+  opacity: 0.6;
+  mix-blend-mode: overlay;
+}
+html[data-theme=dark] .uprofile-banner::before {
+  opacity: 0.2;
+}
+.uprofile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 3px solid var(--dollars-bg);
+  background-color: var(--dollars-bg);
+  object-fit: cover;
+  box-shadow: 0 4px 16px var(--dollars-shadow);
+  position: relative;
+  z-index: 1;
+  transform: translateY(44px);
+  flex-shrink: 0;
+}
+.uprofile-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 52px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.uprofile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.uprofile-name-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.uprofile-nickname {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--dollars-text);
+  line-height: 1.3;
+  word-break: break-word;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.uprofile-status-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--dollars-color-online);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px var(--dollars-bg);
+  position: relative;
+}
+.uprofile-status-dot.active::after {
+  content: none;
+}
+.uprofile-username {
+  font-size: 13px;
+  color: var(--dollars-text-secondary);
+  font-family: monospace;
+  text-align: center;
+}
+.uprofile-last-active {
+  font-size: 12px;
+  color: var(--dollars-text-placeholder);
+  margin-top: 2px;
+}
+.uprofile-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: color-mix(in srgb, var(--primary-color), transparent 92%);
+  border: 1px solid color-mix(in srgb, var(--primary-color), transparent 80%);
+  border-radius: 12px;
+  padding: 10px 8px;
+}
+.uprofile-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.uprofile-stat-num {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+  letter-spacing: -0.3px;
+  display: inline-block;
+}
+.uprofile-stat-label {
+  font-size: 11px;
+  color: var(--dollars-text-placeholder);
+  line-height: 1;
+}
+.uprofile-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: color-mix(in srgb, var(--primary-color), transparent 70%);
+  flex-shrink: 0;
+}
+.uprofile-actions {
+  display: flex;
+  gap: 8px;
+}
+.uprofile-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--dollars-glass-bg);
+  border: 1px solid var(--dollars-border);
+  color: var(--dollars-text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.14s ease-out, color 0.14s ease-out, border-color 0.14s ease-out;
+  white-space: nowrap;
+}
+.uprofile-action-btn:hover {
+  background: var(--primary-color);
+  color: var(--dollars-bg);
+  border-color: var(--primary-color);
+}
+.uprofile-action-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+.uprofile-action-btn span {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.uprofile-action-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+.uprofile-info-section {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--dollars-border);
+  padding-top: 12px;
+}
+.uprofile-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  transition: background-color 0.15s;
+}
+.uprofile-info-row:hover {
+  background: var(--dollars-bg-hover);
+}
+.uprofile-info-row + .uprofile-info-row {
+  border-top: 1px solid color-mix(in srgb, var(--dollars-border), transparent 50%);
+}
+.uprofile-info-content {
+  flex: 1;
+  min-width: 0;
+}
+.uprofile-info-label {
+  font-size: 11px;
+  color: var(--primary-color);
+  opacity: 0.8;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.uprofile-info-value {
+  font-size: 13px;
+  color: var(--dollars-text);
+  line-height: 1.5;
+  word-break: break-word;
+}
+.uprofile-sign-value {
+  padding: 4px 8px;
+  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);
+  background: color-mix(in srgb, var(--primary-color), transparent 92%);
+  border-radius: 0 6px 6px 0;
+  color: var(--dollars-text-secondary);
+}
+.uprofile-media-section {
+  border-top: 1px solid var(--dollars-border);
+  padding-top: 12px;
+}
+.uprofile-media-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+.uprofile-media-header span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dollars-text);
+}
+.uprofile-media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.uprofile-media-item {
+  position: relative;
+  aspect-ratio: 1;
+  cursor: pointer;
+  overflow: hidden;
+  background: var(--dollars-border);
+}
+.uprofile-media-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.16s ease-out;
+}
+.uprofile-media-item:hover img {
+  transform: scale(1.02);
+}
+.uprofile-media-video-btn {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+}
+.uprofile-media-video-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.uprofile-media-video-badge svg {
+  margin-left: 2px;
+}
+.uprofile-empty-hint {
+  text-align: center;
+  color: var(--dollars-text-placeholder);
+  font-size: 13px;
+  padding: 16px 0;
+}
+#dollars-search-ui {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  gap: 8px;
+  padding: 52px 12px 12px 12px;
+  background: var(--dollars-glass-bg);
+  backdrop-filter: var(--dollars-glass-blur);
+  -webkit-backdrop-filter: var(--dollars-glass-blur);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+}
+#dollars-search-ui~.chat-input-container,
+#dollars-user-profile-panel.visible~.chat-input-container {
+  display: none;
+}
+#dollars-search-ui .search-panel-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  opacity: 0.8
+}
+#dollars-search-ui .search-calendar-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: var(--dollars-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--dollars-border);
+  color: var(--dollars-text-secondary);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+#dollars-search-ui .search-bar {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  position: relative;
+  border-radius: 100px;
+  border: 1px solid var(--dollars-border);
+  background-color: var(--dollars-bg);
+  transition: all .3s ease-in-out;
+  padding: 0 6px 0 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+#dollars-search-ui .search-bar:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(240, 145, 153, .6);
+}
+#dollars-search-ui input {
+  flex-grow: 1;
+  min-width: 0;
+  padding: 6px 0;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  outline: 0;
+  color: var(--dollars-text);
+}
+#dollars-search-ui .search-close-btn {
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--dollars-text-secondary);
+  align-items: center;
+  opacity: 0.5;
+  z-index: 1;
+  display: flex;
+}
+#dollars-search-ui .search-icon {
+  flex-shrink: 0;
+}
+#dollars-search-ui input[type=search]::-webkit-search-cancel-button,
+#dollars-search-ui input[type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+#dollars-search-results {
+  flex-grow: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.search-status-msg {
+  text-align: center;
+  padding: 20px;
+  color: var(--dollars-text-placeholder);
+}
+.search-result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color .2s;
+}
+.search-result-item:hover {
+  background-color: var(--dollars-bg-hover);
+}
+.search-result-item img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+.search-result-item .dollars-search-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.search-result-item .dollars-search-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.search-result-item .dollars-search-nickname {
+  font-weight: 700;
+  color: var(--dollars-text);
+}
+.search-result-item .dollars-search-timestamp {
+  color: var(--dollars-text-secondary);
+}
+.search-result-item .dollars-search-message {
+  font-size: 13px;
+  color: var(--dollars-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#dollars-search-ui .search-gallery-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: var(--dollars-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--dollars-border);
+  color: var(--dollars-text-secondary);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+#dollars-search-ui .search-gallery-btn:hover {
+  background-color: var(--dollars-bg-hover);
+}
+#dollars-search-ui .search-gallery-btn.active {
+  background-color: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+}
+#dollars-search-ui .search-calendar-btn svg,
+#dollars-search-ui .search-gallery-btn svg {
+  width: 20px;
+  height: 20px;
+}
+#dollars-search-ui .gallery-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+#dollars-search-ui .gallery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+#dollars-search-ui .gallery-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dollars-text);
+}
+#dollars-search-ui .gallery-close-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--dollars-text-secondary);
+  transition: all 0.2s;
+}
+#dollars-search-ui .gallery-close-btn:hover {
+  background-color: var(--dollars-bg-hover);
+}
+#dollars-search-ui .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  flex-grow: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  align-content: start;
+}
+#dollars-search-ui .gallery-item {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: var(--dollars-bg);
+}
+#dollars-search-ui .gallery-item a {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#dollars-search-ui .gallery-item img,
+#dollars-search-ui .gallery-item video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#dollars-search-ui .gallery-item .video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+#dollars-search-ui .gallery-item:hover .video-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+#dollars-search-ui .gallery-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 20px;
+  color: var(--dollars-text-secondary);
+}
+.dollars-tooltip {
+  pointer-events: auto !important;
+}
+.dollars-tooltip .tooltip-inner a {
+  color: #eee !important;
+  text-decoration: none !important;
+  transition: color .2s;
+  cursor: pointer;
+}
+.dollars-tooltip .tooltip-inner a:hover {
+  color: #fff !important;
+  border-bottom-color: #fff;
+  text-decoration: none !important;
+}
+@keyframes dollars-message-in {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes dollars-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+@keyframes dollars-slide-down-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+#dollars-context-menu.closing {
+  animation: dollars-scale-out 0.15s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes dollars-profile-slide-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+}
+#dollars-profile-card.closing {
+  animation: dollars-profile-slide-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+  transition: none;
+}
+#dollars-smiles-floating.closing {
+  animation: dollars-slide-down-out 0.2s ease-out forwards;
+  pointer-events: none;
+}
+#dollars-reaction-picker-floating.closing {
+  animation: dollars-scale-out 0.15s ease-out forwards;
+  pointer-events: none;
+}
+.chat-message.new-message {
+  animation: dollars-message-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transition: none;
+  opacity: 0;
+  transform: translateY(16px);
+}
+.chat-message.pending.new-message {
+  opacity: 0.75;
+}
+.chat-message.pending {
+  opacity: 0.7;
+  transition: opacity 0.25s ease-out !important;
+}
+.chat-message.pending .bubble::after {
+  content: '';
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--dollars-text-secondary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: dollars-spin 0.7s ease-in-out infinite, dollars-spinner-fade-in 0.2s ease-out forwards;
+  will-change: transform;
+}
+@keyframes dollars-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dollars-spinner-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+#dollars-chat-root .likes_grid {
+  opacity: 1;
+}
+#dollars-chat-root .likes_grid .item {
+  gap: 3px;
+  background: rgba(255, 255, 255, 0.85);
+}
+html[data-theme="dark"] #dollars-chat-root .likes_grid .item {
+  background: rgba(255, 255, 255, 0.15);
+}
+.reaction-avatars {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 3px;
+  flex-shrink: 0;
+}
+.reaction-avatar {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  margin-left: -5px;
+  object-fit: cover;
+  background-color: var(--dollars-bg);
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+.reaction-avatar:first-child {
+  margin-left: 0;
+}
+.reaction-item:hover .reaction-avatar {
+  border-color: #369cf8;
+}
+.reaction-item .num.extra {
+  font-size: 10px;
+  margin-left: 2px;
+  color: var(--dollars-text-secondary);
+}
+.reaction-item:hover .num.extra {
+  color: #fff;
+}
+@keyframes dollars-stagger-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+#dollars-smiles-floating.open .smiley-item,
+#dollars-reaction-picker-floating.open .smiley-item {
+  animation: dollars-stagger-fade 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+@keyframes dollars-menu-cascade {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+#dollars-context-menu.visible .context-menu-items button {
+  animation: dollars-menu-cascade 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(1) {
+  animation-delay: 0ms;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(2) {
+  animation-delay: 25ms;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(3) {
+  animation-delay: 50ms;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(4) {
+  animation-delay: 75ms;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(5) {
+  animation-delay: 100ms;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(6) {
+  animation-delay: 125ms;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(7) {
+  animation-delay: 150ms;
+}
+#dollars-context-menu.visible .context-menu-items button:nth-child(8) {
+  animation-delay: 175ms;
+}
+@keyframes dollars-reaction-bounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(15px);
+  }
+  40% {
+    transform: scale(1.2) translateY(-10px);
+  }
+  65% {
+    transform: scale(0.92) translateY(2px);
+  }
+  85% {
+    transform: scale(1.05) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item {
+  animation: dollars-reaction-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(2) {
+  animation-delay: 35ms;
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(3) {
+  animation-delay: 70ms;
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(4) {
+  animation-delay: 105ms;
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(5) {
+  animation-delay: 140ms;
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(6) {
+  animation-delay: 175ms;
+}
+#dollars-context-menu.visible .context-menu-reactions .reaction-item:nth-child(7) {
+  animation-delay: 210ms;
+}
+.reply-preview.visible {
+  animation: dollars-slide-up 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.search-result-item {
+  animation: dollars-item-slide-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.search-result-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+.search-result-item:nth-child(2) {
+  animation-delay: 30ms;
+}
+.search-result-item:nth-child(3) {
+  animation-delay: 60ms;
+}
+.search-result-item:nth-child(4) {
+  animation-delay: 90ms;
+}
+.search-result-item:nth-child(5) {
+  animation-delay: 120ms;
+}
+.search-result-item:nth-child(6) {
+  animation-delay: 150ms;
+}
+.search-result-item:nth-child(7) {
+  animation-delay: 180ms;
+}
+.search-result-item:nth-child(8) {
+  animation-delay: 210ms;
+}
+.conversation-item {
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.conversation-item:hover {
+  transform: scale(1.02);
+}
+.conversation-item:active {
+  transform: scale(0.98);
+}
+.send-btn:active {
+  transform: scale(0.9) !important;
+}
+.header-btn:active {
+  transform: scale(0.92);
+}
+@keyframes dollars-date-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+#dollars-floating-date.visible {
+  animation: dollars-date-slide 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes dollars-btn-bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.nav-btn.visible {
+  animation: dollars-btn-bounce-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dollars-preview-card {
+  animation: dollars-item-slide-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.smiley-tab-btn,
+.reaction-picker-tab-btn {
+  transition: background-color 0.15s, color 0.15s, transform 0.1s;
+}
+.smiley-tab-btn:active,
+.reaction-picker-tab-btn:active {
+  transform: scale(0.95);
+}
+@keyframes dollars-formatter-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+#dollars-text-formatter.visible {
+  animation: dollars-formatter-in 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.formatter-btn:active {
+  transform: scale(0.9);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+#unified-notifier {
+  position: fixed;
+  bottom: 40px;
+  right: 30px;
+  width: 223px;
+  z-index: 10001;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  transform: translateX(calc(100% + 30px));
+  transition: all .4s ease-in-out;
+  background-color: rgba(254, 254, 254, .9);
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, .1);
+  box-shadow: 0 5px 25px -5px rgba(80, 80, 80, .3);
+  display: flex;
+  flex-direction: column;
+}
+html[data-theme=dark] #unified-notifier {
+  background-color: rgba(45, 46, 47, .9);
+  color: #e0e0e1;
+  border: 1px solid rgba(255, 255, 255, .15);
+}
+#unified-notifier.show {
+  transform: translateX(0);
+}
+.un-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary-color);
+  border-bottom: 1px solid #eee;
+}
+html[data-theme=dark] .un-header {
+  border-bottom: 1px solid #444;
+}
+.un-body {
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.un-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 15px;
+}
+.un-item:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+html[data-theme=dark] .un-item:not(:last-child) {
+  border-bottom: 1px solid #444;
+}
+.un-item .avatarNeue {
+  margin-right: 12px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  border-radius: 50%;
+}
+.un-item .content {
+  flex-grow: 1;
+  font-size: 13px;
+  overflow: hidden;
+}
+.un-item .actions {
+  margin-top: 8px;
+}
+.un-action-btn {
+  cursor: pointer;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-decoration: none !important;
+  transition: background-color 0.2s;
+}
+.un-action-btn.btnRedSmall {
+  background-color: var(--primary-color);
+  color: #fff !important;
+}
+.un-action-btn.btnRedSmall:hover {
+  background-color: #369cf8;
+}
+.un-action-btn.btnGraySmall {
+  background-color: #eee;
+  color: #666 !important;
+}
+.un-action-btn.btnGraySmall:hover {
+  background-color: #ddd;
+}
+html[data-theme=dark] .un-action-btn.btnGraySmall {
+  background-color: #444;
+  color: #ccc !important;
+}
+html[data-theme=dark] .un-action-btn.btnGraySmall:hover {
+  background-color: #555;
+}
+.un-widget-title {
+  color: #3e3e3e;
+  display: block;
+  margin-bottom: 4px;
+}
+.un-widget-message {
+  color: #666;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+html[data-theme=dark] .un-widget-title {
+  color: #e9e9e9;
+}
+html[data-theme=dark] .un-widget-message {
+  color: #aaa;
+}
+.un-clear-all {
+  font-size: 12px;
+  color: var(--dollars-text-placeholder) !important;
+  text-decoration: none !important;
+}
+.un-clear-all:hover {
+  color: var(--primary-color) !important;
+}
+@keyframes dollars-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.browse-separator {
+  display: block;
+  position: relative;
+  text-align: center;
+  margin: 12px -19px;
+  width: calc(100% + 38px);
+  height: 30px;
+  line-height: 30px;
+  background-color: rgba(var(--primary-color-rgb, 249, 109, 142), 0.1);
+  z-index: 2;
+  pointer-events: none;
+  animation: dollars-fade-in 0.3s ease;
+}
+.browse-separator span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0 12px;
+}
+html[data-theme='dark'] .browse-separator {
+  background-color: rgba(249, 109, 142, 0.15);
+}
+.unread-separator {
+  display: block;
+  position: relative;
+  text-align: center;
+  margin: 12px -19px;
+  width: calc(100% + 38px);
+  height: 30px;
+  line-height: 30px;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 2;
+  pointer-events: none;
+  animation: dollars-fade-in 0.3s ease;
+}
+.unread-separator span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0 12px;
+}
+html[data-theme='dark'] .unread-separator {
+  background-color: rgba(60, 62, 64, 0.9);
+}
+#dollars-card {
+  transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  border: 1px solid var(--primary-color) !important;
+  background-color: var(--dollars-bg);
+  cursor: pointer;
+}
+#dollars-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url('https://lsky.ry.mk/i/2026/01/03/background.svg'),
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--primary-color), #a0c4ff 50%) 0%,
+      color-mix(in srgb, var(--primary-color), #ffffff 50%) 50%,
+      color-mix(in srgb, var(--primary-color), #ffc6ff 50%) 100%);
+  background-repeat: repeat, no-repeat;
+  background-position: 300px, center;
+  background-size: 300px auto, cover;
+  background-blend-mode: overlay, normal;
+  opacity: 1;
+  transition: opacity 0.3s ease, background-position 0.1s ease-out;
+}
+html[data-theme='dark'] #dollars-card {
+  border: 1px solid var(--primary-color);
+  background: initial;
+}
+html[data-theme='dark'] #dollars-card::before {
+  background: linear-gradient(160deg,
+      var(--primary-color) 0%,
+      color-mix(in srgb, var(--primary-color), transparent 40%) 100%);
+  -webkit-mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
+  mask-image: url('https://lsky.ry.mk/i/2026/01/03/background.svg');
+  mask-repeat: repeat;
+  mask-size: 300px;
+  mask-position: 300px;
+}
+#dollars-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+#dock-chat-link {
+  position: relative;
+}
+#dock-chat-link.flashing {
+  animation: dock-flash 1s ease-in-out infinite;
+}
+@keyframes dock-flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+.dock-notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background-color: #f96d8e;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  display: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+`;
 
   function injectStyles() {
     if (document.querySelector("[data-dollars-styles]")) return;
@@ -8487,7 +12322,7 @@ ${content}`;
     const container = document.createElement("div");
     container.id = "dollars-app-mount";
     document.body.appendChild(container);
-    G(/* @__PURE__ */ u$2(App, {}), container);
+    G(/* @__PURE__ */ _$3(App, null), container);
     setTimeout(injectHomeCard, 0);
   }
   if (document.readyState === "loading") {

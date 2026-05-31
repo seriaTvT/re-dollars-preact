@@ -3,7 +3,7 @@ import { App } from './App';
 import { initDollarsAPI } from './extensionAPI';
 import { settings } from './stores/user';
 import { toggleChat, isChatOpen } from './stores/chat';
-import cssContent from '@/styles/index.css?inline';
+import cssContent from 'virtual:dollars-css';
 
 // 提前注入样式，避免 FOUC (Flash of Unstyled Content)
 function injectStyles() {

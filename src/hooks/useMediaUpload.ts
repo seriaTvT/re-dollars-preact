@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from 'preact/hooks';
-import { uploadFile } from '@/utils/api/media';
+import { uploadFile, uploadImages, type UploadResult } from '@/utils/api/media';
 import type { RichInputController } from '@/utils/richInput';
 
 export type MediaItem = {
@@ -22,6 +22,70 @@ const ALLOWED_AUDIO_EXTS = new Set([
     '.mp3', '.wav', '.ogg', '.aac', '.flac', '.weba',
 ]);
 export const MEDIA_FILE_ACCEPT = 'image/*,.heic,.heif,video/*';
+
+interface MediaKind {
+    ext: string;
+    isImage: boolean;
+    isVideo: boolean;
+    isAudio: boolean;
+}
+
+function getMediaKind(file: File): MediaKind {
+    const ext = '.' + (file.name.split('.').pop() || '').toLowerCase();
+    return {
+        ext,
+        isImage: file.type.startsWith('image/') || ALLOWED_IMAGE_EXTS.has(ext),
+        isVideo: file.type.startsWith('video/') || ALLOWED_VIDEO_EXTS.has(ext),
+        isAudio: file.type.startsWith('audio/') || ALLOWED_AUDIO_EXTS.has(ext),
+    };
+}
+
+function normalizeUploadFile(file: File, kind: MediaKind) {
+    if (file.type || !kind.isImage) return file;
+
+    const mimeMap: Record<string, string> = {
+        '.heic': 'image/heic',
+        '.heif': 'image/heif',
+        '.bmp': 'image/bmp',
+        '.tiff': 'image/tiff',
+        '.tif': 'image/tiff',
+        '.jxl': 'image/jxl',
+        '.avif': 'image/avif',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.png': 'image/png',
+        '.webp': 'image/webp',
+        '.gif': 'image/gif',
+    };
+    return new File([file], file.name, { type: mimeMap[kind.ext] || 'application/octet-stream' });
+}
+
+async function getImageDimensions(file: File) {
+    let width = 0;
+    let height = 0;
+
+    try {
+        const img = new Image();
+        const objectUrl = URL.createObjectURL(file);
+        await new Promise<void>((resolve) => {
+            img.onload = () => {
+                width = img.naturalWidth;
+                height = img.naturalHeight;
+                URL.revokeObjectURL(objectUrl);
+                resolve();
+            };
+            img.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                resolve();
+            };
+            img.src = objectUrl;
+        });
+    } catch {
+        // ignore
+    }
+
+    return { width, height };
+}
 
 export function useMediaUpload(
     inputControllerRef: { current: RichInputController | null }
@@ -149,125 +213,118 @@ export function useMediaUpload(
     }, []);
 
     // 文件上传核心逻辑
-    const handleFileUpload = useCallback(async (file: File) => {
-        // Client-side file type validation
-        const ext = '.' + (file.name.split('.').pop() || '').toLowerCase();
-        const isImage = file.type.startsWith('image/') || ALLOWED_IMAGE_EXTS.has(ext);
-        const isVideo = file.type.startsWith('video/') || ALLOWED_VIDEO_EXTS.has(ext);
-        const isAudio = file.type.startsWith('audio/') || ALLOWED_AUDIO_EXTS.has(ext);
-
-        // Handle files with missing MIME type (common for HEIC on some platforms)
-        let fileToUpload = file;
-        if (!file.type && isImage) {
-            // Create a new file with corrected MIME type based on extension
-            const mimeMap: Record<string, string> = {
-                '.heic': 'image/heic', '.heif': 'image/heif',
-                '.bmp': 'image/bmp', '.tiff': 'image/tiff', '.tif': 'image/tiff',
-                '.jxl': 'image/jxl', '.avif': 'image/avif',
-                '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
-                '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif',
-            };
-            const correctedMime = mimeMap[ext] || 'application/octet-stream';
-            fileToUpload = new File([file], file.name, { type: correctedMime });
+    const insertUploadResult = useCallback((
+        file: File,
+        kind: MediaKind,
+        result: UploadResult,
+        dimensions?: { width: number; height: number }
+    ) => {
+        if (!result.status || !result.url) {
+            alert(result.error || '上传失败');
+            return;
         }
 
+        const controller = inputControllerRef.current;
+        if (!controller) return;
+
+        let tag = 'img';
+        if (kind.isVideo) {
+            tag = 'video';
+        } else if (kind.isAudio) {
+            tag = 'audio';
+        } else if (!kind.isImage) {
+            tag = 'file';
+        }
+
+        const safeName = file.name.replace(/[\[\]\r\n]+/g, ' ').trim() || '附件';
+        const bbcode = tag === 'file'
+            ? `[file=${safeName}]${result.url}[/file]`
+            : `[${tag}]${result.url}[/${tag}]`;
+        controller.insertText(bbcode, { focus: true });
+
+        if (tag === 'img' && dimensions?.width && dimensions.height) {
+            setPreviewMedia(prev => {
+                const existingIndex = prev.findIndex((item) =>
+                    item.type === 'image' &&
+                    item.url === result.url &&
+                    (!item.width || !item.height)
+                );
+
+                if (existingIndex >= 0) {
+                    const next = [...prev];
+                    next[existingIndex] = {
+                        ...next[existingIndex],
+                        width: dimensions.width,
+                        height: dimensions.height
+                    };
+                    return next;
+                }
+
+                if (prev.some(item => item.type === 'image' && item.url === result.url)) {
+                    return prev;
+                }
+
+                return [...prev, {
+                    type: 'image',
+                    url: result.url!,
+                    width: dimensions.width,
+                    height: dimensions.height
+                }];
+            });
+        }
+    }, [inputControllerRef]);
+
+    const handleFilesUpload = useCallback(async (files: File[]) => {
+        if (files.length === 0) return;
         setIsUploading(true);
 
-        // Pre-calculate image dimensions client-side (before upload)
-        let clientWidth = 0;
-        let clientHeight = 0;
-        if (isImage) {
-            try {
-                const img = new Image();
-                const objectUrl = URL.createObjectURL(fileToUpload);
-                await new Promise<void>((resolve) => {
-                    img.onload = () => {
-                        clientWidth = img.naturalWidth;
-                        clientHeight = img.naturalHeight;
-                        URL.revokeObjectURL(objectUrl);
-                        resolve();
-                    };
-                    img.onerror = () => {
-                        URL.revokeObjectURL(objectUrl);
-                        resolve();
-                    };
-                    img.src = objectUrl;
-                });
-            } catch (e) {
-                console.warn('Failed to get image dimensions:', e);
-            }
-        }
-
         try {
-            const result = await uploadFile(fileToUpload);
-            if (result.status && result.url) {
-                const controller = inputControllerRef.current;
-                if (!controller) return;
+            const prepared = files.map((file) => {
+                const kind = getMediaKind(file);
+                return { original: file, kind, upload: normalizeUploadFile(file, kind) };
+            });
+            const images = prepared.filter((item) => item.kind.isImage);
+            const others = prepared.filter((item) => !item.kind.isImage);
 
-                let tag = 'img';
-                if (isVideo) {
-                    tag = 'video';
-                } else if (isAudio) {
-                    tag = 'audio';
-                } else if (!isImage) {
-                    tag = 'file';
-                }
-                const safeName = file.name.replace(/[\[\]\r\n]+/g, ' ').trim() || '附件';
-                const bbcode = tag === 'file'
-                    ? `[file=${safeName}]${result.url}[/file]`
-                    : `[${tag}]${result.url}[/${tag}]`;
-                controller.insertText(bbcode, { focus: true });
+            if (images.length > 0) {
+                const [dimensions, results] = await Promise.all([
+                    Promise.all(images.map((item) => getImageDimensions(item.upload))),
+                    uploadImages(images.map((item) => item.upload)),
+                ]);
 
-                // Use client-side dimensions (more reliable than async backend)
-                if (tag === 'img' && clientWidth && clientHeight) {
-                    setPreviewMedia(prev => {
-                        const existingIndex = prev.findIndex((item) =>
-                            item.type === 'image' &&
-                            item.url === result.url &&
-                            (!item.width || !item.height)
-                        );
-
-                        if (existingIndex >= 0) {
-                            const next = [...prev];
-                            next[existingIndex] = {
-                                ...next[existingIndex],
-                                width: clientWidth,
-                                height: clientHeight
-                            };
-                            return next;
-                        }
-
-                        if (prev.some(item => item.type === 'image' && item.url === result.url)) {
-                            return prev;
-                        }
-
-                        return [...prev, {
-                            type: 'image',
-                            url: result.url!,
-                            width: clientWidth,
-                            height: clientHeight
-                        }];
+                if (results.length !== images.length && results[0]?.status === false) {
+                    alert(results[0].error || '上传失败');
+                } else {
+                    images.forEach((item, index) => {
+                        insertUploadResult(item.original, item.kind, results[index] ?? { status: false, error: '上传失败' }, dimensions[index]);
                     });
                 }
-            } else {
-                alert(result.error || '上传失败');
+            }
+
+            for (const item of others) {
+                const result = await uploadFile(item.upload);
+                insertUploadResult(item.original, item.kind, result);
             }
         } catch (e) {
             alert('上传失败，请重试');
         } finally {
             setIsUploading(false);
         }
-    }, [inputControllerRef]);
+    }, [insertUploadResult]);
+
+    const handleFileUpload = useCallback(async (file: File) => {
+        await handleFilesUpload([file]);
+    }, [handleFilesUpload]);
 
     // 处理文件选择
     const handleFileChange = useCallback(async (e: Event) => {
         const input = e.target as HTMLInputElement;
-        const file = input.files?.[0];
-        if (file) {
-            await handleFileUpload(file);
+        const files = Array.from(input.files || []);
+        if (files.length > 0) {
+            await handleFilesUpload(files);
             input.value = ''; // 清空以便重复选择
         }
-    }, [handleFileUpload]);
+    }, [handleFilesUpload]);
 
     // 文件粘贴上传
     const handlePaste = useCallback(async (e: ClipboardEvent) => {
@@ -283,12 +340,8 @@ export function useMediaUpload(
 
         if (items.length > 0) {
             e.preventDefault();
-            for (const item of items) {
-                const file = item.getAsFile();
-                if (file) {
-                    await handleFileUpload(file);
-                }
-            }
+            const files = items.map((item) => item.getAsFile()).filter((file): file is File => Boolean(file));
+            await handleFilesUpload(files);
             return;
         }
 
@@ -297,7 +350,7 @@ export function useMediaUpload(
             e.preventDefault();
             inputControllerRef.current?.insertText(text, { focus: true });
         }
-    }, [handleFileUpload]);
+    }, [handleFilesUpload, inputControllerRef]);
 
     return {
         fileInputRef,
@@ -311,6 +364,7 @@ export function useMediaUpload(
         handleAttachTouchEnd,
         handleFileChange,
         handleFileUpload,
+        handleFilesUpload,
         handlePaste,
     };
 }

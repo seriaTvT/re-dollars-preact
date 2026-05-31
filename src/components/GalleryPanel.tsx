@@ -63,8 +63,8 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
                             hasMore.value = false;
                         }
                     }
-                } catch (e) {
-                    console.error('Failed to resolve user filter', e);
+                } catch {
+                    // ignore
                 } finally {
                     isResolvingUser.value = false;
                 }
@@ -93,8 +93,8 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
             items.value = [...items.value, ...data.items];
             hasMore.value = data.hasMore;
             offset.current += data.items.length;
-        } catch (e) {
-            console.error('[GalleryPanel] Failed to load:', e);
+        } catch {
+            // ignore
         } finally {
             isLoading.value = false;
         }

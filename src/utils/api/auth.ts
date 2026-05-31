@@ -1,6 +1,7 @@
-import { BACKEND_URL, BGM_APP_ID, BGM_CALLBACK_URL } from '../constants';
+import { BGM_APP_ID, BGM_CALLBACK_URL } from '../constants';
 import { getAuthHeaders } from '@/stores/user';
 import { getChiiApp } from '@/utils/globals';
+import { apiUrl } from './url';
 
 /**
  * 检查登录状态
@@ -15,7 +16,7 @@ export async function checkAuth(): Promise<{
     };
 }> {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/auth/me`, {
+        const res = await fetch(apiUrl('/auth/me'), {
             headers: getAuthHeaders(),
             credentials: 'include'
         });
@@ -34,7 +35,7 @@ export async function checkAuth(): Promise<{
 
         if (token) {
             try {
-                const loginRes = await fetch(`${BACKEND_URL}/api/auth/token-login`, {
+                const loginRes = await fetch(apiUrl('/auth/token-login'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ token }),
@@ -98,7 +99,7 @@ export function performLogin() {
  */
 export async function performLogout() {
     try {
-        await fetch(`${BACKEND_URL}/api/auth/logout`, {
+        await fetch(apiUrl('/auth/logout'), {
             method: 'POST',
             credentials: 'include',
         });

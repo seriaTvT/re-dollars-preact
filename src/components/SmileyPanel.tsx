@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'preact/hooks';
 import type { JSX, RefObject } from 'preact';
 import { isSmileyPanelOpen, isSmileyPanelClosing, toggleSmileyPanel } from '@/stores/ui';
-import { UPLOAD_BASE_URL } from '@/utils/constants';
+import { uploadImages } from '@/utils/api/media';
 import { favorites, initFavorites, addFavorite, removeFavorite } from '@/stores/favorites';
 import { smileyRanges, getSmileyUrl, generateSmileyCodes, getGroupedSmileyCodes } from '@/utils/smilies';
 import { escapeHTML } from '@/utils/format';
@@ -107,31 +107,25 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
         e.preventDefault();
         const tempInput = document.createElement('input');
         tempInput.type = 'file';
-        tempInput.accept = 'image/*';
+        tempInput.accept = 'image/*,.heic,.heif,.avif,.webp,.bmp';
+        tempInput.multiple = true;
         tempInput.style.display = 'none';
 
         tempInput.onchange = async (evt: Event) => {
             const target = evt.target as HTMLInputElement;
-            const file = target.files?.[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('image', file);
+            const files = Array.from(target.files || []);
+            if (files.length === 0) return;
 
             setIsUploading(true);
 
             try {
-                const res = await fetch(`${UPLOAD_BASE_URL}/api/upload`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formData
+                const results = await uploadImages(files);
+                const failed = results.find((result) => !result.status || !result.url);
+                if (failed) throw new Error(failed.error || '上传失败');
+
+                results.forEach((result) => {
+                    if (result.url) addFavorite(result.url);
                 });
-                const result = await res.json();
-
-                if (!res.ok || !result.status) throw new Error(result.message || '上传失败');
-
-                const imageUrl = result.url || result.imageUrl;
-                addFavorite(imageUrl);
             } catch (err: any) {
                 alert(err.message || '上传失败');
             } finally {

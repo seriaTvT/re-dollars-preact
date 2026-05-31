@@ -1,5 +1,5 @@
 import { signal, computed } from '@preact/signals';
-import { BACKEND_URL } from '@/utils/constants';
+import { apiUrl } from '@/utils/api/url';
 import { getAuthHeaders } from './user';
 import { messageIds, historyNewestId } from './chat';
 
@@ -33,12 +33,11 @@ export async function loadReadState(): Promise<number | null> {
     try {
         const userId = getReadStateUserId();
         if (!userId) {
-            console.warn('Cannot load read state: user not logged in');
             return null;
         }
 
         isReadStateSyncing.value = true;
-        const response = await fetch(`${BACKEND_URL}/api/messages/read?user_id=${userId}`, {
+        const response = await fetch(apiUrl('/messages/read', { user_id: userId }), {
             headers: getAuthHeaders(),
             credentials: 'include',
         });
@@ -59,8 +58,7 @@ export async function loadReadState(): Promise<number | null> {
             return effectiveId;
         }
         return null;
-    } catch (e) {
-        console.error('Failed to load read state:', e);
+    } catch {
         return null;
     } finally {
         isReadStateSyncing.value = false;
@@ -101,11 +99,10 @@ async function syncReadStateToBackend(messageId: number): Promise<void> {
     try {
         const userId = getReadStateUserId();
         if (!userId) {
-            console.warn('Cannot sync read state: user not logged in');
             return;
         }
 
-        const response = await fetch(`${BACKEND_URL}/api/messages/read`, {
+        const response = await fetch(apiUrl('/messages/read'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -127,8 +124,7 @@ async function syncReadStateToBackend(messageId: number): Promise<void> {
                 lastReadId.value = effective;
             }
         }
-    } catch (e) {
-        console.error('Failed to sync read state:', e);
+    } catch {
         pendingReadId.value = messageId;
     }
 }

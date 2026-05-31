@@ -55,12 +55,10 @@ function renderImageHTML(
     const metaHeight = meta?.height ?? '';
     const safeSrc = escapeHTML(src);
     const displaySrc = escapeHTML(placeholder ? getThumbnailUrl(src) : src);
-    const classes = ['image-container', placeholder && 'image-placeholder', masked && 'image-masked']
-        .filter(Boolean)
-        .join(' ');
-    const imageClasses = ['full-image', placeholder && 'is-loaded']
-        .filter(Boolean)
-        .join(' ');
+    const classes = 'image-container' +
+        (placeholder ? ' image-placeholder' : '') +
+        (masked ? ' image-masked' : '');
+    const imageClasses = 'full-image' + (placeholder ? ' is-loaded' : '');
     const dataSrc = masked ? ` data-src="${safeSrc}"` : '';
     const loadHint = masked ? '\n            <div class="image-load-hint">显示图片</div>' : '';
 

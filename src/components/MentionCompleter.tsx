@@ -3,13 +3,9 @@ import type { RefObject } from 'preact';
 import { escapeHTML } from '@/utils/format';
 import { MENTION_DEBOUNCE, MAX_MENTION_RESULTS } from '@/utils/constants';
 import type { RichInputController } from '@/utils/richInput';
+import { searchMentionUsers, type MentionSearchUser } from '@/utils/api/users';
 
-interface MentionUser {
-    id: number;
-    username: string;
-    nickname: string;
-    avatar_url?: string;
-}
+type MentionUser = MentionSearchUser;
 
 interface MentionCompleterProps {
     editorRef: RefObject<HTMLDivElement>;
@@ -63,24 +59,15 @@ export function MentionCompleter({ editorRef, inputControllerRef }: MentionCompl
 
     // Fetch users from API
     const fetchUsers = async (query: string) => {
-        try {
-            const res = await fetch(
-                `https://bgm.ry.mk/search/users?q=${encodeURIComponent(query)}&exact=true&limit=${MAX_MENTION_RESULTS}`
-            );
+        const data = await searchMentionUsers(query, MAX_MENTION_RESULTS);
 
-            // Check if query changed while fetching
-            if (query !== queryRef.current) return;
+        // Check if query changed while fetching
+        if (query !== queryRef.current) return;
 
-            const json = await res.json();
-            const data = json.data || [];
-
-            if (data.length > 0) {
-                setUsers(data);
-                setVisible(true);
-            } else {
-                hide();
-            }
-        } catch (e) {
+        if (data.length > 0) {
+            setUsers(data);
+            setVisible(true);
+        } else {
             hide();
         }
     };

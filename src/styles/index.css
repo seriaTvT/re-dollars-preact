@@ -873,9 +873,8 @@ html[data-theme="dark"] .bubble-timestamp {
 }
 .chat-message:not(.self) .bubble-tail {
   left: -9px;
-  top: -1px;
+  top: -3px;
   color: #fff;
-  transform: scaleY(-1);
 }
 html[data-theme="dark"] .chat-message:not(.self) .bubble-tail {
   color: #212121;
