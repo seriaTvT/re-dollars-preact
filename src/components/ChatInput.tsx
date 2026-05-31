@@ -52,6 +52,7 @@ export function ChatInput() {
     const isTypingRef = useRef(false);
     const draftSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isComposingRef = useRef(false);
+    const isCompositionJustEndedRef = useRef(false);
 
     const {
         fileInputRef,
@@ -273,6 +274,13 @@ export function ChatInput() {
 
     const handleCompositionEnd = useCallback(() => {
         isComposingRef.current = false;
+        
+        // Lock to prevent premature keydown events fired by some IMEs (like Rime on macOS)
+        isCompositionJustEndedRef.current = true;
+        setTimeout(() => {
+            isCompositionJustEndedRef.current = false;
+        }, 50);
+        
         handleEditorInput();
     }, [handleEditorInput]);
 
@@ -469,6 +477,12 @@ export function ChatInput() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key !== 'Enter') return;
+
+        // Guard against IME composition events that trigger after compositionend
+        const isImeEnter = isComposingRef.current || isCompositionJustEndedRef.current || e.keyCode === 229;
+        if (isImeEnter) {
+            return;
+        }
 
         const isShortcut = e.ctrlKey || e.metaKey;
         const shouldSend =
