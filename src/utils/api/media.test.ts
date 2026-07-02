@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { uploadFile, uploadImages } from './media';
+import { fetchGalleryTimelineImages, uploadFile, uploadImages } from './media';
 
 describe('uploadFile', () => {
     afterEach(() => {
@@ -68,11 +68,11 @@ describe('uploadFile', () => {
         expect(formData.get('image')).toBeNull();
     });
 
-    it('uploads non-image files through the backend file endpoint', async () => {
+    it('uploads non-image files through the upload file endpoint', async () => {
         const fetchMock = vi.fn<(input: RequestInfo, init?: RequestInit) => Promise<Response>>(
             async () => new Response(JSON.stringify({
                 status: true,
-                url: '/videos/test.mp4',
+                url: '/f/test.mp4',
             }), { status: 200 }),
         );
         vi.stubGlobal('fetch', fetchMock);
@@ -80,13 +80,52 @@ describe('uploadFile', () => {
         const file = new File(['video'], 'test.mp4', { type: 'video/mp4' });
         const result = await uploadFile(file);
 
-        expect(result.url).toBe('https://rd.ry.mk/videos/test.mp4');
+        expect(result.url).toBe('https://up.ry.mk/f/test.mp4');
         const [url, init] = fetchMock.mock.calls[0]!;
-        expect(url).toBe('https://rd.ry.mk/api/v1/upload/file');
-        expect(init!.credentials).toBe('include');
+        expect(url).toBe('https://up.ry.mk/api/upload/file');
+        expect(init!.credentials).toBe('omit');
 
         const formData = init!.body as FormData;
         expect(formData.get('file')).toBe(file);
         expect(formData.get('image')).toBeNull();
+    });
+});
+
+describe('fetchGalleryTimelineImages', () => {
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    it('requests an image page before the message cursor and maps viewer metadata', async () => {
+        const fetchMock = vi.fn(async () => new Response(JSON.stringify({
+            status: true,
+            items: [{
+                url: 'https://example.com/image.jpg',
+                message_id: 42,
+                media_index: 3,
+                nickname: 'Alice',
+                avatar: 'alice.jpg',
+                timestamp: 123,
+            }],
+            hasMore: true,
+        }), { status: 200 }));
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await fetchGalleryTimelineImages('before', 50, 4, 20);
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            'https://rd.ry.mk/api/v1/gallery/timeline?before_id=50&before_index=4&limit=20'
+        );
+        expect(result).toEqual({
+            items: [{
+                src: 'https://example.com/image.jpg',
+                messageId: 42,
+                mediaIndex: 3,
+                nickname: 'Alice',
+                avatar: 'alice.jpg',
+                timestamp: 123,
+            }],
+            hasMore: true,
+        });
     });
 });

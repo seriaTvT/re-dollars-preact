@@ -6,15 +6,15 @@ export function useMessageComposerSend() {
     const isSendingRef = useRef(false);
 
     const send = useCallback(async (options: SubmitComposerMessageOptions) => {
-        if (!options.content.trim() || isSendingRef.current) return;
+        if ((!options.content.trim() && !options.voiceDraft) || isSendingRef.current) return;
 
         isSendingRef.current = true;
         setIsSending(true);
 
         try {
             await submitComposerMessage(options);
-        } catch {
-            alert('发送失败，请重试');
+        } catch (error: any) {
+            alert(error?.message || '发送失败，请重试');
         } finally {
             isSendingRef.current = false;
             setIsSending(false);

@@ -18,7 +18,7 @@ export const UPLOAD_API_URL = trimTrailingSlash(
     import.meta.env.VITE_DOLLARS_UPLOAD_API_URL || `${UPLOAD_BASE_URL}/api/upload`
 );
 export const FILE_UPLOAD_API_URL = trimTrailingSlash(
-    import.meta.env.VITE_DOLLARS_FILE_UPLOAD_API_URL || `${BACKEND_API_URL}/upload/file`
+    import.meta.env.VITE_DOLLARS_FILE_UPLOAD_API_URL || `${UPLOAD_API_URL}/file`
 );
 export const WEBSOCKET_URL = (
     import.meta.env.VITE_DOLLARS_WEBSOCKET_URL ||

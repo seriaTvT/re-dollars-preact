@@ -41,10 +41,19 @@ export const contextMenuBmoCode = signal<string | null>(null);
 export const userProfilePanelUserId = signal<string | null>(null);
 
 // Image viewer
-export type ImageViewerSource = 'generic' | 'gallery' | 'userProfile';
+export type ImageViewerSource = 'generic' | 'gallery' | 'userProfile' | 'timeline';
+export interface ImageViewerTimelineState {
+    beforeId: number;
+    beforeIndex: number;
+    afterId: number;
+    afterIndex: number;
+    hasOlder: boolean;
+    hasNewer: boolean;
+}
 export const imageViewerItems = signal<ImageViewerItem[]>([]);
 export const imageViewerIndex = signal(0);
 export const imageViewerSource = signal<ImageViewerSource>('generic');
+export const imageViewerTimelineState = signal<ImageViewerTimelineState | null>(null);
 
 // Reaction picker
 export const reactionPickerPosition = signal({ x: 0, y: 0, width: 280 });
@@ -95,6 +104,7 @@ function cleanupPanelState(id: PanelId): void {
             imageViewerItems.value = [];
             imageViewerIndex.value = 0;
             imageViewerSource.value = 'generic';
+            imageViewerTimelineState.value = null;
             break;
     }
 }
@@ -192,12 +202,22 @@ export function showImageViewer(
     images: Array<string | ImageViewerItem>,
     index: number = 0,
     source: ImageViewerSource = 'generic',
+    timeline?: Pick<ImageViewerTimelineState, 'beforeId' | 'afterId'>,
 ): void {
     imageViewerItems.value = images.map(item =>
         typeof item === 'string' ? { src: item } : item
     );
     imageViewerIndex.value = index;
     imageViewerSource.value = source;
+    imageViewerTimelineState.value = source === 'timeline' && timeline
+        ? {
+            ...timeline,
+            beforeIndex: 0,
+            afterIndex: 2_147_483_647,
+            hasOlder: true,
+            hasNewer: true,
+        }
+        : null;
     showPanel('imageViewer');
 }
 

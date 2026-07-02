@@ -4,6 +4,7 @@ const sendMessageMock = vi.hoisted(() => vi.fn());
 const confirmSentMessageMock = vi.hoisted(() => vi.fn());
 const editMessageMock = vi.hoisted(() => vi.fn());
 const sendPendingMessageMock = vi.hoisted(() => vi.fn());
+const uploadFileMock = vi.hoisted(() => vi.fn());
 
 vi.hoisted(() => {
     Object.defineProperty(globalThis, 'window', {
@@ -24,6 +25,10 @@ vi.mock('@/utils/api/messages', () => ({
 
 vi.mock('@/utils/api/users', () => ({
     lookupUsersByName: vi.fn(),
+}));
+
+vi.mock('@/utils/api/media', () => ({
+    uploadFile: uploadFileMock,
 }));
 
 vi.mock('@/services/websocket/client', () => ({
@@ -62,6 +67,7 @@ beforeEach(() => {
     confirmSentMessageMock.mockReset();
     editMessageMock.mockReset();
     sendPendingMessageMock.mockReset();
+    uploadFileMock.mockReset();
     vi.stubGlobal('alert', vi.fn());
 });
 
@@ -126,6 +132,61 @@ describe('submitComposerMessage', () => {
 
         expect([...messageMap.value.values()]).toHaveLength(0);
         expect(alert).toHaveBeenCalledWith('nope');
+    });
+
+    it('uploads and sends a voice draft without text content', async () => {
+        uploadFileMock.mockResolvedValue({ status: true, url: 'https://rd.ry.mk/uploads/voice.webm' });
+        sendMessageMock.mockResolvedValue({ status: true });
+        confirmSentMessageMock.mockResolvedValue(null);
+        const clearInput = vi.fn();
+        const clearMediaPreview = vi.fn();
+        const clearVoiceDraft = vi.fn();
+
+        await submitComposerMessage({
+            content: ' ',
+            imageMeta: {},
+            voiceDraft: {
+                file: new File(['voice'], 'voice.webm', { type: 'audio/webm' }),
+                url: 'blob:voice',
+                duration: 2,
+            },
+            clearInput,
+            clearMediaPreview,
+            clearVoiceDraft,
+        });
+
+        expect(uploadFileMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'voice.webm' }));
+        expect(sendPendingMessageMock).toHaveBeenCalledWith(expect.stringMatching(/^temp-/), '[audio]https://rd.ry.mk/uploads/voice.webm[/audio]');
+        expect(sendMessageMock).toHaveBeenCalledWith('[audio]https://rd.ry.mk/uploads/voice.webm[/audio]');
+        expect(clearInput).toHaveBeenCalledWith(true);
+        expect(clearMediaPreview).toHaveBeenCalledOnce();
+        expect(clearVoiceDraft).toHaveBeenCalledOnce();
+    });
+
+    it('keeps the voice draft when voice upload fails', async () => {
+        uploadFileMock.mockResolvedValue({ status: false, error: 'upload failed' });
+        const clearInput = vi.fn();
+        const clearMediaPreview = vi.fn();
+        const clearVoiceDraft = vi.fn();
+
+        await expect(submitComposerMessage({
+            content: '',
+            imageMeta: {},
+            voiceDraft: {
+                file: new File(['voice'], 'voice.webm', { type: 'audio/webm' }),
+                url: 'blob:voice',
+                duration: 2,
+            },
+            clearInput,
+            clearMediaPreview,
+            clearVoiceDraft,
+        })).rejects.toThrow('upload failed');
+
+        expect(sendPendingMessageMock).not.toHaveBeenCalled();
+        expect(sendMessageMock).not.toHaveBeenCalled();
+        expect(clearInput).not.toHaveBeenCalled();
+        expect(clearMediaPreview).not.toHaveBeenCalled();
+        expect(clearVoiceDraft).not.toHaveBeenCalled();
     });
 
     it('edits the active message and preserves image metadata', async () => {

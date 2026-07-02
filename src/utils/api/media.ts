@@ -1,5 +1,6 @@
-import { absoluteBackendUrl, absoluteUploadUrl, apiUrl, fileUploadApiUrl, uploadApiUrl } from './url';
+import { absoluteUploadUrl, apiUrl, fileUploadApiUrl, uploadApiUrl } from './url';
 import { getUploadAuthHeaders } from '@/stores/user';
+import type { ImageViewerItem } from '@/types';
 
 /**
  * 获取相册媒体
@@ -30,6 +31,34 @@ export async function fetchGalleryMedia(offset = 0, limit = 50, uid?: number): P
     }
 
     return { items: [], hasMore: false, total: 0 };
+}
+
+export async function fetchGalleryTimelineImages(
+    direction: 'before' | 'after',
+    messageId: number,
+    mediaIndex: number,
+    limit = 50,
+): Promise<{ items: ImageViewerItem[]; hasMore: boolean }> {
+    const cursor = direction === 'before'
+        ? { before_id: messageId, before_index: mediaIndex }
+        : { after_id: messageId, after_index: mediaIndex };
+    const res = await fetch(apiUrl('/gallery/timeline', { ...cursor, limit }));
+    if (!res.ok) throw new Error(`Gallery timeline request failed (${res.status})`);
+
+    const data = await res.json();
+    if (!data.status) return { items: [], hasMore: false };
+
+    return {
+        items: (data.items || []).map((item: any) => ({
+            src: String(item.url),
+            messageId: Number(item.message_id),
+            mediaIndex: Number(item.media_index),
+            nickname: String(item.nickname || ''),
+            avatar: String(item.avatar || ''),
+            timestamp: Number(item.timestamp),
+        })),
+        hasMore: !!data.hasMore,
+    };
 }
 
 /**
@@ -95,7 +124,7 @@ function normalizeUploadResponse(data: any, isImage: boolean) {
         data?.imageUrl,
         data?.videoUrl,
     );
-    const url = rawUrl ? (isImage ? absoluteUploadUrl(rawUrl) : absoluteBackendUrl(rawUrl)) : undefined;
+    const url = rawUrl ? absoluteUploadUrl(rawUrl) : undefined;
     const width = numberValue(data?.width ?? nested?.width);
     const height = numberValue(data?.height ?? nested?.height);
     const status = data?.status !== false && Boolean(url);
@@ -195,7 +224,7 @@ export async function uploadFile(file: File): Promise<UploadResult> {
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: isImage ? getUploadAuthHeaders() : undefined,
-                credentials: isImage ? 'omit' : 'include',
+                credentials: 'omit',
                 body: formData,
                 signal: controller.signal,
             });

@@ -19,9 +19,10 @@ const ALLOWED_VIDEO_EXTS = new Set([
     '.mp4', '.webm', '.mov', '.mkv', '.avi',
 ]);
 const ALLOWED_AUDIO_EXTS = new Set([
-    '.mp3', '.wav', '.ogg', '.aac', '.flac', '.weba',
+    '.mp3', '.wav', '.ogg', '.aac', '.flac', '.weba', '.webm', '.m4a',
 ]);
 export const MEDIA_FILE_ACCEPT = 'image/*,.heic,.heif,video/*';
+export const ANY_FILE_ACCEPT = '*/*';
 
 interface MediaKind {
     ext: string;
@@ -92,8 +93,6 @@ export function useMediaUpload(
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [previewMedia, setPreviewMedia] = useState<MediaItem[]>([]);
-    const attachLongPressRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const isAttachLongPressRef = useRef(false);
 
     // 解析图片和视频
     const parseMediaFiles = useCallback((text: string, knownMeta?: Record<string, { width?: number; height?: number }>) => {
@@ -178,38 +177,20 @@ export function useMediaUpload(
         controller.setValue(newText, { focus: true });
     }, [inputControllerRef, previewMedia]);
 
-    // 处理附件按钮点击（图片/视频）
-    const handleAttachClick = useCallback(() => {
-        if (isAttachLongPressRef.current) {
-            isAttachLongPressRef.current = false;
-            return;
-        }
+    const openFilePicker = useCallback((accept: string) => {
         if (fileInputRef.current) {
-            fileInputRef.current.accept = MEDIA_FILE_ACCEPT;
+            fileInputRef.current.accept = accept;
             fileInputRef.current.click();
         }
     }, []);
 
-    // 处理附件按钮长按开始（音频）
-    const handleAttachTouchStart = useCallback(() => {
-        isAttachLongPressRef.current = false;
-        attachLongPressRef.current = setTimeout(() => {
-            isAttachLongPressRef.current = true;
-            if (navigator.vibrate) navigator.vibrate(50);
-            if (fileInputRef.current) {
-                fileInputRef.current.accept = '*/*';
-                fileInputRef.current.click();
-            }
-        }, 500);
-    }, []);
+    const handleAttachMediaClick = useCallback(() => {
+        openFilePicker(MEDIA_FILE_ACCEPT);
+    }, [openFilePicker]);
 
-    // 处理附件按钮长按结束
-    const handleAttachTouchEnd = useCallback(() => {
-        if (attachLongPressRef.current) {
-            clearTimeout(attachLongPressRef.current);
-            attachLongPressRef.current = null;
-        }
-    }, []);
+    const handleAttachFileClick = useCallback(() => {
+        openFilePicker(ANY_FILE_ACCEPT);
+    }, [openFilePicker]);
 
     // 文件上传核心逻辑
     const insertUploadResult = useCallback((
@@ -358,9 +339,8 @@ export function useMediaUpload(
         setPreviewMedia,
         parseMediaFiles,
         handleRemoveMedia,
-        handleAttachClick,
-        handleAttachTouchStart,
-        handleAttachTouchEnd,
+        handleAttachMediaClick,
+        handleAttachFileClick,
         handleFileChange,
         handleFileUpload,
         handleFilesUpload,

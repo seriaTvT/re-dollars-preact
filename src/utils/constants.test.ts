@@ -17,7 +17,7 @@ describe('network constants', () => {
         expect(BACKEND_API_URL).toBe('https://rd.ry.mk/api/v1');
         expect(UPLOAD_BASE_URL).toBe('https://up.ry.mk');
         expect(UPLOAD_API_URL).toBe('https://up.ry.mk/api/upload');
-        expect(FILE_UPLOAD_API_URL).toBe('https://rd.ry.mk/api/v1/upload/file');
+        expect(FILE_UPLOAD_API_URL).toBe('https://up.ry.mk/api/upload/file');
         expect(WEBSOCKET_URL).toBe('wss://rd.ry.mk/ws');
         expect(AUTH_BASE_URL).toBe('https://auth.ry.mk');
         expect(AUTH_CLIENT).toBe('re-dollars');

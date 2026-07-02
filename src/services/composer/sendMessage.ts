@@ -12,21 +12,37 @@ import {
 import { clearDraft } from '@/stores/drafts';
 import { userInfo } from '@/stores/user';
 import { confirmSentMessage, editMessage as apiEditMessage, sendMessage as apiSendMessage } from '@/utils/api/messages';
+import { uploadFile } from '@/utils/api/media';
 import { lookupUsersByName } from '@/utils/api/users';
 import { transformMentions } from '@/utils/mentions';
 import { sendPendingMessage } from '@/services/websocket/client';
+import type { VoiceDraft } from '@/hooks/useVoiceRecorder';
 
 export type ComposerImageMeta = Record<string, { width: number; height: number }>;
 
 export interface SubmitComposerMessageOptions {
     content: string;
     imageMeta: ComposerImageMeta;
+    voiceDraft?: VoiceDraft | null;
     clearInput: (focus?: boolean) => void;
     clearMediaPreview: () => void;
+    clearVoiceDraft?: () => void;
 }
 
 function withOptionalImageMeta(imageMeta: ComposerImageMeta) {
     return Object.keys(imageMeta).length > 0 ? imageMeta : undefined;
+}
+
+async function appendUploadedVoice(content: string, voiceDraft?: VoiceDraft | null) {
+    if (!voiceDraft) return content;
+
+    const result = await uploadFile(voiceDraft.file);
+    if (!result.status || !result.url) {
+        throw new Error(result.error || '语音上传失败');
+    }
+
+    const voiceBBCode = `[audio]${result.url}[/audio]`;
+    return content ? `${content}\n${voiceBBCode}` : voiceBBCode;
 }
 
 async function submitEdit(content: string, imageMeta: ComposerImageMeta, clearInput: (focus?: boolean) => void) {
@@ -56,11 +72,14 @@ async function submitEdit(content: string, imageMeta: ComposerImageMeta, clearIn
 async function submitNewMessage(
     content: string,
     imageMeta: ComposerImageMeta,
+    voiceDraft: VoiceDraft | null | undefined,
     clearInput: (focus?: boolean) => void,
     clearMediaPreview: () => void,
+    clearVoiceDraft?: () => void,
 ) {
     const reply = replyingTo.value;
-    const quotedContent = reply ? `[quote=${reply.id}][/quote]${content}` : content;
+    const contentWithVoice = voiceDraft ? await appendUploadedVoice(content, voiceDraft) : content;
+    const quotedContent = reply ? `[quote=${reply.id}][/quote]${contentWithVoice}` : contentWithVoice;
     const transformedContent = await transformMentions(quotedContent, lookupUsersByName);
     const meta = withOptionalImageMeta(imageMeta);
 
@@ -77,6 +96,7 @@ async function submitNewMessage(
 
     clearInput(true);
     clearMediaPreview();
+    clearVoiceDraft?.();
     clearDraft();
     cancelReplyOrEdit();
 
@@ -94,16 +114,20 @@ async function submitNewMessage(
 export async function submitComposerMessage({
     content,
     imageMeta,
+    voiceDraft,
     clearInput,
     clearMediaPreview,
+    clearVoiceDraft,
 }: SubmitComposerMessageOptions) {
     const trimmedContent = content.trim();
-    if (!trimmedContent) return;
 
     if (editingMessage.value) {
+        if (!trimmedContent) return;
         await submitEdit(trimmedContent, imageMeta, clearInput);
         return;
     }
 
-    await submitNewMessage(trimmedContent, imageMeta, clearInput, clearMediaPreview);
+    if (!trimmedContent && !voiceDraft) return;
+
+    await submitNewMessage(trimmedContent, imageMeta, voiceDraft, clearInput, clearMediaPreview, clearVoiceDraft);
 }

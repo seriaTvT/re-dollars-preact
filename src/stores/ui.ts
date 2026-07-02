@@ -25,6 +25,7 @@ export {
     imageViewerItems,
     imageViewerIndex,
     imageViewerSource,
+    imageViewerTimelineState,
     reactionPickerPosition,
     searchGalleryMode,
 

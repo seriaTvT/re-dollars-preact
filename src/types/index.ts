@@ -74,6 +74,7 @@ export interface UserInfo {
 export interface ImageViewerItem {
     src: string;
     messageId?: number;
+    mediaIndex?: number;
     nickname?: string;
     avatar?: string;
     timestamp?: number;

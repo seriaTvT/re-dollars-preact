@@ -1,4 +1,5 @@
-import { useRef, useCallback, useEffect } from 'preact/hooks';
+import { useRef, useCallback, useEffect, useState } from 'preact/hooks';
+import { render, type ComponentChildren } from 'preact';
 import {
     replyingTo,
     editingMessage,
@@ -33,8 +34,45 @@ import {
     type RichInputValueOptions
 } from '@/utils/richInput';
 import { useMessageComposerSend } from '@/hooks/useMessageComposerSend';
+import { formatVoiceDuration, useVoiceRecorder } from '@/hooks/useVoiceRecorder';
+import { iconFile, iconMic, iconPhoto } from '@/utils/icons';
 
 const MAX_INPUT_HEIGHT = 150;
+const ATTACH_MENU_WIDTH = 176;
+
+type AttachMenuPosition = {
+    left: number;
+    bottom: number;
+};
+
+function FloatingPortal({ children }: { children: ComponentChildren }) {
+    const hostRef = useRef<HTMLDivElement | null>(null);
+
+    if (!hostRef.current) {
+        hostRef.current = document.createElement('div');
+    }
+
+    useEffect(() => {
+        const host = hostRef.current;
+        if (!host) return;
+
+        const root = document.getElementById('dollars-chat-root') ?? document.body;
+        root.appendChild(host);
+        return () => {
+            render(null, host);
+            host.remove();
+        };
+    }, []);
+
+    useEffect(() => {
+        const host = hostRef.current;
+        if (host) {
+            render(<>{children}</>, host);
+        }
+    }, [children]);
+
+    return null;
+}
 
 export function ChatInput() {
     const editorRef = useRef<HTMLDivElement>(null);
@@ -49,6 +87,14 @@ export function ChatInput() {
     const isComposingRef = useRef(false);
     const compositionEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isCompositionJustEndedRef = useRef(false);
+    const attachButtonRef = useRef<HTMLButtonElement>(null);
+    const attachMenuRef = useRef<HTMLDivElement>(null);
+    const attachCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const dragDepthRef = useRef(0);
+    const [isAttachMenuOpen, setIsAttachMenuOpen] = useState(false);
+    const [isAttachMenuClosing, setIsAttachMenuClosing] = useState(false);
+    const [attachMenuPosition, setAttachMenuPosition] = useState<AttachMenuPosition | null>(null);
+    const [isDraggingFiles, setIsDraggingFiles] = useState(false);
 
     const {
         fileInputRef,
@@ -57,13 +103,99 @@ export function ChatInput() {
         setPreviewMedia,
         parseMediaFiles,
         handleRemoveMedia,
-        handleAttachClick,
-        handleAttachTouchStart,
-        handleAttachTouchEnd,
+        handleAttachMediaClick,
+        handleAttachFileClick,
         handleFileChange,
+        handleFilesUpload,
         handlePaste,
     } = useMediaUpload(inputControllerRef);
+    const {
+        voiceDraft,
+        recordingDuration,
+        isRecording,
+        startRecording,
+        stopRecording,
+        cancelVoice,
+        clearVoiceDraft,
+    } = useVoiceRecorder();
     const { isSending, send } = useMessageComposerSend();
+
+    const updateAttachMenuPosition = useCallback(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const containerRect = container.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const left = Math.min(
+            viewportWidth - ATTACH_MENU_WIDTH - 8,
+            Math.max(8, containerRect.right - ATTACH_MENU_WIDTH)
+        );
+
+        setAttachMenuPosition({
+            left,
+            bottom: Math.max(5, viewportHeight - containerRect.top + 5),
+        });
+    }, []);
+
+    const closeAttachMenu = useCallback(() => {
+        if (!isAttachMenuOpen || isAttachMenuClosing) return;
+
+        setIsAttachMenuClosing(true);
+        if (attachCloseTimerRef.current) {
+            clearTimeout(attachCloseTimerRef.current);
+        }
+        attachCloseTimerRef.current = setTimeout(() => {
+            setIsAttachMenuOpen(false);
+            setIsAttachMenuClosing(false);
+            attachCloseTimerRef.current = null;
+        }, 200);
+    }, [isAttachMenuOpen, isAttachMenuClosing]);
+
+    const toggleAttachMenu = useCallback(() => {
+        if (isAttachMenuOpen) {
+            closeAttachMenu();
+            return;
+        }
+
+        if (attachCloseTimerRef.current) {
+            clearTimeout(attachCloseTimerRef.current);
+            attachCloseTimerRef.current = null;
+        }
+        setIsAttachMenuClosing(false);
+        updateAttachMenuPosition();
+        setIsAttachMenuOpen(true);
+    }, [closeAttachMenu, isAttachMenuOpen, updateAttachMenuPosition]);
+
+    useEffect(() => {
+        if (!isAttachMenuOpen) return;
+
+        const handlePointerDown = (event: PointerEvent) => {
+            const target = event.target as Node | null;
+            if (target && attachButtonRef.current?.contains(target)) return;
+            if (target && attachMenuRef.current?.contains(target)) return;
+            closeAttachMenu();
+        };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                closeAttachMenu();
+            }
+        };
+        const handleViewportChange = () => {
+            updateAttachMenuPosition();
+        };
+
+        document.addEventListener('pointerdown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('resize', handleViewportChange);
+        window.addEventListener('scroll', handleViewportChange, true);
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('resize', handleViewportChange);
+            window.removeEventListener('scroll', handleViewportChange, true);
+        };
+    }, [closeAttachMenu, isAttachMenuOpen, updateAttachMenuPosition]);
 
     const syncProxyTextarea = useCallback((value = inputValueRef.current, selection = selectionRef.current) => {
         const proxy = textareaProxyRef.current;
@@ -391,6 +523,9 @@ export function ChatInput() {
             if (compositionEndTimerRef.current) {
                 clearTimeout(compositionEndTimerRef.current);
             }
+            if (attachCloseTimerRef.current) {
+                clearTimeout(attachCloseTimerRef.current);
+            }
             if (isTypingRef.current) {
                 sendTypingStop();
             }
@@ -410,9 +545,53 @@ export function ChatInput() {
     const handleSend = () => send({
         content: inputValueRef.current,
         imageMeta: getImageMeta(),
+        voiceDraft,
         clearInput,
         clearMediaPreview: () => setPreviewMedia([]),
+        clearVoiceDraft,
     });
+
+    const hasDraggedFiles = (event: DragEvent) => {
+        const types = Array.from(event.dataTransfer?.types || []);
+        return types.includes('Files');
+    };
+
+    const handleDragEnter = (event: DragEvent) => {
+        if (!hasDraggedFiles(event)) return;
+        event.preventDefault();
+        dragDepthRef.current += 1;
+        setIsDraggingFiles(true);
+    };
+
+    const handleDragOver = (event: DragEvent) => {
+        if (!hasDraggedFiles(event)) return;
+        event.preventDefault();
+        if (event.dataTransfer) {
+            event.dataTransfer.dropEffect = 'copy';
+        }
+        setIsDraggingFiles(true);
+    };
+
+    const handleDragLeave = (event: DragEvent) => {
+        if (!hasDraggedFiles(event)) return;
+        event.preventDefault();
+        dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+        if (dragDepthRef.current === 0) {
+            setIsDraggingFiles(false);
+        }
+    };
+
+    const handleDrop = async (event: DragEvent) => {
+        if (!hasDraggedFiles(event)) return;
+        event.preventDefault();
+        dragDepthRef.current = 0;
+        setIsDraggingFiles(false);
+
+        const files = Array.from(event.dataTransfer?.files || []);
+        if (files.length > 0) {
+            await handleFilesUpload(files);
+        }
+    };
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key !== 'Enter') return;
@@ -466,7 +645,13 @@ export function ChatInput() {
 
             <TypingIndicator />
 
-            <div class="chat-input-area">
+            <div
+                class={`chat-input-area ${isDraggingFiles ? 'drag-over' : ''}`}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+            >
                 {(replyingTo.value || editingMessage.value) && (
                     <div id="dollars-reply-preview" class={`reply-preview visible`}>
                         <div class="reply-bar"></div>
@@ -506,6 +691,32 @@ export function ChatInput() {
                     onRemoveMedia={handleRemoveMedia}
                 />
 
+                {(isRecording || voiceDraft) && (
+                    <div class="voice-preview-container visible">
+                        {isRecording ? (
+                            <>
+                                <div class="voice-recording-dot" aria-hidden="true" />
+                                <span class="voice-preview-title">正在录音</span>
+                                <span class="voice-preview-duration">{formatVoiceDuration(recordingDuration)}</span>
+                                <button type="button" class="voice-preview-action primary" onClick={stopRecording}>
+                                    停止
+                                </button>
+                                <button type="button" class="voice-preview-action" onClick={cancelVoice}>
+                                    取消
+                                </button>
+                            </>
+                        ) : voiceDraft && (
+                            <>
+                                <audio class="voice-preview-audio" controls preload="metadata" src={voiceDraft.url} />
+                                <span class="voice-preview-duration">{formatVoiceDuration(voiceDraft.duration)}</span>
+                                <button type="button" class="voice-preview-action" onClick={cancelVoice} title="删除语音">
+                                    删除
+                                </button>
+                            </>
+                        )}
+                    </div>
+                )}
+
                 <div class="input-wrapper">
                     <button
                         id="dollars-emoji-btn"
@@ -538,18 +749,69 @@ export function ChatInput() {
                     </div>
 
                     <div class="input-actions">
-                        <button
-                            id="dollars-attach-btn"
-                            class="action-btn"
-                            title="上传图片/视频（长按上传文件）"
-                            onClick={handleAttachClick}
-                            onTouchStart={handleAttachTouchStart}
-                            onTouchEnd={handleAttachTouchEnd}
-                            onTouchCancel={handleAttachTouchEnd}
-                            onMouseDown={handleAttachTouchStart}
-                            onMouseUp={handleAttachTouchEnd}
-                            onMouseLeave={handleAttachTouchEnd}
-                        />
+                        <div class="dollars-attach-menu-wrapper">
+                            <button
+                                ref={attachButtonRef}
+                                id="dollars-attach-btn"
+                                class={`action-btn ${isAttachMenuOpen && !isAttachMenuClosing ? 'active' : ''}`}
+                                title="上传附件"
+                                aria-haspopup="menu"
+                                aria-expanded={isAttachMenuOpen && !isAttachMenuClosing}
+                                onClick={toggleAttachMenu}
+                            />
+                        </div>
+                        {isAttachMenuOpen && attachMenuPosition && (
+                            <FloatingPortal>
+                                <div
+                                    ref={attachMenuRef}
+                                    class={`dollars-attach-menu context-menu-items ${isAttachMenuClosing ? 'closing' : ''}`}
+                                    role="menu"
+                                    style={{
+                                        left: `${attachMenuPosition.left}px`,
+                                        bottom: `${attachMenuPosition.bottom}px`,
+                                    }}
+                                >
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        onClick={() => {
+                                            closeAttachMenu();
+                                            handleAttachMediaClick();
+                                        }}
+                                    >
+                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconPhoto }} />
+                                        <span>媒体</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        onClick={() => {
+                                            closeAttachMenu();
+                                            handleAttachFileClick();
+                                        }}
+                                    >
+                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconFile }} />
+                                        <span>文件</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        disabled={!!editingMessage.value || (!isRecording && (isSending || isUploading))}
+                                        onClick={() => {
+                                            closeAttachMenu();
+                                            if (isRecording) {
+                                                stopRecording();
+                                            } else {
+                                                void startRecording();
+                                            }
+                                        }}
+                                    >
+                                        <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconMic }} />
+                                        <span>{isRecording ? '停止录音' : (voiceDraft ? '重录语音' : '语音')}</span>
+                                    </button>
+                                </div>
+                            </FloatingPortal>
+                        )}
                         <input
                             ref={fileInputRef}
                             type="file"
@@ -561,10 +823,10 @@ export function ChatInput() {
 
                         <button
                             class={`send-btn ${isUploading ? 'uploading' : ''}`}
-                            disabled={isSending || isUploading}
+                            disabled={isSending || isUploading || isRecording}
                             onClick={handleSend}
                             onMouseDown={(e) => e.preventDefault()}
-                            title={isUploading ? '上传中...' : '发送'}
+                            title={isUploading || isSending ? '发送中...' : (isRecording ? '请先停止录音' : '发送')}
                         />
                     </div>
                 </div>

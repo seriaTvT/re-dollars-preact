@@ -1,9 +1,11 @@
 import { useEffect, useRef, useCallback } from 'preact/hooks';
+import { batch } from '@preact/signals';
 import {
     isImageViewerOpen,
     imageViewerItems,
     imageViewerIndex,
     imageViewerSource,
+    imageViewerTimelineState,
     hideImageViewer,
     imageViewerIndex as indexSignal,
     hideUserProfile,
@@ -11,6 +13,8 @@ import {
 } from '@/stores/ui';
 import { pendingJumpToMessage, toggleChat } from '@/stores/chatState';
 import { formatDate, getAvatarUrl } from '@/utils/format';
+import { fetchGalleryTimelineImages } from '@/utils/api/media';
+import { mergeTimelineImagePage } from '@/utils/messageImageViewer';
 
 const SWIPE_THRESHOLD = 50;
 const SWIPE_DOWN_THRESHOLD = 80;
@@ -51,11 +55,13 @@ export function LightboxViewer() {
     const swipeStartX = useRef(0);
     const swipeStartY = useRef(0);
     const closing = useRef(false);
+    const timelineLoading = useRef(false);
 
     const items = imageViewerItems.value;
     const images = items.map(item => item.src);
     const index = imageViewerIndex.value;
     const source = imageViewerSource.value;
+    const timelineState = imageViewerTimelineState.value;
     const visible = isImageViewerOpen.value;
     const total = images.length;
     const currentItem = items[index];
@@ -140,12 +146,90 @@ export function LightboxViewer() {
         }, ANIM_DURATION);
     }, []);
 
+    const loadTimelinePage = useCallback(async (direction: 'before' | 'after') => {
+        const timeline = imageViewerTimelineState.peek();
+        const hasMore = direction === 'before' ? timeline?.hasOlder : timeline?.hasNewer;
+        if (!timeline || !hasMore || timelineLoading.current) return;
+
+        timelineLoading.current = true;
+        try {
+            const cursorId = direction === 'before' ? timeline.beforeId : timeline.afterId;
+            const cursorIndex = direction === 'before' ? timeline.beforeIndex : timeline.afterIndex;
+            const page = await fetchGalleryTimelineImages(direction, cursorId, cursorIndex);
+            if (
+                !isImageViewerOpen.peek()
+                || imageViewerSource.peek() !== 'timeline'
+                || imageViewerTimelineState.peek() !== timeline
+            ) {
+                return;
+            }
+
+            if (page.items.length === 0) {
+                imageViewerTimelineState.value = direction === 'before'
+                    ? { ...timeline, hasOlder: false }
+                    : { ...timeline, hasNewer: false };
+                return;
+            }
+
+            const currentItems = imageViewerItems.peek();
+            const merged = mergeTimelineImagePage(currentItems, page.items, direction);
+            const boundaryId = direction === 'before'
+                ? page.items[0].messageId!
+                : page.items[page.items.length - 1].messageId!;
+            const boundaryIndex = direction === 'before'
+                ? page.items[0].mediaIndex!
+                : page.items[page.items.length - 1].mediaIndex!;
+
+            batch(() => {
+                if (direction === 'before') {
+                    imageViewerItems.value = merged.items;
+                    imageViewerIndex.value = merged.index;
+                    imageViewerTimelineState.value = {
+                        ...timeline,
+                        beforeId: boundaryId,
+                        beforeIndex: boundaryIndex,
+                        hasOlder: page.hasMore,
+                    };
+                } else {
+                    imageViewerItems.value = merged.items;
+                    imageViewerIndex.value = merged.index;
+                    imageViewerTimelineState.value = {
+                        ...timeline,
+                        afterId: boundaryId,
+                        afterIndex: boundaryIndex,
+                        hasNewer: page.hasMore,
+                    };
+                }
+            });
+            resetTransform();
+        } catch {
+            // Keep the boundary retryable after transient network errors.
+        } finally {
+            timelineLoading.current = false;
+        }
+    }, [resetTransform]);
+
     const navigate = useCallback((dir: number) => {
-        if (total <= 1) return;
-        const next = (index + dir + total) % total;
-        indexSignal.value = next;
-        resetTransform();
-    }, [index, total, resetTransform]);
+        const currentItems = imageViewerItems.peek();
+        const currentIndex = imageViewerIndex.peek();
+        const nextIndex = currentIndex + dir;
+
+        if (nextIndex >= 0 && nextIndex < currentItems.length) {
+            indexSignal.value = nextIndex;
+            resetTransform();
+            return;
+        }
+
+        if (imageViewerSource.peek() === 'timeline') {
+            void loadTimelinePage(dir < 0 ? 'before' : 'after');
+            return;
+        }
+
+        if (currentItems.length > 1) {
+            indexSignal.value = (nextIndex + currentItems.length) % currentItems.length;
+            resetTransform();
+        }
+    }, [loadTimelinePage, resetTransform]);
 
     // Keyboard
     useEffect(() => {
@@ -171,6 +255,12 @@ export function LightboxViewer() {
     if (!visible || total === 0) return null;
 
     const src = images[index];
+    const canNavigatePrevious = source === 'timeline'
+        ? index > 0 || !!timelineState?.hasOlder
+        : total > 1;
+    const canNavigateNext = source === 'timeline'
+        ? index < total - 1 || !!timelineState?.hasNewer
+        : total > 1;
 
     // --- Touch handlers ---
     const onTouchStart = (e: TouchEvent) => {
@@ -314,16 +404,16 @@ export function LightboxViewer() {
             <button class="lb-close" onClick={close} aria-label="Close" />
 
             {/* Counter */}
-            {total > 1 && (
+            {(canNavigatePrevious || canNavigateNext) && (
                 <div class="lb-counter">{index + 1} / {total}</div>
             )}
 
             {/* Nav buttons */}
-            {total > 1 && (
-                <>
-                    <button class="lb-nav lb-prev" onClick={() => navigate(-1)} aria-label="Previous" />
-                    <button class="lb-nav lb-next" onClick={() => navigate(1)} aria-label="Next" />
-                </>
+            {canNavigatePrevious && (
+                <button class="lb-nav lb-prev" onClick={() => navigate(-1)} aria-label="Previous" />
+            )}
+            {canNavigateNext && (
+                <button class="lb-nav lb-next" onClick={() => navigate(1)} aria-label="Next" />
             )}
 
             {currentItem?.messageId && currentItem.nickname && currentItem.timestamp != null && (
