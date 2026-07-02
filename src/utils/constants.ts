@@ -12,7 +12,7 @@ export const BACKEND_API_URL = trimTrailingSlash(
     import.meta.env.VITE_DOLLARS_BACKEND_API_URL || `${BACKEND_URL}/api/v1`
 );
 export const UPLOAD_BASE_URL = trimTrailingSlash(
-    import.meta.env.VITE_DOLLARS_UPLOAD_BASE_URL || 'https://lsky.ry.mk'
+    import.meta.env.VITE_DOLLARS_UPLOAD_BASE_URL || 'https://up.ry.mk'
 );
 export const UPLOAD_API_URL = trimTrailingSlash(
     import.meta.env.VITE_DOLLARS_UPLOAD_API_URL || `${UPLOAD_BASE_URL}/api/upload`
@@ -24,6 +24,10 @@ export const WEBSOCKET_URL = (
     import.meta.env.VITE_DOLLARS_WEBSOCKET_URL ||
     `${BACKEND_URL.replace(/^http/, 'ws')}/ws`
 );
+export const AUTH_BASE_URL = trimTrailingSlash(
+    import.meta.env.VITE_DOLLARS_AUTH_BASE_URL || 'https://auth.ry.mk'
+);
+export const AUTH_CLIENT = import.meta.env.VITE_DOLLARS_AUTH_CLIENT || 're-dollars';
 export const BGM_APP_ID = 'bgm460268b348b05f082';
 export const BGM_CALLBACK_URL = `${BACKEND_API_URL}/auth/callback`;
 

@@ -1,17 +1,29 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'preact/hooks';
-import { isMobile } from '@/utils/format';
 import { memo } from '@/utils/memo';
-import { addMessage, getRawMessage, setReplyTo, newMessageIds, retryMessage } from '@/stores/chat';
+import { isMobile } from '@/utils/format';
+import { addMessage, getRawMessage, retryMessage } from '@/stores/messageStore';
+import { newMessageIds } from '@/stores/chatState';
+import { setReplyTo } from '@/stores/composerState';
 import { settings } from '@/stores/user';
+import { sendPendingMessage } from '@/services/websocket/client';
+import { confirmSentMessage, sendMessage as apiSendMessage } from '@/utils/api/messages';
 import type { Message } from '@/types';
-import { processBBCode, renderReplyQuote, stripQuotes } from '@/utils/bbcode';
+import { stripQuotes } from '@/utils/bbcode';
 import { escapeHTML, formatDate, getAvatarUrl } from '@/utils/format';
-import { showContextMenu, showImageViewer } from '@/stores/ui';
+import { showContextMenu } from '@/stores/ui';
 import { COLLAPSE_MAX_HEIGHT, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import { UserAvatar } from './UserAvatar';
-import { markMessageAsSeenIfNotified } from './NotificationManager';
 import { useSwipeToReply } from '@/hooks/useSwipeToReply';
 import { MessageReactions } from './MessageReactions';
+import {
+    getBubbleTimestampMode,
+    hasRichBubbleContent,
+    isStickerMessage,
+    renderMessageContent,
+} from '@/utils/messagePresentation';
+import { useMessageVisibilityEffects } from '@/hooks/useMessageVisibilityEffects';
+import { useMessageImageViewer } from '@/hooks/useMessageImageViewer';
+import { useCollapsibleMessage } from '@/hooks/useCollapsibleMessage';
 
 interface MessageItemProps {
     message: Message;
@@ -20,64 +32,28 @@ interface MessageItemProps {
     isGroupedWithNext?: boolean;
 }
 
-type BubbleTimestampMode = 'hidden' | 'trailing' | 'stacked' | 'overlay';
-
-function hasRichBubbleContent(
-    messageText: string,
-    hasReplyQuote: boolean,
-    hasLinkPreviewCards: boolean,
-    hasCollapseToggle: boolean
-) {
-    if (hasReplyQuote || hasLinkPreviewCards || hasCollapseToggle) {
-        return true;
-    }
-
-    return /\[(?:img|emoji|sticker|audio|video|code|quote)\]|\[file=.*?\]|\((?:musume|blake)_\d+\)/i.test(messageText);
-}
-
-function getBubbleTimestampMode(
-    isGroupedWithNext: boolean,
-    editedAt: number | undefined,
-    isDeleted: boolean,
-    isSticker: boolean,
-    prefersTrailing: boolean
-): BubbleTimestampMode {
-    if (isGroupedWithNext && !(editedAt && !isDeleted)) {
-        return 'hidden';
-    }
-
-    if (isSticker) {
-        return 'overlay';
-    }
-
-    return prefersTrailing ? 'trailing' : 'stacked';
-}
-
-// 使用自定义比较函数优化 memo
-function arePropsEqual(prev: MessageItemProps, next: MessageItemProps): boolean {
+function areMessagePropsEqual(prev: MessageItemProps, next: MessageItemProps): boolean {
     const prevKey = prev.message.stableKey || prev.message.id;
     const nextKey = next.message.stableKey || next.message.id;
 
     return (
-        prevKey === nextKey &&
-        prev.message.message === next.message.message &&
-        prev.message.is_deleted === next.message.is_deleted &&
-        prev.message.edited_at === next.message.edited_at &&
-        prev.message.reactions === next.message.reactions &&
-        prev.message.link_previews === next.message.link_previews &&
-        prev.message.image_meta === next.message.image_meta &&
-        prev.message.state === next.message.state &&
-        prev.isSelf === next.isSelf &&
-        prev.isGrouped === next.isGrouped &&
-        prev.isGroupedWithNext === next.isGroupedWithNext
+        prevKey === nextKey
+        && prev.message.message === next.message.message
+        && prev.message.is_deleted === next.message.is_deleted
+        && prev.message.edited_at === next.message.edited_at
+        && prev.message.reactions === next.message.reactions
+        && prev.message.link_previews === next.message.link_previews
+        && prev.message.image_meta === next.message.image_meta
+        && prev.message.state === next.message.state
+        && prev.isSelf === next.isSelf
+        && prev.isGrouped === next.isGrouped
+        && prev.isGroupedWithNext === next.isGroupedWithNext
     );
 }
 
-export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext }: MessageItemProps) => {
+export const MessageItem = memo(function MessageItem({ message, isSelf, isGrouped, isGroupedWithNext }: MessageItemProps) {
     const messageRef = useRef<HTMLDivElement>(null);
     const textContentRef = useRef<HTMLDivElement>(null);
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [isCollapsible, setIsCollapsible] = useState(false);
     const [isNew, setIsNew] = useState(() => newMessageIds.peek().has(message.id));
 
     useEffect(() => {
@@ -90,163 +66,29 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     // 提取原始值用于依赖
     const messageId = message.id;
     const messageText = message.message;
-    const isDeleted = !!message.is_deleted;
+    const isDeleted = message.is_deleted;
     const editedAt = message.edited_at;
     const replyToId = message.reply_to_id;
     const replyDetails = message.reply_details;
     const imageMeta = message.image_meta;
     const linkPreviews = message.link_previews;
 
-    // 渲染消息内容
     const content = useMemo(() => {
-        if (isDeleted) {
-            return '<div class="text-content deleted">此消息已撤回</div>';
-        }
-
-        const previews: string[] = [];
-        let html = processBBCode(
-            escapeHTML(messageText),
-            imageMeta || {},
-            {
-                replyToId: replyToId,
-                replyDetails: replyDetails,
-                previewsCollector: previews,
-            },
-            linkPreviews || {}
-        );
-
-        if (replyToId && replyDetails) {
-            html = renderReplyQuote(replyDetails, replyToId) + html;
-        }
-
-        if (previews.length > 0) {
-            html += '<div class="message-previews">' + previews.join('') + '</div>';
-        }
-
-        return html;
+        return renderMessageContent(message);
     }, [messageId, messageText, isDeleted, replyToId, replyDetails, imageMeta, linkPreviews, settings.value.linkPreview, settings.value.loadImages]);
 
-    // 使用 IntersectionObserver 延迟渲染重内容
-    useEffect(() => {
-        const el = messageRef.current;
-        if (!el) return;
+    useMessageVisibilityEffects(messageRef, messageId, content);
+    useMessageImageViewer(messageRef, content);
 
-        let hasRendered = false;
-
-        const handleVisibility = () => {
-            if (hasRendered) return;
-            hasRendered = true;
-
-            markMessageAsSeenIfNotified(messageId);
-
-            // 处理图片加载状态
-            const imgs = el.querySelectorAll('.full-image');
-            imgs.forEach((img: Element) => {
-                const image = img as HTMLImageElement;
-                const container = image.closest('.image-container');
-
-                const handleLoad = () => {
-                    image.classList.add('is-loaded');
-                    if (container) container.classList.add('is-loaded');
-                };
-
-                const handleError = () => {
-                    image.src = '/img/no_img.gif';
-                    image.classList.add('is-loaded', 'load-failed');
-                    if (container) container.classList.add('is-loaded');
-                };
-
-                if (image.complete) {
-                    if (image.naturalWidth > 0) {
-                        handleLoad();
-                    } else {
-                        handleError();
-                    }
-                } else {
-                    image.addEventListener('load', handleLoad, { once: true });
-                    image.addEventListener('error', handleError, { once: true });
-                }
-            });
-        };
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        handleVisibility();
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { rootMargin: '100px' }
-        );
-
-        observer.observe(el);
-
-        return () => {
-            observer.disconnect();
-        };
-    }, [content, messageId]);
-
-    // 处理图片点击 (Lightbox)
-    useEffect(() => {
-        const el = messageRef.current;
-        if (!el) return;
-
-        const handlers: Array<{ el: Element, fn: (e: Event) => void }> = [];
-
-        const addImageViewerHandler = (img: HTMLImageElement) => {
-            const handler = (e: Event) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const allImgs = el.querySelectorAll('.full-image');
-                const imageUrls = Array.from(allImgs).map(i => (i as HTMLImageElement).dataset.fullSrc || (i as HTMLImageElement).src);
-                const currentUrl = img.dataset.fullSrc || img.src;
-                const index = imageUrls.indexOf(currentUrl);
-                showImageViewer(imageUrls, Math.max(0, index));
-            };
-            img.addEventListener('click', handler);
-            img.style.cursor = 'zoom-in';
-            handlers.push({ el: img, fn: handler });
-        };
-
-        // 处理缩略图占位点击查看原图
-        const placeholders = el.querySelectorAll('.image-placeholder[data-src]');
-        placeholders.forEach((placeholder) => {
-            const container = placeholder as HTMLElement;
-            if (container.classList.contains('image-masked')) return;
-            const handler = (e: Event) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const img = container.querySelector('.full-image') as HTMLImageElement | null;
-                if (!img) return;
-                const fullSrc = img.dataset.fullSrc || container.dataset.src || img.src;
-                showImageViewer([fullSrc], 0);
-            };
-            container.addEventListener('click', handler);
-            handlers.push({ el: container, fn: handler });
-        });
-
-        // 处理已加载图片的点击 (Lightbox)
-        const imgs = el.querySelectorAll('.full-image');
-        imgs.forEach((img) => {
-            addImageViewerHandler(img as HTMLImageElement);
-        });
-
-        return () => {
-            handlers.forEach(({ el, fn }) => {
-                el.removeEventListener('click', fn);
-            });
-        };
-    }, [content]);
-
-    // 判断是否为贴纸模式
     const isSticker = useMemo(() => {
-        if (isDeleted) return false;
-        const raw = (messageText || '').trim();
-        return /^(\[img\][^\[]+\[\/img\]|\[(?:emoji|sticker)\][^\[]+\[\/(?:emoji|sticker)\]|\((?:musume|blake)_\d+\))$/i.test(raw) && !replyToId;
+        return isStickerMessage(messageText, isDeleted, replyToId);
     }, [messageText, isDeleted, replyToId]);
-    const shouldCollapse = isCollapsible && !isExpanded;
+    const { isExpanded, setIsExpanded, isCollapsible, shouldCollapse } = useCollapsibleMessage(
+        textContentRef,
+        content,
+        isDeleted,
+        isSticker
+    );
     const hasReplyQuote = !!(replyToId && replyDetails);
     const hasLinkPreviewCards = settings.value.linkPreview && Object.keys(linkPreviews || {}).length > 0;
     const prefersTrailingTimestamp = !isDeleted && (
@@ -266,61 +108,10 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     const timestampMode = getBubbleTimestampMode(
         !!isGroupedWithNext,
         editedAt,
-        isDeleted,
+        !!isDeleted,
         isSticker,
         prefersTrailingTimestamp
     );
-
-    useEffect(() => {
-        const el = textContentRef.current;
-        if (!el || isDeleted || isSticker) {
-            setIsCollapsible(false);
-            return;
-        }
-
-        let frameId = 0;
-        const imageListeners: Array<{ image: HTMLImageElement; handleChange: () => void }> = [];
-        const resizeObserver = new ResizeObserver(() => {
-            if (frameId) cancelAnimationFrame(frameId);
-            frameId = requestAnimationFrame(measure);
-        });
-
-        const measure = () => {
-            frameId = 0;
-            const hasInlineImage = !!el.querySelector('.image-container');
-            const nextCollapsible = !hasInlineImage && el.scrollHeight > COLLAPSE_MAX_HEIGHT + 1;
-            setIsCollapsible((prev) => prev === nextCollapsible ? prev : nextCollapsible);
-        };
-
-        resizeObserver.observe(el);
-        el.querySelectorAll('img').forEach((node) => {
-            const image = node as HTMLImageElement;
-            const handleChange = () => {
-                if (frameId) cancelAnimationFrame(frameId);
-                frameId = requestAnimationFrame(measure);
-            };
-            image.addEventListener('load', handleChange);
-            image.addEventListener('error', handleChange);
-            imageListeners.push({ image, handleChange });
-        });
-
-        measure();
-
-        return () => {
-            if (frameId) cancelAnimationFrame(frameId);
-            resizeObserver.disconnect();
-            imageListeners.forEach(({ image, handleChange }) => {
-                image.removeEventListener('load', handleChange);
-                image.removeEventListener('error', handleChange);
-            });
-        };
-    }, [content, isDeleted, isSticker]);
-
-    useEffect(() => {
-        if (!isCollapsible && isExpanded) {
-            setIsExpanded(false);
-        }
-    }, [isCollapsible, isExpanded]);
 
     // 头像 URL
     const avatarUrl = getAvatarUrl(message.avatar, 'l');
@@ -381,10 +172,6 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
     const handleRetry = useCallback(async () => {
         const result = retryMessage(messageId);
         if (result) {
-            const [{ sendPendingMessage }, { sendMessage: apiSendMessage, confirmSentMessage }] = await Promise.all([
-                import('@/hooks/useWebSocket'),
-                import('@/utils/api')
-            ]);
             sendPendingMessage(result.stableKey, result.content);
             const sent = await apiSendMessage(result.content);
             if (sent.status) {
@@ -410,14 +197,7 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
         elementRef: messageRef,
     });
 
-    const className = 'chat-message' +
-        (isSelf ? ' self' : '') +
-        (isGrouped ? ' is-grouped-with-prev' : '') +
-        (isGroupedWithNext ? ' is-grouped-with-next' : '') +
-        (editedAt && !isDeleted ? ' is-edited' : '') +
-        (isNew ? ' new-message' : '') +
-        (message.state === 'sending' ? ' pending' : '') +
-        (message.state === 'failed' ? ' failed' : '');
+    const className = `chat-message${isSelf ? ' self' : ''}${isGrouped ? ' is-grouped-with-prev' : ''}${isGroupedWithNext ? ' is-grouped-with-next' : ''}${editedAt && !isDeleted ? ' is-edited' : ''}${isNew ? ' new-message' : ''}${message.state === 'sending' ? ' pending' : ''}${message.state === 'failed' ? ' failed' : ''}`;
 
     return (
         <div
@@ -453,17 +233,10 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
                 </span>
 
                 <div
-                    class={'bubble' +
-                        (isSticker ? ' sticker-mode' : '') +
-                        (timestampMode === 'trailing' ? ' has-trailing-timestamp' : '') +
-                        (timestampMode === 'stacked' ? ' has-stacked-timestamp' : '')}
+                    class={`bubble${isSticker ? ' sticker-mode' : ''}${timestampMode === 'trailing' ? ' has-trailing-timestamp' : ''}${timestampMode === 'stacked' ? ' has-stacked-timestamp' : ''}`}
                     onClick={message.state === 'failed' ? handleBubbleClick : undefined}
                     style={message.state === 'failed' ? { cursor: 'pointer' } : undefined}
                 >
-                    <svg viewBox="0 0 11 20" width="11" height="20" class="bubble-tail">
-                        <use href="#message-tail-filled" />
-                    </svg>
-
                     <span class="bubble-nickname" style={{ '--nick-color': nickColor } as any}>
                         {message.nickname}
                     </span>
@@ -504,4 +277,4 @@ export const MessageItem = memo(({ message, isSelf, isGrouped, isGroupedWithNext
             </div>
         </div>
     );
-}, arePropsEqual);
+}, areMessagePropsEqual);

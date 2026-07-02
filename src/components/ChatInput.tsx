@@ -1,27 +1,21 @@
-import { useRef, useState, useCallback, useEffect } from 'preact/hooks';
+import { useRef, useCallback, useEffect } from 'preact/hooks';
 import {
     replyingTo,
     editingMessage,
     cancelReplyOrEdit,
-    addMessage,
-    addOptimisticMessage,
-    removeOptimisticMessage,
     pendingMention,
     setReplyTo,
-    updateMessage,
+} from '@/stores/composerState';
+import {
     saveDraft,
     loadDraft,
-    clearDraft,
     type ReplyInfo
-} from '@/stores/chat';
+} from '@/stores/drafts';
 import { toggleSmileyPanel, inputAreaHeight } from '@/stores/ui';
-import { userInfo, settings } from '@/stores/user';
-import { confirmSentMessage, sendMessage as apiSendMessage, editMessage as apiEditMessage, lookupUsersByName } from '@/utils/api';
-import { sendTypingStart, sendTypingStop, sendPendingMessage } from '@/hooks/useWebSocket';
+import { settings } from '@/stores/user';
+import { sendTypingStart, sendTypingStop } from '@/services/websocket/client';
 import { DRAFT_SAVE_DELAY, TYPING_STOP_DELAY } from '@/utils/constants';
 import { escapeHTML, getAvatarUrl } from '@/utils/format';
-import { iconEmoji, iconSend, iconUpload } from '@/utils/icons';
-import { transformMentions } from '@/utils/mentions';
 import { TypingIndicator } from './TypingIndicator';
 import { SmileyPanel } from './SmileyPanel';
 import { TextFormatter } from './TextFormatter';
@@ -38,6 +32,7 @@ import {
     type RichInputSelection,
     type RichInputValueOptions
 } from '@/utils/richInput';
+import { useMessageComposerSend } from '@/hooks/useMessageComposerSend';
 
 const MAX_INPUT_HEIGHT = 150;
 
@@ -48,7 +43,6 @@ export function ChatInput() {
     const containerRef = useRef<HTMLDivElement>(null);
     const inputValueRef = useRef('');
     const selectionRef = useRef<RichInputSelection>({ start: 0, end: 0 });
-    const [isSending, setIsSending] = useState(false);
     const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isTypingRef = useRef(false);
     const draftSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -69,6 +63,7 @@ export function ChatInput() {
         handleFileChange,
         handlePaste,
     } = useMediaUpload(inputControllerRef);
+    const { isSending, send } = useMessageComposerSend();
 
     const syncProxyTextarea = useCallback((value = inputValueRef.current, selection = selectionRef.current) => {
         const proxy = textareaProxyRef.current;
@@ -412,78 +407,12 @@ export function ChatInput() {
         return meta;
     }, {});
 
-    // 发送消息
-    const handleSend = async () => {
-        const content = inputValueRef.current.trim();
-        if (!content || isSending) return;
-
-        setIsSending(true);
-
-        try {
-            if (editingMessage.value) {
-                let finalContent = content;
-                if (editingMessage.value.hiddenQuote) {
-                    finalContent = `${editingMessage.value.hiddenQuote}\n${content}`;
-                }
-
-                finalContent = await transformMentions(finalContent, lookupUsersByName);
-
-                const result = await apiEditMessage(Number(editingMessage.value.id), finalContent);
-                if (!result.status) {
-                    alert(result.error || '编辑失败');
-                } else {
-                    clearInput();
-
-                    const imageMeta = getImageMeta();
-                    if (Object.keys(imageMeta).length > 0) {
-                        updateMessage(Number(editingMessage.value.id), { image_meta: imageMeta });
-                    }
-                }
-                cancelReplyOrEdit();
-            } else {
-                let finalContent = content;
-                const reply = replyingTo.value;
-
-                if (reply) {
-                    finalContent = `[quote=${reply.id}][/quote]${content}`;
-                }
-
-                const transformedContent = await transformMentions(finalContent, lookupUsersByName);
-
-                const imageMeta = getImageMeta();
-
-                const user = userInfo.value;
-                const { tempId, stableKey } = addOptimisticMessage(
-                    transformedContent,
-                    { id: user.id, nickname: user.nickname, avatar: user.avatar },
-                    reply ? Number(reply.id) : undefined,
-                    reply ? { uid: Number(reply.uid), nickname: reply.user, avatar: reply.avatar, content: reply.text } : undefined,
-                    Object.keys(imageMeta).length > 0 ? imageMeta : undefined
-                );
-
-                sendPendingMessage(stableKey, transformedContent);
-
-                clearInput(true);
-                setPreviewMedia([]);
-                clearDraft();
-                cancelReplyOrEdit();
-
-                const result = await apiSendMessage(transformedContent);
-                if (!result.status) {
-                    removeOptimisticMessage(tempId);
-                    alert(result.error || '发送失败');
-                } else {
-                    void confirmSentMessage(transformedContent).then((message) => {
-                        if (message) addMessage(message, stableKey);
-                    });
-                }
-            }
-        } catch (e) {
-            alert('发送失败，请重试');
-        } finally {
-            setIsSending(false);
-        }
-    };
+    const handleSend = () => send({
+        content: inputValueRef.current,
+        imageMeta: getImageMeta(),
+        clearInput,
+        clearMediaPreview: () => setPreviewMedia([]),
+    });
 
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key !== 'Enter') return;
@@ -583,7 +512,6 @@ export function ChatInput() {
                         class="action-btn"
                         title="表情"
                         onClick={() => toggleSmileyPanel()}
-                        dangerouslySetInnerHTML={{ __html: iconEmoji }}
                     />
 
                     <div class="dollars-input-wrapper">
@@ -621,7 +549,6 @@ export function ChatInput() {
                             onMouseDown={handleAttachTouchStart}
                             onMouseUp={handleAttachTouchEnd}
                             onMouseLeave={handleAttachTouchEnd}
-                            dangerouslySetInnerHTML={{ __html: iconUpload }}
                         />
                         <input
                             ref={fileInputRef}
@@ -638,7 +565,6 @@ export function ChatInput() {
                             onClick={handleSend}
                             onMouseDown={(e) => e.preventDefault()}
                             title={isUploading ? '上传中...' : '发送'}
-                            dangerouslySetInnerHTML={{ __html: iconSend }}
                         />
                     </div>
                 </div>

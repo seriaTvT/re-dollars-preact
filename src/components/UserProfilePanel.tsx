@@ -9,8 +9,9 @@ import {
     showImageViewer,
     searchGalleryMode,
 } from '@/stores/ui';
-import { searchQuery } from '@/stores/chat';
-import { fetchUserProfile, fetchGalleryMedia } from '@/utils/api';
+import { searchQuery } from '@/stores/chatState';
+import { fetchGalleryMedia } from '@/utils/api/media';
+import { fetchUserProfile } from '@/utils/api/users';
 import { getAvatarUrl, formatDate, isActiveToday } from '@/utils/format';
 import { iconCalendar, iconHistory, iconHome, iconPen } from '@/utils/icons';
 import type { UserProfile } from '@/types';
@@ -269,9 +270,7 @@ export function UserProfilePanel() {
                                                                 alt={`${item.nickname} 分享的视频`}
                                                                 loading="lazy"
                                                             />
-                                                            <div class="uprofile-media-video-badge" aria-hidden="true">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                                            </div>
+                                                            <div class="uprofile-media-video-badge" aria-hidden="true" />
                                                         </button>
                                                     ) : (
                                                         <img

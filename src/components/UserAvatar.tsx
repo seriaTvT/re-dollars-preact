@@ -1,4 +1,5 @@
-import { onlineUsers, pendingMention } from '@/stores/chat';
+import { onlineUsers } from '@/stores/chatState';
+import { pendingMention } from '@/stores/composerState';
 import { showUserProfile } from '@/stores/ui';
 import { useLongPress } from '@/hooks/useLongPress';
 
@@ -10,8 +11,6 @@ interface UserAvatarProps {
 }
 
 export function UserAvatar({ uid, src, nickname, className = '' }: UserAvatarProps) {
-    // Reactive online status
-    // uid=0 is system user (Bangumi), always online
     const uidStr = String(uid);
     const isOnline = uidStr === '0' || onlineUsers.value.has(uidStr);
 

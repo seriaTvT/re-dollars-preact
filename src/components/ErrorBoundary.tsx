@@ -14,7 +14,7 @@ interface State {
  */
 export class ErrorBoundary extends Component<Props, State> {
     state: State = {
-        hasError: false,
+        hasError: false
     };
 
     static getDerivedStateFromError(): State {
@@ -24,23 +24,10 @@ export class ErrorBoundary extends Component<Props, State> {
     render() {
         if (this.state.hasError) {
             return (
-                <div class="error-fallback" style={{
-                    padding: '20px',
-                    textAlign: 'center',
-                    color: 'var(--dollars-text-secondary, #888)',
-                }}>
-                    <div style={{ fontSize: '24px', marginBottom: '10px' }}>😢</div>
+                <div class="error-fallback">
+                    <div class="error-fallback-icon">😢</div>
                     <div>加载出错了</div>
                     <button
-                        style={{
-                            marginTop: '10px',
-                            padding: '8px 16px',
-                            border: 'none',
-                            borderRadius: '4px',
-                            background: 'var(--primary-color, #f09199)',
-                            color: 'white',
-                            cursor: 'pointer',
-                        }}
                         onClick={() => this.setState({ hasError: false })}
                     >
                         重试

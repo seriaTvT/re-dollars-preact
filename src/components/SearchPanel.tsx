@@ -1,8 +1,8 @@
 import { useRef, useEffect } from 'preact/hooks';
 import { useSignal } from '@preact/signals';
 import { isSearchActive, toggleSearch, searchGalleryMode } from '@/stores/ui';
-import { searchQuery } from '@/stores/chat';
-import { searchMessages } from '@/utils/api';
+import { searchQuery } from '@/stores/chatState';
+import { getFirstMessageIdByDate, searchMessages } from '@/utils/api/messages';
 import { SEARCH_DEBOUNCE } from '@/utils/constants';
 import { debounce, formatDate, getAvatarUrl } from '@/utils/format';
 import { iconCalendar, iconClose, iconPhoto, iconSearch } from '@/utils/icons';
@@ -95,7 +95,6 @@ export function SearchPanel() {
         const date = (e.target as HTMLInputElement).value;
         if (!date) return;
 
-        const { getFirstMessageIdByDate } = await import('@/utils/api');
         const msgId = await getFirstMessageIdByDate(date);
         (e.target as HTMLInputElement).value = '';
 

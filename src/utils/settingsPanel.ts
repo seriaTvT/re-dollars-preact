@@ -1,8 +1,8 @@
 import { settings, saveSettings, isLoggedIn, userInfo } from '@/stores/user';
-import { isChatOpen } from '@/stores/chat';
-import { performLogin, performLogout } from '@/utils/api';
+import { isChatOpen } from '@/stores/chatState';
+import { isMaximized, mobileChatViewActive } from '@/stores/ui';
+import { loginWithToken, performLogin, performLogout } from '@/utils/api/auth';
 import type { Settings } from '@/types';
-import { getChiiLib } from '@/utils/globals';
 import { clearWindowState, saveChatOpenState, saveMaximizedState, saveMobileChatViewState } from '@/utils/windowState';
 
 interface SettingsConfigItem {
@@ -84,6 +84,68 @@ const settingsConfig: SettingsConfigItem[] = [
     },
 ];
 
+const PANEL_TAB = 'dollars_chat_settings';
+let nativeSettingsPanelRegistered = false;
+let nativeSettingsPanelRetryTimer: number | undefined;
+let settingsHeaderButtonBound = false;
+let authControlConfig: ReturnType<typeof createAuthControlConfig> | null = null;
+
+function getUkagaka() {
+    return (window as any).chiiLib?.ukagaka as Window['chiiLib']['ukagaka'] | undefined;
+}
+
+function authDisplayName() {
+    return userInfo.value.nickname || userInfo.value.name || userInfo.value.id || '当前用户';
+}
+
+function currentAuthControlValue() {
+    return isLoggedIn.value ? 'auth_state' : '';
+}
+
+function authControlOptions() {
+    return isLoggedIn.value
+        ? [
+            { value: 'auth_state', label: `已鉴权：${authDisplayName()}` },
+            { value: 'logged_out', label: '撤销鉴权' },
+        ]
+        : [
+            { value: 'oauth_login', label: 'OAuth 鉴权' },
+            { value: 'token_login', label: '私信 token 鉴权' },
+        ];
+}
+
+function createAuthControlConfig() {
+    return {
+        title: 'Bangumi 授权',
+        name: 'dollars_auth_action',
+        type: 'radio' as const,
+        defaultValue: currentAuthControlValue(),
+        getCurrentValue: currentAuthControlValue,
+        onChange: async (value: string) => {
+            if (value === 'oauth_login') {
+                performLogin();
+            } else if (value === 'token_login') {
+                const token = window.prompt('粘贴 Blake娘 私信回复的登录 token');
+                if (token) {
+                    const result = await loginWithToken(token);
+                    if (!result.isLoggedIn) {
+                        window.alert(result.error || '私信 token 无效或已过期');
+                    }
+                }
+            } else if (value === 'logged_out') {
+                performLogout();
+            }
+        },
+        options: authControlOptions(),
+    };
+}
+
+function syncAuthControlConfig() {
+    if (!authControlConfig) return;
+    authControlConfig.defaultValue = currentAuthControlValue();
+    authControlConfig.options = authControlOptions();
+}
+
 function applyHomeCardDisplay() {
     const card = document.getElementById('dollars-card');
     if (card) {
@@ -117,10 +179,8 @@ function handleRememberOpenStateChange() {
     } else {
         // 如果开启了记忆状态，保存当前所有窗口状态
         saveChatOpenState(isChatOpen.value);
-        import('@/stores/ui').then(({ isMaximized, mobileChatViewActive }) => {
-            saveMaximizedState(isMaximized.value);
-            saveMobileChatViewState(mobileChatViewActive.value);
-        }).catch(() => {});
+        saveMaximizedState(isMaximized.value);
+        saveMobileChatViewState(mobileChatViewActive.value);
     }
 }
 
@@ -133,24 +193,9 @@ export function applyAllSettings() {
 function generateApiConfig() {
     return settingsConfig.map((s) => {
         if (s.type === 'auth_control_group') {
-            return {
-                title: s.label,
-                name: 'dollars_auth_action',
-                type: 'radio' as const,
-                defaultValue: isLoggedIn.value ? 'logged_in' : 'logged_out',
-                getCurrentValue: () => (isLoggedIn.value ? 'logged_in' : 'logged_out'),
-                onChange: (value: string) => {
-                    if (value === 'logged_in') {
-                        performLogin();
-                    } else if (value === 'logged_out') {
-                        performLogout();
-                    }
-                },
-                options: [
-                    { value: 'logged_in', label: isLoggedIn.value ? `已授权：${userInfo.value.nickname}` : '点击授权' },
-                    { value: 'logged_out', label: isLoggedIn.value ? '撤销授权' : '未授权' },
-                ],
-            };
+            authControlConfig = authControlConfig || createAuthControlConfig();
+            syncAuthControlConfig();
+            return authControlConfig;
         } else if (s.type === 'checkbox') {
             return {
                 title: s.label,
@@ -193,26 +238,65 @@ function generateApiConfig() {
     }).filter((x): x is any => x !== null);
 }
 
+export function refreshNativeSettingsPanelAuthState() {
+    syncAuthControlConfig();
+    if (!authControlConfig) return;
+
+    const ukagaka = getUkagaka() as (Window['chiiLib']['ukagaka'] & {
+        generateOptionsTabContent?: (config: unknown[]) => string;
+        bindConfigChangeEvents?: (config: unknown[]) => void;
+    }) | undefined;
+    const section = document.getElementById('section-dollars_auth_action');
+    if (!section || typeof ukagaka?.generateOptionsTabContent !== 'function') return;
+
+    const container = document.createElement('div');
+    container.innerHTML = ukagaka.generateOptionsTabContent([authControlConfig]);
+    const nextSection = container.querySelector('#section-dollars_auth_action');
+    if (!nextSection) return;
+
+    section.replaceWith(nextSection);
+    ukagaka.bindConfigChangeEvents?.([authControlConfig]);
+}
+
 export function integrateWithNativeSettingsPanel() {
+    if (nativeSettingsPanelRegistered) return;
+
+    const ukagaka = getUkagaka();
+    if (!ukagaka || typeof ukagaka.addPanelTab !== 'function') {
+        if (nativeSettingsPanelRetryTimer === undefined) {
+            nativeSettingsPanelRetryTimer = window.setTimeout(() => {
+                nativeSettingsPanelRetryTimer = undefined;
+                integrateWithNativeSettingsPanel();
+            }, 500);
+        }
+        return;
+    }
+
     const apiConfig = generateApiConfig();
 
-    getChiiLib().ukagaka.addPanelTab({
-        tab: 'dollars_chat_settings',
+    ukagaka.addPanelTab({
+        tab: PANEL_TAB,
         label: 'Re:Dollars',
         type: 'options',
         config: apiConfig,
     });
+    nativeSettingsPanelRegistered = true;
 
     const settingsBtnHeader = document.getElementById('dollars-settings-btn-header');
-    if (settingsBtnHeader) {
+    if (settingsBtnHeader && !settingsHeaderButtonBound) {
+        settingsHeaderButtonBound = true;
         settingsBtnHeader.title = '打开聊天设置';
         settingsBtnHeader.addEventListener('click', (e) => {
             e.stopPropagation();
-            getChiiLib().ukagaka.showCustomizePanelWithTab('dollars_chat_settings');
+            openSettingsPanel();
         });
     }
 }
 
 export function openSettingsPanel() {
-    getChiiLib().ukagaka.showCustomizePanelWithTab('dollars_chat_settings');
+    integrateWithNativeSettingsPanel();
+    const ukagaka = getUkagaka();
+    if (ukagaka && typeof ukagaka.showCustomizePanelWithTab === 'function') {
+        ukagaka.showCustomizePanelWithTab(PANEL_TAB);
+    }
 }

@@ -7,7 +7,7 @@ import {
     contextMenuTargetId,
     hideContextMenu,
 } from '@/stores/ui';
-import { toggleReaction as apiToggleReaction } from '@/utils/api';
+import { toggleReaction as apiToggleReaction } from '@/utils/api/messages';
 import { smileyRangesWithoutFavorites, getSmileyUrl, generateSmileyCodes } from '@/utils/smilies';
 import { loadSavedBmoItems, type BmoItem } from '@/utils/bmo';
 

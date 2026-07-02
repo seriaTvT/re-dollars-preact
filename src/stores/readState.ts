@@ -1,7 +1,8 @@
 import { signal, computed } from '@preact/signals';
 import { apiUrl } from '@/utils/api/url';
 import { getAuthHeaders } from './user';
-import { messageIds, historyNewestId } from './chat';
+import { historyNewestId } from './chatState';
+import { messageIds } from './messageStore';
 
 export const lastReadId = signal<number | null>(null);
 export const pendingReadId = signal<number | null>(null);

@@ -45,7 +45,7 @@ export interface Message extends MessageBase {
     state?: 'sending' | 'sent' | 'failed';
 }
 
-// 用户资料（ProfileCard / UserProfilePanel 共用）
+// 用户资料面板
 export interface UserProfile {
     id: number;
     nickname: string;

@@ -14,6 +14,11 @@ describe('uploadFile', () => {
             }), { status: 200 }),
         );
         vi.stubGlobal('fetch', fetchMock);
+        vi.stubGlobal('chiiApp', {
+            cloud_settings: {
+                getAll: () => ({ dollarsAuthToken: 'header.payload.signature' }),
+            },
+        });
 
         const file = new File(['heif-data'], 'photo.heif', { type: 'application/octet-stream' });
 
@@ -21,7 +26,8 @@ describe('uploadFile', () => {
 
         expect(fetchMock).toHaveBeenCalledOnce();
         const [url, init] = fetchMock.mock.calls[0]!;
-        expect(url).toBe('https://lsky.ry.mk/api/upload');
+        expect(url).toBe('https://up.ry.mk/api/upload');
+        expect(init!.headers).toEqual({ Authorization: 'Bearer header.payload.signature' });
         expect(init!.credentials).toBe('omit');
 
         const formData = init!.body as FormData;
@@ -29,12 +35,12 @@ describe('uploadFile', () => {
         expect(formData.get('file')).toBeNull();
     });
 
-    it('uploads multiple images through the Lsky batch endpoint', async () => {
+    it('uploads multiple images through the image batch endpoint', async () => {
         const fetchMock = vi.fn<(input: RequestInfo, init?: RequestInit) => Promise<Response>>(
             async () => new Response(JSON.stringify({
                 status: true,
                 data: [
-                    { links: { url: 'https://lsky.ry.mk/i/a.webp' } },
+                    { links: { url: 'https://up.ry.mk/i/a.webp' } },
                     { links: { url: '/i/b.webp' } },
                 ],
             }), { status: 200 }),
@@ -49,12 +55,12 @@ describe('uploadFile', () => {
         const result = await uploadImages(files);
 
         expect(result.map(item => item.url)).toEqual([
-            'https://lsky.ry.mk/i/a.webp',
-            'https://lsky.ry.mk/i/b.webp',
+            'https://up.ry.mk/i/a.webp',
+            'https://up.ry.mk/i/b.webp',
         ]);
         expect(fetchMock).toHaveBeenCalledOnce();
         const [url, init] = fetchMock.mock.calls[0]!;
-        expect(url).toBe('https://lsky.ry.mk/api/upload/batch');
+        expect(url).toBe('https://up.ry.mk/api/upload/batch');
         expect(init!.credentials).toBe('omit');
 
         const formData = init!.body as FormData;

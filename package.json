@@ -1,19 +1,22 @@
 {
-    "name": "re-dollars-preact",
+    "name": "re-dollars-frontend-next",
     "version": "1.0.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview",
-        "test": "vitest run"
+        "test": "vitest run",
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "@preact/signals": "^1.3.1",
         "preact": "^10.25.4"
     },
     "devDependencies": {
+        "@preact/preset-vite": "^2.9.4",
         "@vitest/coverage-v8": "^4.0.17",
+        "esbuild": "^0.25.12",
         "fast-check": "^4.5.3",
         "typescript": "^5.7.2",
         "vite": "^6.0.7",

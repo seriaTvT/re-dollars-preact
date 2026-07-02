@@ -9,7 +9,7 @@ import {
     hideUserProfile,
     toggleSearch,
 } from '@/stores/ui';
-import { pendingJumpToMessage, toggleChat } from '@/stores/chat';
+import { pendingJumpToMessage, toggleChat } from '@/stores/chatState';
 import { formatDate, getAvatarUrl } from '@/utils/format';
 
 const SWIPE_THRESHOLD = 50;
@@ -18,41 +18,6 @@ const DOUBLE_TAP_DELAY = 300;
 const MIN_SCALE = 1;
 const MAX_SCALE = 4;
 const ANIM_DURATION = 250;
-
-/** Inject lightbox styles once */
-let stylesInjected = false;
-function injectStyles() {
-    if (stylesInjected) return;
-    stylesInjected = true;
-    const css = `
-.lb-overlay{position:fixed;inset:0;z-index:var(--dollars-z-index-modal,2000);background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;touch-action:none;user-select:none;-webkit-user-select:none}
-.lb-overlay.lb-visible{opacity:1}
-.lb-overlay.lb-closing{opacity:0}
-.lb-img-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
-.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;transform-origin:center center;transition:transform .25s ease,opacity .2s ease;will-change:transform;pointer-events:auto;-webkit-user-drag:none;user-select:auto;-webkit-user-select:auto;-webkit-touch-callout:default}
-.lb-img.lb-dragging{transition:none}
-.lb-nav,.lb-close{position:absolute;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
-.lb-nav{top:50%;transform:translateY(-50%);width:44px;height:44px;opacity:.7;transition:background .2s,opacity .2s}
-.lb-nav:hover,.lb-close:hover{background:rgba(255,255,255,.3)}
-.lb-nav:hover{opacity:1}
-.lb-prev{left:12px}
-.lb-next{right:12px}
-.lb-close{top:12px;right:12px;width:40px;height:40px;font-size:20px}
-.lb-counter{position:absolute;top:16px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:14px;z-index:2;pointer-events:none}
-.lb-capsule{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:min(76vw,340px);padding:7px 12px 7px 9px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(12,12,14,.56);backdrop-filter:blur(12px) saturate(1.1);-webkit-backdrop-filter:blur(12px) saturate(1.1);box-shadow:0 8px 20px rgba(0,0,0,.24);color:#fff;cursor:pointer;z-index:2;transition:background-color .18s ease,border-color .18s ease,transform .18s ease;appearance:none;-webkit-appearance:none;font:inherit;text-align:left}
-.lb-capsule:hover{background:rgba(12,12,14,.68);border-color:rgba(255,255,255,.2);transform:translateX(-50%) scale(1.015)}
-.lb-capsule:active{transform:translateX(-50%) scale(.985)}
-.lb-capsule-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.18);flex-shrink:0}
-.lb-capsule-info{display:flex;flex-direction:column;min-width:0;gap:2px;line-height:1.1}
-.lb-capsule-nickname,.lb-capsule-date{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lb-capsule-nickname{font-size:12px;font-weight:600;letter-spacing:.01em;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-.lb-capsule-date{font-size:10px;color:rgba(255,255,255,.72)}
-@media(max-width:600px){.lb-nav{display:none}.lb-img{max-width:100vw;max-height:100vh}.lb-capsule{bottom:18px;max-width:calc(100vw - 28px);padding:7px 11px 7px 9px}}
-`;
-    const el = document.createElement('style');
-    el.textContent = css;
-    document.head.appendChild(el);
-}
 
 function clamp(v: number, min: number, max: number) {
     return Math.max(min, Math.min(max, v));
@@ -88,10 +53,11 @@ export function LightboxViewer() {
     const closing = useRef(false);
 
     const items = imageViewerItems.value;
+    const images = items.map(item => item.src);
     const index = imageViewerIndex.value;
     const source = imageViewerSource.value;
     const visible = isImageViewerOpen.value;
-    const total = items.length;
+    const total = images.length;
     const currentItem = items[index];
 
     const handleCapsuleClick = useCallback((e: MouseEvent) => {
@@ -202,12 +168,9 @@ export function LightboxViewer() {
         });
     }, [visible, index, resetTransform]);
 
-    // Inject styles once
-    useEffect(injectStyles, []);
-
     if (!visible || total === 0) return null;
 
-    const src = currentItem.src;
+    const src = images[index];
 
     // --- Touch handlers ---
     const onTouchStart = (e: TouchEvent) => {
@@ -348,9 +311,7 @@ export function LightboxViewer() {
             onClick={onBackdropClick}
         >
             {/* Close button */}
-            <button class="lb-close" onClick={close} aria-label="Close">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
+            <button class="lb-close" onClick={close} aria-label="Close" />
 
             {/* Counter */}
             {total > 1 && (
@@ -360,12 +321,8 @@ export function LightboxViewer() {
             {/* Nav buttons */}
             {total > 1 && (
                 <>
-                    <button class="lb-nav lb-prev" onClick={() => navigate(-1)} aria-label="Previous">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                    </button>
-                    <button class="lb-nav lb-next" onClick={() => navigate(1)} aria-label="Next">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    </button>
+                    <button class="lb-nav lb-prev" onClick={() => navigate(-1)} aria-label="Previous" />
+                    <button class="lb-nav lb-next" onClick={() => navigate(1)} aria-label="Next" />
                 </>
             )}
 

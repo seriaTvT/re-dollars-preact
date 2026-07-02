@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'preact/hooks';
 import {
-    messageMap,
-    getMessageGrouping,
     isLoadingHistory,
     isContextLoading,
     searchQuery,
-} from '@/stores/chat';
+} from '@/stores/chatState';
+import {
+    messageMap,
+    getMessageGrouping,
+} from '@/stores/messageStore';
 import { toggleSearch, showUserProfile } from '@/stores/ui';
 import { inputAreaHeight } from '@/stores/ui';
 import { blockedUsers } from '@/stores/user';

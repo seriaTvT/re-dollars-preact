@@ -37,11 +37,7 @@ export function MediaPreview({ previewMedia, onRemoveMedia }: MediaPreviewProps)
                                 muted
                                 preload="metadata"
                             />
-                            <div class="video-play-overlay">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
-                            </div>
+                            <div class="video-play-overlay" />
                         </>
                     )}
                     <button

@@ -1,7 +1,8 @@
 import { useSignal } from '@preact/signals';
 import { useCallback, useRef, useEffect } from 'preact/hooks';
-import { searchQuery } from '@/stores/chat';
-import { fetchGalleryMedia, lookupUsersByName } from '@/utils/api';
+import { searchQuery } from '@/stores/chatState';
+import { fetchGalleryMedia } from '@/utils/api/media';
+import { lookupUsersByName } from '@/utils/api/users';
 import { showImageViewer } from '@/stores/ui';
 
 interface GalleryItem {
@@ -64,7 +65,6 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
                         }
                     }
                 } catch {
-                    // ignore
                 } finally {
                     isResolvingUser.value = false;
                 }
@@ -94,7 +94,6 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
             hasMore.value = data.hasMore;
             offset.current += data.items.length;
         } catch {
-            // ignore
         } finally {
             isLoading.value = false;
         }
@@ -161,11 +160,7 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
                 <div
                     class="gallery-close-btn"
                     onClick={onClose}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                </div>
+                />
             </div>
 
             <div class="gallery-grid" ref={gridRef} onScroll={handleScroll}>
@@ -191,11 +186,7 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
                                                 target.onerror = null;
                                             }}
                                         />
-                                        <div class="video-overlay">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
-                                                <path d="M8 5v14l11-7z" />
-                                            </svg>
-                                        </div>
+                                        <div class="video-overlay" />
                                     </div>
                                 ) : (
                                     <img

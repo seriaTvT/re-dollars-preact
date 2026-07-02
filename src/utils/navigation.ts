@@ -1,8 +1,8 @@
+import { loadMessageContext } from '@/stores/messageStore';
+import { smoothScrollToCenter } from './smoothScroll';
+
 /** 跳转到指定消息并执行高亮动画 */
 export async function navigateToMessage(msgId: number) {
-    const { loadMessageContext } = await import('@/stores/chat');
-    const { smoothScrollToCenter } = await import('./smoothScroll');
-
     const result = await loadMessageContext(msgId);
     if (!result) return;
 

@@ -81,7 +81,6 @@ async function getImageDimensions(file: File) {
             img.src = objectUrl;
         });
     } catch {
-        // ignore
     }
 
     return { width, height };

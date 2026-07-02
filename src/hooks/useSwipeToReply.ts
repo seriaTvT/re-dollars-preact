@@ -1,6 +1,6 @@
 import type { RefObject } from 'preact';
 import { useRef, useCallback } from 'preact/hooks';
-import { isContextMenuOpen, isSmileyPanelOpen, profileCardUserId, showContextMenu } from '@/stores/ui';
+import { isContextMenuOpen, isSmileyPanelOpen, showContextMenu } from '@/stores/ui';
 
 interface SwipeToReplyOptions {
     messageId: number;
@@ -121,8 +121,8 @@ export function useSwipeToReply({ messageId, onReply, elementRef }: SwipeToReply
             if (!isImage && !isImagePlaceholder && !isLink && !isQuote && !isAvatar && !isMask && !isTag && !isButton && !isVideo) {
                 // If menu is already open, don't open a new one (let click close it)
                 if (isContextMenuOpen.peek()) return;
-                // Don't open context menu if profile card or smiley panel is open (let click close them)
-                if (isSmileyPanelOpen.peek() || profileCardUserId.peek()) return;
+                // Don't open context menu if smiley panel is open (let click close it)
+                if (isSmileyPanelOpen.peek()) return;
 
                 // Prevent ghost click that might trigger the menu immediately
                 if (e.cancelable) e.preventDefault();

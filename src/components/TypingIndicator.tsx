@@ -1,4 +1,4 @@
-import { typingUsers } from '@/stores/chat';
+import { typingUsers } from '@/stores/chatState';
 import { useRef, useEffect } from 'preact/hooks';
 import { useSignal } from '@preact/signals';
 import { STRINGS } from '@/utils/strings';

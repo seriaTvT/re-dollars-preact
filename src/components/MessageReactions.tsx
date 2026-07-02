@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'preact/hooks';
 import { userInfo } from '@/stores/user';
-import { toggleReaction } from '@/utils/api';
+import { toggleReaction } from '@/utils/api/messages';
 import { getSmileyUrl } from '@/utils/smilies';
 import { getAvatarUrl, generateReactionTooltip } from '@/utils/format';
 import { MAX_AVATARS_SHOWN } from '@/utils/constants';

@@ -17,6 +17,10 @@ Bangumi-website-resources/
 .env.development.local
 .env.test.local
 .env.production.local
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
 
 # Logs
 npm-debug.log*

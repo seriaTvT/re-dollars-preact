@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { settings } from '@/stores/user';
 import { loadWindowState, saveMaximizedState, saveMobileChatViewState } from '@/utils/windowState';
 
 // Re-export all panel state and functions from the unified panel manager
@@ -10,7 +11,6 @@ export {
     isContextMenuClosing,
     isReactionPickerOpen,
     isReactionPickerClosing,
-    isProfileCardClosing,
     isUserProfilePanelOpen,
     isUserProfilePanelClosing,
     isSearchActive,
@@ -21,8 +21,6 @@ export {
     contextMenuTargetId,
     contextMenuImageUrl,
     contextMenuBmoCode,
-    profileCardUserId,
-    profileCardAnchor,
     userProfilePanelUserId,
     imageViewerItems,
     imageViewerIndex,
@@ -36,8 +34,6 @@ export {
     showReactionPicker,
     hideReactionPicker,
     toggleSmileyPanel,
-    showProfileCard,
-    hideProfileCard,
     showUserProfile,
     hideUserProfile,
     showImageViewer,
@@ -65,21 +61,17 @@ window.addEventListener('resize', () => {
 export function toggleMaximize() {
     isMaximized.value = !isMaximized.value;
 
-    import('@/stores/user').then(({ settings }) => {
-        if (settings.value.rememberOpenState) {
-            saveMaximizedState(isMaximized.value);
-        }
-    });
+    if (settings.value.rememberOpenState) {
+        saveMaximizedState(isMaximized.value);
+    }
 }
 
 export function setMobileChatView(active: boolean) {
     mobileChatViewActive.value = active;
 
-    import('@/stores/user').then(({ settings }) => {
-        if (settings.value.rememberOpenState) {
-            saveMobileChatViewState(active);
-        }
-    });
+    if (settings.value.rememberOpenState) {
+        saveMobileChatViewState(active);
+    }
 }
 
 // 标记是否已完成首次布局检测

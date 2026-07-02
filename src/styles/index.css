@@ -15,6 +15,17 @@
   --dollars-text-placeholder: #999;
   --dollars-icon-color: #555;
   --dollars-icon-color-secondary: #888;
+  --dollars-icon-search: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+  --dollars-icon-maximize: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>');
+  --dollars-icon-restore: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>');
+  --dollars-icon-close: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>');
+  --dollars-icon-reply: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 14l-4 -4l4 -4" /><path d="M5 10h11a4 4 0 1 1 0 8h-1" /></svg>');
+  --dollars-icon-emoji: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M16 3l-4 4l-4 -4" /></svg>');
+  --dollars-icon-attach: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" /></svg>');
+  --dollars-icon-back: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>');
+  --dollars-icon-resize: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M10 2L2 10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M14 6L6 14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+  --dollars-icon-settings: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><circle cx="12" cy="12" r="3" /></svg>');
+  --dollars-bubble-tail: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 20"><path fill="white" d="M3 3h6v17c-.193-2.84-.876-5.767-2.05-8.782C6.046 8.893 4.504 6.733 2.325 4.738A1 1 0 013 3z"/></svg>');
   --dollars-color-online: #4CAF50;
   --dollars-color-danger: #ef4444;
   --dollars-glass-border: rgba(255, 255, 255, 0.3);
@@ -108,6 +119,24 @@ html[data-theme="dark"] #dollars-chat-root.disable-blur {
 html[data-theme="dark"] #dollars-chat-window {
   background: rgba(30, 30, 30, 0.9);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+.error-fallback {
+  padding: 20px;
+  text-align: center;
+  color: var(--dollars-text-secondary, #888);
+}
+.error-fallback-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.error-fallback button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--primary-color, #f09199);
+  color: #fff;
+  cursor: pointer;
 }
 #dollars-chat-window.maximized {
   top: 10px !important;
@@ -521,24 +550,20 @@ html[data-theme="dark"] .chat-header .header-btn:hover {
   mask-size: 18px;
 }
 #dollars-search-btn {
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+  -webkit-mask-image: var(--dollars-icon-search);
+  mask-image: var(--dollars-icon-search);
 }
 #dollars-maximize-btn {
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>');
+  -webkit-mask-image: var(--dollars-icon-maximize);
+  mask-image: var(--dollars-icon-maximize);
 }
 #dollars-chat-window.maximized #dollars-maximize-btn {
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>');
+  -webkit-mask-image: var(--dollars-icon-restore);
+  mask-image: var(--dollars-icon-restore);
 }
 .chat-header .close-btn {
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>');
-}
-.chat-header .header-btn svg {
-  width: 18px;
-  height: 18px;
+  -webkit-mask-image: var(--dollars-icon-close);
+  mask-image: var(--dollars-icon-close);
 }
 .chat-body {
   contain: layout style paint;
@@ -769,8 +794,8 @@ html[data-theme="dark"] .bubble-nickname {
   width: 32px;
   height: 32px;
   background-color: var(--dollars-icon-color-secondary);
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 14l-4 -4l4 -4" /><path d="M5 10h11a4 4 0 1 1 0 8h-1" /></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 14l-4 -4l4 -4" /><path d="M5 10h11a4 4 0 1 1 0 8h-1" /></svg>');
+  -webkit-mask-image: var(--dollars-icon-reply);
+  mask-image: var(--dollars-icon-reply);
   -webkit-mask-size: 24px;
   mask-size: 24px;
   -webkit-mask-repeat: no-repeat;
@@ -863,35 +888,39 @@ html[data-theme="dark"] .bubble-timestamp {
 .chat-message.failed .bubble.sticker-mode .bubble-timestamp.is-overlay {
   opacity: 1;
 }
-.bubble-tail {
+.chat-message .bubble::before {
+  content: "";
   position: absolute;
   top: 0;
   width: 11px;
   height: 20px;
   pointer-events: none;
   z-index: 1;
+  background-color: currentColor;
+  -webkit-mask: var(--dollars-bubble-tail) center / contain no-repeat;
+  mask: var(--dollars-bubble-tail) center / contain no-repeat;
 }
-.chat-message:not(.self) .bubble-tail {
+.chat-message:not(.self) .bubble::before {
   left: -9px;
   top: -3px;
   color: #fff;
 }
-html[data-theme="dark"] .chat-message:not(.self) .bubble-tail {
+html[data-theme="dark"] .chat-message:not(.self) .bubble::before {
   color: #212121;
 }
-.chat-message.self .bubble-tail {
+.chat-message.self .bubble::before {
   right: -9px;
-  top: -1px;
-  transform: scale(-1, -1);
+  top: -3px;
+  transform: scale(-1, 1);
   color: color-mix(in srgb, var(--primary-color), #ffffff 80%);
 }
-html[data-theme="dark"] .chat-message.self .bubble-tail {
+html[data-theme="dark"] .chat-message.self .bubble::before {
   color: color-mix(in srgb, var(--primary-color), #180518 60%) !important;
 }
-.chat-message.is-grouped-with-prev .bubble-tail {
+.chat-message.is-grouped-with-prev .bubble::before {
   display: none;
 }
-.bubble.sticker-mode .bubble-tail {
+.bubble.sticker-mode::before {
   display: none;
 }
 .bubble .text-content.deleted {
@@ -1023,7 +1052,7 @@ html[data-theme="dark"] .chat-message.self .bubble-tail {
   overflow: hidden;
   border-radius: 5px;
   cursor: pointer;
-  max-height: 350px;
+  max-height: 250px;
   background: color-mix(in srgb, var(--dollars-bg-hover), transparent 8%);
 }
 .bubble .image-container .full-image {
@@ -1169,6 +1198,9 @@ html[data-theme="dark"] .chat-quote {
   object-fit: cover;
   margin-bottom: 2px;
   display: block;
+}
+.quote-thumbnail.image-masked {
+  filter: blur(6px) brightness(0.7);
 }
 .quote-nickname {
   font-weight: 700;
@@ -1377,8 +1409,14 @@ html[data-theme="dark"] .chat-quote {
   pointer-events: none;
   backdrop-filter: blur(2px);
 }
-.video-play-overlay svg {
+.video-play-overlay::before {
+  content: "";
+  width: 0;
+  height: 0;
   margin-left: 2px;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid #fff;
 }
 .input-wrapper {
   display: flex;
@@ -1525,10 +1563,6 @@ html[data-theme="dark"] .chat-textarea {
 .action-btn:active {
   transform: scale(0.95);
 }
-.action-btn svg {
-  width: 20px;
-  height: 20px;
-}
 .send-btn {
   width: 38px;
   height: 38px;
@@ -1556,10 +1590,6 @@ html[data-theme="dark"] .chat-textarea {
   cursor: not-allowed;
   filter: none;
   box-shadow: none;
-}
-.send-btn svg {
-  width: 18px;
-  height: 18px;
 }
 #dollars-smiles-floating {
   --item-size: 32px;
@@ -2136,193 +2166,14 @@ span.text_mask {
     transition: none !important;
   }
 }
-#dollars-profile-card {
-  position: fixed;
-  z-index: var(--dollars-z-index-overlay);
-  width: 280px;
-  padding: 0;
-  border-radius: 20px;
-  background: var(--dollars-glass-bg);
-  backdrop-filter: var(--dollars-glass-blur);
-  -webkit-backdrop-filter: var(--dollars-glass-blur);
-  box-shadow: var(--dollars-glass-shadow);
-  color: var(--dollars-text);
-  opacity: 0;
-  transform: scale(0.95) translateY(5px);
-  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-  pointer-events: none;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--dollars-glass-border-color);
-}
-@keyframes dollars-profile-slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(15px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-#dollars-profile-card.visible {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  pointer-events: auto;
-  transition: none;
-  animation: dollars-profile-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.dollars-profile-banner {
-  height: 60px;
-  width: 100%;
-  background: linear-gradient(160deg,
-    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 0%,
-    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 60%) 50%,
-    color-mix(in srgb, var(--primary-color), var(--dollars-bg) 30%) 100%);
-  position: relative;
-}
-.dollars-profile-banner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--dollars-bg-pattern-url);
-  background-size: 300px;
-  opacity: 0.6;
-  mix-blend-mode: overlay;
-}
-html[data-theme=dark] .dollars-profile-banner::before {
-  opacity: 0.2;
-}
-.dollars-profile-body {
-  padding: 0 20px 15px 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-.dollars-profile-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: -30px;
-  margin-bottom: 12px;
-  position: relative;
-  z-index: 2;
-}
-.dollars-profile-identity {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  flex-grow: 1;
-  min-width: 0;
-  margin-right: 8px;
-}
-.dollars-profile-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 3px solid var(--dollars-bg);
-  background-color: var(--dollars-bg);
-  object-fit: cover;
-  box-shadow: 0 4px 8px var(--dollars-shadow);
-  flex-shrink: 0;
-  transition: border-color 0.2s;
-}
-.dollars-profile-avatar.active {
-  border-color: var(--dollars-color-online);
-  box-shadow: 0 0 0 2px var(--dollars-bg), 0 0 0 4px var(--dollars-color-online);
-}
-.dollars-profile-names {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.dollars-profile-nickname {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--dollars-text);
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.dollars-profile-username {
-  font-size: 12px;
-  color: var(--dollars-text-secondary);
-  font-family: monospace;
-  opacity: 0.7;
-}
-.dollars-profile-actions {
-  display: flex;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.dollars-profile-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--dollars-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--dollars-text-secondary);
-  transition: all 0.2s;
-  cursor: pointer;
-  position: relative;
-}
-.dollars-profile-btn:hover {
-  background: var(--primary-color);
-  color: var(--dollars-bg);
-  border-color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px var(--dollars-shadow);
-}
-.dollars-profile-btn svg {
-  width: 15px;
-  height: 15px;
-  stroke: currentColor;
-}
-.dollars-profile-sign {
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--dollars-text-secondary);
-  margin-bottom: 12px;
-  padding: 6px 10px;
-  border-left: 2px solid color-mix(in srgb, var(--primary-color), transparent 40%);
-  background: color-mix(in srgb, var(--primary-color), transparent 92%);
-  border-radius: 0 6px 6px 0;
-  word-wrap: break-word;
-}
-.dollars-profile-footer {
-  font-size: 10px;
-  color: var(--dollars-text-placeholder);
-  padding-top: 8px;
-  border-top: 1px solid var(--dollars-border);
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.dollars-profile-footer::before {
-  content: "";
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--dollars-border);
-}
-.dollars-profile-footer.active::before {
-  background-color: var(--dollars-color-online);
-}
 #dollars-emoji-btn {
   width: 38px;
   height: 38px;
   border: none;
   background-color: var(--dollars-icon-color);
   cursor: pointer;
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M16 3l-4 4l-4 -4" /></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M16 3l-4 4l-4 -4" /></svg>');
+  -webkit-mask-image: var(--dollars-icon-emoji);
+  mask-image: var(--dollars-icon-emoji);
   -webkit-mask-size: 23px;
   mask-size: 23px;
   -webkit-mask-repeat: no-repeat;
@@ -2330,9 +2181,6 @@ html[data-theme=dark] .dollars-profile-banner::before {
   -webkit-mask-position: center;
   mask-position: center;
   border-radius: 50%;
-}
-#dollars-emoji-btn svg {
-  display: none !important;
 }
 #dollars-attach-btn {
   width: 38px;
@@ -2340,8 +2188,8 @@ html[data-theme=dark] .dollars-profile-banner::before {
   border: none;
   background-color: var(--dollars-icon-color);
   cursor: pointer;
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" /></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" /></svg>');
+  -webkit-mask-image: var(--dollars-icon-attach);
+  mask-image: var(--dollars-icon-attach);
   -webkit-mask-size: 23px;
   mask-size: 23px;
   -webkit-mask-repeat: no-repeat;
@@ -2349,12 +2197,6 @@ html[data-theme=dark] .dollars-profile-banner::before {
   -webkit-mask-position: center;
   mask-position: center;
   border-radius: 50%;
-}
-#dollars-attach-btn svg {
-  display: none !important;
-}
-.send-btn svg {
-  display: none !important;
 }
 .chat-header .header-buttons,
 .header-buttons {
@@ -2379,16 +2221,12 @@ html[data-theme=dark] .dollars-profile-banner::before {
 .dollars-back-btn {
   margin-right: 0;
   background-color: var(--dollars-icon-color);
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>');
+  -webkit-mask-image: var(--dollars-icon-back);
+  mask-image: var(--dollars-icon-back);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
-}
-#dollars-back-btn svg,
-.dollars-back-btn svg {
-  display: none !important;
 }
 #dollars-resize-handle {
   position: absolute;
@@ -2400,8 +2238,8 @@ html[data-theme=dark] .dollars-profile-banner::before {
   z-index: 10003;
   touch-action: none;
   background-color: var(--dollars-icon-color-secondary);
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M10 2L2 10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M14 6L6 14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"><path d="M10 2L2 10" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M14 6L6 14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
+  -webkit-mask-image: var(--dollars-icon-resize);
+  mask-image: var(--dollars-icon-resize);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: 5px 5px;
@@ -2419,8 +2257,8 @@ html[data-theme=dark] .dollars-profile-banner::before {
 }
 #dollars-settings-btn-header {
   background-color: var(--dollars-icon-color);
-  -webkit-mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><circle cx="12" cy="12" r="3" /></svg>');
-  mask-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><circle cx="12" cy="12" r="3" /></svg>');
+  -webkit-mask-image: var(--dollars-icon-settings);
+  mask-image: var(--dollars-icon-settings);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -2507,20 +2345,6 @@ html[data-theme=dark] .dollars-profile-banner::before {
 .formatter-link-input::placeholder {
   color: var(--dollars-text-placeholder);
 }
-#dollars-nav-group {
-  position: absolute;
-  bottom: 90px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 30;
-  pointer-events: none;
-  transition: transform 0.2s, opacity 0.2s;
-}
-#dollars-nav-group.visible {
-  pointer-events: auto;
-}
 .nav-btn {
   width: 40px;
   height: 40px;
@@ -2553,10 +2377,12 @@ html[data-theme=dark] .dollars-profile-banner::before {
 .nav-btn:active {
   transform: scale(0.95);
 }
-.nav-btn svg {
+.nav-btn::before {
+  content: "";
+  display: block;
   width: 24px;
   height: 24px;
-  stroke-width: 2.5;
+  background: currentColor;
 }
 #dollars-scroll-bottom-btn {
   position: absolute;
@@ -2569,8 +2395,22 @@ html[data-theme=dark] .dollars-profile-banner::before {
   right: 20px;
   z-index: 95;
 }
-#dollars-scroll-mention-btn svg {
-  transform: rotate(180deg);
+#dollars-scroll-bottom-btn::before {
+  width: 15px;
+  height: 15px;
+  border-right: 3px solid currentColor;
+  border-bottom: 3px solid currentColor;
+  background: transparent;
+  transform: translateY(-3px) rotate(45deg);
+}
+#dollars-scroll-mention-btn::before {
+  content: "@";
+  width: auto;
+  height: auto;
+  background: transparent;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1;
 }
 .nav-btn-badge {
   position: absolute;
@@ -3141,8 +2981,14 @@ html[data-theme=dark] .uprofile-banner::before {
   align-items: center;
   justify-content: center;
 }
-.uprofile-media-video-badge svg {
+.uprofile-media-video-badge::before {
+  content: "";
+  width: 0;
+  height: 0;
   margin-left: 2px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid #fff;
 }
 .uprofile-empty-hint {
   text-align: center;
@@ -3352,6 +3198,11 @@ html[data-theme=dark] .uprofile-banner::before {
 #dollars-search-ui .gallery-close-btn:hover {
   background-color: var(--dollars-bg-hover);
 }
+#dollars-search-ui .gallery-close-btn::before {
+  content: "×";
+  font-size: 24px;
+  line-height: 1;
+}
 #dollars-search-ui .gallery-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -3399,6 +3250,16 @@ html[data-theme=dark] .uprofile-banner::before {
   background-color: rgba(0, 0, 0, 0.3);
   pointer-events: none;
 }
+#dollars-search-ui .gallery-item .video-overlay::before {
+  content: "";
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid transparent;
+  border-left: 25px solid #fff;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
 #dollars-search-ui .gallery-item:hover .video-overlay {
   background-color: rgba(0, 0, 0, 0.4);
 }
@@ -3425,7 +3286,7 @@ html[data-theme=dark] .uprofile-banner::before {
 @keyframes dollars-message-in {
   0% {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(8px);
   }
   100% {
     opacity: 1;
@@ -3456,21 +3317,6 @@ html[data-theme=dark] .uprofile-banner::before {
   animation: dollars-scale-out 0.15s ease-out forwards;
   pointer-events: none;
 }
-@keyframes dollars-profile-slide-out {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-  }
-}
-#dollars-profile-card.closing {
-  animation: dollars-profile-slide-out 0.2s cubic-bezier(0.4, 0, 1, 1) forwards;
-  pointer-events: none;
-  transition: none;
-}
 #dollars-smiles-floating.closing {
   animation: dollars-slide-down-out 0.2s ease-out forwards;
   pointer-events: none;
@@ -3480,10 +3326,10 @@ html[data-theme=dark] .uprofile-banner::before {
   pointer-events: none;
 }
 .chat-message.new-message {
-  animation: dollars-message-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: dollars-message-in 0.25s ease-out forwards;
   transition: none;
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(8px);
 }
 .chat-message.pending.new-message {
   opacity: 0.75;
@@ -4004,6 +3850,9 @@ html[data-theme='dark'] #dollars-card::before {
 #dock-chat-link {
   position: relative;
 }
+#dock-chat-link .ico_robot_open {
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.05 20.1l-3.05 -6.1l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5l-3.312 9.173" /><path d="M19 16l-2 3h4l-2 3" /></svg>');
+}
 #dock-chat-link.flashing {
   animation: dock-flash 1s ease-in-out infinite;
 }
@@ -4032,4 +3881,63 @@ html[data-theme='dark'] #dollars-card::before {
   text-align: center;
   display: none;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.lb-overlay{position:fixed;inset:0;z-index:var(--dollars-z-index-modal,2000);background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s ease;touch-action:none;user-select:none;-webkit-user-select:none}
+.lb-overlay.lb-visible{opacity:1}
+.lb-overlay.lb-closing{opacity:0}
+.lb-img-wrap{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none}
+.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;transform-origin:center center;transition:transform .25s ease,opacity .2s ease;will-change:transform;pointer-events:auto;-webkit-user-drag:none;user-select:auto;-webkit-user-select:auto;-webkit-touch-callout:default}
+.lb-img.lb-dragging{transition:none}
+.lb-nav,.lb-close{position:absolute;border:none;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
+.lb-nav{top:50%;transform:translateY(-50%);width:44px;height:44px;opacity:.7;transition:background .2s,opacity .2s}
+.lb-nav:hover,.lb-close:hover{background:rgba(255,255,255,.3)}
+.lb-nav:hover{opacity:1}
+.lb-prev{left:12px}
+.lb-next{right:12px}
+.lb-close{top:12px;right:12px;width:40px;height:40px;font-size:20px}
+.lb-close::before{content:"×";font-size:28px;line-height:1}
+.lb-nav::before{content:"";display:block;width:13px;height:13px;border-left:2px solid currentColor;border-bottom:2px solid currentColor}
+.lb-prev::before{transform:translateX(3px) rotate(45deg)}
+.lb-next::before{transform:translateX(-3px) rotate(-135deg)}
+.lb-counter{position:absolute;top:16px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:14px;z-index:2;pointer-events:none}
+.lb-capsule{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:min(76vw,340px);padding:7px 12px 7px 9px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(12,12,14,.56);backdrop-filter:blur(12px) saturate(1.1);-webkit-backdrop-filter:blur(12px) saturate(1.1);box-shadow:0 8px 20px rgba(0,0,0,.24);color:#fff;cursor:pointer;z-index:2;transition:background-color .18s ease,border-color .18s ease,transform .18s ease;appearance:none;-webkit-appearance:none;font:inherit;text-align:left}
+.lb-capsule:hover{background:rgba(12,12,14,.68);border-color:rgba(255,255,255,.2);transform:translateX(-50%) scale(1.015)}
+.lb-capsule:active{transform:translateX(-50%) scale(.985)}
+.lb-capsule-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.18);flex-shrink:0}
+.lb-capsule-info{display:flex;flex-direction:column;min-width:0;gap:2px;line-height:1.1}
+.lb-capsule-nickname,.lb-capsule-date{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-capsule-nickname{font-size:12px;font-weight:600;letter-spacing:.01em;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.lb-capsule-date{font-size:10px;color:rgba(255,255,255,.72)}
+@media(max-width:600px){.lb-nav{display:none}.lb-img{max-width:100vw;max-height:100vh}.lb-capsule{bottom:18px;max-width:calc(100vw - 28px);padding:7px 11px 7px 9px}}
+
+#dollars-chat-root button:focus-visible,
+#dollars-chat-root a:focus-visible,
+#dollars-card:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary-color), #fff 18%);
+  outline-offset: 3px;
+}
+
+#dollars-chat-root .action-btn:focus-visible,
+#dollars-chat-root .send-btn:focus-visible,
+#dollars-chat-root .nav-btn:focus-visible,
+#dollars-chat-root .reply-cancel-btn:focus-visible,
+#dollars-resize-handle:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--dollars-bg),
+    0 0 0 4px color-mix(in srgb, var(--primary-color), transparent 35%);
+}
+
+#dollars-chat-root button:disabled,
+#dollars-chat-root button[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+@media (hover: none) {
+  #dollars-chat-root .action-btn:hover,
+  #dollars-chat-root .send-btn:hover,
+  #dollars-chat-root .nav-btn:hover,
+  #dollars-card:hover {
+    transform: none;
+  }
 }

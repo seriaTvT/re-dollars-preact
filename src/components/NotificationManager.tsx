@@ -1,8 +1,8 @@
-import { useEffect, useCallback } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { escapeHTML, getAvatarUrl, stripBBCode, decodeHTML } from '@/utils/format';
-import { fetchNotifications, markNotificationRead, markAllNotificationsRead } from '@/utils/api';
-import { toggleChat, unreadJumpList, pendingJumpToMessage } from '@/stores/chat';
+import { fetchNotifications, markNotificationRead, markAllNotificationsRead } from '@/utils/api/messages';
+import { toggleChat, unreadJumpList, pendingJumpToMessage } from '@/stores/chatState';
 import { userInfo, settings } from '@/stores/user';
 import type { Notification } from '@/types';
 
@@ -100,14 +100,6 @@ export function markMessageAsSeenIfNotified(messageId: number) {
 }
 
 export function NotificationManager() {
-    // Load notifications on mount (only if not 'off' mode)
-    // Note: In 'detail' and 'simple' modes, loadNotifications is called from App.tsx
-    // This effect is kept for backward compatibility and edge cases
-    useEffect(() => {
-        // Don't auto-load here anymore - it's handled in App.tsx based on settings
-        // loadNotifications();
-    }, []);
-
     // Mark single notification as read
     const handleMarkRead = useCallback(async (notif: Notification) => {
         removeNotification(notif.id);

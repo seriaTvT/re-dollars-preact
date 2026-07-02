@@ -1,7 +1,7 @@
-import { onlineCount, conversations, activeConversationId, toggleChat } from '@/stores/chat';
+import { onlineCount, toggleChat } from '@/stores/chatState';
+import { conversations, activeConversationId } from '@/stores/conversations';
 import { isMaximized, toggleMaximize, toggleSearch, isSearchActive, isNarrowLayout, mobileChatViewActive, setMobileChatView, isUserProfilePanelOpen, hideUserProfile } from '@/stores/ui';
 import { activeExtensionId, extensionConversations } from '@/stores/extensionConversations';
-import { iconArrowLeft } from '@/utils/icons';
 import { openSettingsPanel } from '@/utils/settingsPanel';
 import type { Conversation } from '@/types';
 
@@ -68,7 +68,6 @@ export function ChatHeader() {
                         class="header-btn"
                         title="返回"
                         onClick={hideUserProfile}
-                        dangerouslySetInnerHTML={{ __html: iconArrowLeft }}
                     />
                 </div>
                 <div class="title-wrapper">
@@ -111,7 +110,6 @@ export function ChatHeader() {
                     title="返回"
                     onClick={handleBack}
                     style={{ display: isShowingChatView ? 'flex' : 'none' }}
-                    dangerouslySetInnerHTML={{ __html: iconArrowLeft }}
                 />
             </div>
 

@@ -1,93 +1,207 @@
-import { BGM_APP_ID, BGM_CALLBACK_URL } from '../constants';
-import { getAuthHeaders } from '@/stores/user';
+import { AUTH_BASE_URL, AUTH_CLIENT } from '../constants';
+import { getAuthHeaders, getToken } from '@/stores/user';
 import { getChiiApp } from '@/utils/globals';
 import { apiUrl } from './url';
 
-/**
- * 检查登录状态
- * 如果 cookie 验证失败但存在云端同步的 token，则尝试 token-login 恢复会话
- */
-export async function checkAuth(): Promise<{
+type AuthUser = {
+    id: string;
+    nickname: string;
+    avatar: string;
+};
+
+type AuthCheckResult = {
     isLoggedIn: boolean;
-    user?: {
-        id: string;
-        nickname: string;
-        avatar: string;
+    user?: AuthUser;
+};
+
+function currentBangumiUid() {
+    return window.CHOBITS_UID ? String(window.CHOBITS_UID) : null;
+}
+
+function isCurrentUser(user: AuthUser) {
+    const uid = currentBangumiUid();
+    return !uid || String(user.id) === uid;
+}
+
+function normalizeAuthUser(user: any): AuthUser | null {
+    if (!user?.id) return null;
+    return {
+        id: String(user.id),
+        nickname: String(user.nickname || ''),
+        avatar: String(user.avatar || ''),
     };
-}> {
-    try {
-        const res = await fetch(apiUrl('/auth/me'), {
-            headers: getAuthHeaders(),
-            credentials: 'include'
-        });
-        const data = await res.json();
+}
 
-        const localUid = window.CHOBITS_UID ? String(window.CHOBITS_UID) : null;
+async function fetchCurrentAuthUser(): Promise<AuthCheckResult> {
+    const res = await fetch(apiUrl('/auth/me'), {
+        headers: getAuthHeaders(),
+        credentials: 'include'
+    });
+    const data = await res.json();
+    const user = normalizeAuthUser(data.user);
 
-        // 检查 cookie-based 登录是否有效（用户 id 需要匹配当前账号）
-        if (data.status && (!localUid || String(data.user.id) === localUid)) {
-            return { isLoggedIn: true, user: data.user };
-        }
+    if (data.status && user && isCurrentUser(user)) {
+        return { isLoggedIn: true, user };
+    }
 
-        // Cookie 验证失败，尝试使用云端同步的 token 恢复会话
-        const cloud = getChiiApp()?.cloud_settings;
-        const token = cloud?.getAll()?.dollarsAuthToken;
+    return { isLoggedIn: false };
+}
 
-        if (token) {
-            try {
-                const loginRes = await fetch(apiUrl('/auth/token-login'), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token }),
-                    credentials: 'include'
-                });
-                const loginData = await loginRes.json();
+async function restoreSessionFromToken(token: string): Promise<AuthCheckResult> {
+    const loginRes = await fetch(apiUrl('/auth/token-login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+        credentials: 'include'
+    });
+    const loginData = await loginRes.json();
+    const user = normalizeAuthUser(loginData.user);
 
-                if (loginData.status) {
-                    return { isLoggedIn: true, user: loginData.user };
-                }
-            } catch (tokenErr) {
-                // ignore
-            }
-        }
-    } catch (e) {
-        // ignore
+    if (loginData.status && user && isCurrentUser(user)) {
+        return { isLoggedIn: true, user };
     }
 
     return { isLoggedIn: false };
 }
 
 /**
- * 执行 OAuth 登录
+ * 检查登录状态
+ * 只有存在本地 token 时才探测服务端会话，避免未授权用户刷新时请求 /auth/me。
+ * 如果 cookie 验证失败但存在云端同步的 token，则尝试 token-login 恢复会话。
+ */
+export async function checkAuth(): Promise<AuthCheckResult> {
+    const token = getToken();
+    if (!token) return { isLoggedIn: false };
+
+    try {
+        const currentUser = await fetchCurrentAuthUser();
+        if (currentUser.isLoggedIn) {
+            return currentUser;
+        }
+
+        return await restoreSessionFromToken(token);
+    } catch {
+        // ignore
+    }
+
+    return { isLoggedIn: false };
+}
+
+async function saveToken(token: string) {
+    const cloud = getChiiApp()?.cloud_settings;
+    if (cloud) {
+        cloud.update({ dollarsAuthToken: token });
+        cloud.save();
+    }
+}
+
+async function loginBackendWithToken(token: string): Promise<{
+    isLoggedIn: boolean;
+    user?: { id: string; nickname: string; avatar: string };
+    error?: string;
+}> {
+    const res = await fetch(apiUrl('/auth/token-login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+        credentials: 'include'
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.status || !data.token) {
+        return { isLoggedIn: false, error: data.message || data.error || '登录失败' };
+    }
+
+    await saveToken(token);
+    return { isLoggedIn: true, user: data.user };
+}
+
+async function exchangePmLoginToken(token: string) {
+    try {
+        const res = await fetch(`${AUTH_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, client: AUTH_CLIENT }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.status || !data.token) {
+            return {
+                status: false as const,
+                error: data.error || (res.status === 401 ? '私信 token 无效或已过期' : `auth.ry.mk 登录失败 (${res.status})`),
+            };
+        }
+
+        return { status: true as const, token: String(data.token) };
+    } catch (error) {
+        return {
+            status: false as const,
+            error: error instanceof Error && error.message === 'Failed to fetch'
+                ? 'auth.ry.mk 暂不可访问，请确认 CORS/Cloudflare 已放行'
+                : 'auth.ry.mk 登录失败',
+        };
+    }
+}
+
+export async function loginWithToken(token: string) {
+    const loginToken = token.trim();
+    if (!loginToken) return { isLoggedIn: false, error: '请输入 token' };
+
+    const exchanged = await exchangePmLoginToken(loginToken);
+    if (!exchanged.status) {
+        return { isLoggedIn: false, error: exchanged.error };
+    }
+
+    const result = await loginBackendWithToken(exchanged.token);
+    if (result.isLoggedIn) {
+        window.location.reload();
+    }
+    return result;
+}
+
+/**
+ * 执行 rymk-auth OAuth 登录
  */
 export function performLogin() {
-
     const width = 600, height = 700;
     const left = (screen.width - width) / 2;
     const top = (screen.height - height) / 2;
+    const nonce = typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-    const currentHost = window.location.hostname;
-    const authUrl = `https://${currentHost}/oauth/authorize?client_id=${BGM_APP_ID}&response_type=code&redirect_uri=${encodeURIComponent(BGM_CALLBACK_URL)}`;
+    const authUrl = `${AUTH_BASE_URL}/api/auth/bangumi/start`
+        + `?mode=popup`
+        + `&client=${encodeURIComponent(AUTH_CLIENT)}`
+        + `&origin=${encodeURIComponent(window.location.origin)}`
+        + `&state=${encodeURIComponent(nonce)}`;
 
-    const loginWindow = window.open(authUrl, 'BangumiLogin', `width=${width},height=${height},top=${top},left=${left}`);
+    const loginWindow = window.open(authUrl, 'rymk-auth', `width=${width},height=${height},top=${top},left=${left}`);
+    if (!loginWindow) return;
+
+    const authOrigin = new URL(AUTH_BASE_URL).origin;
+    const watchTimer = window.setInterval(() => {
+        if (loginWindow.closed) {
+            window.clearInterval(watchTimer);
+            window.removeEventListener('message', messageHandler);
+        }
+    }, 600);
 
     const messageHandler = (event: MessageEvent) => {
-        if (event.data && event.data.type === 'bgm_login_success') {
-            if (event.data.token) {
-                const cloud = getChiiApp()?.cloud_settings;
-                if (cloud) {
-                    cloud.update({ dollarsAuthToken: event.data.token });
-                    cloud.save();
-                }
-            }
-            // 重新检查登录状态
-            checkAuth().then(result => {
-                if (result.isLoggedIn) {
-                    window.location.reload();
-                }
-            });
+        const data = event.data || {};
+
+        if (event.origin === authOrigin && data.type === 'rymk_auth' && data.state === nonce) {
+            window.clearInterval(watchTimer);
             window.removeEventListener('message', messageHandler);
-            loginWindow?.close();
+            loginWindow.close();
+
+            if (data.ok && data.token) {
+                loginBackendWithToken(data.token).then((result) => {
+                    if (result.isLoggedIn) {
+                        window.location.reload();
+                    } else {
+                        window.alert(result.error || '授权 token 无法被 Re:Dollars 后端验证');
+                    }
+                });
+            }
         }
     };
 

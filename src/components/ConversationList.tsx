@@ -1,4 +1,4 @@
-import { conversations, activeConversationId, setActiveConversation } from '@/stores/chat';
+import { conversations, activeConversationId, setActiveConversation } from '@/stores/conversations';
 import { isNarrowLayout, setMobileChatView } from '@/stores/ui';
 import { extensionConversations, activeExtensionId, setActiveExtension } from '@/stores/extensionConversations';
 import { formatDate } from '@/utils/format';

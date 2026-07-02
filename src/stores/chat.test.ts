@@ -11,7 +11,7 @@ vi.hoisted(() => {
     });
 });
 
-import { addMessage, addOptimisticMessage, messageMap } from './chat';
+import { addMessage, addOptimisticMessage, messageMap } from './messageStore';
 
 beforeEach(() => {
     vi.useFakeTimers();

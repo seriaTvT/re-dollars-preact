@@ -1,4 +1,5 @@
 import { absoluteBackendUrl, absoluteUploadUrl, apiUrl, fileUploadApiUrl, uploadApiUrl } from './url';
+import { getUploadAuthHeaders } from '@/stores/user';
 
 /**
  * 获取相册媒体
@@ -193,6 +194,7 @@ export async function uploadFile(file: File): Promise<UploadResult> {
 
             const res = await fetch(endpoint, {
                 method: 'POST',
+                headers: isImage ? getUploadAuthHeaders() : undefined,
                 credentials: isImage ? 'omit' : 'include',
                 body: formData,
                 signal: controller.signal,
@@ -253,6 +255,7 @@ export async function uploadImages(files: File[]): Promise<UploadResult[]> {
     try {
         const res = await fetch(uploadApiUrl('/batch'), {
             method: 'POST',
+            headers: getUploadAuthHeaders(),
             credentials: 'omit',
             body: formData,
             signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),

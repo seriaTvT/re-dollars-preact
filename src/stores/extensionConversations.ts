@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { activeConversationId } from './conversations';
 
 /**
  * 扩展会话项接口
@@ -70,9 +71,5 @@ export function getExtensionConversations(): ExtensionConversationItem[] {
  */
 export function setActiveExtension(extensionId: string) {
     activeExtensionId.value = extensionId;
-    // 清除普通会话的激活状态
-    // 使用动态导入避免循环依赖
-    import('./chat').then(({ activeConversationId }) => {
-        activeConversationId.value = '';
-    });
+    activeConversationId.value = '';
 }

@@ -11,7 +11,7 @@ vi.hoisted(() => {
     });
 });
 
-import { processBBCode } from './bbcode';
+import { processBBCode, renderReplyQuote } from './bbcode';
 import { settings } from '../stores/user';
 
 beforeEach(() => {
@@ -54,5 +54,55 @@ describe('processBBCode media layout', () => {
         const html = processBBCode('[code]<b>x</b>\nconst a = 1;[/code]');
 
         expect(html).toContain('<div class="codeHighlight"><pre>&lt;b&gt;x&lt;/b&gt;\nconst a = 1;</pre></div>');
+    });
+});
+
+describe('renderReplyQuote', () => {
+    it('renders text masks correctly inside quotes', () => {
+        const html = renderReplyQuote({
+            uid: 1,
+            nickname: 'tester',
+            avatar: 'avatar.png',
+            content: 'Hello [mask]secret content[/mask] world',
+        }, 123);
+
+        expect(html).toContain('<span class="text_mask"><span class="inner">secret content</span></span>');
+    });
+
+    it('removes empty mask tags', () => {
+        const html = renderReplyQuote({
+            uid: 1,
+            nickname: 'tester',
+            avatar: 'avatar.png',
+            content: '[mask][/mask]Normal text',
+        }, 123);
+
+        expect(html).toContain('Normal text');
+        expect(html).not.toContain('[mask]');
+    });
+
+    it('blurs masked image thumbnails', () => {
+        const html = renderReplyQuote({
+            uid: 1,
+            nickname: 'tester',
+            avatar: 'avatar.png',
+            content: '[mask][img]https://example.com/img.jpg[/img][/mask]',
+            firstImage: 'https://example.com/img_thumb.jpg',
+            firstImageMasked: true,
+        }, 123);
+
+        expect(html).toContain('class="quote-thumbnail image-masked"');
+    });
+
+    it('handles truncated mask tags gracefully', () => {
+        const html = renderReplyQuote({
+            uid: 1,
+            nickname: 'tester',
+            avatar: 'avatar.png',
+            content: '[mask]' + 'a'.repeat(100) + '[/mask]',
+        }, 123);
+
+        expect(html).toContain('<span class="text_mask"><span class="inner">');
+        expect(html).toContain('</span></span>...');
     });
 });

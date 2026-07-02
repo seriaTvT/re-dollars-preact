@@ -5,9 +5,11 @@ import {
     onlineCount,
     typingUsers,
     isChatOpen,
+} from '@/stores/chatState';
+import {
     messageIds,
     messageMap,
-} from '@/stores/chat';
+} from '@/stores/messageStore';
 import { userInfo, blockedUsers } from '@/stores/user';
 import { settings } from '@/stores/user';
 

@@ -3,11 +3,13 @@ import type { UserInfo, Settings } from '@/types';
 import { getChiiApp } from '@/utils/globals';
 import { lookupUsersByName } from '@/utils/api/users';
 
+const browserWindow = typeof window !== 'undefined' ? window : undefined;
+
 // 用户状态
 export const isLoggedIn = signal(false);
 export const userInfo = signal<UserInfo>({
-    id: window.CHOBITS_UID?.toString() || '',
-    name: window.CHOBITS_USERNAME || '',
+    id: browserWindow?.CHOBITS_UID?.toString() || '',
+    name: browserWindow?.CHOBITS_USERNAME || '',
     nickname: '',
     avatar: '',
     formhash: '',
@@ -46,7 +48,6 @@ export async function initializeBlockedUsers() {
             cache = JSON.parse(cloudSettings.dollars_blocked_cache);
         }
     } catch {
-        // ignore
     }
 
     const usernamesToResolve: string[] = [];
@@ -79,7 +80,6 @@ export async function initializeBlockedUsers() {
                 cacheDirty = true;
             }
         } catch {
-            // ignore
         }
     }
 
@@ -149,11 +149,25 @@ export function saveSettings() {
 
 // 获取 Token
 export function getToken(): string | null {
-    return getChiiApp().cloud_settings.getAll()?.dollarsAuthToken || null;
+    try {
+        return getChiiApp()?.cloud_settings?.getAll?.()?.dollarsAuthToken || null;
+    } catch {
+        return null;
+    }
 }
 
 // 获取认证 Headers
 export function getAuthHeaders(): Record<string, string> {
     const token = getToken();
     return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
+
+function isJwtToken(token: string) {
+    return /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token);
+}
+
+// 获取图床认证 Headers。旧版 64 位本地 token 不发给 up.ry.mk，避免被判定为无效 bearer。
+export function getUploadAuthHeaders(): Record<string, string> {
+    const token = getToken();
+    return token && isJwtToken(token) ? { 'Authorization': `Bearer ${token}` } : {};
 }

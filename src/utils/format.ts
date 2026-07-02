@@ -103,7 +103,7 @@ export function debounce<T extends (...args: any[]) => any>(fn: T, delay = 400):
 export const calculateImageStyle = (meta?: { width?: number; height?: number }): string => {
     if (meta?.width && meta?.height) {
         const MAX_IMG_WIDTH = 320;
-        const MAX_IMG_HEIGHT = 350;
+        const MAX_IMG_HEIGHT = 250;
         let w = Number(meta.width);
         let h = Number(meta.height);
 

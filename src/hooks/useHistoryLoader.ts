@@ -2,33 +2,39 @@ import { useEffect, useCallback } from 'preact/hooks';
 import type { ScrollManagerRefs } from './useScrollManager';
 import {
     messageIds,
+    addMessagesBatch,
+    setMessages,
+} from '@/stores/messageStore';
+import {
     isLoadingHistory,
     historyFullyLoaded,
     historyOldestId,
     historyNewestId,
     unreadWhileScrolled,
-    addMessagesBatch,
-    setMessages,
     timelineIsLive,
     isContextLoading,
     showScrollBottomBtn,
     isChatOpen,
     pendingJumpToMessage,
     initialMessagesLoaded,
-    // 已读状态和浏览位置管理
+} from '@/stores/chatState';
+import {
     loadReadState,
     lastReadId,
     unreadCount,
+} from '@/stores/readState';
+import {
     loadBrowsePosition,
-    clearBrowsePosition
-} from '@/stores/chat';
+    clearBrowsePosition,
+    shouldRestoreBrowsePosition,
+} from '@/stores/browsePosition';
 import { blockedUsers } from '@/stores/user';
-import { fetchHistoryMessages, fetchRecentMessages, fetchMessageContext, fetchNewerMessages } from '@/utils/api';
-import { syncPresenceSubscriptions } from '@/hooks/useWebSocket';
+import { fetchHistoryMessages, fetchRecentMessages, fetchMessageContext, fetchNewerMessages } from '@/utils/api/messages';
+import { syncPresenceSubscriptions } from '@/services/websocket/client';
 import { insertUnreadSeparator } from '@/hooks/useStateKeeper';
 
 export function useHistoryLoader(refs: ScrollManagerRefs) {
-    const { bodyRef, listRef, isLoadingRef, isStickingToBottom, prevScrollHeight, isRestoringScroll } = refs;
+    const { bodyRef, listRef, isLoadingRef, isStickingToBottom, prevScrollHeight, prevScrollTop, isRestoringScroll } = refs;
 
     // 加载历史消息
     const loadHistory = useCallback(async () => {
@@ -42,6 +48,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
         // 保存当前滚动位置
         if (bodyRef.current) {
             prevScrollHeight.current = bodyRef.current.scrollHeight;
+            prevScrollTop.current = bodyRef.current.scrollTop;
         }
 
         try {
@@ -258,13 +265,18 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
 
             try {
                 const savedBrowse = loadBrowsePosition();
-                const currentUnreadCount = unreadCount.value;
+                const recentMessages = await fetchRecentMessages(50);
+                const filteredRecent = recentMessages.filter(m => !blockedUsers.value.has(String(m.uid)));
+                const readId = lastReadId.value;
+                const recentUnreadCount = readId
+                    ? filteredRecent.filter(m => m.id > readId).length
+                    : unreadCount.value;
 
-                // 如果有保存的浏览位置，恢复到该位置
-                if (savedBrowse) {
+                // 只有未读较多时才恢复旧浏览位置；否则打开聊天窗直接回到最新消息。
+                if (savedBrowse && shouldRestoreBrowsePosition(recentUnreadCount)) {
                     // 恢复到浏览位置
-                    unreadWhileScrolled.value = currentUnreadCount;
-                    showScrollBottomBtn.value = currentUnreadCount > 0;
+                    unreadWhileScrolled.value = recentUnreadCount;
+                    showScrollBottomBtn.value = recentUnreadCount > 0;
 
                     const contextResult = await fetchMessageContext(savedBrowse.anchorMessageId, 25, 50);
                     if (contextResult && contextResult.messages.length > 0) {
@@ -314,6 +326,8 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                         clearBrowsePosition();
                         // 继续执行 fallback 逻辑
                     }
+                } else if (savedBrowse) {
+                    clearBrowsePosition();
                 }
 
                 // Fallback: 加载最新消息并滚动到底部
@@ -321,15 +335,11 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                 isStickingToBottom.current = true;
                 clearBrowsePosition();
 
-                const recentMessages = await fetchRecentMessages(50);
-                if (recentMessages.length > 0) {
-                    const filtered = recentMessages.filter(m => !blockedUsers.value.has(String(m.uid)));
-                    addMessagesBatch(filtered);
+                if (filteredRecent.length > 0) {
+                    addMessagesBatch(filteredRecent);
 
-                    if (filtered.length > 0) {
-                        historyOldestId.value = filtered[0].id;
-                        historyNewestId.value = filtered[filtered.length - 1].id;
-                    }
+                    historyOldestId.value = filteredRecent[0].id;
+                    historyNewestId.value = filteredRecent[filteredRecent.length - 1].id;
 
                     // 使用双重 RAF 确保 Preact 已完成 DOM 渲染
                     requestAnimationFrame(() => {

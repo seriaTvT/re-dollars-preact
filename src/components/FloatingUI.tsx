@@ -11,20 +11,24 @@ import {
     historyOldestId,
     historyNewestId,
     historyFullyLoaded,
-    setMessages,
     pendingJumpToMessage,
     scrollButtonMode,
-    clearBrowsePosition,
+} from '@/stores/chatState';
+import {
+    setMessages,
+    messageIds,
+} from '@/stores/messageStore';
+import {
     getFirstUnreadId,
     hasUnreadMessages,
     updateReadState,
-    messageIds,
     unreadCount
-} from '@/stores/chat';
+} from '@/stores/readState';
+import { clearBrowsePosition } from '@/stores/browsePosition';
 import { inputAreaHeight } from '@/stores/ui';
-import { fetchRecentMessages } from '@/utils/api';
+import { fetchRecentMessages } from '@/utils/api/messages';
 import { blockedUsers } from '@/stores/user';
-import { syncPresenceSubscriptions } from '@/hooks/useWebSocket';
+import { syncPresenceSubscriptions } from '@/services/websocket/client';
 
 export function FloatingUI() {
     // 保留上一次的日期文本，用于淡出动画
@@ -141,11 +145,6 @@ export function FloatingUI() {
                 style={{ bottom: `${mentionBtnBottom}px` }}
                 title="跳转到提及消息"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                    <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28" />
-                </svg>
                 {showMentionBtn && (
                     <div id="dollars-mention-badge" class="nav-btn-badge">
                         {jumpList.length > 99 ? '99+' : jumpList.length}
@@ -160,9 +159,6 @@ export function FloatingUI() {
                 style={{ bottom: `${bottomBtnBottom}px` }}
                 title={getTooltip()}
             >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14m-7-7l7 7 7-7" />
-                </svg>
                 {currentUnreadCount > 0 && (
                     <div id="dollars-unread-badge" class="nav-btn-badge">
                         {currentUnreadCount > 99 ? '99+' : currentUnreadCount}

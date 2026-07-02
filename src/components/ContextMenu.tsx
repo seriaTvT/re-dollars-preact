@@ -11,9 +11,10 @@ import {
     hideReactionPicker,
     isReactionPickerOpen,
 } from '@/stores/ui';
-import { setReplyTo, setEditingMessage, messageMap, getRawMessage } from '@/stores/chat';
+import { setReplyTo, setEditingMessage } from '@/stores/composerState';
+import { messageMap, getRawMessage } from '@/stores/messageStore';
 import { userInfo } from '@/stores/user';
-import { toggleReaction as apiToggleReaction, deleteMessage as apiDeleteMessage } from '@/utils/api';
+import { toggleReaction as apiToggleReaction, deleteMessage as apiDeleteMessage } from '@/utils/api/messages';
 import { CONTEXT_MENU_REACTIONS } from '@/utils/constants';
 import { iconCopy, iconDelete, iconEdit, iconExpand, iconFavorite, iconReply } from '@/utils/icons';
 import { getSmileyUrl } from '@/utils/smilies';

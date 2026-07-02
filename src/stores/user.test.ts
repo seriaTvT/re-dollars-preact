@@ -8,7 +8,7 @@ describe('initializeBlockedUsers', () => {
     });
 
     it('resolves username blocklist entries through the backend user lookup API', async () => {
-        const lookupUsersByName = vi.fn(async (_usernames: string[]) => ({
+        const lookupUsersByName = vi.fn(async () => ({
             alice: { id: 42, nickname: 'Alice' },
             bob: { id: 84, nickname: 'Bob' },
         }));

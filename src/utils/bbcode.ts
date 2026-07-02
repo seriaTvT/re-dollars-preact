@@ -6,7 +6,7 @@ const HTTP_URL_RE = /^https?:\/\/[^\s<>"']+$/i;
 const MEDIA_WRAPPER_BREAK_RE = /(?:<br>\s*)*(\x00MEDIA_WRAPPER_\d+\x00)(?:\s*<br>)*/g;
 
 type PreviewCardData = { title?: string; description?: string; image?: string };
-type ReplyDetails = { uid: number; nickname: string; avatar: string; content: string; firstImage?: string };
+type ReplyDetails = { uid: number; nickname: string; avatar: string; content: string; firstImage?: string; firstImageMasked?: boolean };
 
 function createPlaceholderStore(prefix: string) {
     const values: string[] = [];
@@ -55,10 +55,8 @@ function renderImageHTML(
     const metaHeight = meta?.height ?? '';
     const safeSrc = escapeHTML(src);
     const displaySrc = escapeHTML(placeholder ? getThumbnailUrl(src) : src);
-    const classes = 'image-container' +
-        (placeholder ? ' image-placeholder' : '') +
-        (masked ? ' image-masked' : '');
-    const imageClasses = 'full-image' + (placeholder ? ' is-loaded' : '');
+    const classes = `image-container${placeholder ? ' image-placeholder' : ''}${masked ? ' image-masked' : ''}`;
+    const imageClasses = `full-image${placeholder ? ' is-loaded' : ''}`;
     const dataSrc = masked ? ` data-src="${safeSrc}"` : '';
     const loadHint = masked ? '\n            <div class="image-load-hint">显示图片</div>' : '';
 
@@ -299,18 +297,39 @@ export function processBBCode(
     return html;
 }
 
+function processQuoteMasks(text: string): string {
+    let escaped = escapeHTML(text);
+    escaped = escaped.replace(/\[mask\]([\s\S]+?)\[\/mask\]/gi, '<span class="text_mask"><span class="inner">$1</span></span>');
+    return escaped;
+}
+
 /**
  * 渲染回复引用块
  */
 export function renderReplyQuote(details: ReplyDetails, replyToId: number): string {
-    const content = stripQuotes(details.content)
+    let content = stripQuotes(details.content)
         .replace(/\[file=.*?\].*?\[\/file\]/gi, '[附件]')
-        .substring(0, 80);
+        .replace(/\[mask\]\s*\[\/mask\]/gi, '');
+
+    const isTruncated = content.length > 80;
+    content = content.substring(0, 80);
+
+    if (isTruncated) {
+        content = content.replace(/\[\/?[a-zA-Z]*$/g, '');
+        const openCount = (content.match(/\[mask\]/gi) || []).length;
+        const closeCount = (content.match(/\[\/mask\]/gi) || []).length;
+        if (openCount > closeCount) {
+            content += '[/mask]';
+        }
+    }
+
+    const parsedContent = processQuoteMasks(content);
     const avatarSrc = getAvatarUrl(details.avatar, 's');
 
     // 图片缩略图（如果有）
+    const imageClasses = `quote-thumbnail${details.firstImageMasked ? ' image-masked' : ''}`;
     const imageHTML = details.firstImage
-        ? `<img src="${details.firstImage}" class="quote-thumbnail" loading="lazy">`
+        ? `<img src="${details.firstImage}" class="${imageClasses}" loading="lazy">`
         : '';
 
     // 头像（如果没有图片缩略图则显示）
@@ -318,7 +337,7 @@ export function renderReplyQuote(details: ReplyDetails, replyToId: number): stri
         ? ''
         : `<img src="${avatarSrc}" class="quote-avatar" loading="lazy">`;
 
-    return `<blockquote class="chat-quote" data-jump-to-id="${replyToId}" data-quote-uid="${details.uid}" title="点击跳转到原文">${imageHTML}<div class="quote-text-wrapper"><div class="quote-header">${avatarHTML}<span class="quote-nickname">${escapeHTML(details.nickname)}</span></div><div class="quote-content">${escapeHTML(content)}${details.content.length > 80 ? '...' : ''}</div></div></blockquote>`;
+    return `<blockquote class="chat-quote" data-jump-to-id="${replyToId}" data-quote-uid="${details.uid}" title="点击跳转到原文">${imageHTML}<div class="quote-text-wrapper"><div class="quote-header">${avatarHTML}<span class="quote-nickname">${escapeHTML(details.nickname)}</span></div><div class="quote-content">${parsedContent}${isTruncated ? '...' : ''}</div></div></blockquote>`;
 }
 
 /**

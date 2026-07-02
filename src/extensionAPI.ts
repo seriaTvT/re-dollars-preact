@@ -4,8 +4,8 @@
  */
 
 import { type Signal } from '@preact/signals';
-import { isChatOpen, toggleChat } from '@/stores/chat';
-import { showProfileCard } from '@/stores/ui';
+import { isChatOpen, toggleChat } from '@/stores/chatState';
+import { showUserProfile } from '@/stores/ui';
 import { isLoggedIn, userInfo } from '@/stores/user';
 import type { UserInfo } from '@/types';
 import { extensionConversations, registerConversationItem, updateConversationItem, type ExtensionConversationItem } from '@/stores/extensionConversations';
@@ -19,6 +19,8 @@ const API_VERSION = '1.0.0';
 // 事件回调存储
 type EventCallback = (...args: any[]) => void;
 const eventListeners = new Map<string, Set<EventCallback>>();
+let apiInstance: DollarsAPIInterface | null = null;
+let unsubscribeChatOpen: (() => void) | null = null;
 
 /**
  * 扩展会话项接口 (对外暴露)
@@ -130,8 +132,7 @@ function createDollarsAPI(): DollarsAPIInterface {
                     listeners.forEach(callback => {
                         try {
                             callback(...args);
-                        } catch (e) {
-                            console.error(`[DollarsAPI] Event callback error for '${event}':`, e);
+                        } catch {
                         }
                     });
                 }
@@ -142,8 +143,8 @@ function createDollarsAPI(): DollarsAPIInterface {
             toggleChat(open?: boolean): void {
                 toggleChat(open);
             },
-            showProfileCard(userId: string, anchor: HTMLElement): void {
-                showProfileCard(userId, anchor);
+            showProfileCard(userId: string, _anchor: HTMLElement): void {
+                showUserProfile(userId);
             }
         }
     };
@@ -153,11 +154,13 @@ function createDollarsAPI(): DollarsAPIInterface {
  * 初始化并注册全局 API
  */
 export function initDollarsAPI(): void {
-    const api = createDollarsAPI();
+    const api = apiInstance || createDollarsAPI();
+    apiInstance = api;
     window.DollarsAPI = api;
 
     // 监听聊天窗口状态变化并触发事件
-    isChatOpen.subscribe((isOpen) => {
+    if (unsubscribeChatOpen) return;
+    unsubscribeChatOpen = isChatOpen.subscribe((isOpen) => {
         api.events.emit(isOpen ? 'chatOpen' : 'chatClose');
     });
 }

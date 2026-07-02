@@ -1,8 +1,6 @@
 import { useRef, useEffect, useCallback, useMemo, useLayoutEffect } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import {
-    messageIds,
-    messageMap,
     unreadWhileScrolled,
     unreadJumpList,
     pendingScrollToBottom,
@@ -14,14 +12,22 @@ import {
     scrollButtonMode,
     isAtBottom,
     historyFullyLoaded,
-    // 已读状态和浏览位置管理
+} from '@/stores/chatState';
+import {
+    messageIds,
+    messageMap,
+} from '@/stores/messageStore';
+import {
     updateReadState,
     getFirstUnreadId,
     hasUnreadMessages,
+} from '@/stores/readState';
+import {
     saveBrowsePosition,
     clearBrowsePosition
-} from '@/stores/chat';
+} from '@/stores/browsePosition';
 import { blockedUsers } from '@/stores/user';
+import { inputAreaHeight } from '@/stores/ui';
 import { formatDate } from '@/utils/format';
 import { smoothScrollTo as sharedSmoothScrollTo } from '@/utils/smoothScroll';
 import { MAX_DOM_MESSAGES } from '@/utils/constants';
@@ -34,6 +40,7 @@ export interface ScrollManagerRefs {
     isProgrammaticScroll: RefObject<boolean>;
     isLoadingRef: RefObject<boolean>;
     prevScrollHeight: RefObject<number>;
+    prevScrollTop: RefObject<number>;
 }
 
 export interface ScrollManagerResult extends ScrollManagerRefs {
@@ -56,10 +63,21 @@ export function useScrollManager(
     const isLoadingRef = useRef(false);
     const isStickingToBottom = useRef(true);
     const prevScrollHeight = useRef(0);
+    const prevScrollTop = useRef(0);
     const isRestoringScroll = useRef(false);
     const hideDateLabelTimer = useRef<number | null>(null);
     const scrollAnimationRef = useRef<number | null>(null);
     const isProgrammaticScroll = useRef(false); // 程序滚动标记，防止 ResizeObserver 干扰
+    const keepBottomUntil = useRef(0);
+    const wasChatOpen = useRef(false);
+
+    const jumpToBottom = useCallback(() => {
+        if (!bodyRef.current) return;
+
+        bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+        isStickingToBottom.current = true;
+        isAtBottom.value = true;
+    }, []);
 
     /**
      * 自定义平滑滚动函数 - 委托给共享的平滑滚动工具
@@ -93,11 +111,17 @@ export function useScrollManager(
                 isProgrammaticScroll.current = false;
             }, 700);
         } else {
-            bodyRef.current.scrollTop = targetTop;
+            jumpToBottom();
         }
 
         isStickingToBottom.current = true;
-    }, [smoothScrollTo]);
+    }, [jumpToBottom, smoothScrollTo]);
+
+    const keepBottomAfterOpen = useCallback(() => {
+        if (Date.now() > keepBottomUntil.current) return;
+        if (!isChatOpen.value || !timelineIsLive.value || hasUnreadMessages.value) return;
+        jumpToBottom();
+    }, [jumpToBottom]);
 
     // 获取视口顶部可见消息的 ID
     const getTopVisibleMessageId = useCallback((): number | null => {
@@ -216,6 +240,9 @@ export function useScrollManager(
         // 只有在非程序滚动时更新吸附状态（用户的滚动意图始终优先）
         if (!isProgrammaticScroll.current) {
             isStickingToBottom.current = atBottom;
+            if (!atBottom) {
+                keepBottomUntil.current = 0;
+            }
         }
 
         // 清空未读 (在底部时)
@@ -276,19 +303,75 @@ export function useScrollManager(
         }
     }, [manualScrollToBottom.value]);
 
-    // 窗口打开时自动滚动到底部
-    // 注意：只有在实时模式下且吸附在底部时才执行
+    // 窗口刚打开时自动滚动到底部。
+    // 只响应 open 边沿，避免向上分页加载旧消息时因消息数量变化被拉回底部。
     useEffect(() => {
-        if (isChatOpen.value && messageIds.value.length > 0 && timelineIsLive.value && isStickingToBottom.current) {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    if (bodyRef.current) {
-                        bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-                    }
-                });
-            });
+        const justOpened = isChatOpen.value && !wasChatOpen.current;
+        wasChatOpen.current = isChatOpen.value;
+
+        if (!justOpened || !timelineIsLive.value) return;
+        if (hasUnreadMessages.value && !isStickingToBottom.current) return;
+
+        keepBottomUntil.current = Date.now() + 800;
+        jumpToBottom();
+
+        const timers = [80, 220, 500, 800].map(delay => window.setTimeout(keepBottomAfterOpen, delay));
+        let innerRafId = 0;
+        const rafId = requestAnimationFrame(() => {
+            innerRafId = requestAnimationFrame(keepBottomAfterOpen);
+        });
+
+        return () => {
+            cancelAnimationFrame(rafId);
+            cancelAnimationFrame(innerRafId);
+            timers.forEach(timer => window.clearTimeout(timer));
+            if (!isChatOpen.value) {
+                keepBottomUntil.current = 0;
+            }
+        };
+    }, [
+        isChatOpen.value,
+        jumpToBottom,
+        keepBottomAfterOpen,
+    ]);
+
+    useEffect(() => {
+        if (!isChatOpen.value || !timelineIsLive.value || hasUnreadMessages.value) {
+            keepBottomUntil.current = 0;
         }
+    }, [hasUnreadMessages.value, isChatOpen.value, timelineIsLive.value]);
+
+    useEffect(() => {
+        if (!isChatOpen.value) return;
+
+        const cancelKeepBottom = () => {
+            keepBottomUntil.current = 0;
+        };
+
+        const body = bodyRef.current;
+        body?.addEventListener('wheel', cancelKeepBottom, { passive: true });
+        body?.addEventListener('touchmove', cancelKeepBottom, { passive: true });
+
+        return () => {
+            body?.removeEventListener('wheel', cancelKeepBottom);
+            body?.removeEventListener('touchmove', cancelKeepBottom);
+        };
     }, [isChatOpen.value]);
+
+    useEffect(() => {
+        if (!isChatOpen.value || hasUnreadMessages.value || !timelineIsLive.value) return;
+
+        keepBottomUntil.current = Date.now() + 500;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(keepBottomAfterOpen);
+        });
+    }, [
+        hasUnreadMessages.value,
+        inputAreaHeight.value,
+        isChatOpen.value,
+        keepBottomAfterOpen,
+        timelineIsLive.value,
+    ]);
 
     // 新消息到达时滚动
     useLayoutEffect(() => {
@@ -331,7 +414,7 @@ export function useScrollManager(
 
             // 只有当高度确实增加时才调整滚动位置
             if (scrollDiff > 0) {
-                bodyRef.current.scrollTop = scrollDiff;
+                bodyRef.current.scrollTop = prevScrollTop.current + scrollDiff;
             }
             isRestoringScroll.current = false;
         }
@@ -364,6 +447,7 @@ export function useScrollManager(
         isProgrammaticScroll,
         isLoadingRef,
         prevScrollHeight,
+        prevScrollTop,
         handleScroll,
         scrollToBottom,
         smoothScrollTo,

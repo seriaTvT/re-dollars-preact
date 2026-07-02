@@ -1,14 +1,22 @@
-# Re:Dollars Userscript (Preact Refactor)
+# Re:Dollars Frontend Next
 
-A modern, component-based refactor of the Bangumi/Chii.in chat userscript "Re:Dollars". Built with Preact and Vite for better performance and maintainability.
+A lighter, more maintainable rewrite of the Bangumi/Chii.in Re:Dollars userscript. It keeps the current Preact + Signals runtime, preserves the existing userscript behavior and visual language, and focuses the rewrite on cleaner module boundaries, lower runtime overhead, and safer incremental evolution.
 
 ## Features
 
--   **Modern Tech Stack**: Written in TypeScript using Preact and Signals for reactive UI state management.
--   **Component-Based**: Modular UI components for easier maintenance and development.
--   **Optimized Rendering**: Virtual DOM and efficient updates for smooth scrolling and interaction.
--   **Enhanced UI**: Glassmorphism design, smooth animations, and responsive layout.
--   **Standalone**: Bundles necessary dependencies (like `react-photo-view`) to ensure stability independent of site updates.
+-   **Userscript-first architecture**: Built for injection into Bangumi/Chii.in pages without backend changes.
+-   **Preact + Signals**: Keeps the small runtime while reducing component and store coupling.
+-   **Behavior parity**: Chat, notifications, panels, search, uploads, mentions, reactions, and extension APIs remain compatible with the existing frontend.
+-   **Visual parity with polish**: Preserves the current glassy floating chat interface while allowing focused refinements.
+-   **No production compression requirement**: The Bangumi component/userscript build remains readable and debuggable.
+
+## Architecture
+
+-   `src/app/`: userscript startup, host-page injection, delayed chat initialization.
+-   `src/services/`: framework-light business services, including websocket connection management and composer sending.
+-   `src/stores/`: focused signal stores. `stores/chat.ts` remains as a compatibility barrel; new code should import from `chatState`, `messageStore`, `composerState`, or the other focused stores.
+-   `src/hooks/`: UI lifecycle hooks for window interaction, message effects, uploads, scrolling, and websocket lifecycle.
+-   `src/components/`: Preact view components with side effects pushed into hooks/services where practical.
 
 ## Installation
 
@@ -21,7 +29,7 @@ A modern, component-based refactor of the Bangumi/Chii.in chat userscript "Re:Do
 1.  **Clone the repository**
     ```bash
     git clone <your-repo-url>
-    cd userscript-preact
+    cd re-dollars-frontend-next
     ```
 
 2.  **Install dependencies**
@@ -40,6 +48,13 @@ A modern, component-based refactor of the Bangumi/Chii.in chat userscript "Re:Do
     npm run build
     ```
     The output file will be generated at `dist/userscript.user.js`.
+
+5.  **Verify**
+    ```bash
+    npm run typecheck
+    npm test
+    npm run build
+    ```
 
 ## License
 

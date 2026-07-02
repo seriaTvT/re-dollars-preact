@@ -4,19 +4,21 @@ import {
     updateMessage,
     deleteMessage,
     getMessageById,
-    updateConversationLastMessage,
     addMessagesBatch,
     messageIds,
+} from '@/stores/messageStore';
+import { updateConversationLastMessage } from '@/stores/conversations';
+import {
     unreadWhileScrolled,
     isAtBottom,
     timelineIsLive,
     showScrollBottomBtn,
-    markSentMessageAsRead,
     isChatOpen,
-} from '@/stores/chat';
+} from '@/stores/chatState';
+import { markSentMessageAsRead } from '@/stores/readState';
 import { userInfo, blockedUsers } from '@/stores/user';
 import { addNotification, markMessageAsSeenIfNotified } from '@/components/NotificationManager';
-import { getUnreadCount, fetchNewerMessages } from '@/utils/api';
+import { getUnreadCount, fetchNewerMessages } from '@/utils/api/messages';
 import { lastReadId } from '@/stores/readState';
 
 /**

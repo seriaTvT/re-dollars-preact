@@ -211,29 +211,6 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
         };
     }, [editorRef, checkSelection, hide]);
 
-    // Handle button clicks
-    const handleAction = useCallback((action: string) => {
-        switch (action) {
-            case 'b':
-            case 'i':
-            case 'u':
-            case 's':
-            case 'mask':
-            case 'code':
-                applyBBCode(action);
-                break;
-            case 'link-mode':
-                switchMode(true);
-                break;
-            case 'cancel-link':
-                switchMode(false);
-                break;
-            case 'apply-link':
-                applyLink();
-                break;
-        }
-    }, [applyBBCode, switchMode, applyLink]);
-
     // Handle link input keydown
     const handleLinkKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
@@ -245,9 +222,7 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
         }
     };
 
-    const className = 'dollars-text-formatter' +
-        (formatterVisible.value ? ' visible' : '') +
-        (formatterLinkMode.value ? ' link-mode' : '');
+    const className = `dollars-text-formatter${formatterVisible.value ? ' visible' : ''}${formatterLinkMode.value ? ' link-mode' : ''}`;
 
     const formatterContent = (
         <div
@@ -256,22 +231,22 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
             class={className}
         >
             <div class="formatter-row main-buttons">
-                <button type="button" class="formatter-btn" title="防剧透 (Mask)" onClick={() => handleAction('mask')} dangerouslySetInnerHTML={{ __html: iconSpoiler }} />
+                <button type="button" class="formatter-btn" title="防剧透 (Mask)" onClick={() => applyBBCode('mask')} dangerouslySetInnerHTML={{ __html: iconSpoiler }} />
                 <div class="formatter-divider" />
-                <button type="button" class="formatter-btn" title="加粗" onClick={() => handleAction('b')} dangerouslySetInnerHTML={{ __html: iconBold }} />
-                <button type="button" class="formatter-btn" title="斜体" onClick={() => handleAction('i')} dangerouslySetInnerHTML={{ __html: iconItalic }} />
-                <button type="button" class="formatter-btn" title="下划线" onClick={() => handleAction('u')} dangerouslySetInnerHTML={{ __html: iconUnderline }} />
-                <button type="button" class="formatter-btn" title="删除线" onClick={() => handleAction('s')} dangerouslySetInnerHTML={{ __html: iconStrike }} />
-                <button type="button" class="formatter-btn" title="等宽代码" onClick={() => handleAction('code')} dangerouslySetInnerHTML={{ __html: iconCode }} />
+                <button type="button" class="formatter-btn" title="加粗" onClick={() => applyBBCode('b')} dangerouslySetInnerHTML={{ __html: iconBold }} />
+                <button type="button" class="formatter-btn" title="斜体" onClick={() => applyBBCode('i')} dangerouslySetInnerHTML={{ __html: iconItalic }} />
+                <button type="button" class="formatter-btn" title="下划线" onClick={() => applyBBCode('u')} dangerouslySetInnerHTML={{ __html: iconUnderline }} />
+                <button type="button" class="formatter-btn" title="删除线" onClick={() => applyBBCode('s')} dangerouslySetInnerHTML={{ __html: iconStrike }} />
+                <button type="button" class="formatter-btn" title="等宽代码" onClick={() => applyBBCode('code')} dangerouslySetInnerHTML={{ __html: iconCode }} />
                 <div class="formatter-divider" />
-                <button type="button" class="formatter-btn" title="添加链接" onClick={() => handleAction('link-mode')} dangerouslySetInnerHTML={{ __html: iconLink }} />
+                <button type="button" class="formatter-btn" title="添加链接" onClick={() => switchMode(true)} dangerouslySetInnerHTML={{ __html: iconLink }} />
             </div>
             <div class="formatter-row formatter-link-input-wrapper">
-                <button type="button" class="formatter-btn" title="返回" onClick={() => handleAction('cancel-link')} dangerouslySetInnerHTML={{ __html: iconBack }} />
+                <button type="button" class="formatter-btn" title="返回" onClick={() => switchMode(false)} dangerouslySetInnerHTML={{ __html: iconBack }} />
                 <div class="formatter-divider" />
                 <input ref={linkInputRef} type="text" class="formatter-link-input" placeholder="输入链接 URL..." autoComplete="off" onKeyDown={handleLinkKeyDown} />
                 <div class="formatter-divider" />
-                <button type="button" class="formatter-btn" title="确认" onClick={() => handleAction('apply-link')} dangerouslySetInnerHTML={{ __html: iconCheck }} />
+                <button type="button" class="formatter-btn" title="确认" onClick={applyLink} dangerouslySetInnerHTML={{ __html: iconCheck }} />
             </div>
         </div>
     );

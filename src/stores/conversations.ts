@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { activeExtensionId, extensionConversations } from './extensionConversations';
 import type { Conversation } from '@/types';
 
 // 会话列表
@@ -21,20 +22,15 @@ export const activeConversationId = signal('dollars');
 export function setActiveConversation(conversationId: string) {
     activeConversationId.value = conversationId;
 
-    // 清除扩展项的激活状态并调用 onDeactivate 回调
-    // 使用动态导入避免循环依赖
-    import('./extensionConversations').then(({ activeExtensionId, extensionConversations }) => {
-        if (activeExtensionId.value !== null) {
-            // 找到当前激活的扩展项并调用其 onDeactivate
-            const activeExt = extensionConversations.value.find(
-                (item: { id: string }) => item.id === activeExtensionId.value
-            );
-            if (activeExt?.onDeactivate) {
-                activeExt.onDeactivate();
-            }
-            activeExtensionId.value = null;
+    if (activeExtensionId.value !== null) {
+        const activeExt = extensionConversations.value.find(
+            (item: { id: string }) => item.id === activeExtensionId.value
+        );
+        if (activeExt?.onDeactivate) {
+            activeExt.onDeactivate();
         }
-    });
+        activeExtensionId.value = null;
+    }
 }
 
 /**

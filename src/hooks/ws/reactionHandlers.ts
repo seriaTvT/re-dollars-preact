@@ -1,4 +1,4 @@
-import { getMessageById, updateMessage } from '@/stores/chat';
+import { getMessageById, updateMessage } from '@/stores/messageStore';
 import { userInfo } from '@/stores/user';
 
 /**

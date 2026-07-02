@@ -2,7 +2,7 @@ import { signal } from '@preact/signals';
 import type { ImageViewerItem } from '@/types';
 
 // Panel identifiers
-export type PanelId = 'smiley' | 'contextMenu' | 'reactionPicker' | 'profileCard' | 'userProfile' | 'search' | 'imageViewer';
+export type PanelId = 'smiley' | 'contextMenu' | 'reactionPicker' | 'userProfile' | 'search' | 'imageViewer';
 
 type PanelState = [ReturnType<typeof signal<boolean>>, ReturnType<typeof signal<boolean>>?, number?];
 
@@ -10,7 +10,6 @@ const panels: Record<PanelId, PanelState> = {
     smiley: [signal(false), signal(false), 200],
     contextMenu: [signal(false), signal(false), 150],
     reactionPicker: [signal(false), signal(false), 150],
-    profileCard: [signal(false), signal(false), 200],
     userProfile: [signal(false), signal(false), 250],
     search: [signal(false)],
     imageViewer: [signal(false)],
@@ -22,7 +21,6 @@ export const isContextMenuOpen = panels.contextMenu[0];
 export const isContextMenuClosing = panels.contextMenu[1]!;
 export const isReactionPickerOpen = panels.reactionPicker[0];
 export const isReactionPickerClosing = panels.reactionPicker[1]!;
-export const isProfileCardClosing = panels.profileCard[1]!;
 export const isUserProfilePanelOpen = panels.userProfile[0];
 export const isUserProfilePanelClosing = panels.userProfile[1]!;
 export const isSearchActive = panels.search[0];
@@ -38,10 +36,6 @@ export const contextMenuPosition = signal({ x: 0, y: 0 });
 export const contextMenuTargetId = signal<string | null>(null);
 export const contextMenuImageUrl = signal<string | null>(null);
 export const contextMenuBmoCode = signal<string | null>(null);
-
-// Profile card
-export const profileCardUserId = signal<string | null>(null);
-export const profileCardAnchor = signal<HTMLElement | null>(null);
 
 // User profile panel
 export const userProfilePanelUserId = signal<string | null>(null);
@@ -72,7 +66,7 @@ function removePanel(id: PanelId): void {
 
 /** Close all panels in the exclusive group except the given one, without animation. */
 function closeExclusiveGroup(except?: PanelId): void {
-    for (const id of ['smiley', 'contextMenu', 'profileCard'] as const) {
+    for (const id of ['smiley', 'contextMenu'] as const) {
         if (id !== except && panels[id][0].value) {
             // Instant close for exclusive siblings
             hidePanelImmediate(id);
@@ -94,10 +88,6 @@ function cleanupPanelState(id: PanelId): void {
             contextMenuImageUrl.value = null;
             contextMenuBmoCode.value = null;
             break;
-        case 'profileCard':
-            profileCardUserId.value = null;
-            profileCardAnchor.value = null;
-            break;
         case 'userProfile':
             userProfilePanelUserId.value = null;
             break;
@@ -116,7 +106,7 @@ function cleanupPanelState(id: PanelId): void {
  * exclusive panels first. Animated panels clear their closing flag.
  */
 export function showPanel(id: PanelId): void {
-    if (id === 'smiley' || id === 'contextMenu' || id === 'profileCard') {
+    if (id === 'smiley' || id === 'contextMenu') {
         closeExclusiveGroup(id);
     }
     addPanel(id);
@@ -186,22 +176,6 @@ export function hideReactionPicker(): void {
 
 export function toggleSmileyPanel(open?: boolean): void {
     togglePanel('smiley', open);
-}
-
-export function showProfileCard(userId: string, anchor: HTMLElement): void {
-    // Toggle off if clicking same user
-    if (profileCardUserId.value === userId) {
-        hideProfileCard();
-        return;
-    }
-    profileCardUserId.value = userId;
-    profileCardAnchor.value = anchor;
-    showPanel('profileCard');
-}
-
-export function hideProfileCard(): void {
-    if (!profileCardUserId.value || isProfileCardClosing.value) return;
-    hidePanel('profileCard');
 }
 
 export function showUserProfile(userId: string): void {
