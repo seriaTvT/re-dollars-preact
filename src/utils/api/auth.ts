@@ -115,48 +115,6 @@ async function loginBackendWithToken(token: string): Promise<{
     return { isLoggedIn: true, user: data.user };
 }
 
-async function exchangePmLoginToken(token: string) {
-    try {
-        const res = await fetch(`${AUTH_BASE_URL}/api/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token, client: AUTH_CLIENT }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.status || !data.token) {
-            return {
-                status: false as const,
-                error: data.error || (res.status === 401 ? '私信 token 无效或已过期' : `auth.ry.mk 登录失败 (${res.status})`),
-            };
-        }
-
-        return { status: true as const, token: String(data.token) };
-    } catch (error) {
-        return {
-            status: false as const,
-            error: error instanceof Error && error.message === 'Failed to fetch'
-                ? 'auth.ry.mk 暂不可访问，请确认 CORS/Cloudflare 已放行'
-                : 'auth.ry.mk 登录失败',
-        };
-    }
-}
-
-export async function loginWithToken(token: string) {
-    const loginToken = token.trim();
-    if (!loginToken) return { isLoggedIn: false, error: '请输入 token' };
-
-    const exchanged = await exchangePmLoginToken(loginToken);
-    if (!exchanged.status) {
-        return { isLoggedIn: false, error: exchanged.error };
-    }
-
-    const result = await loginBackendWithToken(exchanged.token);
-    if (result.isLoggedIn) {
-        window.location.reload();
-    }
-    return result;
-}
-
 /**
  * 执行 rymk-auth OAuth 登录
  */

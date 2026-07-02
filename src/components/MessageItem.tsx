@@ -83,7 +83,7 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
     const isSticker = useMemo(() => {
         return isStickerMessage(messageText, isDeleted, replyToId);
     }, [messageText, isDeleted, replyToId]);
-    const { isExpanded, setIsExpanded, isCollapsible, shouldCollapse } = useCollapsibleMessage(
+    const { isExpanded, isCollapsible, shouldCollapse, toggleExpanded } = useCollapsibleMessage(
         textContentRef,
         content,
         isDeleted,
@@ -255,7 +255,7 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
                                 aria-expanded={isExpanded}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    setIsExpanded(!isExpanded);
+                                    toggleExpanded();
                                 }}
                             >
                                 {isExpanded ? '收起' : '展开全文'}

@@ -599,9 +599,6 @@ html[data-theme="dark"] .chat-header .header-btn:hover {
 .chat-message {
   position: relative;
   overflow: visible !important;
-  content-visibility: auto;
-  contain-intrinsic-size: 80px;
-  overflow-clip-margin: 5px;
   display: flex;
   gap: 8px;
   margin-bottom: 12px;

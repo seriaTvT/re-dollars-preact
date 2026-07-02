@@ -1,7 +1,7 @@
 import { settings, saveSettings, isLoggedIn, userInfo } from '@/stores/user';
 import { isChatOpen } from '@/stores/chatState';
 import { isMaximized, mobileChatViewActive } from '@/stores/ui';
-import { loginWithToken, performLogin, performLogout } from '@/utils/api/auth';
+import { performLogin, performLogout } from '@/utils/api/auth';
 import type { Settings } from '@/types';
 import { clearWindowState, saveChatOpenState, saveMaximizedState, saveMobileChatViewState } from '@/utils/windowState';
 
@@ -110,7 +110,6 @@ function authControlOptions() {
         ]
         : [
             { value: 'oauth_login', label: 'OAuth 鉴权' },
-            { value: 'token_login', label: '私信 token 鉴权' },
         ];
 }
 
@@ -124,14 +123,6 @@ function createAuthControlConfig() {
         onChange: async (value: string) => {
             if (value === 'oauth_login') {
                 performLogin();
-            } else if (value === 'token_login') {
-                const token = window.prompt('粘贴 Blake娘 私信回复的登录 token');
-                if (token) {
-                    const result = await loginWithToken(token);
-                    if (!result.isLoggedIn) {
-                        window.alert(result.error || '私信 token 无效或已过期');
-                    }
-                }
             } else if (value === 'logged_out') {
                 performLogout();
             }
