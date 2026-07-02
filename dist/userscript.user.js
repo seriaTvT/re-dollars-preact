@@ -22,10 +22,62 @@
 
     var s;function l(i,n){l$3[i]=n.bind(null,l$3[i]||function(){});}function d(i){if(s)s();s=i&&i.S();}function h(i){var r=this,f=i.data,o=useSignal(f);o.value=f;var e=T(function(){var i=r.__v;while(i=i.__)if(i.__c){i.__c.__$f|=4;break}r.__$u.c=function(){var i,t=r.__$u.S(),f=e.value;t();if(t$2(f)||3!==(null==(i=r.base)?void 0:i.nodeType)){r.__$f|=1;r.setState({});}else r.base.data=f;};return w(function(){var i=o.value.value;return 0===i?0:true===i?"":i||""})},[]);return e.value}h.displayName="_st";Object.defineProperties(u.prototype,{constructor:{configurable:true,value:void 0},type:{configurable:true,value:h},props:{configurable:true,get:function(){return {data:this}}},__b:{configurable:true,value:1}});l("__b",function(i,r){if("string"==typeof r.type){var n,t=r.props;for(var f in t)if("children"!==f){var o=t[f];if(o instanceof u){if(!n)r.__np=n={};n[f]=o;t[f]=o.peek();}}}i(r);});l("__r",function(i,r){d();var n,t=r.__c;if(t){t.__$f&=-2;if(void 0===(n=t.__$u))t.__$u=n=function(i){var r;E(function(){r=this;});r.c=function(){t.__$f|=1;t.setState({});};return r}();}d(n);i(r);});l("__e",function(i,r,n,t){d();i(r,n,t);});l("diffed",function(i,r){d();var n;if("string"==typeof r.type&&(n=r.__e)){var t=r.__np,f=r.props;if(t){var o=n.U;if(o)for(var e in o){var u=o[e];if(void 0!==u&&!(e in t)){u.d();o[e]=void 0;}}else n.U=o={};for(var a in t){var c=o[a],s=t[a];if(void 0===c){c=p(n,a,s,f);o[a]=c;}else c.o(s,f);}}}i(r);});function p(i,r,n,t){var f=r in i&&void 0===i.ownerSVGElement,o=d$1(n);return {o:function(i,r){o.value=i;t=r;},d:E(function(){var n=o.value.value;if(t[r]!==n){t[r]=n;if(f)i[r]=n;else if(n)i.setAttribute(r,n);else i.removeAttribute(r);}})}}l("unmount",function(i,r){if("string"==typeof r.type){var n=r.__e;if(n){var t=n.U;if(t){n.U=void 0;for(var f in t){var o=t[f];if(o)o.d();}}}}else {var e=r.__c;if(e){var u=e.__$u;if(u){e.__$u=void 0;u.d();}}}i(r);});l("__h",function(i,r,n,t){if(t<3||9===t)r.__$f|=2;i(r,n,t);});x.prototype.shouldComponentUpdate=function(i,r){var n=this.__$u,t=n&&void 0!==n.s;for(var f in r)return  true;if(this.__f||"boolean"==typeof this.u&&true===this.u){if(!(t||2&this.__$f||4&this.__$f))return  true;if(1&this.__$f)return  true}else {if(!(t||4&this.__$f))return  true;if(3&this.__$f)return  true}for(var o in i)if("__source"!==o&&i[o]!==this.props[o])return  true;for(var e in this.props)if(!(e in i))return  true;return  false};function useSignal(i){return T(function(){return d$1(i)},[])}
 
+    const DEFAULT_BACKEND_URL = "https://rd.ry.mk";
+    function trimTrailingSlash(value) {
+      return value.replace(/\/+$/, "");
+    }
+    const BACKEND_URL = trimTrailingSlash(
+      DEFAULT_BACKEND_URL
+    );
+    const BACKEND_API_URL = trimTrailingSlash(
+      `${BACKEND_URL}/api/v1`
+    );
+    const UPLOAD_BASE_URL = trimTrailingSlash(
+      "https://up.ry.mk"
+    );
+    const UPLOAD_API_URL = trimTrailingSlash(
+      `${UPLOAD_BASE_URL}/api/upload`
+    );
+    const FILE_UPLOAD_API_URL = trimTrailingSlash(
+      `${BACKEND_API_URL}/upload/file`
+    );
+    const WEBSOCKET_URL = `${BACKEND_URL.replace(/^http/, "ws")}/ws`;
+    const AUTH_BASE_URL = trimTrailingSlash(
+      "https://auth.ry.mk"
+    );
+    const AUTH_CLIENT = "re-dollars";
+    const MESSAGE_GROUP_TIME_GAP = 300;
+    const MIN_WINDOW_WIDTH = 280;
+    const MIN_WINDOW_HEIGHT = 200;
+    const TYPING_STOP_DELAY = 2500;
+    const DRAFT_SAVE_DELAY = 1e3;
+    const SEARCH_DEBOUNCE = 500;
+    const MENTION_DEBOUNCE = 300;
+    const PRESENCE_SYNC_DELAY = 120;
+    const TYPING_AUTO_CLEAR = 1e4;
+    const HEARTBEAT_INTERVAL = 25e3;
+    const RECONNECT_DELAY = 2e3;
+    const CONNECTION_CHECK_INTERVAL = 1e4;
+    const MAX_DOM_MESSAGES = 100;
+    const MAX_MENTION_RESULTS = 10;
+    const MAX_AVATARS_SHOWN = 5;
+    const COLLAPSE_MAX_HEIGHT = 300;
+    const NEW_MESSAGE_ANIMATION = 350;
+    const CONTEXT_MENU_REACTIONS = [67, 63, 38, 124, 46, 106].map((n) => `(bgm${n})`);
+
     const CHAT_OPEN_KEY = "dollars.isChatOpen";
     const MAXIMIZED_KEY = "dollars.isMaximized";
     const MOBILE_CHAT_VIEW_KEY = "dollars.mobileChatViewActive";
     const CHAT_POSITION_KEY = "dollarsChatPosition";
+    function fitWindowRectToViewport(rect, viewportWidth = window.innerWidth, viewportHeight = window.innerHeight) {
+      const width = Math.min(viewportWidth, Math.max(MIN_WINDOW_WIDTH, rect.width));
+      const height = Math.min(viewportHeight, Math.max(MIN_WINDOW_HEIGHT, rect.height));
+      const maxLeft = Math.max(0, viewportWidth - width);
+      const maxTop = Math.max(0, viewportHeight - height);
+      const left = Math.min(Math.max(0, rect.left), maxLeft);
+      const top = Math.min(Math.max(0, rect.top), maxTop);
+      return { left, top, width, height };
+    }
     function readBoolean(key) {
       try {
         const raw = localStorage.getItem(key);
@@ -103,47 +155,6 @@
     function getChiiApp() {
       return chiiApp;
     }
-
-    const DEFAULT_BACKEND_URL = "https://rd.ry.mk";
-    function trimTrailingSlash(value) {
-      return value.replace(/\/+$/, "");
-    }
-    const BACKEND_URL = trimTrailingSlash(
-      DEFAULT_BACKEND_URL
-    );
-    const BACKEND_API_URL = trimTrailingSlash(
-      `${BACKEND_URL}/api/v1`
-    );
-    const UPLOAD_BASE_URL = trimTrailingSlash(
-      "https://up.ry.mk"
-    );
-    const UPLOAD_API_URL = trimTrailingSlash(
-      `${UPLOAD_BASE_URL}/api/upload`
-    );
-    const FILE_UPLOAD_API_URL = trimTrailingSlash(
-      `${BACKEND_API_URL}/upload/file`
-    );
-    const WEBSOCKET_URL = `${BACKEND_URL.replace(/^http/, "ws")}/ws`;
-    const AUTH_BASE_URL = trimTrailingSlash(
-      "https://auth.ry.mk"
-    );
-    const AUTH_CLIENT = "re-dollars";
-    const MESSAGE_GROUP_TIME_GAP = 300;
-    const TYPING_STOP_DELAY = 2500;
-    const DRAFT_SAVE_DELAY = 1e3;
-    const SEARCH_DEBOUNCE = 500;
-    const MENTION_DEBOUNCE = 300;
-    const PRESENCE_SYNC_DELAY = 120;
-    const TYPING_AUTO_CLEAR = 1e4;
-    const HEARTBEAT_INTERVAL = 25e3;
-    const RECONNECT_DELAY = 2e3;
-    const CONNECTION_CHECK_INTERVAL = 1e4;
-    const MAX_DOM_MESSAGES = 100;
-    const MAX_MENTION_RESULTS = 10;
-    const MAX_AVATARS_SHOWN = 5;
-    const COLLAPSE_MAX_HEIGHT = 300;
-    const NEW_MESSAGE_ANIMATION = 350;
-    const CONTEXT_MENU_REACTIONS = [67, 63, 38, 124, 46, 106].map((n) => `(bgm${n})`);
 
     function joinUrl(base, path = "") {
       if (!path) return base;
@@ -7141,8 +7152,8 @@ ${content}`;
         const { x, y } = getPointer(e);
         const dx = resizeState.current.startX - x;
         const dy = resizeState.current.startY - y;
-        let newWidth = Math.max(280, resizeState.current.initialWidth + dx);
-        let newHeight = Math.max(200, resizeState.current.initialHeight + dy);
+        let newWidth = Math.max(MIN_WINDOW_WIDTH, resizeState.current.initialWidth + dx);
+        let newHeight = Math.max(MIN_WINDOW_HEIGHT, resizeState.current.initialHeight + dy);
         let newLeft = resizeState.current.initialLeft - (newWidth - resizeState.current.initialWidth);
         let newTop = resizeState.current.initialTop - (newHeight - resizeState.current.initialHeight);
         if (newTop < 0) {
@@ -7193,11 +7204,17 @@ ${content}`;
         if (isMobileViewport.value || isMaximized.value || !settings.value.rememberOpenState) return;
         const saved = loadWindowPosition();
         if (saved && windowRef.current) {
-          const { x, y, width, height } = saved;
-          windowRef.current.style.left = `${x}px`;
-          windowRef.current.style.top = `${y}px`;
-          if (width) windowRef.current.style.width = `${width}px`;
-          if (height) windowRef.current.style.height = `${height}px`;
+          const element = windowRef.current;
+          const fitted = fitWindowRectToViewport({
+            left: saved.x,
+            top: saved.y,
+            width: saved.width ?? element.offsetWidth,
+            height: saved.height ?? element.offsetHeight
+          });
+          element.style.left = `${fitted.left}px`;
+          element.style.top = `${fitted.top}px`;
+          element.style.width = `${fitted.width}px`;
+          element.style.height = `${fitted.height}px`;
         }
       }, []);
       y$1(() => {
@@ -7207,15 +7224,18 @@ ${content}`;
           rafId = requestAnimationFrame(() => {
             rafId = 0;
             if (!windowRef.current || isMobileViewport.value || isMaximized.value) return;
-            const rect = windowRef.current.getBoundingClientRect();
-            const maxLeft = Math.max(0, window.innerWidth - rect.width);
-            const maxTop = Math.max(0, window.innerHeight - rect.height);
-            const newLeft = Math.min(rect.left, maxLeft);
-            const newTop = Math.min(rect.top, maxTop);
-            if (newLeft !== rect.left || newTop !== rect.top) {
-              windowRef.current.style.left = `${newLeft}px`;
-              windowRef.current.style.top = `${newTop}px`;
-            }
+            const element = windowRef.current;
+            const rect = element.getBoundingClientRect();
+            const fitted = fitWindowRectToViewport({
+              left: rect.left,
+              top: rect.top,
+              width: rect.width,
+              height: rect.height
+            });
+            if (fitted.width !== rect.width) element.style.width = `${fitted.width}px`;
+            if (fitted.height !== rect.height) element.style.height = `${fitted.height}px`;
+            if (fitted.left !== rect.left) element.style.left = `${fitted.left}px`;
+            if (fitted.top !== rect.top) element.style.top = `${fitted.top}px`;
           });
         };
         window.addEventListener("resize", handleWindowResize);

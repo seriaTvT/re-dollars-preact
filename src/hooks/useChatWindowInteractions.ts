@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import { isMobileViewport, isMaximized } from '@/stores/ui';
 import { settings } from '@/stores/user';
-import { loadWindowPosition, saveWindowPosition } from '@/utils/windowState';
+import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH } from '@/utils/constants';
+import { fitWindowRectToViewport, loadWindowPosition, saveWindowPosition } from '@/utils/windowState';
 
 interface Pointer {
     x: number;
@@ -108,8 +109,8 @@ export function useChatWindowInteractions(windowRef: RefObject<HTMLDivElement>) 
         const dx = resizeState.current.startX - x;
         const dy = resizeState.current.startY - y;
 
-        let newWidth = Math.max(280, resizeState.current.initialWidth + dx);
-        let newHeight = Math.max(200, resizeState.current.initialHeight + dy);
+        let newWidth = Math.max(MIN_WINDOW_WIDTH, resizeState.current.initialWidth + dx);
+        let newHeight = Math.max(MIN_WINDOW_HEIGHT, resizeState.current.initialHeight + dy);
         let newLeft = resizeState.current.initialLeft - (newWidth - resizeState.current.initialWidth);
         let newTop = resizeState.current.initialTop - (newHeight - resizeState.current.initialHeight);
 
@@ -170,11 +171,18 @@ export function useChatWindowInteractions(windowRef: RefObject<HTMLDivElement>) 
 
         const saved = loadWindowPosition();
         if (saved && windowRef.current) {
-            const { x, y, width, height } = saved;
-            windowRef.current.style.left = `${x}px`;
-            windowRef.current.style.top = `${y}px`;
-            if (width) windowRef.current.style.width = `${width}px`;
-            if (height) windowRef.current.style.height = `${height}px`;
+            const element = windowRef.current;
+            const fitted = fitWindowRectToViewport({
+                left: saved.x,
+                top: saved.y,
+                width: saved.width ?? element.offsetWidth,
+                height: saved.height ?? element.offsetHeight,
+            });
+
+            element.style.left = `${fitted.left}px`;
+            element.style.top = `${fitted.top}px`;
+            element.style.width = `${fitted.width}px`;
+            element.style.height = `${fitted.height}px`;
         }
     }, []);
 
@@ -188,17 +196,19 @@ export function useChatWindowInteractions(windowRef: RefObject<HTMLDivElement>) 
                 rafId = 0;
                 if (!windowRef.current || isMobileViewport.value || isMaximized.value) return;
 
-                const rect = windowRef.current.getBoundingClientRect();
-                const maxLeft = Math.max(0, window.innerWidth - rect.width);
-                const maxTop = Math.max(0, window.innerHeight - rect.height);
+                const element = windowRef.current;
+                const rect = element.getBoundingClientRect();
+                const fitted = fitWindowRectToViewport({
+                    left: rect.left,
+                    top: rect.top,
+                    width: rect.width,
+                    height: rect.height,
+                });
 
-                const newLeft = Math.min(rect.left, maxLeft);
-                const newTop = Math.min(rect.top, maxTop);
-
-                if (newLeft !== rect.left || newTop !== rect.top) {
-                    windowRef.current.style.left = `${newLeft}px`;
-                    windowRef.current.style.top = `${newTop}px`;
-                }
+                if (fitted.width !== rect.width) element.style.width = `${fitted.width}px`;
+                if (fitted.height !== rect.height) element.style.height = `${fitted.height}px`;
+                if (fitted.left !== rect.left) element.style.left = `${fitted.left}px`;
+                if (fitted.top !== rect.top) element.style.top = `${fitted.top}px`;
             });
         };
 
