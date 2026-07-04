@@ -2,6 +2,15 @@ import { conversations, activeConversationId, setActiveConversation } from '@/st
 import { isNarrowLayout, setMobileChatView } from '@/stores/ui';
 import { extensionConversations, activeExtensionId, setActiveExtension } from '@/stores/extensionConversations';
 import { formatDate } from '@/utils/format';
+import {
+    loadMorePmConversations,
+    openPmConversation,
+    pmConversations,
+    pmInboxError,
+    pmInboxLoading,
+    pmMoreInboxLoading,
+    pmNextInboxPage,
+} from '@/stores/bangumiPm';
 
 export function ConversationList({ searchTerm = '' }: { searchTerm?: string }) {
     // 过滤扩展会话项
@@ -14,6 +23,11 @@ export function ConversationList({ searchTerm = '' }: { searchTerm?: string }) {
             conv.title.toLowerCase().includes(searchTerm.toLowerCase())
         )
         : conversations.value;
+    const filteredPmConversations = searchTerm
+        ? pmConversations.value.filter(conversation =>
+            `${conversation.nickname} ${conversation.lastMessage}`.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : pmConversations.value;
 
     const handleClick = (conversationId: string) => {
         setActiveConversation(conversationId);
@@ -83,6 +97,43 @@ export function ConversationList({ searchTerm = '' }: { searchTerm?: string }) {
                     </div>
                 );
             })}
+            {filteredPmConversations.map(conversation => {
+                const conversationId = `pm:${conversation.id}`;
+                return (
+                    <div
+                        key={conversationId}
+                        class={`conversation-item ${activeConversationId.value === conversationId ? 'active' : ''}`}
+                        data-conversation-id={conversationId}
+                        onClick={() => openPmConversation(conversation)}
+                    >
+                        <img src={conversation.avatar || '/img/no_icon_subject.png'} class="avatar" alt={conversation.nickname} loading="lazy" />
+                        <div class="dollars-conv-content">
+                            <div class="dollars-conv-title">
+                                <span class="dollars-conv-nickname">{conversation.nickname}</span>
+                                <span class="dollars-conv-timestamp">{conversation.dateText}</span>
+                            </div>
+                            <div class="dollars-conv-last-message">{conversation.lastMessage || ' '}</div>
+                        </div>
+                        {conversation.unreadCount > 0 && <div class="unread-badge">{conversation.unreadCount}</div>}
+                    </div>
+                );
+            })}
+            {pmInboxLoading.value && pmConversations.value.length === 0 && (
+                <div class="dollars-conversation-hint">正在加载 Bangumi 短信…</div>
+            )}
+            {pmInboxError.value && (
+                <div class="dollars-conversation-hint error">{pmInboxError.value}</div>
+            )}
+            {pmNextInboxPage.value && (
+                <button
+                    class="dollars-pm-load-more-conversations"
+                    type="button"
+                    disabled={pmMoreInboxLoading.value}
+                    onClick={() => void loadMorePmConversations()}
+                >
+                    {pmMoreInboxLoading.value ? '加载中…' : '加载更多短信会话'}
+                </button>
+            )}
         </div>
     );
 }

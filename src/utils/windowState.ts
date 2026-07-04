@@ -3,6 +3,7 @@ import { MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT } from '@/utils/constants';
 const CHAT_OPEN_KEY = 'dollars.isChatOpen';
 const MAXIMIZED_KEY = 'dollars.isMaximized';
 const MOBILE_CHAT_VIEW_KEY = 'dollars.mobileChatViewActive';
+const ACTIVE_CONVERSATION_KEY = 'dollars.activeConversationId';
 const CHAT_POSITION_KEY = 'dollarsChatPosition';
 
 export interface WindowRect {
@@ -49,6 +50,7 @@ export interface SavedWindowState {
     isChatOpen: boolean | null;
     isMaximized: boolean | null;
     mobileChatViewActive: boolean | null;
+    activeConversationId: string | null;
     position: SavedChatWindowPosition | null;
 }
 
@@ -66,6 +68,7 @@ export function loadWindowState(): SavedWindowState {
         isChatOpen: readBoolean(CHAT_OPEN_KEY),
         isMaximized: readBoolean(MAXIMIZED_KEY),
         mobileChatViewActive: readBoolean(MOBILE_CHAT_VIEW_KEY),
+        activeConversationId: loadActiveConversationId(),
         position: loadWindowPosition(),
     };
 }
@@ -80,6 +83,18 @@ export function saveMaximizedState(isMaximized: boolean): void {
 
 export function saveMobileChatViewState(active: boolean): void {
     localStorage.setItem(MOBILE_CHAT_VIEW_KEY, JSON.stringify(active));
+}
+
+export function saveActiveConversationId(conversationId: string): void {
+    localStorage.setItem(ACTIVE_CONVERSATION_KEY, conversationId);
+}
+
+export function loadActiveConversationId(): string | null {
+    try {
+        return localStorage.getItem(ACTIVE_CONVERSATION_KEY);
+    } catch {
+        return null;
+    }
 }
 
 export function saveWindowPosition(position: SavedChatWindowPosition): void {
@@ -99,5 +114,6 @@ export function clearWindowState(): void {
     localStorage.removeItem(CHAT_OPEN_KEY);
     localStorage.removeItem(MAXIMIZED_KEY);
     localStorage.removeItem(MOBILE_CHAT_VIEW_KEY);
+    localStorage.removeItem(ACTIVE_CONVERSATION_KEY);
     localStorage.removeItem(CHAT_POSITION_KEY);
 }

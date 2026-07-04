@@ -1,6 +1,13 @@
-import { escapeHTML, calculateImageStyle, getAvatarUrl, getThumbnailUrl } from './format';
+import { escapeHTML, getAvatarUrl } from './format';
 import { settings } from '@/stores/user';
 import { replaceInlineTokens } from './inlineTokens';
+import { renderInlineTokenHTML } from './inlineRender';
+import {
+    renderAudioMarkup,
+    renderFileMarkup,
+    renderImageMarkup,
+    renderVideoMarkup,
+} from './mediaMarkup';
 
 const HTTP_URL_RE = /^https?:\/\/[^\s<>"']+$/i;
 const MEDIA_WRAPPER_BREAK_RE = /(?:<br>\s*)*(\x00MEDIA_WRAPPER_\d+\x00)(?:\s*<br>)*/g;
@@ -43,26 +50,6 @@ function collectPreviewCard(
     if (preview) {
         options.previewsCollector.push(generatePreviewCardHTML(preview, url));
     }
-}
-
-function renderImageHTML(
-    src: string,
-    meta: { width?: number; height?: number } | undefined,
-    { placeholder = false, masked = false }: { placeholder?: boolean; masked?: boolean } = {}
-): string {
-    const imageStyle = calculateImageStyle(meta);
-    const metaWidth = meta?.width ?? '';
-    const metaHeight = meta?.height ?? '';
-    const safeSrc = escapeHTML(src);
-    const displaySrc = escapeHTML(placeholder ? getThumbnailUrl(src) : src);
-    const classes = `image-container${placeholder ? ' image-placeholder' : ''}${masked ? ' image-masked' : ''}`;
-    const imageClasses = `full-image${placeholder ? ' is-loaded' : ''}`;
-    const dataSrc = masked ? ` data-src="${safeSrc}"` : '';
-    const loadHint = masked ? '\n            <div class="image-load-hint">显示图片</div>' : '';
-
-    return `<div class="${classes}" style="${imageStyle}" data-iw="${metaWidth}" data-ih="${metaHeight}"${dataSrc}>
-            <img src="${displaySrc}" data-full-src="${safeSrc}" class="${imageClasses}" alt="image" loading="lazy" decoding="async" referrerpolicy="no-referrer">${loadHint}
-        </div>`;
 }
 
 // 标准化 Bangumi 链接，将 bangumi.tv/bgm.tv/chii.in 转换为相对路径
@@ -157,7 +144,7 @@ export function processBBCode(
         const meta = imageMeta[cleanSrc];
 
         // 遮罩图片使用缩略图预览
-        return imageBlocks.push(renderImageHTML(cleanSrc, meta, { placeholder: true, masked: true }));
+        return imageBlocks.push(renderImageMarkup(cleanSrc, meta, { placeholder: true, masked: true }));
     });
 
     // 音频
@@ -167,7 +154,7 @@ export function processBBCode(
         if (options.isInsideQuote) {
             return `<a href="${cleanSrc}" target="_blank">[音频]</a>`;
         }
-        return `<div class="audio-player-container" style="margin: 5px 0;"><audio controls preload="metadata" style="max-width: 100%; width: 300px; border-radius: 20px;"><source src="${cleanSrc}">您的浏览器不支持音频播放。</audio></div>`;
+        return renderAudioMarkup(cleanSrc);
     });
 
     // 视频
@@ -177,18 +164,18 @@ export function processBBCode(
         if (options.isInsideQuote) {
             return `<a href="${cleanSrc}" target="_blank">[视频]</a>`;
         }
-        return `<div class="video-player-container" style="max-width: 100%; margin: 5px 0;"><video controls preload="metadata" style="max-width: 100%; max-height: 400px; border-radius: 8px; background: #000;"><source src="${cleanSrc}" type="video/mp4"><source src="${cleanSrc}" type="video/webm">您的浏览器不支持视频播放。</video></div>`;
+        return renderVideoMarkup(cleanSrc);
     });
 
     // 通用附件
     html = html.replace(/\[file=(.*?)\]([\s\S]+?)\[\/file\]/gi, (m, label, src) => {
         const cleanSrc = sanitizeHttpUrl(src);
         if (!cleanSrc) return escapeHTML(m);
-        const name = escapeHTML(label.trim() || '附件');
+        const name = label.trim() || '附件';
         if (options.isInsideQuote) {
-            return `<a href="${cleanSrc}" target="_blank">[附件] ${name}</a>`;
+            return `<a href="${cleanSrc}" target="_blank">[附件] ${escapeHTML(name)}</a>`;
         }
-        return `<a href="${cleanSrc}" target="_blank" rel="noopener noreferrer" class="chat-file-link" download="${name}">${name}</a>`;
+        return renderFileMarkup(cleanSrc, name);
     });
 
     // 图片
@@ -204,36 +191,16 @@ export function processBBCode(
 
         // 如果不自动加载图片，使用缩略图代替占位
         if (!settings.value.loadImages) {
-            return imageBlocks.push(renderImageHTML(cleanSrc, meta, { placeholder: true }));
+            return imageBlocks.push(renderImageMarkup(cleanSrc, meta, { placeholder: true }));
         }
 
-        return imageBlocks.push(renderImageHTML(cleanSrc, meta));
+        return imageBlocks.push(renderImageMarkup(cleanSrc, meta));
     });
 
     // 用户提及
     html = html.replace(/\[user=(.+?)\]([\s\S]+?)\[\/user\]/gi, '<a href="/user/$1" target="_blank" class="user-mention">@$2</a>');
 
-    html = replaceInlineTokens(html, (token, raw) => {
-        if (!token) {
-            return raw.startsWith('[') ? escapeHTML(raw) : raw;
-        }
-
-        switch (token.type) {
-            case 'custom-image': {
-                const className = token.isCommunityEmoji ? 'smiley' : 'custom-emoji';
-                return `<img src="${escapeHTML(token.src)}" class="${className}" alt="sticker" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer">`;
-            }
-            case 'smiley': {
-                const className = token.variant === 'bgm'
-                    ? 'smiley'
-                    : `smiley ${token.variant === 'blake' ? 'smiley-blake' : 'smiley-musume'}`;
-                const size = token.variant === 'bgm' ? ' width="21" height="21"' : '';
-                return `<img src="${escapeHTML(token.src)}" class="${className}" alt="${escapeHTML(token.raw)}"${size}>`;
-            }
-            case 'bmo':
-                return `<span class="bmo" data-code="${escapeHTML(token.code)}"></span>`;
-        }
-    }, { skipInsideHtml: true });
+    html = replaceInlineTokens(html, renderInlineTokenHTML, { skipInsideHtml: true });
 
     // URL 链接
     html = html.replace(/\[url=([^\]]+?)\]([\s\S]+?)\[\/url\]/gi, (_, url, label) => {

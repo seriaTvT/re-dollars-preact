@@ -11,10 +11,11 @@ import {
 } from '@/stores/ui';
 import { searchQuery } from '@/stores/chatState';
 import { fetchGalleryMedia } from '@/utils/api/media';
-import { fetchUserProfile } from '@/utils/api/users';
+import { fetchBangumiUserProfile, fetchUserProfile } from '@/utils/api/users';
 import { getAvatarUrl, formatDate, isActiveToday } from '@/utils/format';
-import { iconCalendar, iconHistory, iconHome, iconPen } from '@/utils/icons';
+import { iconCalendar, iconHistory, iconHome, iconPen, iconReply } from '@/utils/icons';
 import type { UserProfile } from '@/types';
+import { isBangumiLoggedIn, openPmForUser } from '@/stores/bangumiPm';
 
 interface MediaItem {
     url: string;
@@ -35,6 +36,7 @@ export function UserProfilePanel() {
     const userId = userProfilePanelUserId.value;
     const isOpen = isUserProfilePanelOpen.value;
     const isClosing = isUserProfilePanelClosing.value;
+    const bangumiUsername = userId?.startsWith('bgm:') ? userId.slice(4) : '';
 
     useEffect(() => {
         if (!userId) {
@@ -47,7 +49,11 @@ export function UserProfilePanel() {
         let stale = false;
         setProfile(null);
 
-        fetchUserProfile(userId).then(data => {
+        const request = bangumiUsername
+            ? fetchBangumiUserProfile(bangumiUsername)
+            : fetchUserProfile(userId);
+
+        request.then(data => {
             if (stale) return;
             if (data) setProfile(data);
         });
@@ -57,7 +63,7 @@ export function UserProfilePanel() {
 
     // Load user's shared media
     useEffect(() => {
-        if (!profile?.id) {
+        if (!profile?.id || profile.source === 'bangumi') {
             setMedia([]);
             setMediaLoading(false);
             return;
@@ -109,7 +115,7 @@ export function UserProfilePanel() {
 
     const handleHomepage = () => {
         if (profile) {
-            window.open(`/user/${profile.username}`, '_blank');
+            window.open(profile.url || `/user/${profile.username}`, '_blank');
         }
     };
 
@@ -120,6 +126,16 @@ export function UserProfilePanel() {
             hideUserProfile();
             toggleSearch(true);
         }
+    };
+
+    const handlePm = () => {
+        if (!profile) return;
+        hideUserProfile();
+        void openPmForUser({
+            username: profile.username,
+            nickname: profile.nickname,
+            avatar: profile.avatar,
+        });
     };
 
     const isActive = isActiveToday(profile?.stats?.last_message_time);
@@ -206,14 +222,22 @@ export function UserProfilePanel() {
                         {/* 操作按钮（紧跟名称区） */}
                         {profile && (
                             <div class="uprofile-actions">
-                                <button class="uprofile-action-btn" onClick={handleHistory}>
-                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHistory }} />
-                                    搜索发言
-                                </button>
+                                {profile.source !== 'bangumi' && (
+                                    <button class="uprofile-action-btn" onClick={handleHistory}>
+                                        <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHistory }} />
+                                        搜索发言
+                                    </button>
+                                )}
                                 <button class="uprofile-action-btn" onClick={handleHomepage}>
                                     <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHome }} />
                                     主页
                                 </button>
+                                {isBangumiLoggedIn() && String(profile.id) !== String(window.CHOBITS_UID) && (
+                                    <button class="uprofile-action-btn" onClick={handlePm}>
+                                        <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconReply }} />
+                                        发短信
+                                    </button>
+                                )}
                             </div>
                         )}
 
@@ -296,7 +320,7 @@ export function UserProfilePanel() {
                         )}
 
                         {/* 无发言记录 */}
-                        {!profile?.stats && profile && (
+                        {!profile?.stats && profile && profile.source !== 'bangumi' && (
                             <div class="uprofile-empty-hint">暂无发言记录</div>
                         )}
                     </div>

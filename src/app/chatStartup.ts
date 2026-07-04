@@ -15,17 +15,23 @@ import {
 } from '@/stores/user';
 import { checkAuth } from '@/utils/api/auth';
 import { ensureBmoji } from '@/utils/bmo';
-import { installHomeCard } from '@/app/hostIntegrations';
+import { installBangumiPmNoticeOpenHandler, installHomeCard } from '@/app/hostIntegrations';
 import { integrateWithNativeSettingsPanel, refreshNativeSettingsPanelAuthState, applyAllSettings } from '@/utils/settingsPanel';
 import { loadWindowState } from '@/utils/windowState';
+import { startPmPolling } from '@/stores/bangumiPm';
+import { restoreActiveConversation } from '@/stores/conversations';
 
 // 标记设置是否已加载完成
 export const settingsLoaded = signal(false);
 
 function restoreRememberedWindowState() {
+    const savedState = loadWindowState();
+    if (savedState.activeConversationId !== null) {
+        restoreActiveConversation();
+    }
+
     if (!settings.value.rememberOpenState) return;
 
-    const savedState = loadWindowState();
     if (savedState.isChatOpen !== null) {
         isChatOpen.value = savedState.isChatOpen;
     }
@@ -61,6 +67,7 @@ function initializeSession() {
     loadSettingsFromCloud();
     applyAllSettings();
     installHomeCard();
+    installBangumiPmNoticeOpenHandler();
     integrateWithNativeSettingsPanel();
     void initializeBlockedUsers();
 
@@ -74,6 +81,7 @@ function initializeSession() {
 export function useAppStartup() {
     useEffect(() => {
         initializeSession();
+        return startPmPolling();
     }, []);
 }
 

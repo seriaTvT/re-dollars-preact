@@ -50,6 +50,7 @@ export const isNarrowLayout = signal(false);
 // 初始化时不恢复状态，等待设置加载后再决定
 export const isMaximized = signal(false);
 export const mobileChatViewActive = signal(false);
+export const chatLayoutReady = signal(false);
 
 export const inputAreaHeight = signal(60); // 默认为 60px
 
@@ -81,6 +82,7 @@ let hasInitializedLayout = false;
 // 重置布局检测状态（在聊天窗口首次挂载时调用）
 export function resetLayoutCheck() {
     hasInitializedLayout = false;
+    chatLayoutReady.value = false;
 }
 
 // 检查并更新 narrow 布局
@@ -122,4 +124,5 @@ export function ensureNarrowLayoutChatView(width: number) {
     if (isNowNarrow && !mobileChatViewActive.value) {
         mobileChatViewActive.value = true;
     }
+    chatLayoutReady.value = true;
 }

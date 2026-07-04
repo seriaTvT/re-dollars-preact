@@ -28,7 +28,7 @@ import {
 } from '@/stores/browsePosition';
 import { blockedUsers } from '@/stores/user';
 import { inputAreaHeight } from '@/stores/ui';
-import { formatDate } from '@/utils/format';
+import { getFloatingDateLabel, isNearScrollBottom } from '@/utils/floatingDate';
 import { smoothScrollTo as sharedSmoothScrollTo } from '@/utils/smoothScroll';
 import { MAX_DOM_MESSAGES } from '@/utils/constants';
 
@@ -184,11 +184,11 @@ export function useScrollManager(
     }, []);
 
     // 浮动 UI 逻辑 helpers
-    const updateFloatingUI = (scrollTop: number, clientHeight: number) => {
+    const updateFloatingUI = () => {
         if (!bodyRef.current || !listRef.current) return;
 
         // 1. Scroll Button Visibility
-        const nearBottom = bodyRef.current.scrollHeight - scrollTop - clientHeight <= 150;
+        const nearBottom = isNearScrollBottom(bodyRef.current);
         // 在实时模式下，不在底部时显示按钮（方便快速回到底部）
         // 在非实时模式下，始终显示按钮（需要回到最新消息）
         showScrollBottomBtn.value = !nearBottom || !timelineIsLive.value;
@@ -205,20 +205,12 @@ export function useScrollManager(
         }
 
         // Find top visible message
-        const msgs = Array.from(listRef.current.children) as HTMLElement[];
-        const topThreshold = scrollTop + 50;
-
-        const topMsg = msgs.find(el => {
-            return el.classList.contains('chat-message') &&
-                (el.offsetTop + el.offsetHeight) > topThreshold;
-        });
-
-        if (topMsg && topMsg.dataset.timestamp) {
-            const ts = parseInt(topMsg.dataset.timestamp, 10);
-            const label = formatDate(ts, 'label');
-            if (currentDateLabel.peek() !== label) {
-                currentDateLabel.value = label;
-            }
+        const label = getFloatingDateLabel(
+            bodyRef.current,
+            listRef.current.querySelectorAll<HTMLElement>('.chat-message[data-timestamp]')
+        );
+        if (label) {
+            if (currentDateLabel.peek() !== label) currentDateLabel.value = label;
 
             // Set timeout to hide
             hideDateLabelTimer.current = window.setTimeout(() => {
@@ -282,7 +274,7 @@ export function useScrollManager(
         updateScrollButtonMode();
 
         // --- 浮动 UI 更新 (Date & ScrollButton) ---
-        updateFloatingUI(scrollTop, clientHeight);
+        updateFloatingUI();
 
         // 加载历史 (滚动到顶部时)
         if (scrollTop < 200 && !isLoadingRef.current && !historyFullyLoaded.value) {
@@ -418,6 +410,13 @@ export function useScrollManager(
             }
             isRestoringScroll.current = false;
         }
+    }, [visibleMessageIds]);
+
+    // DOM 虚拟窗口会在滚动事件后更新；日期胶囊可见时，等新 DOM 落地后补算一次，
+    // 避免跨日期时要再滚动一下才刷新。
+    useLayoutEffect(() => {
+        if (!currentDateLabel.peek() || !bodyRef.current) return;
+        updateFloatingUI();
     }, [visibleMessageIds]);
 
     // ResizeObserver: 监听列表大小变化，确保图片加载后保持底部吸附

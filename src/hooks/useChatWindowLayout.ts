@@ -1,10 +1,10 @@
-import { useEffect } from 'preact/hooks';
+import { useLayoutEffect } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import { isChatOpen } from '@/stores/chatState';
-import { checkNarrowLayout, ensureNarrowLayoutChatView, resetLayoutCheck } from '@/stores/ui';
+import { chatLayoutReady, checkNarrowLayout, ensureNarrowLayoutChatView, resetLayoutCheck } from '@/stores/ui';
 
 export function useChatWindowLayout(windowRef: RefObject<HTMLDivElement>) {
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!windowRef.current) return;
 
         resetLayoutCheck();
@@ -21,7 +21,11 @@ export function useChatWindowLayout(windowRef: RefObject<HTMLDivElement>) {
         return () => observer.disconnect();
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
+        if (!isChatOpen.value) {
+            chatLayoutReady.value = false;
+            return;
+        }
         if (isChatOpen.value && windowRef.current) {
             ensureNarrowLayoutChatView(windowRef.current.offsetWidth);
         }

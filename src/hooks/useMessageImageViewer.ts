@@ -15,62 +15,68 @@ function getMessage(container: HTMLElement) {
     return Number.isFinite(messageId) ? getMessageById(messageId) : undefined;
 }
 
-export function useMessageImageViewer(messageRef: RefObject<HTMLDivElement>, content: string) {
+interface MessageImageViewerOptions {
+    mode?: 'timeline' | 'generic';
+    scopeSelector?: string;
+}
+
+export function useMessageImageViewer(
+    messageRef: RefObject<HTMLDivElement>,
+    contentKey: unknown,
+    options: MessageImageViewerOptions = {}
+) {
+    const mode = options.mode || 'timeline';
+    const scopeSelector = options.scopeSelector || '.chat-list';
     useEffect(() => {
         const messageElement = messageRef.current;
         if (!messageElement) return;
 
-        const containers = Array.from(
-            messageElement.querySelectorAll<HTMLElement>('.image-container')
-        );
-        const handlers: Array<{ container: HTMLElement; handler: (event: Event) => void }> = [];
+        const handler = (event: Event) => {
+            const target = event.target as Element | null;
+            const container = target?.closest<HTMLElement>('.image-container');
+            if (!container || !messageElement.contains(container)) return;
+            event.preventDefault();
+            event.stopPropagation();
 
-        for (const container of containers) {
-            const handler = (event: Event) => {
-                event.preventDefault();
-                event.stopPropagation();
+            const list = messageElement.closest(scopeSelector);
+            const scope = list || messageElement;
+            const timelineContainers = Array.from(
+                scope.querySelectorAll<HTMLElement>('.image-container')
+            );
+            const timelineImages = timelineContainers.flatMap((timelineContainer) => {
+                const src = getImageSource(timelineContainer);
+                return src
+                    ? [{ container: timelineContainer, entry: { src, message: getMessage(timelineContainer) } }]
+                    : [];
+            });
+            const index = timelineImages.findIndex((item) => item.container === container);
+            if (mode === 'generic' && timelineImages.length > 0 && index >= 0) {
+                showImageViewer(timelineImages.map(item => item.entry.src), index);
+                return;
+            }
+            const messageIds = Array.from(
+                scope.querySelectorAll<HTMLElement>('.chat-message[data-db-id]')
+            )
+                .map((item) => Number(item.dataset.dbId))
+                .filter((id) => Number.isInteger(id) && id > 0);
 
-                const list = messageElement.closest('.chat-list');
-                const scope = list || messageElement;
-                const timelineContainers = Array.from(
-                    scope.querySelectorAll<HTMLElement>('.image-container')
+            if (timelineImages.length > 0 && index >= 0 && messageIds.length > 0) {
+                showImageViewer(
+                    buildMessageImageViewerItems(timelineImages.map((item) => item.entry)),
+                    index,
+                    'timeline',
+                    {
+                        beforeId: Math.min(...messageIds),
+                        afterId: Math.max(...messageIds),
+                    },
                 );
-                const timelineImages = timelineContainers.flatMap((timelineContainer) => {
-                    const src = getImageSource(timelineContainer);
-                    return src
-                        ? [{ container: timelineContainer, entry: { src, message: getMessage(timelineContainer) } }]
-                        : [];
-                });
-                const index = timelineImages.findIndex((item) => item.container === container);
-                const messageIds = Array.from(
-                    scope.querySelectorAll<HTMLElement>('.chat-message[data-db-id]')
-                )
-                    .map((item) => Number(item.dataset.dbId))
-                    .filter((id) => Number.isInteger(id) && id > 0);
-
-                if (timelineImages.length > 0 && index >= 0 && messageIds.length > 0) {
-                    showImageViewer(
-                        buildMessageImageViewerItems(timelineImages.map((item) => item.entry)),
-                        index,
-                        'timeline',
-                        {
-                            beforeId: Math.min(...messageIds),
-                            afterId: Math.max(...messageIds),
-                        },
-                    );
-                }
-            };
-
-            container.addEventListener('click', handler);
-            container.style.cursor = 'zoom-in';
-            handlers.push({ container, handler });
-        }
-
-        return () => {
-            for (const { container, handler } of handlers) {
-                container.removeEventListener('click', handler);
-                container.style.removeProperty('cursor');
             }
         };
-    }, [content]);
+
+        messageElement.addEventListener('click', handler);
+
+        return () => {
+            messageElement.removeEventListener('click', handler);
+        };
+    }, [contentKey, mode, scopeSelector]);
 }

@@ -22,6 +22,7 @@ export const settings = signal<Settings>({
     sendShortcut: 'CtrlEnter',
     sharePresence: false,
     notificationType: 'off',
+    pmNoticeOpensRD: false,
     loadImages: true,
     rememberOpenState: false,
 

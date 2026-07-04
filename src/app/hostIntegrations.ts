@@ -1,8 +1,10 @@
 import { isChatOpen, toggleChat } from '@/stores/chatState';
+import { openPmConversationFromHref } from '@/stores/bangumiPm';
 import { settings } from '@/stores/user';
 import cssContent from 'virtual:dollars-css';
 
 const STYLE_MARKER = 'data-dollars-styles';
+let pmNoticeHandlerInstalled = false;
 
 export function injectStyles() {
     if (document.querySelector(`[${STYLE_MARKER}]`)) return;
@@ -59,4 +61,26 @@ export function installHomeCard() {
         e.stopPropagation();
         toggleChat(!isChatOpen.value);
     });
+}
+
+export function installBangumiPmNoticeOpenHandler() {
+    if (pmNoticeHandlerInstalled) return;
+    pmNoticeHandlerInstalled = true;
+
+    document.addEventListener('click', (event) => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return;
+        }
+        if (!settings.value.pmNoticeOpensRD) return;
+
+        const target = event.target instanceof Element ? event.target : null;
+        const link = target?.closest<HTMLAnchorElement>('#robot_pm_notice a[href*="/pm/conversation/"]');
+        if (!link) return;
+
+        if (!openPmConversationFromHref(link.href)) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        toggleChat(true);
+    }, true);
 }

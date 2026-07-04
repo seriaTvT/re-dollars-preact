@@ -12,6 +12,8 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { useChatWindowInteractions } from '@/hooks/useChatWindowInteractions';
 import { useChatWindowLayout } from '@/hooks/useChatWindowLayout';
 import { useBmoRenderer } from '@/hooks/useBmoRenderer';
+import { activeConversationId } from '@/stores/conversations';
+import { BangumiPmChat } from './BangumiPmChat';
 
 interface ChatWindowProps {
     skipEntryAnimation?: boolean;
@@ -39,6 +41,7 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
     }, []);
 
     const className = `dollars-chat-window${animateIn && isChatOpen.value ? ' visible' : ''}${isMobileViewport.value ? ' mobile' : ''}${isMaximized.value ? ' maximized' : ''}${isSearchActive.value ? ' search-active' : ''}${isNarrowLayout.value ? ' is-narrow' : ''}${mobileChatViewActive.value ? ' mobile-chat-active' : ''}`;
+    const isPmActive = activeConversationId.value.startsWith('pm:');
 
     return (
         <div
@@ -58,11 +61,17 @@ export function ChatWindow({ skipEntryAnimation = false }: ChatWindowProps) {
             <div id="dollars-content-panes">
                 <Sidebar />
                 <div id="dollars-main-chat">
-                    <SearchPanel />
                     <UserProfilePanel />
-                    <ChatBody />
-                    <FloatingUI />
-                    <ChatInput />
+                    {isPmActive ? (
+                        <BangumiPmChat />
+                    ) : (
+                        <>
+                            <SearchPanel />
+                            <ChatBody />
+                            <FloatingUI />
+                            <ChatInput />
+                        </>
+                    )}
                 </div>
             </div>
         </div>

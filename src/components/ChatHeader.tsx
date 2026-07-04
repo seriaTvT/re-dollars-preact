@@ -4,6 +4,7 @@ import { isMaximized, toggleMaximize, toggleSearch, isSearchActive, isNarrowLayo
 import { activeExtensionId, extensionConversations } from '@/stores/extensionConversations';
 import { openSettingsPanel } from '@/utils/settingsPanel';
 import type { Conversation } from '@/types';
+import { activePmId, pmComposeReceiver, pmConversations, pmDetails } from '@/stores/bangumiPm';
 
 export function ChatHeader() {
     const handleClose = () => {
@@ -31,6 +32,10 @@ export function ChatHeader() {
     const activeExtension = activeExtensionId.value
         ? extensionConversations.value.find(e => e.id === activeExtensionId.value)
         : null;
+    const pmId = activePmId();
+    const activePm = pmId ? pmDetails.value[pmId] : null;
+    const activePmConversation = pmId ? pmConversations.value.find(item => item.id === pmId) : null;
+    const isPmActive = activeConversationId.value.startsWith('pm:');
 
     const isShowingChatView = isNarrowLayout.value && mobileChatViewActive.value;
 
@@ -42,6 +47,12 @@ export function ChatHeader() {
 
     if (isNarrowLayout.value && !isShowingChatView) {
         mainTitle = '会话列表';
+        showOnlineStatus = false;
+    } else if (isPmActive) {
+        mainTitle = activeConversationId.value === 'pm:new'
+            ? (pmComposeReceiver.value ? `发短信给 ${pmComposeReceiver.value}` : '新建 Bangumi 短信')
+            : activePm?.nickname || activePmConversation?.nickname || 'Bangumi 短信';
+        avatarUrl = activePm?.avatar || activePmConversation?.avatar || '';
         showOnlineStatus = false;
     } else if (activeExtension) {
         mainTitle = activeExtension.title;
@@ -114,7 +125,7 @@ export function ChatHeader() {
             </div>
 
             <div class="title-wrapper">
-                {(!isNarrowLayout.value || isShowingChatView) && (
+                {avatarUrl && (!isNarrowLayout.value || isShowingChatView) && (
                     <img
                         class="header-chat-icon"
                         src={avatarUrl}
@@ -133,12 +144,14 @@ export function ChatHeader() {
             </div>
 
             <div class="header-buttons">
-                <button
-                    id="dollars-search-btn"
-                    class="header-btn"
-                    title="搜索"
-                    onClick={handleSearch}
-                />
+                {!isPmActive && (
+                    <button
+                        id="dollars-search-btn"
+                        class="header-btn"
+                        title="搜索"
+                        onClick={handleSearch}
+                    />
+                )}
 
                 <button
                     id="dollars-maximize-btn"

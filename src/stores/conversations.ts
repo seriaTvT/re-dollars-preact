@@ -1,6 +1,7 @@
 import { signal } from '@preact/signals';
 import { activeExtensionId, extensionConversations } from './extensionConversations';
 import type { Conversation } from '@/types';
+import { loadActiveConversationId, saveActiveConversationId } from '@/utils/windowState';
 
 // 会话列表
 export const conversations = signal<Conversation[]>([
@@ -16,11 +17,18 @@ export const conversations = signal<Conversation[]>([
 
 export const activeConversationId = signal('dollars');
 
+function shouldPersistConversation(conversationId: string) {
+    return conversationId === 'dollars' || /^pm:\d+$/.test(conversationId);
+}
+
 /**
  * 设置当前会话
  */
 export function setActiveConversation(conversationId: string) {
     activeConversationId.value = conversationId;
+    if (shouldPersistConversation(conversationId)) {
+        saveActiveConversationId(conversationId);
+    }
 
     if (activeExtensionId.value !== null) {
         const activeExt = extensionConversations.value.find(
@@ -31,6 +39,13 @@ export function setActiveConversation(conversationId: string) {
         }
         activeExtensionId.value = null;
     }
+}
+
+export function restoreActiveConversation() {
+    const savedConversationId = loadActiveConversationId();
+    if (!savedConversationId || !shouldPersistConversation(savedConversationId)) return;
+    if (activeConversationId.value === savedConversationId) return;
+    setActiveConversation(savedConversationId);
 }
 
 /**

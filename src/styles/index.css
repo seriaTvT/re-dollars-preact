@@ -228,6 +228,32 @@ html[data-theme="dark"] #dollars-sidebar-search-input {
 #dollars-sidebar-search-input::placeholder {
   color: var(--dollars-text-placeholder);
 }
+.dollars-sidebar-search-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dollars-sidebar-search-row #dollars-sidebar-search-input {
+  min-width: 0;
+}
+.dollars-pm-compose-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--dollars-border);
+  border-radius: 50%;
+  background: var(--dollars-bg);
+  color: var(--primary-color);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.dollars-pm-compose-button:hover {
+  color: #fff;
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+}
 #dollars-conversation-list {
   flex-grow: 1;
   overflow-y: auto;
@@ -274,6 +300,10 @@ html[data-theme="dark"] .conversation-item .avatar {
 .conversation-item .dollars-conv-content {
   flex-grow: 1;
   overflow: hidden;
+  min-width: 0;
+}
+.conversation-item:has(.unread-badge) .dollars-conv-content {
+  padding-right: 24px;
 }
 .conversation-item .dollars-conv-title {
   display: flex;
@@ -305,16 +335,41 @@ html[data-theme="dark"] .conversation-item .avatar {
 .conversation-item .unread-badge {
   position: absolute;
   right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 8px;
+  transform: none;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
   background-color: var(--primary-color);
   color: #fff;
   font-size: 10px;
   font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px;
-  min-width: 16px;
+  padding: 0;
+  border-radius: 50%;
   text-align: center;
+}
+.dollars-conversation-hint {
+  padding: 12px 10px;
+  color: var(--dollars-text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+.dollars-conversation-hint.error {
+  color: #c33;
+}
+.dollars-pm-load-more-conversations {
+  display: block;
+  margin: 8px auto;
+  padding: 6px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--primary-color);
+  font-size: 12px;
+  cursor: pointer;
+}
+.dollars-pm-load-more-conversations:disabled {
+  opacity: 0.55;
 }
 #dollars-chat-window.is-narrow #dollars-sidebar {
   width: 100%;
@@ -349,6 +404,181 @@ html[data-theme="dark"] .conversation-item .avatar {
   background-color: var(--dollars-bg);
   isolation: isolate;
   z-index: 0;
+}
+.dollars-pm-view,
+.dollars-pm-compose-view {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding-top: 40px;
+  position: relative;
+  z-index: 1;
+}
+.dollars-pm-view {
+  flex-direction: column;
+}
+.dollars-pm-message-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px 10px 90px;
+}
+.dollars-pm-topic {
+  width: fit-content;
+  max-width: 80%;
+  margin: 12px auto;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--dollars-bg), transparent 15%);
+  color: var(--dollars-text-secondary);
+  font-size: 11px;
+  text-align: center;
+}
+.dollars-pm-message .text-content img:not(.smile):not(.smiley):not(.custom-emoji):not(.bmoji-image) {
+  max-width: 100%;
+  height: auto;
+}
+.dollars-pm-message .text-content img.smile:not(.smiley-musume):not(.smiley-blake) {
+  max-width: 60px;
+  vertical-align: middle;
+}
+.dollars-pm-message .audio-player-container,
+.dollars-pm-message .video-player-container {
+  width: 100%;
+  margin: 5px 0;
+}
+.dollars-pm-message audio,
+.dollars-pm-message video {
+  display: block;
+  max-width: 100%;
+  border-radius: 8px;
+}
+.dollars-pm-message audio {
+  width: 300px;
+}
+.dollars-pm-message video {
+  max-height: 400px;
+  background: #000;
+}
+.dollars-pm-message .text-content {
+  white-space: normal;
+}
+.dollars-pm-message .text-content br {
+  display: initial;
+}
+.dollars-pm-avatar-link {
+  display: contents;
+}
+.dollars-pm-input-container {
+  z-index: 101;
+}
+.dollars-pm-attach-menu {
+  position: absolute;
+  right: 0;
+  bottom: 46px;
+  z-index: var(--dollars-z-index-overlay);
+  width: 176px;
+  min-width: 176px;
+  transform-origin: bottom right;
+  animation: dollars-panel-slide-up-right 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dollars-pm-textarea:disabled {
+  opacity: 0.55;
+}
+.dollars-pm-compose-card input,
+.dollars-pm-compose-card textarea {
+  box-sizing: border-box;
+  border: 1px solid var(--dollars-border);
+  border-radius: 10px;
+  background: var(--dollars-bg);
+  color: var(--dollars-text);
+  font: inherit;
+  outline: none;
+}
+.dollars-pm-compose-card input:focus,
+.dollars-pm-compose-card textarea:focus {
+  border-color: var(--primary-color);
+}
+.dollars-pm-compose-actions button,
+.pm-empty-state button {
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  background: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+}
+.dollars-pm-compose-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.dollars-pm-error {
+  color: #c33;
+  font-size: 12px;
+}
+.dollars-pm-input-error {
+  margin: 0 10px 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dollars-pm-compose-view {
+  overflow-y: auto;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 18px 18px;
+}
+.dollars-pm-compose-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(520px, 100%);
+  padding: 18px;
+  border: 1px solid var(--dollars-border);
+  border-radius: 16px;
+  background: var(--dollars-glass-bg);
+  box-shadow: var(--dollars-glass-shadow);
+}
+.dollars-pm-compose-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--dollars-text-secondary);
+  font-size: 12px;
+}
+.dollars-pm-compose-card input,
+.dollars-pm-compose-card textarea {
+  width: 100%;
+  padding: 8px 10px;
+}
+.dollars-pm-compose-card textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+.dollars-pm-compose-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.dollars-pm-compose-actions button.secondary {
+  border: 1px solid var(--dollars-border);
+  background: transparent;
+  color: var(--dollars-text-secondary);
+}
+.pm-empty-state {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 20px 20px;
+  color: var(--dollars-text-secondary);
+  text-align: center;
+}
+.pm-empty-state a {
+  color: var(--primary-color);
 }
 #dollars-main-chat::before {
   content: "";

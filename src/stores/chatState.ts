@@ -1,5 +1,7 @@
 import { signal } from '@preact/signals';
 import { saveChatOpenState } from '@/utils/windowState';
+import { restoreActiveConversation } from '@/stores/conversations';
+import { setMobileChatView } from '@/stores/ui';
 
 export const scrollButtonMode = signal<'to-unread' | 'to-bottom'>('to-bottom');
 
@@ -45,6 +47,10 @@ export const typingUsers = signal<Map<string, string>>(new Map());
  */
 export function toggleChat(open?: boolean, skipSave = false) {
     const newState = open ?? !isChatOpen.value;
+    if (newState) {
+        restoreActiveConversation();
+        setMobileChatView(true);
+    }
     isChatOpen.value = newState;
 
     if (!skipSave) {

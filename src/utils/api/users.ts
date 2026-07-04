@@ -66,6 +66,37 @@ export async function fetchUserProfile(userId: string): Promise<{
     return null;
 }
 
+export async function fetchBangumiUserProfile(username: string): Promise<{
+    id: number;
+    nickname: string;
+    username: string;
+    avatar: string;
+    sign?: string;
+    url: string;
+    source: 'bangumi';
+} | null> {
+    try {
+        const res = await fetch(`https://api.bgm.tv/v0/users/${encodeURIComponent(username)}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+
+        if (data?.id && data?.username) {
+            return {
+                id: data.id,
+                nickname: data.nickname || data.username,
+                username: data.username,
+                avatar: data.avatar?.large || data.avatar?.medium || data.avatar?.small || '',
+                sign: data.sign || undefined,
+                url: data.url || `https://bgm.tv/user/${data.username}`,
+                source: 'bangumi',
+            };
+        }
+    } catch (e) {
+        // ignore
+    }
+    return null;
+}
+
 /**
  * 批量查询用户 UID
  */

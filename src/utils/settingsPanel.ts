@@ -46,6 +46,11 @@ const settingsConfig: SettingsConfigItem[] = [
         },
     },
     {
+        key: 'pmNoticeOpensRD',
+        type: 'checkbox',
+        label: '短信通知跳转到 RD',
+    },
+    {
         key: 'loadImages',
         type: 'checkbox',
         label: '默认加载图片',

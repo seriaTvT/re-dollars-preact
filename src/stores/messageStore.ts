@@ -3,7 +3,7 @@ import type { Message } from '@/types';
 import { blockedUsers } from '@/stores/user';
 import { confirmSentMessage, fetchMessageContext } from '@/utils/api/messages';
 import { normalizeForMatch } from '@/utils/messageMatch';
-import { MESSAGE_GROUP_TIME_GAP } from '@/utils/constants';
+import { canGroupAdjacentMessages } from '@/utils/messageGrouping';
 import { updateSignalMap, updateSignalSet } from '@/utils/signalMap';
 import {
     historyFullyLoaded,
@@ -153,15 +153,15 @@ export function getMessageGrouping(msgId: number): { isSelf: boolean; isGrouped:
     const prevMsg = prevId ? map.get(prevId) : null;
     const nextMsg = nextId ? map.get(nextId) : null;
 
-    const isSameUserAsPrev =
-        prevMsg &&
-        String(prevMsg.uid) === String(msg.uid) &&
-        msg.timestamp - prevMsg.timestamp < MESSAGE_GROUP_TIME_GAP;
-
-    const isSameUserAsNext =
-        nextMsg &&
-        String(nextMsg.uid) === String(msg.uid) &&
-        nextMsg.timestamp - msg.timestamp < MESSAGE_GROUP_TIME_GAP;
+    const current = { senderId: msg.uid, timestamp: msg.timestamp };
+    const isSameUserAsPrev = prevMsg && canGroupAdjacentMessages(
+        { senderId: prevMsg.uid, timestamp: prevMsg.timestamp },
+        current
+    );
+    const isSameUserAsNext = nextMsg && canGroupAdjacentMessages(
+        current,
+        { senderId: nextMsg.uid, timestamp: nextMsg.timestamp }
+    );
 
     return {
         isSelf: String(msg.uid) === String(userId),

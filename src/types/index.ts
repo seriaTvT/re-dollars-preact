@@ -53,6 +53,7 @@ export interface UserProfile {
     avatar: string;
     sign?: string;
     url: string;
+    source?: 'rd' | 'bangumi';
     lastActive?: number;
     stats?: {
         message_count: number;
@@ -87,6 +88,7 @@ export interface Settings {
     sendShortcut: 'Enter' | 'CtrlEnter';
     sharePresence: boolean;
     notificationType: 'off' | 'detail' | 'simple';
+    pmNoticeOpensRD: boolean;
     loadImages: boolean;
     rememberOpenState: boolean;
 

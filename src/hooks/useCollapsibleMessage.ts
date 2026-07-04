@@ -27,6 +27,7 @@ export function useCollapsibleMessage(
     contentKey: string,
     isDeleted: boolean | undefined,
     isSticker: boolean,
+    additionalNonTextContentSelector = '',
 ) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isCollapsible, setIsCollapsible] = useState(false);
@@ -35,7 +36,10 @@ export function useCollapsibleMessage(
         const element = textContentRef.current;
         if (!element) return;
 
-        const hasNonTextContent = !!element.querySelector(NON_TEXT_CONTENT_SELECTOR);
+        const nonTextContentSelector = additionalNonTextContentSelector
+            ? `${NON_TEXT_CONTENT_SELECTOR}, ${additionalNonTextContentSelector}`
+            : NON_TEXT_CONTENT_SELECTOR;
+        const hasNonTextContent = !!element.querySelector(nonTextContentSelector);
         const measure = (resetExpanded = false) => {
             const nextValue = shouldCollapseMessage({
                 contentHeight: getRenderedContentHeight(
@@ -64,7 +68,7 @@ export function useCollapsibleMessage(
             if (frameId) cancelAnimationFrame(frameId);
             resizeObserver.disconnect();
         };
-    }, [contentKey, isDeleted, isSticker]);
+    }, [contentKey, isDeleted, isSticker, additionalNonTextContentSelector]);
 
     return {
         isExpanded,

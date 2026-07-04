@@ -1,6 +1,4 @@
 import { Fragment } from 'preact';
-import { useRef, useEffect } from 'preact/hooks';
-import { useSignal } from '@preact/signals';
 import {
     currentDateLabel,
     showScrollBottomBtn,
@@ -29,22 +27,9 @@ import { inputAreaHeight } from '@/stores/ui';
 import { fetchRecentMessages } from '@/utils/api/messages';
 import { blockedUsers } from '@/stores/user';
 import { syncPresenceSubscriptions } from '@/services/websocket/client';
+import { FloatingDateCapsule } from './FloatingDateCapsule';
 
 export function FloatingUI() {
-    // 保留上一次的日期文本，用于淡出动画
-    const lastDateLabel = useRef('');
-    const isDateVisible = useSignal(false);
-
-    useEffect(() => {
-        const label = currentDateLabel.value;
-        if (label) {
-            lastDateLabel.current = label;
-            isDateVisible.value = true;
-        } else {
-            isDateVisible.value = false;
-        }
-    }, [currentDateLabel.value]);
-
     /**
      * Telegram-style 滚动按钮处理
      * - Mode 'to-unread': 跳转到第一条未读消息
@@ -134,9 +119,7 @@ export function FloatingUI() {
 
     return (
         <Fragment>
-            <div id="dollars-floating-date" class={isDateVisible.value ? 'visible' : ''}>
-                {lastDateLabel.current || currentDateLabel.value}
-            </div>
+            <FloatingDateCapsule label={currentDateLabel.value || ''} />
 
             <div
                 id="dollars-scroll-mention-btn"
