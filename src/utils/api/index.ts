@@ -6,7 +6,7 @@ export {
     getUnreadCount,
     fetchMessageContext,
     confirmSentMessage,
-    sendMessage,
+    postChatMessage,
     getFirstMessageIdByDate,
     editMessage,
     deleteMessage,
@@ -16,7 +16,7 @@ export {
     markNotificationRead,
     markAllNotificationsRead,
 } from './messages';
-export type { MessageContextResponse } from './messages';
+export type { MessageContextResponse, SendOutcome } from './messages';
 
 export {
     fetchUserProfile,

@@ -122,30 +122,38 @@ export async function fetchMessageContext(messageId: number, before = 30, after 
 }
 
 /**
- * 发送消息
+ * 发送结果三态：
+ * - 'sent'     Bangumi 明确回执成功，消息已落库
+ * - 'rejected' Bangumi 明确拒绝（如 formhash 失效/被限流），消息未落库，可安全重发
+ * - 'unknown'  网络错误/超时/异常响应，消息可能已落库，重发前必须先确认
  */
-export async function sendMessage(content: string): Promise<{ status: boolean; error?: string }> {
+export type SendOutcome = 'sent' | 'rejected' | 'unknown';
+
+/**
+ * 直接经用户浏览器同源 POST 到 Bangumi 原生接口发送消息。
+ * 凭据（cookie）不出浏览器；后端仅作为镜像通过 scraper 回流该消息。
+ */
+export async function postChatMessage(content: string): Promise<SendOutcome> {
+    const params = new URLSearchParams();
+    params.append('message', content);
+    params.append('formhash', userInfo.value.formhash);
+
+    let res: Response;
     try {
-        const formhash = userInfo.value.formhash;
-
-        const params = new URLSearchParams();
-        params.append('message', content);
-        params.append('formhash', formhash);
-
-        // 使用 Bangumi 原生接口发送消息
-        const res = await fetch('/dollars?ajax=1', {
+        res = await fetch('/dollars?ajax=1', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             body: params,
         });
-
-        if (res.ok) return { status: true };
-        return { status: false, error: 'Network response was not ok' };
-    } catch (e) {
-        return { status: false, error: String(e) };
+    } catch {
+        return 'unknown';
     }
+
+    // 非 2xx 不代表一定没落库，按 unknown 处理以避免重发造成重复。
+    if (!res.ok) return 'unknown';
+
+    const data = await res.json().catch(() => null);
+    return data?.status === 'ok' ? 'sent' : 'rejected';
 }
 
 /**

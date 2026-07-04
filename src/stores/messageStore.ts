@@ -1,7 +1,8 @@
 import { batch, computed, signal } from '@preact/signals';
 import type { Message } from '@/types';
 import { blockedUsers } from '@/stores/user';
-import { fetchMessageContext } from '@/utils/api/messages';
+import { confirmSentMessage, fetchMessageContext } from '@/utils/api/messages';
+import { normalizeForMatch } from '@/utils/messageMatch';
 import { MESSAGE_GROUP_TIME_GAP } from '@/utils/constants';
 import { updateSignalMap, updateSignalSet } from '@/utils/signalMap';
 import {
@@ -50,10 +51,86 @@ export const messageIds = computed<number[]>(() => {
     });
 });
 
-// 待确认消息的超时定时器 (tempId -> timeoutId)
+// 乐观消息的看门狗定时器 (tempId -> timeoutId)
 const pendingTimeouts = new Map<number, ReturnType<typeof setTimeout>>();
-const PENDING_TIMEOUT_MS = 10000; // 10秒超时
+// 超时后不再直接判死，而是先向后端确认是否已落库，避免误报失败诱发重发。
+const PENDING_VERIFY_MS = 8000;
 let nextOptimisticId = -1;
+
+function clearPendingTimer(tempId: number) {
+    const timeout = pendingTimeouts.get(tempId);
+    if (timeout) {
+        clearTimeout(timeout);
+        pendingTimeouts.delete(tempId);
+    }
+}
+
+function armPendingTimer(tempId: number) {
+    clearPendingTimer(tempId);
+    pendingTimeouts.set(tempId, setTimeout(() => void verifyPending(tempId), PENDING_VERIFY_MS));
+}
+
+// 看门狗：乐观消息迟迟未被回流消息对账时，主动向后端确认一次。
+// 已落库 → 用权威消息对账；确认不存在 → 标记失败，交给用户重试。
+async function verifyPending(tempId: number) {
+    pendingTimeouts.delete(tempId);
+    const msg = messageMap.peek().get(tempId);
+    if (!msg || msg.state !== 'sending') return;
+
+    const confirmed = await confirmSentMessage(msg.message ?? '', 3);
+
+    const current = messageMap.peek().get(tempId);
+    if (!current || current.state !== 'sending') return; // 期间已被 WS 回流对账
+
+    if (confirmed) {
+        addMessage(confirmed);
+    } else {
+        markMessageFailed(tempId);
+    }
+}
+
+/**
+ * 在 map 中寻找并"消费"一条与服务端回流消息对应的乐观消息。
+ * 优先用 stableKey 精确匹配（confirm/broadcast 携带）；否则按
+ * 发送者 + 归一化内容匹配，同内容多条时按 FIFO 取最早一条。
+ * 命中则从 map 删除该乐观消息，并返回其 id/stableKey 供后续继承。
+ */
+function takeOptimisticMatch(
+    map: Map<number, Message>,
+    msg: Message,
+    tempId?: string,
+): { matchedId?: number; stableKey?: string } {
+    if (tempId) {
+        for (const [id, m] of map) {
+            if (m.state === 'sending' && m.stableKey === tempId) {
+                map.delete(id);
+                return { matchedId: id, stableKey: m.stableKey };
+            }
+        }
+    }
+
+    const target = normalizeForMatch(msg.message);
+    let matchedId: number | undefined;
+    for (const [id, m] of map) {
+        if (
+            m.state === 'sending' &&
+            String(m.uid) === String(msg.uid) &&
+            normalizeForMatch(m.message) === target &&
+            // 乐观 id 为递减负数，越接近 0 越早创建；FIFO 取最早一条。
+            (matchedId === undefined || id > matchedId)
+        ) {
+            matchedId = id;
+        }
+    }
+
+    if (matchedId !== undefined) {
+        const stableKey = map.get(matchedId)?.stableKey;
+        map.delete(matchedId);
+        return { matchedId, stableKey };
+    }
+
+    return {};
+}
 
 // ============================================================================
 // Message Grouping
@@ -97,10 +174,6 @@ export function getMessageGrouping(msgId: number): { isSelf: boolean; isGrouped:
 // 消息操作函数
 // ============================================================================
 
-function normalizePendingContent(content: string) {
-    return content.replace(/\s+/g, ' ').trim();
-}
-
 /**
  * 添加单条消息 (通常由 WebSocket 新消息触发)
  * @param msg - 消息对象
@@ -109,57 +182,15 @@ function normalizePendingContent(content: string) {
 export function addMessage(msg: Message, tempId?: string) {
     batch(() => {
         const map = new Map(messageMap.value);
-        let replacedOptimistic = false;
-        let inheritedStableKey: string | undefined;
-        let matchedTempId: number | undefined;
+        const { matchedId, stableKey } = takeOptimisticMatch(map, msg, tempId);
+        const replacedOptimistic = matchedId !== undefined;
 
-        // 使用后端提供的 tempId 进行直接匹配
-        if (tempId) {
-            for (const [id, m] of map) {
-                if (m.state === 'sending' && m.stableKey === tempId) {
-                    inheritedStableKey = m.stableKey;
-                    matchedTempId = id;
-                    map.delete(id);
-                    replacedOptimistic = true;
-                    break;
-                }
-            }
-        }
+        if (matchedId !== undefined) clearPendingTimer(matchedId);
 
-        // Backend scraper broadcasts do not know the client-side tempId. Match
-        // the pending self-message by normalized content to avoid duplicate
-        // optimistic bubbles when websocket delivery wins the confirm poll.
-        if (matchedTempId === undefined) {
-            const incomingContent = normalizePendingContent(msg.message ?? '');
-            for (const [id, m] of map) {
-                if (
-                    m.state === 'sending' &&
-                    String(m.uid) === String(msg.uid) &&
-                    normalizePendingContent(m.message ?? '') === incomingContent &&
-                    Math.abs(Number(m.timestamp ?? 0) - Number(msg.timestamp ?? 0)) <= 30
-                ) {
-                    inheritedStableKey = m.stableKey;
-                    matchedTempId = id;
-                    map.delete(id);
-                    replacedOptimistic = true;
-                    break;
-                }
-            }
-        }
-
-        // 清理超时定时器
-        if (matchedTempId !== undefined) {
-            const timeout = pendingTimeouts.get(matchedTempId);
-            if (timeout) {
-                clearTimeout(timeout);
-                pendingTimeouts.delete(matchedTempId);
-            }
-        }
-
-        // 将确认消息添加到 map，如果有 stableKey 则继承，标记为 sent
-        const confirmedMsg = inheritedStableKey
-            ? { ...msg, stableKey: inheritedStableKey, state: 'sent' as const }
-            : { ...msg, state: 'sent' as const };
+        // 命中乐观消息则继承其 stableKey 并标记为已送达
+        const confirmedMsg: Message = stableKey
+            ? { ...msg, stableKey, state: 'sent' }
+            : { ...msg, state: 'sent' };
 
         const alreadyExists = map.has(confirmedMsg.id);
 
@@ -225,11 +256,7 @@ export function addOptimisticMessage(
         manualScrollToBottom.value++;
     });
 
-    const timeoutId = setTimeout(() => {
-        markMessageFailed(tempId);
-        pendingTimeouts.delete(tempId);
-    }, PENDING_TIMEOUT_MS);
-    pendingTimeouts.set(tempId, timeoutId);
+    armPendingTimer(tempId);
 
     return { tempId, stableKey };
 }
@@ -245,19 +272,6 @@ export function markMessageFailed(tempId: number) {
 }
 
 /**
- * 移除乐观消息 (发送失败时调用)
- */
-export function removeOptimisticMessage(tempId: number) {
-    const timeout = pendingTimeouts.get(tempId);
-    if (timeout) {
-        clearTimeout(timeout);
-        pendingTimeouts.delete(tempId);
-    }
-
-    updateSignalMap(messageMap, map => map.delete(tempId));
-}
-
-/**
  * 重试发送失败的消息
  */
 export function retryMessage(tempId: number): { content: string; stableKey: string } | null {
@@ -268,12 +282,7 @@ export function retryMessage(tempId: number): { content: string; stableKey: stri
     const stableKey = msg.stableKey || `temp-${Math.random().toString(36).slice(2)}`;
 
     updateSignalMap(messageMap, map => map.set(tempId, { ...msg, state: 'sending' }));
-
-    const timeoutId = setTimeout(() => {
-        markMessageFailed(tempId);
-        pendingTimeouts.delete(tempId);
-    }, PENDING_TIMEOUT_MS);
-    pendingTimeouts.set(tempId, timeoutId);
+    armPendingTimer(tempId);
 
     return { content, stableKey };
 }
@@ -287,6 +296,10 @@ export function addMessagesBatch(newMessages: Message[]) {
     const map = new Map(messageMap.value);
 
     for (const msg of newMessages) {
+        // 批量回流（含重连后的补拉）同样要对账掉本地乐观消息，避免残留重复气泡。
+        const { matchedId } = takeOptimisticMatch(map, msg);
+        if (matchedId !== undefined) clearPendingTimer(matchedId);
+
         const existing = map.get(msg.id);
         if (!existing || (msg.edited_at && msg.edited_at > (existing.edited_at || 0))) {
             map.set(msg.id, msg);

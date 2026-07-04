@@ -12,7 +12,7 @@ vi.hoisted(() => {
 });
 
 import { userInfo } from '@/stores/user';
-import { confirmSentMessage, sendMessage } from './messages';
+import { confirmSentMessage, postChatMessage } from './messages';
 
 beforeEach(() => {
     userInfo.value = {
@@ -68,13 +68,13 @@ describe('message send API', () => {
         );
     });
 
-    it('keeps the Bangumi same-origin post fast and separate from backend confirmation', async () => {
+    it('posts to the Bangumi same-origin endpoint and reports the outcome from the body', async () => {
         const fetchMock = vi.fn<(input: RequestInfo, init?: RequestInit) => Promise<Response>>(
-            async () => new Response('', { status: 200 }),
+            async () => new Response(JSON.stringify({ status: 'ok' }), { status: 200 }),
         );
         vi.stubGlobal('fetch', fetchMock);
 
-        await expect(sendMessage('hello')).resolves.toEqual({ status: true });
+        await expect(postChatMessage('hello')).resolves.toBe('sent');
 
         expect(fetchMock).toHaveBeenCalledOnce();
         const [url, init] = fetchMock.mock.calls[0]!;
@@ -83,5 +83,18 @@ describe('message send API', () => {
         const body = init?.body as URLSearchParams;
         expect(body.get('message')).toBe('hello');
         expect(body.get('formhash')).toBe('formhash-1');
+    });
+
+    it('treats an explicit non-ok body as a definitive rejection', async () => {
+        vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ status: 'error' }), { status: 200 })));
+        await expect(postChatMessage('hello')).resolves.toBe('rejected');
+    });
+
+    it('treats network failures and non-2xx responses as unknown (never silently failed)', async () => {
+        vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('offline'); }));
+        await expect(postChatMessage('hello')).resolves.toBe('unknown');
+
+        vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 502 })));
+        await expect(postChatMessage('hello')).resolves.toBe('unknown');
     });
 });

@@ -1,7 +1,8 @@
 import {
     addMessage,
     addOptimisticMessage,
-    removeOptimisticMessage,
+    markMessageFailed,
+    retryMessage,
     updateMessage,
 } from '@/stores/messageStore';
 import {
@@ -11,7 +12,7 @@ import {
 } from '@/stores/composerState';
 import { clearDraft } from '@/stores/drafts';
 import { userInfo } from '@/stores/user';
-import { confirmSentMessage, editMessage as apiEditMessage, sendMessage as apiSendMessage } from '@/utils/api/messages';
+import { confirmSentMessage, editMessage as apiEditMessage, postChatMessage } from '@/utils/api/messages';
 import { uploadFile } from '@/utils/api/media';
 import { lookupUsersByName } from '@/utils/api/users';
 import { transformMentions } from '@/utils/mentions';
@@ -92,23 +93,44 @@ async function submitNewMessage(
         meta
     );
 
-    sendPendingMessage(stableKey, transformedContent);
-
     clearInput(true);
     clearMediaPreview();
     clearVoiceDraft?.();
     clearDraft();
     cancelReplyOrEdit();
 
-    const result = await apiSendMessage(transformedContent);
-    if (!result.status) {
-        removeOptimisticMessage(tempId);
-        alert(result.error || '发送失败');
-    } else {
-        void confirmSentMessage(transformedContent).then((message) => {
-            if (message) addMessage(message, stableKey);
-        });
+    await dispatch(tempId, stableKey, transformedContent);
+}
+
+/**
+ * 发送一条乐观消息对应的内容。这是初次发送与失败重试共用的唯一出口：
+ * - 'rejected'（Bangumi 明确拒绝）→ 标记失败，供用户重试；
+ * - 'sent' / 'unknown' → 保留 sending 气泡，由 WS 回流或看门狗对账，
+ *   绝不在此重发，从根源杜绝"发两条一样的"。
+ */
+async function dispatch(tempId: number, stableKey: string, content: string) {
+    sendPendingMessage(stableKey, content);
+    const outcome = await postChatMessage(content);
+    if (outcome === 'rejected') {
+        markMessageFailed(tempId);
     }
+}
+
+/**
+ * 重试一条失败的消息。重发前先确认它上次是否其实已经落库——
+ * 若已落库则直接对账、不重发，保证重试的幂等性。
+ */
+export async function retryFailedMessage(tempId: number) {
+    const revived = retryMessage(tempId);
+    if (!revived) return;
+
+    const existing = await confirmSentMessage(revived.content, 2);
+    if (existing) {
+        addMessage(existing, revived.stableKey);
+        return;
+    }
+
+    await dispatch(tempId, revived.stableKey, revived.content);
 }
 
 export async function submitComposerMessage({

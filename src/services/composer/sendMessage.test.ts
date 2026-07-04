@@ -18,7 +18,7 @@ vi.hoisted(() => {
 });
 
 vi.mock('@/utils/api/messages', () => ({
-    sendMessage: sendMessageMock,
+    postChatMessage: sendMessageMock,
     confirmSentMessage: confirmSentMessageMock,
     editMessage: editMessageMock,
 }));
@@ -41,6 +41,7 @@ import {
     replyingTo,
 } from '@/stores/composerState';
 import {
+    addMessage,
     messageMap,
 } from '@/stores/messageStore';
 import { userInfo } from '@/stores/user';
@@ -78,30 +79,17 @@ afterEach(() => {
 });
 
 describe('submitComposerMessage', () => {
-    it('creates an optimistic message, sends pending websocket metadata, and confirms it', async () => {
-        let resolveSend!: (value: { status: boolean }) => void;
-        const sendDone = new Promise<{ status: boolean }>((resolve) => {
-            resolveSend = resolve;
-        });
-        sendMessageMock.mockReturnValue(sendDone);
-        confirmSentMessageMock.mockResolvedValue({
-            id: 123,
-            uid: 1,
-            nickname: 'Tester',
-            avatar: 'avatar.jpg',
-            message: 'hello',
-            timestamp: 1000,
-        });
+    it('creates an optimistic message, posts it, and reconciles when the message is broadcast back', async () => {
+        sendMessageMock.mockResolvedValue('sent');
         const clearInput = vi.fn();
         const clearMediaPreview = vi.fn();
 
-        const submitDone = submitComposerMessage({
+        await submitComposerMessage({
             content: ' hello ',
             imageMeta: {},
             clearInput,
             clearMediaPreview,
         });
-        await Promise.resolve();
 
         const pending = [...messageMap.value.values()].find(msg => msg.state === 'sending');
         expect(pending).toBeDefined();
@@ -109,10 +97,20 @@ describe('submitComposerMessage', () => {
         expect(clearInput).toHaveBeenCalledWith(true);
         expect(clearMediaPreview).toHaveBeenCalledOnce();
         expect(sendMessageMock).toHaveBeenCalledWith('hello');
+        // Happy path must not poll confirm — reconciliation rides the broadcast.
+        expect(confirmSentMessageMock).not.toHaveBeenCalled();
 
-        resolveSend({ status: true });
-        await submitDone;
-        await Promise.resolve();
+        // Simulate the scraper broadcasting the canonical row back to us.
+        addMessage({
+            id: 123,
+            uid: 1,
+            nickname: 'Tester',
+            avatar: 'avatar.jpg',
+            message: 'hello',
+            timestamp: 1000,
+        });
+
+        expect(messageMap.value.has(pending!.id)).toBe(false);
         expect(messageMap.value.get(123)).toMatchObject({
             id: 123,
             stableKey: pending?.stableKey,
@@ -120,8 +118,8 @@ describe('submitComposerMessage', () => {
         });
     });
 
-    it('rolls back optimistic messages when sending fails', async () => {
-        sendMessageMock.mockResolvedValue({ status: false, error: 'nope' });
+    it('marks the optimistic message failed when Bangumi explicitly rejects it', async () => {
+        sendMessageMock.mockResolvedValue('rejected');
 
         await submitComposerMessage({
             content: 'hello',
@@ -130,14 +128,29 @@ describe('submitComposerMessage', () => {
             clearMediaPreview: vi.fn(),
         });
 
-        expect([...messageMap.value.values()]).toHaveLength(0);
-        expect(alert).toHaveBeenCalledWith('nope');
+        const messages = [...messageMap.value.values()];
+        expect(messages).toHaveLength(1);
+        expect(messages[0].state).toBe('failed');
+    });
+
+    it('keeps the message pending on an unknown outcome so it is neither lost nor duplicated', async () => {
+        sendMessageMock.mockResolvedValue('unknown');
+
+        await submitComposerMessage({
+            content: 'hello',
+            imageMeta: {},
+            clearInput: vi.fn(),
+            clearMediaPreview: vi.fn(),
+        });
+
+        const messages = [...messageMap.value.values()];
+        expect(messages).toHaveLength(1);
+        expect(messages[0].state).toBe('sending');
     });
 
     it('uploads and sends a voice draft without text content', async () => {
         uploadFileMock.mockResolvedValue({ status: true, url: 'https://rd.ry.mk/uploads/voice.webm' });
-        sendMessageMock.mockResolvedValue({ status: true });
-        confirmSentMessageMock.mockResolvedValue(null);
+        sendMessageMock.mockResolvedValue('sent');
         const clearInput = vi.fn();
         const clearMediaPreview = vi.fn();
         const clearVoiceDraft = vi.fn();

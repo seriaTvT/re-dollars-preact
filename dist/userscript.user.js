@@ -1152,24 +1152,23 @@ async function fetchMessageContext(messageId, before = 30, after = 30) {
     has_more_after: data.has_more_after ?? true
   };
 }
-async function sendMessage(content) {
+async function postChatMessage(content) {
+  const params = new URLSearchParams();
+  params.append("message", content);
+  params.append("formhash", userInfo.value.formhash);
+  let res;
   try {
-    const formhash = userInfo.value.formhash;
-    const params = new URLSearchParams();
-    params.append("message", content);
-    params.append("formhash", formhash);
-    const res = await fetch("/dollars?ajax=1", {
+    res = await fetch("/dollars?ajax=1", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
       body: params
     });
-    if (res.ok) return { status: true };
-    return { status: false, error: "Network response was not ok" };
-  } catch (e) {
-    return { status: false, error: String(e) };
+  } catch {
+    return "unknown";
   }
+  if (!res.ok) return "unknown";
+  const data = await res.json().catch(() => null);
+  return data?.status === "ok" ? "sent" : "rejected";
 }
 async function getFirstMessageIdByDate(date) {
   try {
@@ -1257,6 +1256,30 @@ async function markAllNotificationsRead(uid) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ uid })
   });
+}const NAMED_ENTITIES = {
+  amp: "&",
+  apos: "'",
+  gt: ">",
+  lt: "<",
+  nbsp: " ",
+  quot: '"'
+};
+function decodeHtmlEntities(input) {
+  return input.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (match, entity) => {
+    const key = entity.toLowerCase();
+    if (key.startsWith("#x")) {
+      const code = Number.parseInt(key.slice(2), 16);
+      return Number.isFinite(code) && code <= 1114111 ? String.fromCodePoint(code) : match;
+    }
+    if (key.startsWith("#")) {
+      const code = Number.parseInt(key.slice(1), 10);
+      return Number.isFinite(code) && code <= 1114111 ? String.fromCodePoint(code) : match;
+    }
+    return NAMED_ENTITIES[key] ?? match;
+  });
+}
+function normalizeForMatch(input) {
+  return decodeHtmlEntities(String(input ?? "")).replace(/\s+/g, " ").trim();
 }function updateSignalMap(sig, fn) {
   const next = new Map(sig.value);
   fn(next);
@@ -1288,8 +1311,56 @@ const messageIds = w(() => {
   });
 });
 const pendingTimeouts = /* @__PURE__ */ new Map();
-const PENDING_TIMEOUT_MS = 1e4;
+const PENDING_VERIFY_MS = 8e3;
 let nextOptimisticId = -1;
+function clearPendingTimer(tempId) {
+  const timeout = pendingTimeouts.get(tempId);
+  if (timeout) {
+    clearTimeout(timeout);
+    pendingTimeouts.delete(tempId);
+  }
+}
+function armPendingTimer(tempId) {
+  clearPendingTimer(tempId);
+  pendingTimeouts.set(tempId, setTimeout(() => void verifyPending(tempId), PENDING_VERIFY_MS));
+}
+async function verifyPending(tempId) {
+  pendingTimeouts.delete(tempId);
+  const msg = messageMap.peek().get(tempId);
+  if (!msg || msg.state !== "sending") return;
+  const confirmed = await confirmSentMessage(msg.message ?? "", 3);
+  const current = messageMap.peek().get(tempId);
+  if (!current || current.state !== "sending") return;
+  if (confirmed) {
+    addMessage(confirmed);
+  } else {
+    markMessageFailed(tempId);
+  }
+}
+function takeOptimisticMatch(map, msg, tempId) {
+  if (tempId) {
+    for (const [id, m] of map) {
+      if (m.state === "sending" && m.stableKey === tempId) {
+        map.delete(id);
+        return { matchedId: id, stableKey: m.stableKey };
+      }
+    }
+  }
+  const target = normalizeForMatch(msg.message);
+  let matchedId;
+  for (const [id, m] of map) {
+    if (m.state === "sending" && String(m.uid) === String(msg.uid) && normalizeForMatch(m.message) === target && // 乐观 id 为递减负数，越接近 0 越早创建；FIFO 取最早一条。
+    (matchedId === void 0 || id > matchedId)) {
+      matchedId = id;
+    }
+  }
+  if (matchedId !== void 0) {
+    const stableKey = map.get(matchedId)?.stableKey;
+    map.delete(matchedId);
+    return { matchedId, stableKey };
+  }
+  return {};
+}
 function getMessageGrouping(msgId) {
   const map = messageMap.peek();
   const ids = messageIds.peek();
@@ -1311,46 +1382,13 @@ function getMessageGrouping(msgId) {
     isGroupedWithNext: !!isSameUserAsNext
   };
 }
-function normalizePendingContent(content) {
-  return content.replace(/\s+/g, " ").trim();
-}
 function addMessage(msg, tempId) {
   r(() => {
     const map = new Map(messageMap.value);
-    let replacedOptimistic = false;
-    let inheritedStableKey;
-    let matchedTempId;
-    if (tempId) {
-      for (const [id, m] of map) {
-        if (m.state === "sending" && m.stableKey === tempId) {
-          inheritedStableKey = m.stableKey;
-          matchedTempId = id;
-          map.delete(id);
-          replacedOptimistic = true;
-          break;
-        }
-      }
-    }
-    if (matchedTempId === void 0) {
-      const incomingContent = normalizePendingContent(msg.message ?? "");
-      for (const [id, m] of map) {
-        if (m.state === "sending" && String(m.uid) === String(msg.uid) && normalizePendingContent(m.message ?? "") === incomingContent && Math.abs(Number(m.timestamp ?? 0) - Number(msg.timestamp ?? 0)) <= 30) {
-          inheritedStableKey = m.stableKey;
-          matchedTempId = id;
-          map.delete(id);
-          replacedOptimistic = true;
-          break;
-        }
-      }
-    }
-    if (matchedTempId !== void 0) {
-      const timeout = pendingTimeouts.get(matchedTempId);
-      if (timeout) {
-        clearTimeout(timeout);
-        pendingTimeouts.delete(matchedTempId);
-      }
-    }
-    const confirmedMsg = inheritedStableKey ? { ...msg, stableKey: inheritedStableKey, state: "sent" } : { ...msg, state: "sent" };
+    const { matchedId, stableKey } = takeOptimisticMatch(map, msg, tempId);
+    const replacedOptimistic = matchedId !== void 0;
+    if (matchedId !== void 0) clearPendingTimer(matchedId);
+    const confirmedMsg = stableKey ? { ...msg, stableKey, state: "sent" } : { ...msg, state: "sent" };
     const alreadyExists = map.has(confirmedMsg.id);
     map.set(confirmedMsg.id, confirmedMsg);
     messageMap.value = map;
@@ -1394,11 +1432,7 @@ function addOptimisticMessage(content, user, replyToId, replyDetails, imageMeta)
     setTimeout(() => updateSignalSet(newMessageIds, (s) => s.delete(tempId)), 350);
     manualScrollToBottom.value++;
   });
-  const timeoutId = setTimeout(() => {
-    markMessageFailed(tempId);
-    pendingTimeouts.delete(tempId);
-  }, PENDING_TIMEOUT_MS);
-  pendingTimeouts.set(tempId, timeoutId);
+  armPendingTimer(tempId);
   return { tempId, stableKey };
 }
 function markMessageFailed(tempId) {
@@ -1407,31 +1441,21 @@ function markMessageFailed(tempId) {
     updateSignalMap(messageMap, (map) => map.set(tempId, { ...msg, state: "failed" }));
   }
 }
-function removeOptimisticMessage(tempId) {
-  const timeout = pendingTimeouts.get(tempId);
-  if (timeout) {
-    clearTimeout(timeout);
-    pendingTimeouts.delete(tempId);
-  }
-  updateSignalMap(messageMap, (map) => map.delete(tempId));
-}
 function retryMessage(tempId) {
   const msg = messageMap.value.get(tempId);
   if (!msg || msg.state !== "failed") return null;
   const content = msg.message;
   const stableKey = msg.stableKey || `temp-${Math.random().toString(36).slice(2)}`;
   updateSignalMap(messageMap, (map) => map.set(tempId, { ...msg, state: "sending" }));
-  const timeoutId = setTimeout(() => {
-    markMessageFailed(tempId);
-    pendingTimeouts.delete(tempId);
-  }, PENDING_TIMEOUT_MS);
-  pendingTimeouts.set(tempId, timeoutId);
+  armPendingTimer(tempId);
   return { content, stableKey };
 }
 function addMessagesBatch(newMessages) {
   if (newMessages.length === 0) return;
   const map = new Map(messageMap.value);
   for (const msg of newMessages) {
+    const { matchedId } = takeOptimisticMatch(map, msg);
+    if (matchedId !== void 0) clearPendingTimer(matchedId);
     const existing = map.get(msg.id);
     if (!existing || msg.edited_at && msg.edited_at > (existing.edited_at || 0)) {
       map.set(msg.id, msg);
@@ -1615,6 +1639,325 @@ function setEditingMessage(data) {
 function cancelReplyOrEdit() {
   replyingTo.value = null;
   editingMessage.value = null;
+}const DRAFT_KEY_PREFIX = "dollars_draft_";
+const DRAFT_EXPIRY = 7 * 24 * 60 * 60 * 1e3;
+const currentDraft = d$1(null);
+function getDraftKey() {
+  return `${DRAFT_KEY_PREFIX}main`;
+}
+function saveDraft(content, replyTo = null) {
+  if (!content.trim() && !replyTo) {
+    clearDraft();
+    return;
+  }
+  const draft = {
+    content,
+    replyTo,
+    timestamp: Date.now()
+  };
+  const key = getDraftKey();
+  localStorage.setItem(key, JSON.stringify(draft));
+  currentDraft.value = draft;
+}
+function loadDraft() {
+  try {
+    const key = getDraftKey();
+    const saved = localStorage.getItem(key);
+    if (!saved) return null;
+    const draft = JSON.parse(saved);
+    if (Date.now() - draft.timestamp > DRAFT_EXPIRY) {
+      clearDraft();
+      return null;
+    }
+    currentDraft.value = draft;
+    return draft;
+  } catch {
+    return null;
+  }
+}
+function clearDraft() {
+  const key = getDraftKey();
+  localStorage.removeItem(key);
+  currentDraft.value = null;
+}async function fetchGalleryMedia(offset = 0, limit = 50, uid) {
+  const res = await fetch(apiUrl("/gallery", { offset, limit, uid }));
+  const data = await res.json();
+  if (data.status) {
+    return {
+      items: data.items || [],
+      hasMore: data.hasMore || false,
+      total: data.total || 0
+    };
+  }
+  return { items: [], hasMore: false, total: 0 };
+}
+async function fetchGalleryTimelineImages(direction, messageId, mediaIndex, limit = 50) {
+  const cursor = direction === "before" ? { before_id: messageId, before_index: mediaIndex } : { after_id: messageId, after_index: mediaIndex };
+  const res = await fetch(apiUrl("/gallery/timeline", { ...cursor, limit }));
+  if (!res.ok) throw new Error(`Gallery timeline request failed (${res.status})`);
+  const data = await res.json();
+  if (!data.status) return { items: [], hasMore: false };
+  return {
+    items: (data.items || []).map((item) => ({
+      src: String(item.url),
+      messageId: Number(item.message_id),
+      mediaIndex: Number(item.media_index),
+      nickname: String(item.nickname || ""),
+      avatar: String(item.avatar || ""),
+      timestamp: Number(item.timestamp)
+    })),
+    hasMore: !!data.hasMore
+  };
+}
+const UPLOAD_MAX_IMAGE_SIZE = 50 * 1024 * 1024;
+const UPLOAD_MAX_FILE_SIZE = 200 * 1024 * 1024;
+const UPLOAD_TIMEOUT_MS = 6e4;
+const UPLOAD_MAX_RETRIES = 1;
+const UPLOAD_MAX_BATCH_IMAGES = 20;
+const IMAGE_EXTENSIONS = /* @__PURE__ */ new Set([
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+  ".gif",
+  ".avif",
+  ".bmp",
+  ".tiff",
+  ".tif",
+  ".svg",
+  ".heic",
+  ".heif",
+  ".ico",
+  ".jxl",
+  ".apng"
+]);
+function getFileExtension(filename) {
+  const dotIndex = filename.lastIndexOf(".");
+  return dotIndex >= 0 ? filename.slice(dotIndex).toLowerCase() : "";
+}
+function isImageFile(file) {
+  return file.type.startsWith("image/") || IMAGE_EXTENSIONS.has(getFileExtension(file.name));
+}
+function stringValue(value) {
+  return typeof value === "string" && value.trim() ? value.trim() : void 0;
+}
+function numberValue(value) {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : void 0;
+}
+function firstString(...values) {
+  for (const value of values) {
+    const str = stringValue(value);
+    if (!str) continue;
+    const url = str.match(/https?:\/\/[^\s"'()[\]]+/)?.[0] ?? str;
+    return url;
+  }
+  return void 0;
+}
+function normalizeUploadResponse(data, isImage) {
+  const nested = data?.data ?? {};
+  const links = nested?.links ?? data?.links ?? {};
+  const rawUrl = firstString(
+    data?.url,
+    isImage ? data?.imageUrl : data?.fileUrl,
+    isImage ? data?.image_url : data?.videoUrl,
+    nested?.url,
+    nested?.path,
+    nested?.pathname,
+    links?.url,
+    links?.thumbnail_url,
+    links?.imageUrl,
+    links?.image_url,
+    links?.html,
+    links?.markdown,
+    links?.bbcode,
+    data?.fileUrl,
+    data?.imageUrl,
+    data?.videoUrl
+  );
+  const url = rawUrl ? absoluteUploadUrl(rawUrl) : void 0;
+  const width = numberValue(data?.width ?? nested?.width);
+  const height = numberValue(data?.height ?? nested?.height);
+  const status = data?.status !== false && Boolean(url);
+  return {
+    ...data,
+    status,
+    ...url ? { url } : {},
+    ...width != null ? { width } : {},
+    ...height != null ? { height } : {}
+  };
+}
+function uploadError(message) {
+  return { status: false, error: message };
+}
+function validateUploadFile(file, isImage) {
+  const maxSize = isImage ? UPLOAD_MAX_IMAGE_SIZE : UPLOAD_MAX_FILE_SIZE;
+  if (file.size <= maxSize) return null;
+  const maxMB = Math.round(maxSize / (1024 * 1024));
+  return uploadError(`文件过大 (${(file.size / (1024 * 1024)).toFixed(1)}MB)，最大支持 ${maxMB}MB`);
+}
+async function parseUploadResponse(res) {
+  try {
+    return await res.json();
+  } catch {
+    if (!res.ok) {
+      return { status: false, error: `服务器错误 (HTTP ${res.status})` };
+    }
+    return { status: false, error: "服务器返回了无法解析的响应" };
+  }
+}
+function batchItems(data) {
+  const nested = data?.data ?? {};
+  const candidates = [
+    Array.isArray(data) ? data : void 0,
+    data?.items,
+    data?.images,
+    data?.files,
+    data?.urls,
+    data?.success,
+    data?.successful,
+    data?.list,
+    nested?.items,
+    nested?.images,
+    nested?.files,
+    nested?.urls,
+    nested?.success,
+    nested?.successful,
+    nested?.list,
+    Array.isArray(nested) ? nested : void 0
+  ];
+  for (const candidate of candidates) {
+    if (!Array.isArray(candidate)) continue;
+    return candidate.map((item) => typeof item === "string" ? { url: item } : item);
+  }
+  return [];
+}
+async function uploadFile(file) {
+  const isImage = isImageFile(file);
+  const validationError = validateUploadFile(file, isImage);
+  if (validationError) return validationError;
+  const fieldName = isImage ? "image" : "file";
+  const endpoint = isImage ? uploadApiUrl() : fileUploadApiUrl();
+  let lastError = "上传失败";
+  for (let attempt = 0; attempt <= UPLOAD_MAX_RETRIES; attempt++) {
+    if (attempt > 0) {
+      await new Promise((r) => setTimeout(r, 2e3));
+    }
+    try {
+      const formData = new FormData();
+      formData.append(fieldName, file);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: isImage ? getUploadAuthHeaders() : void 0,
+        credentials: "omit",
+        body: formData,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      let data = await parseUploadResponse(res);
+      if (!res.ok) {
+        lastError = data?.message || data?.error || `上传失败 (HTTP ${res.status})`;
+        if (res.status >= 500) continue;
+        return { status: false, error: lastError };
+      }
+      data = normalizeUploadResponse(data, isImage);
+      if (!data.status) {
+        return { status: false, error: data.message || data.error || "上传处理失败" };
+      }
+      return data;
+    } catch (e) {
+      if (e.name === "AbortError") {
+        lastError = "上传超时，请检查网络后重试";
+        continue;
+      }
+      lastError = "网络错误，请检查连接后重试";
+      continue;
+    }
+  }
+  return { status: false, error: lastError };
+}
+async function uploadImages(files) {
+  if (files.length === 0) return [];
+  if (files.length === 1) {
+    return [await uploadFile(files[0])];
+  }
+  if (files.length > UPLOAD_MAX_BATCH_IMAGES) {
+    return [uploadError(`一次最多上传 ${UPLOAD_MAX_BATCH_IMAGES} 张图片`)];
+  }
+  for (const file of files) {
+    if (!isImageFile(file)) return [uploadError("批量上传仅支持图片")];
+    const validationError = validateUploadFile(file, true);
+    if (validationError) return [validationError];
+  }
+  const formData = new FormData();
+  for (const file of files) {
+    formData.append("images", file);
+  }
+  try {
+    const res = await fetch(uploadApiUrl("/batch"), {
+      method: "POST",
+      headers: getUploadAuthHeaders(),
+      credentials: "omit",
+      body: formData,
+      signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS)
+    });
+    const data = await parseUploadResponse(res);
+    if (!res.ok || data?.status === false) {
+      return [uploadError(data?.message || data?.error || `上传失败 (HTTP ${res.status})`)];
+    }
+    const items = batchItems(data);
+    if (items.length === 0) {
+      const normalized = normalizeUploadResponse(data, true);
+      return normalized.status ? [normalized] : [uploadError(data?.message || data?.error || "上传处理失败")];
+    }
+    return items.map((item) => {
+      const normalized = normalizeUploadResponse(item, true);
+      return normalized.status ? normalized : uploadError(item?.message || item?.error || "上传处理失败");
+    });
+  } catch (e) {
+    if (e.name === "TimeoutError" || e.name === "AbortError") {
+      return [uploadError("上传超时，请检查网络后重试")];
+    }
+    return [uploadError("网络错误，请检查连接后重试")];
+  }
+}const CODE_BLOCK_PLACEHOLDER_PREFIX = "\0CODE_BLOCK_";
+const mentionRegex = /(^|\s|\[\/[^\]]+\])@([\p{L}\p{N}_']{1,30})/gu;
+async function transformMentions(text, lookupUsersByName) {
+  const codeBlocks = [];
+  let processedText = text.replace(/\[code\]([\s\S]*?)\[\/code\]/gi, (match) => {
+    codeBlocks.push(match);
+    return `${CODE_BLOCK_PLACEHOLDER_PREFIX}${codeBlocks.length - 1}\0`;
+  });
+  const matches = [...processedText.matchAll(mentionRegex)];
+  if (matches.length === 0) {
+    return restoreCodeBlocks(processedText, codeBlocks);
+  }
+  const usernamesToLookup = [...new Set(matches.map((match) => match[2]))].filter((u) => u !== "Bangumi娘");
+  if (usernamesToLookup.length === 0) {
+    return restoreCodeBlocks(processedText, codeBlocks);
+  }
+  const userDataMap = await lookupUsersByName(usernamesToLookup);
+  const replacementMap = /* @__PURE__ */ new Map();
+  for (const username in userDataMap) {
+    const data = userDataMap[username];
+    if (data?.id && data?.nickname) {
+      replacementMap.set(username, `[user=${data.id}]${data.nickname}[/user]`);
+    }
+  }
+  processedText = processedText.replace(
+    mentionRegex,
+    (match, prefix, username) => replacementMap.has(username) ? `${prefix}${replacementMap.get(username)}` : match
+  );
+  return restoreCodeBlocks(processedText, codeBlocks);
+}
+function restoreCodeBlocks(text, codeBlocks) {
+  let restoredText = text;
+  codeBlocks.forEach((block, i) => {
+    restoredText = restoredText.replace(`${CODE_BLOCK_PLACEHOLDER_PREFIX}${i}\0`, block);
+  });
+  return restoredText;
 }let presenceSubscribed = /* @__PURE__ */ new Set();
 let syncPresenceTimer = null;
 function collectUidsForPresence() {
@@ -2308,6 +2651,93 @@ function resumeWebSocketAfterVisibilityChange() {
     }
     checkMissedMessages();
   }, 100);
+}function withOptionalImageMeta(imageMeta) {
+  return Object.keys(imageMeta).length > 0 ? imageMeta : void 0;
+}
+async function appendUploadedVoice(content, voiceDraft) {
+  if (!voiceDraft) return content;
+  const result = await uploadFile(voiceDraft.file);
+  if (!result.status || !result.url) {
+    throw new Error(result.error || "语音上传失败");
+  }
+  const voiceBBCode = `[audio]${result.url}[/audio]`;
+  return content ? `${content}
+${voiceBBCode}` : voiceBBCode;
+}
+async function submitEdit(content, imageMeta, clearInput) {
+  if (!editingMessage.value) return;
+  let finalContent = content;
+  if (editingMessage.value.hiddenQuote) {
+    finalContent = `${editingMessage.value.hiddenQuote}
+${content}`;
+  }
+  finalContent = await transformMentions(finalContent, lookupUsersByName);
+  const result = await editMessage(Number(editingMessage.value.id), finalContent);
+  if (!result.status) {
+    alert(result.error || "编辑失败");
+  } else {
+    clearInput();
+    const meta = withOptionalImageMeta(imageMeta);
+    if (meta) {
+      updateMessage(Number(editingMessage.value.id), { image_meta: meta });
+    }
+  }
+  cancelReplyOrEdit();
+}
+async function submitNewMessage(content, imageMeta, voiceDraft, clearInput, clearMediaPreview, clearVoiceDraft) {
+  const reply = replyingTo.value;
+  const contentWithVoice = voiceDraft ? await appendUploadedVoice(content, voiceDraft) : content;
+  const quotedContent = reply ? `[quote=${reply.id}][/quote]${contentWithVoice}` : contentWithVoice;
+  const transformedContent = await transformMentions(quotedContent, lookupUsersByName);
+  const meta = withOptionalImageMeta(imageMeta);
+  const user = userInfo.value;
+  const { tempId, stableKey } = addOptimisticMessage(
+    transformedContent,
+    { id: user.id, nickname: user.nickname, avatar: user.avatar },
+    reply ? Number(reply.id) : void 0,
+    reply ? { uid: Number(reply.uid), nickname: reply.user, avatar: reply.avatar, content: reply.text } : void 0,
+    meta
+  );
+  clearInput(true);
+  clearMediaPreview();
+  clearVoiceDraft?.();
+  clearDraft();
+  cancelReplyOrEdit();
+  await dispatch(tempId, stableKey, transformedContent);
+}
+async function dispatch(tempId, stableKey, content) {
+  sendPendingMessage(stableKey, content);
+  const outcome = await postChatMessage(content);
+  if (outcome === "rejected") {
+    markMessageFailed(tempId);
+  }
+}
+async function retryFailedMessage(tempId) {
+  const revived = retryMessage(tempId);
+  if (!revived) return;
+  const existing = await confirmSentMessage(revived.content, 2);
+  if (existing) {
+    addMessage(existing, revived.stableKey);
+    return;
+  }
+  await dispatch(tempId, revived.stableKey, revived.content);
+}
+async function submitComposerMessage({
+  content,
+  imageMeta,
+  voiceDraft,
+  clearInput,
+  clearMediaPreview,
+  clearVoiceDraft
+}) {
+  const trimmedContent = content.trim();
+  if (editingMessage.value) {
+    if (!trimmedContent) return;
+    await submitEdit(trimmedContent, imageMeta, clearInput);
+    return;
+  }
+  if (!trimmedContent && !voiceDraft) return;
+  await submitNewMessage(trimmedContent, imageMeta, voiceDraft, clearInput, clearMediaPreview, clearVoiceDraft);
 }const musumeSmileyIds = [
   ...Array.from({ length: 96 }, (_, index) => index + 1),
   ...Array.from({ length: 20 }, (_, index) => index + 99)
@@ -3366,17 +3796,8 @@ const MessageItem = memo(function MessageItem2({ message, isSelf, isGrouped, isG
     const textarea = document.querySelector("#xh textarea");
     if (textarea) textarea.focus();
   }, [messageId, messageText, message.uid, message.nickname, message.avatar]);
-  const handleRetry = q(async () => {
-    const result = retryMessage(messageId);
-    if (result) {
-      sendPendingMessage(result.stableKey, result.content);
-      const sent = await sendMessage(result.content);
-      if (sent.status) {
-        void confirmSentMessage(result.content).then((message2) => {
-          if (message2) addMessage(message2, result.stableKey);
-        });
-      }
-    }
+  const handleRetry = q(() => {
+    void retryFailedMessage(messageId);
   }, [messageId]);
   const handleBubbleClick = q((e) => {
     if (message.state === "failed") {
@@ -4156,46 +4577,6 @@ function ChatBody() {
       );
     }))
   );
-}const DRAFT_KEY_PREFIX = "dollars_draft_";
-const DRAFT_EXPIRY = 7 * 24 * 60 * 60 * 1e3;
-const currentDraft = d$1(null);
-function getDraftKey() {
-  return `${DRAFT_KEY_PREFIX}main`;
-}
-function saveDraft(content, replyTo = null) {
-  if (!content.trim() && !replyTo) {
-    clearDraft();
-    return;
-  }
-  const draft = {
-    content,
-    replyTo,
-    timestamp: Date.now()
-  };
-  const key = getDraftKey();
-  localStorage.setItem(key, JSON.stringify(draft));
-  currentDraft.value = draft;
-}
-function loadDraft() {
-  try {
-    const key = getDraftKey();
-    const saved = localStorage.getItem(key);
-    if (!saved) return null;
-    const draft = JSON.parse(saved);
-    if (Date.now() - draft.timestamp > DRAFT_EXPIRY) {
-      clearDraft();
-      return null;
-    }
-    currentDraft.value = draft;
-    return draft;
-  } catch {
-    return null;
-  }
-}
-function clearDraft() {
-  const key = getDraftKey();
-  localStorage.removeItem(key);
-  currentDraft.value = null;
 }const STRINGS = {
   // 通用
   loading: "加载中...",
@@ -4268,249 +4649,6 @@ function clearDraft() {
     }
   }, [users.length]);
   return _$3("div", { id: "dollars-typing-indicator", class: isVisible.value ? "visible" : "" }, lastText.current || " ");
-}async function fetchGalleryMedia(offset = 0, limit = 50, uid) {
-  const res = await fetch(apiUrl("/gallery", { offset, limit, uid }));
-  const data = await res.json();
-  if (data.status) {
-    return {
-      items: data.items || [],
-      hasMore: data.hasMore || false,
-      total: data.total || 0
-    };
-  }
-  return { items: [], hasMore: false, total: 0 };
-}
-async function fetchGalleryTimelineImages(direction, messageId, mediaIndex, limit = 50) {
-  const cursor = direction === "before" ? { before_id: messageId, before_index: mediaIndex } : { after_id: messageId, after_index: mediaIndex };
-  const res = await fetch(apiUrl("/gallery/timeline", { ...cursor, limit }));
-  if (!res.ok) throw new Error(`Gallery timeline request failed (${res.status})`);
-  const data = await res.json();
-  if (!data.status) return { items: [], hasMore: false };
-  return {
-    items: (data.items || []).map((item) => ({
-      src: String(item.url),
-      messageId: Number(item.message_id),
-      mediaIndex: Number(item.media_index),
-      nickname: String(item.nickname || ""),
-      avatar: String(item.avatar || ""),
-      timestamp: Number(item.timestamp)
-    })),
-    hasMore: !!data.hasMore
-  };
-}
-const UPLOAD_MAX_IMAGE_SIZE = 50 * 1024 * 1024;
-const UPLOAD_MAX_FILE_SIZE = 200 * 1024 * 1024;
-const UPLOAD_TIMEOUT_MS = 6e4;
-const UPLOAD_MAX_RETRIES = 1;
-const UPLOAD_MAX_BATCH_IMAGES = 20;
-const IMAGE_EXTENSIONS = /* @__PURE__ */ new Set([
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".webp",
-  ".gif",
-  ".avif",
-  ".bmp",
-  ".tiff",
-  ".tif",
-  ".svg",
-  ".heic",
-  ".heif",
-  ".ico",
-  ".jxl",
-  ".apng"
-]);
-function getFileExtension(filename) {
-  const dotIndex = filename.lastIndexOf(".");
-  return dotIndex >= 0 ? filename.slice(dotIndex).toLowerCase() : "";
-}
-function isImageFile(file) {
-  return file.type.startsWith("image/") || IMAGE_EXTENSIONS.has(getFileExtension(file.name));
-}
-function stringValue(value) {
-  return typeof value === "string" && value.trim() ? value.trim() : void 0;
-}
-function numberValue(value) {
-  const parsed = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(parsed) ? parsed : void 0;
-}
-function firstString(...values) {
-  for (const value of values) {
-    const str = stringValue(value);
-    if (!str) continue;
-    const url = str.match(/https?:\/\/[^\s"'()[\]]+/)?.[0] ?? str;
-    return url;
-  }
-  return void 0;
-}
-function normalizeUploadResponse(data, isImage) {
-  const nested = data?.data ?? {};
-  const links = nested?.links ?? data?.links ?? {};
-  const rawUrl = firstString(
-    data?.url,
-    isImage ? data?.imageUrl : data?.fileUrl,
-    isImage ? data?.image_url : data?.videoUrl,
-    nested?.url,
-    nested?.path,
-    nested?.pathname,
-    links?.url,
-    links?.thumbnail_url,
-    links?.imageUrl,
-    links?.image_url,
-    links?.html,
-    links?.markdown,
-    links?.bbcode,
-    data?.fileUrl,
-    data?.imageUrl,
-    data?.videoUrl
-  );
-  const url = rawUrl ? absoluteUploadUrl(rawUrl) : void 0;
-  const width = numberValue(data?.width ?? nested?.width);
-  const height = numberValue(data?.height ?? nested?.height);
-  const status = data?.status !== false && Boolean(url);
-  return {
-    ...data,
-    status,
-    ...url ? { url } : {},
-    ...width != null ? { width } : {},
-    ...height != null ? { height } : {}
-  };
-}
-function uploadError(message) {
-  return { status: false, error: message };
-}
-function validateUploadFile(file, isImage) {
-  const maxSize = isImage ? UPLOAD_MAX_IMAGE_SIZE : UPLOAD_MAX_FILE_SIZE;
-  if (file.size <= maxSize) return null;
-  const maxMB = Math.round(maxSize / (1024 * 1024));
-  return uploadError(`文件过大 (${(file.size / (1024 * 1024)).toFixed(1)}MB)，最大支持 ${maxMB}MB`);
-}
-async function parseUploadResponse(res) {
-  try {
-    return await res.json();
-  } catch {
-    if (!res.ok) {
-      return { status: false, error: `服务器错误 (HTTP ${res.status})` };
-    }
-    return { status: false, error: "服务器返回了无法解析的响应" };
-  }
-}
-function batchItems(data) {
-  const nested = data?.data ?? {};
-  const candidates = [
-    Array.isArray(data) ? data : void 0,
-    data?.items,
-    data?.images,
-    data?.files,
-    data?.urls,
-    data?.success,
-    data?.successful,
-    data?.list,
-    nested?.items,
-    nested?.images,
-    nested?.files,
-    nested?.urls,
-    nested?.success,
-    nested?.successful,
-    nested?.list,
-    Array.isArray(nested) ? nested : void 0
-  ];
-  for (const candidate of candidates) {
-    if (!Array.isArray(candidate)) continue;
-    return candidate.map((item) => typeof item === "string" ? { url: item } : item);
-  }
-  return [];
-}
-async function uploadFile(file) {
-  const isImage = isImageFile(file);
-  const validationError = validateUploadFile(file, isImage);
-  if (validationError) return validationError;
-  const fieldName = isImage ? "image" : "file";
-  const endpoint = isImage ? uploadApiUrl() : fileUploadApiUrl();
-  let lastError = "上传失败";
-  for (let attempt = 0; attempt <= UPLOAD_MAX_RETRIES; attempt++) {
-    if (attempt > 0) {
-      await new Promise((r) => setTimeout(r, 2e3));
-    }
-    try {
-      const formData = new FormData();
-      formData.append(fieldName, file);
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: isImage ? getUploadAuthHeaders() : void 0,
-        credentials: "omit",
-        body: formData,
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      let data = await parseUploadResponse(res);
-      if (!res.ok) {
-        lastError = data?.message || data?.error || `上传失败 (HTTP ${res.status})`;
-        if (res.status >= 500) continue;
-        return { status: false, error: lastError };
-      }
-      data = normalizeUploadResponse(data, isImage);
-      if (!data.status) {
-        return { status: false, error: data.message || data.error || "上传处理失败" };
-      }
-      return data;
-    } catch (e) {
-      if (e.name === "AbortError") {
-        lastError = "上传超时，请检查网络后重试";
-        continue;
-      }
-      lastError = "网络错误，请检查连接后重试";
-      continue;
-    }
-  }
-  return { status: false, error: lastError };
-}
-async function uploadImages(files) {
-  if (files.length === 0) return [];
-  if (files.length === 1) {
-    return [await uploadFile(files[0])];
-  }
-  if (files.length > UPLOAD_MAX_BATCH_IMAGES) {
-    return [uploadError(`一次最多上传 ${UPLOAD_MAX_BATCH_IMAGES} 张图片`)];
-  }
-  for (const file of files) {
-    if (!isImageFile(file)) return [uploadError("批量上传仅支持图片")];
-    const validationError = validateUploadFile(file, true);
-    if (validationError) return [validationError];
-  }
-  const formData = new FormData();
-  for (const file of files) {
-    formData.append("images", file);
-  }
-  try {
-    const res = await fetch(uploadApiUrl("/batch"), {
-      method: "POST",
-      headers: getUploadAuthHeaders(),
-      credentials: "omit",
-      body: formData,
-      signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS)
-    });
-    const data = await parseUploadResponse(res);
-    if (!res.ok || data?.status === false) {
-      return [uploadError(data?.message || data?.error || `上传失败 (HTTP ${res.status})`)];
-    }
-    const items = batchItems(data);
-    if (items.length === 0) {
-      const normalized = normalizeUploadResponse(data, true);
-      return normalized.status ? [normalized] : [uploadError(data?.message || data?.error || "上传处理失败")];
-    }
-    return items.map((item) => {
-      const normalized = normalizeUploadResponse(item, true);
-      return normalized.status ? normalized : uploadError(item?.message || item?.error || "上传处理失败");
-    });
-  } catch (e) {
-    if (e.name === "TimeoutError" || e.name === "AbortError") {
-      return [uploadError("上传超时，请检查网络后重试")];
-    }
-    return [uploadError("网络错误，请检查连接后重试")];
-  }
 }const FAVORITES_KEY = "dollars_saved_favorites";
 const favorites = d$1([]);
 function initFavorites() {
@@ -5674,121 +5812,6 @@ function needsRichInputNormalization(root, text) {
   return Array.from(root.querySelectorAll("div, p, br")).some(
     (node) => !node.closest(`[${RICH_INPUT_TOKEN_ATTR}]`)
   );
-}const CODE_BLOCK_PLACEHOLDER_PREFIX = "\0CODE_BLOCK_";
-const mentionRegex = /(^|\s|\[\/[^\]]+\])@([\p{L}\p{N}_']{1,30})/gu;
-async function transformMentions(text, lookupUsersByName) {
-  const codeBlocks = [];
-  let processedText = text.replace(/\[code\]([\s\S]*?)\[\/code\]/gi, (match) => {
-    codeBlocks.push(match);
-    return `${CODE_BLOCK_PLACEHOLDER_PREFIX}${codeBlocks.length - 1}\0`;
-  });
-  const matches = [...processedText.matchAll(mentionRegex)];
-  if (matches.length === 0) {
-    return restoreCodeBlocks(processedText, codeBlocks);
-  }
-  const usernamesToLookup = [...new Set(matches.map((match) => match[2]))].filter((u) => u !== "Bangumi娘");
-  if (usernamesToLookup.length === 0) {
-    return restoreCodeBlocks(processedText, codeBlocks);
-  }
-  const userDataMap = await lookupUsersByName(usernamesToLookup);
-  const replacementMap = /* @__PURE__ */ new Map();
-  for (const username in userDataMap) {
-    const data = userDataMap[username];
-    if (data?.id && data?.nickname) {
-      replacementMap.set(username, `[user=${data.id}]${data.nickname}[/user]`);
-    }
-  }
-  processedText = processedText.replace(
-    mentionRegex,
-    (match, prefix, username) => replacementMap.has(username) ? `${prefix}${replacementMap.get(username)}` : match
-  );
-  return restoreCodeBlocks(processedText, codeBlocks);
-}
-function restoreCodeBlocks(text, codeBlocks) {
-  let restoredText = text;
-  codeBlocks.forEach((block, i) => {
-    restoredText = restoredText.replace(`${CODE_BLOCK_PLACEHOLDER_PREFIX}${i}\0`, block);
-  });
-  return restoredText;
-}function withOptionalImageMeta(imageMeta) {
-  return Object.keys(imageMeta).length > 0 ? imageMeta : void 0;
-}
-async function appendUploadedVoice(content, voiceDraft) {
-  if (!voiceDraft) return content;
-  const result = await uploadFile(voiceDraft.file);
-  if (!result.status || !result.url) {
-    throw new Error(result.error || "语音上传失败");
-  }
-  const voiceBBCode = `[audio]${result.url}[/audio]`;
-  return content ? `${content}
-${voiceBBCode}` : voiceBBCode;
-}
-async function submitEdit(content, imageMeta, clearInput) {
-  if (!editingMessage.value) return;
-  let finalContent = content;
-  if (editingMessage.value.hiddenQuote) {
-    finalContent = `${editingMessage.value.hiddenQuote}
-${content}`;
-  }
-  finalContent = await transformMentions(finalContent, lookupUsersByName);
-  const result = await editMessage(Number(editingMessage.value.id), finalContent);
-  if (!result.status) {
-    alert(result.error || "编辑失败");
-  } else {
-    clearInput();
-    const meta = withOptionalImageMeta(imageMeta);
-    if (meta) {
-      updateMessage(Number(editingMessage.value.id), { image_meta: meta });
-    }
-  }
-  cancelReplyOrEdit();
-}
-async function submitNewMessage(content, imageMeta, voiceDraft, clearInput, clearMediaPreview, clearVoiceDraft) {
-  const reply = replyingTo.value;
-  const contentWithVoice = voiceDraft ? await appendUploadedVoice(content, voiceDraft) : content;
-  const quotedContent = reply ? `[quote=${reply.id}][/quote]${contentWithVoice}` : contentWithVoice;
-  const transformedContent = await transformMentions(quotedContent, lookupUsersByName);
-  const meta = withOptionalImageMeta(imageMeta);
-  const user = userInfo.value;
-  const { tempId, stableKey } = addOptimisticMessage(
-    transformedContent,
-    { id: user.id, nickname: user.nickname, avatar: user.avatar },
-    reply ? Number(reply.id) : void 0,
-    reply ? { uid: Number(reply.uid), nickname: reply.user, avatar: reply.avatar, content: reply.text } : void 0,
-    meta
-  );
-  sendPendingMessage(stableKey, transformedContent);
-  clearInput(true);
-  clearMediaPreview();
-  clearVoiceDraft?.();
-  clearDraft();
-  cancelReplyOrEdit();
-  const result = await sendMessage(transformedContent);
-  if (!result.status) {
-    removeOptimisticMessage(tempId);
-    alert(result.error || "发送失败");
-  } else {
-    void confirmSentMessage(transformedContent).then((message) => {
-      if (message) addMessage(message, stableKey);
-    });
-  }
-}
-async function submitComposerMessage({
-  content,
-  imageMeta,
-  voiceDraft,
-  clearInput,
-  clearMediaPreview,
-  clearVoiceDraft
-}) {
-  const trimmedContent = content.trim();
-  if (editingMessage.value) {
-    if (!trimmedContent) return;
-    await submitEdit(trimmedContent, imageMeta, clearInput);
-    return;
-  }
-  if (!trimmedContent && !voiceDraft) return;
-  await submitNewMessage(trimmedContent, imageMeta, voiceDraft, clearInput, clearMediaPreview, clearVoiceDraft);
 }function useMessageComposerSend() {
   const [isSending, setIsSending] = d$2(false);
   const isSendingRef = A(false);

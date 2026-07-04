@@ -1,12 +1,11 @@
 import { useMemo, useRef, useEffect, useCallback, useState } from 'preact/hooks';
 import { memo } from '@/utils/memo';
 import { isMobile } from '@/utils/format';
-import { addMessage, getRawMessage, retryMessage } from '@/stores/messageStore';
+import { getRawMessage } from '@/stores/messageStore';
 import { newMessageIds } from '@/stores/chatState';
 import { setReplyTo } from '@/stores/composerState';
 import { settings } from '@/stores/user';
-import { sendPendingMessage } from '@/services/websocket/client';
-import { confirmSentMessage, sendMessage as apiSendMessage } from '@/utils/api/messages';
+import { retryFailedMessage } from '@/services/composer/sendMessage';
 import type { Message } from '@/types';
 import { stripQuotes } from '@/utils/bbcode';
 import { escapeHTML, formatDate, getAvatarUrl } from '@/utils/format';
@@ -168,18 +167,9 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
         if (textarea) textarea.focus();
     }, [messageId, messageText, message.uid, message.nickname, message.avatar]);
 
-    // 重试发送失败的消息
-    const handleRetry = useCallback(async () => {
-        const result = retryMessage(messageId);
-        if (result) {
-            sendPendingMessage(result.stableKey, result.content);
-            const sent = await apiSendMessage(result.content);
-            if (sent.status) {
-                void confirmSentMessage(result.content).then((message) => {
-                    if (message) addMessage(message, result.stableKey);
-                });
-            }
-        }
+    // 重试发送失败的消息（重发前先确认幂等，避免重复）
+    const handleRetry = useCallback(() => {
+        void retryFailedMessage(messageId);
     }, [messageId]);
 
     // 气泡点击处理
