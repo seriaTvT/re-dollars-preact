@@ -4,7 +4,7 @@ import { isMaximized, toggleMaximize, toggleSearch, isSearchActive, isNarrowLayo
 import { activeExtensionId, extensionConversations } from '@/stores/extensionConversations';
 import { openSettingsPanel } from '@/utils/settingsPanel';
 import type { Conversation } from '@/types';
-import { activePmId, pmComposeReceiver, pmConversations, pmDetails, pmUnreadByConversation } from '@/stores/bangumiPm';
+import { activePmId, activePmKey, pmComposeReceiver, pmConversations, pmDetails, pmUnreadByConversation } from '@/stores/bangumiPm';
 
 export function ChatHeader() {
     const handleClose = () => {
@@ -31,25 +31,28 @@ export function ChatHeader() {
         setMobileChatView(!mobileChatViewActive.value);
     };
 
+    const activeId = activeConversationId.value;
+    const isNarrow = isNarrowLayout.value;
     // 获取当前会话信息
-    const activeConv = conversations.value.find((c: Conversation) => c.id === activeConversationId.value);
+    const activeConv = conversations.value.find((c: Conversation) => c.id === activeId);
     const activeExtension = activeExtensionId.value
         ? extensionConversations.value.find(e => e.id === activeExtensionId.value)
         : null;
+    const pmKey = activePmKey();
     const pmId = activePmId();
-    const activePm = pmId ? pmDetails.value[pmId] : null;
+    const activePm = pmKey ? pmDetails.value[pmKey] : null;
     const activePmConversation = pmId ? pmConversations.value.find(item => item.id === pmId) : null;
-    const isPmActive = activeConversationId.value.startsWith('pm:');
+    const isPmActive = activeId.startsWith('pm:');
 
-    const isShowingChatView = isNarrowLayout.value && mobileChatViewActive.value;
+    const isShowingChatView = isNarrow && mobileChatViewActive.value;
 
     // 当前会话以外的未读数：窄视图下返回按钮上加角标，提示列表里还有新消息。
     // 短信未读取自 notify（始终新鲜），频道未读取自会话列表，均排除当前会话。
     const otherUnread = conversations.value.reduce(
-        (sum, c) => (c.id === activeConversationId.value ? sum : sum + (c.unreadCount || 0)),
+        (sum, c) => (c.id === activeId ? sum : sum + (c.unreadCount || 0)),
         0
     ) + Object.entries(pmUnreadByConversation.value).reduce(
-        (sum, [id, count]) => (`pm:${id}` === activeConversationId.value ? sum : sum + (count || 0)),
+        (sum, [id, count]) => (`pm:${id}` === activeId ? sum : sum + (count || 0)),
         0
     );
     const otherUnreadLabel = otherUnread > 99 ? '99+' : String(otherUnread);
@@ -60,11 +63,11 @@ export function ChatHeader() {
     let showOnlineStatus = true;
     let statusLabel = '在线';
 
-    if (isNarrowLayout.value && !isShowingChatView) {
+    if (isNarrow && !isShowingChatView) {
         mainTitle = '会话列表';
         showOnlineStatus = false;
     } else if (isPmActive) {
-        mainTitle = activeConversationId.value === 'pm:new'
+        mainTitle = activeId === 'pm:new'
             ? (pmComposeReceiver.value ? `发短信给 ${pmComposeReceiver.value}` : '新建 Bangumi 短信')
             : activePm?.nickname || activePmConversation?.nickname || 'Bangumi 短信';
         avatarUrl = activePm?.avatar || activePmConversation?.avatar || '';
@@ -85,7 +88,7 @@ export function ChatHeader() {
     }
 
     // 用户资料页面模式（仅窄视图/全屏时接管 header）
-    if (isUserProfilePanelOpen.value && isNarrowLayout.value) {
+    if (isUserProfilePanelOpen.value && isNarrow) {
         return (
             <div class="chat-header">
                 <div class="chat-header-left-pane">
@@ -130,7 +133,7 @@ export function ChatHeader() {
                     style={{ display: isShowingChatView ? 'none' : 'flex' }}
                 />
                 {/* Sidebar toggle - wide mode only; reuses the back-arrow icon */}
-                {!isNarrowLayout.value && (
+                {!isNarrow && (
                     <button
                         id="dollars-sidebar-toggle-btn"
                         class="header-btn"
@@ -153,7 +156,7 @@ export function ChatHeader() {
             </div>
 
             <div class="title-wrapper">
-                {avatarUrl && (!isNarrowLayout.value || isShowingChatView) && (
+                {avatarUrl && (!isNarrow || isShowingChatView) && (
                     <img
                         class="header-chat-icon"
                         src={avatarUrl}

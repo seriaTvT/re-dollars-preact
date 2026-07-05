@@ -1,5 +1,5 @@
 import { useSignal } from '@preact/signals';
-import { useCallback, useRef, useEffect } from 'preact/hooks';
+import { useRef, useEffect } from 'preact/hooks';
 import { searchQuery } from '@/stores/chatState';
 import { fetchGalleryMedia } from '@/utils/api/media';
 import { lookupUsersByName } from '@/utils/api/users';
@@ -24,10 +24,24 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
     const isLoading = useSignal(false);
     const hasMore = useSignal(true);
     const offset = useRef(0);
-    const initialized = useRef(false);
     const gridRef = useRef<HTMLDivElement>(null);
     const targetUid = useSignal<number | undefined>(undefined);
     const isResolvingUser = useSignal(false);
+
+    async function loadMore() {
+        if (isLoading.value || !hasMore.value || isResolvingUser.value || targetUid.value === -1) return;
+
+        isLoading.value = true;
+        try {
+            const data = await fetchGalleryMedia(offset.current, 50, targetUid.value);
+            items.value = [...items.value, ...data.items];
+            hasMore.value = data.hasMore;
+            offset.current += data.items.length;
+        } catch {
+        } finally {
+            isLoading.value = false;
+        }
+    }
 
     // Filter effect: Parse search query for user:xxx
     useEffect(() => {
@@ -35,28 +49,23 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
             const query = searchQuery.value.trim();
             const userMatch = query.match(/^user:(\S+)$/i);
 
-            if (userMatch && userMatch[1]) {
+            if (userMatch) {
                 const username = userMatch[1];
                 isResolvingUser.value = true;
-                // clear previous items while resolving if query changed substantially
-                // actually better to just wait
 
                 try {
                     const result = await lookupUsersByName([username]);
-                    if (result && result[username]) {
-                        const newUid = result[username].id;
+                    const user = result?.[username];
+                    if (user) {
+                        const newUid = user.id;
                         if (targetUid.value !== newUid) {
                             targetUid.value = newUid;
-                            // Reset and reload
                             items.value = [];
                             offset.current = 0;
                             hasMore.value = true;
                             loadMore();
                         }
                     } else {
-                        // User not found, maybe just treat as valid UID 0 (no results) or ignore?
-                        // For now let's just not filter if user lookup fails, or filter by invalid UID?
-                        // Filter by invalid UID to show empty result is probably safer than showing all
                         if (targetUid.value !== -1) {
                             targetUid.value = -1;
                             items.value = [];
@@ -71,7 +80,6 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
             } else {
                 if (targetUid.value !== undefined) {
                     targetUid.value = undefined;
-                    // Reset to show all
                     items.value = [];
                     offset.current = 0;
                     hasMore.value = true;
@@ -82,40 +90,6 @@ export function GalleryPanel({ onClose }: GalleryPanelProps) {
 
         parseUserFilter();
     }, [searchQuery.value]);
-
-    const loadMore = useCallback(async () => {
-        if (isLoading.value || !hasMore.value || isResolvingUser.value) return;
-        if (targetUid.value === -1) return; // Invalid user filter
-
-        isLoading.value = true;
-        try {
-            const data = await fetchGalleryMedia(offset.current, 50, targetUid.value);
-            items.value = [...items.value, ...data.items];
-            hasMore.value = data.hasMore;
-            offset.current += data.items.length;
-        } catch {
-        } finally {
-            isLoading.value = false;
-        }
-    }, [targetUid.value, isResolvingUser.value]);
-
-    // Initial load - only if not blocked by user resolution
-    useEffect(() => {
-        if (!initialized.current && !isResolvingUser.value) {
-            // If we have a query, the filter effect above will trigger load
-            // If we assume empty query, we might need to trigger manually?
-            // actually strict effect parsing handles it.
-            // But if searchQuery is empty initially, targetUid is undefined.
-            // We need to ensure we load at least once.
-
-            // The dependency on searchQuery.value means the effect above runs on mount.
-            // So we don't need manual initial load if that effect covers it.
-            // However, that effect makes `loadMore` async call which might collide if we call it here too.
-            // best to let the effect driver handle it.
-
-            initialized.current = true;
-        }
-    }, []);
 
     // Check if we need more items to fill the view
     useEffect(() => {

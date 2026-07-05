@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useMemo, useLayoutEffect } from 'preact/hooks';
+import { useRef, useEffect, useMemo, useLayoutEffect } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import {
     unreadWhileScrolled,
@@ -71,21 +71,25 @@ export function useScrollManager(
     const keepBottomUntil = useRef(0);
     const previousInputAreaHeight = useRef(inputAreaHeight.value);
     const wasChatOpen = useRef(false);
+    const doubleFrame = (fn: () => void) => requestAnimationFrame(() => requestAnimationFrame(fn));
+    const messageElements = () =>
+        Array.from(listRef.current!.querySelectorAll<HTMLElement>('.chat-message[data-db-id]'));
+    const elementMessageId = (el?: HTMLElement) => el?.dataset.dbId ? parseInt(el.dataset.dbId, 10) : null;
 
-    const jumpToBottom = useCallback(() => {
+    const jumpToBottom = () => {
         if (!bodyRef.current) return;
 
         bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
         isStickingToBottom.current = true;
         isAtBottom.value = true;
-    }, []);
+    };
 
     /**
      * 自定义平滑滚动函数 - 委托给共享的平滑滚动工具
      * @param targetTop - 目标滚动位置
      * @param duration - 动画时长 (ms)，如果未指定则根据距离动态计算
      */
-    const smoothScrollTo = useCallback((targetTop: number, duration?: number) => {
+    const smoothScrollTo = (targetTop: number, duration?: number) => {
         if (!bodyRef.current) return;
 
         // 取消之前的滚动动画
@@ -95,11 +99,11 @@ export function useScrollManager(
 
         const animId = sharedSmoothScrollTo(bodyRef.current, targetTop, { duration });
         scrollAnimationRef.current = animId;
-    }, []);
+    };
 
 
     // 滚动到底部
-    const scrollToBottom = useCallback((smooth = true) => {
+    const scrollToBottom = (smooth = true) => {
         if (!bodyRef.current) return;
 
         const targetTop = bodyRef.current.scrollHeight;
@@ -116,46 +120,43 @@ export function useScrollManager(
         }
 
         isStickingToBottom.current = true;
-    }, [jumpToBottom, smoothScrollTo]);
+    };
 
-    const keepBottomAfterOpen = useCallback(() => {
+    const keepBottomAfterOpen = () => {
         if (Date.now() > keepBottomUntil.current) return;
         if (!isChatOpen.value || !timelineIsLive.value || hasUnreadMessages.value) return;
         jumpToBottom();
-    }, [jumpToBottom]);
+    };
 
     // 获取视口顶部可见消息的 ID
-    const getTopVisibleMessageId = useCallback((): number | null => {
+    const getTopVisibleMessageId = (): number | null => {
         if (!bodyRef.current || !listRef.current) return null;
         const scrollTop = bodyRef.current.scrollTop;
         const topThreshold = scrollTop + 60;
 
-        const msgs = Array.from(listRef.current.querySelectorAll('.chat-message[data-db-id]')) as HTMLElement[];
-        const topMsg = msgs.find(el => (el.offsetTop + el.offsetHeight) > topThreshold);
-
-        return topMsg?.dataset.dbId ? parseInt(topMsg.dataset.dbId, 10) : null;
-    }, []);
+        return elementMessageId(messageElements().find(el => (el.offsetTop + el.offsetHeight) > topThreshold));
+    };
 
     // 获取视口底部可见消息的 ID
-    const getBottomVisibleMessageId = useCallback((): number | null => {
+    const getBottomVisibleMessageId = (): number | null => {
         if (!bodyRef.current || !listRef.current) return null;
         const scrollTop = bodyRef.current.scrollTop;
         const clientHeight = bodyRef.current.clientHeight;
         const bottomThreshold = scrollTop + clientHeight - 60;
 
-        const msgs = Array.from(listRef.current.querySelectorAll('.chat-message[data-db-id]')) as HTMLElement[];
+        const msgs = messageElements();
         // 从后往前找第一个在视口底部上方的消息
         for (let i = msgs.length - 1; i >= 0; i--) {
             const el = msgs[i];
             if (el.offsetTop < bottomThreshold) {
-                return el.dataset.dbId ? parseInt(el.dataset.dbId, 10) : null;
+                return elementMessageId(el);
             }
         }
         return null;
-    }, []);
+    };
 
     // 更新滚动按钮模式 (Telegram-style: 未读 -> 底部)
-    const updateScrollButtonMode = useCallback(() => {
+    const updateScrollButtonMode = () => {
         if (!bodyRef.current) return;
 
         // 检查是否有未读消息
@@ -182,7 +183,7 @@ export function useScrollManager(
 
         // 默认：跳转到底部
         scrollButtonMode.value = 'to-bottom';
-    }, []);
+    };
 
     // 浮动 UI 逻辑 helpers
     const updateFloatingUI = () => {
@@ -221,7 +222,7 @@ export function useScrollManager(
     };
 
     // 处理滚动事件
-    const handleScroll = useCallback(() => {
+    const handleScroll = () => {
         if (!bodyRef.current) return;
         const { scrollTop, scrollHeight, clientHeight } = bodyRef.current;
 
@@ -243,10 +244,9 @@ export function useScrollManager(
             unreadWhileScrolled.value = 0;
             unreadJumpList.value = [];
             // 移除分隔线
-            const unreadSep = document.querySelector('.unread-separator');
-            if (unreadSep) unreadSep.remove();
-            const browseSep = document.querySelector('.browse-separator');
-            if (browseSep) browseSep.remove();
+            for (const selector of ['.unread-separator', '.browse-separator']) {
+                document.querySelector(selector)?.remove();
+            }
         }
 
         // --- 保存当前浏览位置 ---
@@ -287,7 +287,7 @@ export function useScrollManager(
             isStickingToBottom.current = false;
             onLoadNewerHistory();
         }
-    }, []);
+    };
 
     // 监听手动滚动请求
     useEffect(() => {
@@ -310,9 +310,7 @@ export function useScrollManager(
 
         const timers = [80, 220, 500, 800].map(delay => window.setTimeout(keepBottomAfterOpen, delay));
         let innerRafId = 0;
-        const rafId = requestAnimationFrame(() => {
-            innerRafId = requestAnimationFrame(keepBottomAfterOpen);
-        });
+        const rafId = requestAnimationFrame(() => { innerRafId = requestAnimationFrame(keepBottomAfterOpen); });
 
         return () => {
             cancelAnimationFrame(rafId);
@@ -322,11 +320,7 @@ export function useScrollManager(
                 keepBottomUntil.current = 0;
             }
         };
-    }, [
-        isChatOpen.value,
-        jumpToBottom,
-        keepBottomAfterOpen,
-    ]);
+    }, [isChatOpen.value]);
 
     useEffect(() => {
         if (!isChatOpen.value || !timelineIsLive.value || hasUnreadMessages.value) {
@@ -363,16 +357,8 @@ export function useScrollManager(
         if (!shouldKeepBottom) return;
 
         keepBottomUntil.current = Date.now() + 500;
-        requestAnimationFrame(() => {
-            requestAnimationFrame(keepBottomAfterOpen);
-        });
-    }, [
-        hasUnreadMessages.value,
-        inputAreaHeight.value,
-        isChatOpen.value,
-        keepBottomAfterOpen,
-        timelineIsLive.value,
-    ]);
+        doubleFrame(keepBottomAfterOpen);
+    }, [hasUnreadMessages.value, inputAreaHeight.value, isChatOpen.value, timelineIsLive.value]);
 
     // 新消息到达时滚动
     useLayoutEffect(() => {
@@ -386,7 +372,7 @@ export function useScrollManager(
                 });
             }
         }
-    }, [pendingScrollToBottom.value, scrollToBottom]);
+    }, [pendingScrollToBottom.value]);
 
     // 获取要渲染的消息 ID 列表 (应用 DOM 限制)
     const visibleMessageIds = useMemo(() => {

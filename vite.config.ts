@@ -277,12 +277,21 @@ export default defineConfig({
         assetsInlineLimit: 100000,
         rollupOptions: {
             input: resolve(__dirname, 'src/main.tsx'),
+            treeshake: {
+                propertyReadSideEffects: false,
+                tryCatchDeoptimization: false,
+            },
             output: {
                 format: 'iife',
                 entryFileNames: 'userscript.user.js',
                 banner: userscriptBanner,
                 inlineDynamicImports: true,
                 compact: true,
+                generatedCode: {
+                    arrowFunctions: true,
+                    constBindings: true,
+                    objectShorthand: true,
+                },
             },
         },
     },

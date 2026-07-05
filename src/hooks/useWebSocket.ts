@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import { wsConnected, isChatOpen } from '@/stores/chatState';
 import {
     connectWebSocket,
@@ -31,14 +31,6 @@ export function initWebSocket() {
  * WebSocket hook
  */
 export function useWebSocket() {
-    const connect = useCallback(() => {
-        connectWebSocket();
-    }, []);
-
-    const disconnect = useCallback(() => {
-        disconnectWebSocket();
-    }, []);
-
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.hidden) {
@@ -63,5 +55,5 @@ export function useWebSocket() {
         }
     }, [isChatOpen.value]);
 
-    return { connect, disconnect, send: sendWebSocketMessage, isConnected: wsConnected };
+    return { connect: connectWebSocket, disconnect: disconnectWebSocket, send: sendWebSocketMessage, isConnected: wsConnected };
 }

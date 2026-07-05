@@ -7,7 +7,7 @@ import { MAX_AVATARS_SHOWN } from '@/utils/constants';
 import type { Reaction } from '@/types';
 
 interface MessageReactionsProps {
-    reactions: Reaction[];
+    reactions?: Reaction[];
     messageId: number;
 }
 
@@ -16,8 +16,7 @@ export function MessageReactions({ reactions, messageId }: MessageReactionsProps
 
     // 按 emoji 分组
     const grouped = reactions.reduce((acc, r) => {
-        if (!acc[r.emoji]) acc[r.emoji] = [];
-        acc[r.emoji].push(r);
+        (acc[r.emoji] ||= []).push(r);
         return acc;
     }, {} as Record<string, Reaction[]>);
 
@@ -46,14 +45,12 @@ function ReactionItem({ emoji, users, messageId }: ReactionItemProps) {
 
     // 分离有头像和无头像的用户
     const usersWithAvatar = users.filter(u => u.avatar);
-    const anonymousCount = users.length - usersWithAvatar.length;
 
     // 限制显示的头像数量
     const avatarsToShow = usersWithAvatar.slice(0, MAX_AVATARS_SHOWN);
-    const extraAvatarCount = usersWithAvatar.length - MAX_AVATARS_SHOWN;
 
     // 计算额外人数显示 (超出的头像用户 + 匿名用户)
-    const extraCount = Math.max(0, extraAvatarCount) + anonymousCount;
+    const extraCount = users.length - avatarsToShow.length;
 
     useEffect(() => {
         const el = itemRef.current;

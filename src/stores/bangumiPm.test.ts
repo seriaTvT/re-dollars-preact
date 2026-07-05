@@ -3,20 +3,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
+    createPm: vi.fn(),
     fetchPmInbox: vi.fn(async () => ({ conversations: [] as any[], nextPageUrl: null })),
     fetchPmConversation: vi.fn(async () => ({
         id: '63455',
         nickname: 'Peer',
         username: 'peer',
         avatar: '',
-        messages: [],
-        replyForm: null,
+        messages: [] as any[],
+        previousPageUrl: null as string | null,
+        replyForm: null as any,
     })),
     sendPmReply: vi.fn(),
 }));
 
 vi.mock('@/services/bangumiPm/client', () => ({
-    createPm: vi.fn(),
+    createPm: mocks.createPm,
     fetchPmConversation: mocks.fetchPmConversation,
     fetchPmInbox: mocks.fetchPmInbox,
     sendPmReply: mocks.sendPmReply,
@@ -25,7 +27,21 @@ vi.mock('@/services/bangumiPm/client', () => ({
 import { isChatOpen } from './chatState';
 import { activeConversationId } from './conversations';
 import { chatLayoutReady, isNarrowLayout, mobileChatViewActive } from './ui';
-import { pmConversations, pmDetails, pmNewMessageIds, openPmConversationFromHref, openPmForUser, retryPmReply, startPmPolling, submitPmReply } from './bangumiPm';
+import {
+    loadEarlierPmMessages,
+    loadPmDetail,
+    openPmConversationFromHref,
+    openPmDraftForReceiver,
+    openPmForUser,
+    pmConversations,
+    pmDetails,
+    pmEarlierMessagesError,
+    pmEarlierMessagesLoading,
+    pmNewMessageIds,
+    retryPmReply,
+    startPmPolling,
+    submitPmReply,
+} from './bangumiPm';
 
 describe('Bangumi PM polling', () => {
     beforeEach(() => {
@@ -37,10 +53,13 @@ describe('Bangumi PM polling', () => {
         mobileChatViewActive.value = false;
         pmConversations.value = [];
         pmDetails.value = {};
+        pmEarlierMessagesLoading.value = new Set();
+        pmEarlierMessagesError.value = {};
         pmNewMessageIds.value = new Set();
         mocks.fetchPmInbox.mockResolvedValue({ conversations: [], nextPageUrl: null });
         mocks.fetchPmInbox.mockClear();
         mocks.fetchPmConversation.mockClear();
+        mocks.createPm.mockReset();
         mocks.sendPmReply.mockReset();
     });
 
@@ -146,6 +165,7 @@ describe('Bangumi PM polling', () => {
                 username: 'peer',
                 avatar: '',
                 messages: [],
+                previousPageUrl: null,
                 replyForm: null,
             },
         };
@@ -180,6 +200,246 @@ describe('Bangumi PM polling', () => {
         expect(mocks.fetchPmConversation).toHaveBeenCalledWith('/pm/conversation/88.chii');
     });
 
+    it('opens a draft PM conversation when the user has no existing history', async () => {
+        const result = await openPmForUser({ username: 'new_user', nickname: 'New User', avatar: 'avatar.jpg' });
+        const draftId = 'draft:new_user';
+
+        expect(result).toBe('draft');
+        expect(activeConversationId.value).toBe('pm:draft:new_user');
+        expect(pmDetails.value[draftId]).toMatchObject({
+            id: draftId,
+            nickname: 'New User',
+            username: 'new_user',
+            messages: [],
+            previousPageUrl: null,
+            replyForm: null,
+            isDraft: true,
+            draftTitle: '来自 Re:Dollars 的短信',
+        });
+        expect(mocks.fetchPmInbox).toHaveBeenCalledOnce();
+        expect(mocks.fetchPmConversation).not.toHaveBeenCalled();
+    });
+
+    it('opens an existing PM conversation from a trimmed receiver', async () => {
+        mocks.fetchPmInbox.mockResolvedValueOnce({
+            conversations: [{
+                id: '88',
+                href: '/pm/conversation/88.chii',
+                nickname: 'target_user',
+                avatar: '',
+                dateText: '',
+                lastMessage: 'hello',
+                unreadCount: 0,
+            }],
+            nextPageUrl: null,
+        });
+
+        const result = await openPmDraftForReceiver(' target_user ');
+
+        expect(result).toEqual({ status: 'opened', target: 'conversation' });
+        expect(activeConversationId.value).toBe('pm:88');
+        expect(mocks.fetchPmInbox).toHaveBeenCalledOnce();
+        expect(mocks.fetchPmConversation).toHaveBeenCalledWith('/pm/conversation/88.chii');
+    });
+
+    it('creates a draft PM conversation from a receiver without history', async () => {
+        const result = await openPmDraftForReceiver(' new_user ');
+        const draftId = 'draft:new_user';
+
+        expect(result).toEqual({ status: 'opened', target: 'draft' });
+        expect(activeConversationId.value).toBe('pm:draft:new_user');
+        expect(pmDetails.value[draftId]).toMatchObject({
+            id: draftId,
+            nickname: 'new_user',
+            username: 'new_user',
+            messages: [],
+            previousPageUrl: null,
+            replyForm: null,
+            isDraft: true,
+            draftTitle: '来自 Re:Dollars 的短信',
+        });
+        expect(mocks.fetchPmInbox).toHaveBeenCalledOnce();
+        expect(mocks.fetchPmConversation).not.toHaveBeenCalled();
+    });
+
+    it('rejects an empty PM receiver without changing the active conversation', async () => {
+        const result = await openPmDraftForReceiver('   ');
+
+        expect(result).toEqual({ status: 'rejected', error: '请输入收件人' });
+        expect(activeConversationId.value).toBe('dollars');
+        expect(pmDetails.value).toEqual({});
+        expect(mocks.fetchPmInbox).not.toHaveBeenCalled();
+        expect(mocks.fetchPmConversation).not.toHaveBeenCalled();
+    });
+
+    it('prepends earlier PM messages and advances the history cursor', async () => {
+        pmDetails.value = {
+            '42': {
+                id: '42',
+                nickname: 'Peer',
+                username: 'peer',
+                avatar: 'peer.jpg',
+                messages: [{
+                    id: '20',
+                    isSelf: false,
+                    avatar: '',
+                    userHref: '/user/peer',
+                    bodyHtml: 'newer',
+                    bodyText: 'newer',
+                    presentationText: 'newer',
+                    timestamp: 20,
+                    timestampText: 'newer',
+                }],
+                previousPageUrl: '/pm/conversation/42.chii?page=1&before_msg_id=20',
+                replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+            },
+        };
+        mocks.fetchPmConversation.mockResolvedValueOnce({
+            id: '42',
+            nickname: 'Peer',
+            username: 'peer',
+            avatar: 'peer.jpg',
+            messages: [{
+                id: '10',
+                isSelf: false,
+                avatar: '',
+                userHref: '/user/peer',
+                bodyHtml: 'older',
+                bodyText: 'older',
+                presentationText: 'older',
+                timestamp: 10,
+                timestampText: 'older',
+            }],
+            previousPageUrl: '/pm/conversation/42.chii?page=1&before_msg_id=10',
+            replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+        });
+
+        await loadEarlierPmMessages('42');
+
+        expect(mocks.fetchPmConversation).toHaveBeenCalledWith('/pm/conversation/42.chii?page=1&before_msg_id=20');
+        expect(pmDetails.value['42'].messages.map(message => message.id)).toEqual(['10', '20']);
+        expect(pmDetails.value['42'].previousPageUrl).toBe('/pm/conversation/42.chii?page=1&before_msg_id=10');
+        expect(pmEarlierMessagesLoading.value.has('42')).toBe(false);
+    });
+
+    it('stops PM history loading when the earlier page does not advance', async () => {
+        pmDetails.value = {
+            '42': {
+                id: '42',
+                nickname: 'Peer',
+                username: 'peer',
+                avatar: 'peer.jpg',
+                messages: [{
+                    id: '10',
+                    isSelf: false,
+                    avatar: '',
+                    userHref: '/user/peer',
+                    bodyHtml: 'oldest',
+                    bodyText: 'oldest',
+                    presentationText: 'oldest',
+                    timestamp: 10,
+                    timestampText: 'oldest',
+                }],
+                previousPageUrl: '/pm/conversation/42.chii?page=1&before_msg_id=10',
+                replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+            },
+        };
+        mocks.fetchPmConversation.mockResolvedValueOnce({
+            id: '42',
+            nickname: 'Peer',
+            username: 'peer',
+            avatar: 'peer.jpg',
+            messages: [{
+                id: '10',
+                isSelf: false,
+                avatar: '',
+                userHref: '/user/peer',
+                bodyHtml: 'oldest',
+                bodyText: 'oldest',
+                presentationText: 'oldest',
+                timestamp: 10,
+                timestampText: 'oldest',
+            }],
+            previousPageUrl: '/pm/conversation/42.chii?page=1&before_msg_id=10',
+            replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+        });
+
+        await loadEarlierPmMessages('42');
+        await loadEarlierPmMessages('42');
+
+        expect(mocks.fetchPmConversation).toHaveBeenCalledOnce();
+        expect(pmDetails.value['42'].messages.map(message => message.id)).toEqual(['10']);
+        expect(pmDetails.value['42'].previousPageUrl).toBeNull();
+    });
+
+    it('keeps loaded PM history when refreshing the latest page', async () => {
+        pmDetails.value = {
+            '42': {
+                id: '42',
+                nickname: 'Peer',
+                username: 'peer',
+                avatar: 'peer.jpg',
+                messages: [{
+                    id: '10',
+                    isSelf: false,
+                    avatar: '',
+                    userHref: '/user/peer',
+                    bodyHtml: 'older',
+                    bodyText: 'older',
+                    presentationText: 'older',
+                    timestamp: 10,
+                    timestampText: 'older',
+                }, {
+                    id: '20',
+                    isSelf: false,
+                    avatar: '',
+                    userHref: '/user/peer',
+                    bodyHtml: 'current',
+                    bodyText: 'current',
+                    presentationText: 'current',
+                    timestamp: 20,
+                    timestampText: 'current',
+                }],
+                previousPageUrl: '/pm/conversation/42.chii?page=1&before_msg_id=10',
+                replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+            },
+        };
+        mocks.fetchPmConversation.mockResolvedValueOnce({
+            id: '42',
+            nickname: 'Peer',
+            username: 'peer',
+            avatar: 'peer.jpg',
+            messages: [{
+                id: '20',
+                isSelf: false,
+                avatar: '',
+                userHref: '/user/peer',
+                bodyHtml: 'current',
+                bodyText: 'current',
+                presentationText: 'current',
+                timestamp: 20,
+                timestampText: 'current',
+            }, {
+                id: '21',
+                isSelf: false,
+                avatar: '',
+                userHref: '/user/peer',
+                bodyHtml: 'fresh',
+                bodyText: 'fresh',
+                presentationText: 'fresh',
+                timestamp: 21,
+                timestampText: 'fresh',
+            }],
+            previousPageUrl: '/pm/conversation/42.chii?page=1&before_msg_id=20',
+            replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+        });
+
+        await loadPmDetail('42', undefined, true);
+
+        expect(pmDetails.value['42'].messages.map(message => message.id)).toEqual(['10', '20', '21']);
+        expect(pmDetails.value['42'].previousPageUrl).toBe('/pm/conversation/42.chii?page=1&before_msg_id=10');
+    });
+
     it('adds an optimistic PM reply and reconciles it with the sent detail', async () => {
         pmDetails.value = {
             '42': {
@@ -188,6 +448,7 @@ describe('Bangumi PM polling', () => {
                 username: 'peer',
                 avatar: 'peer.jpg',
                 messages: [],
+                previousPageUrl: null,
                 replyForm: { action: '/pm/conversation/42.chii', fields: {} },
             },
         };
@@ -223,6 +484,7 @@ describe('Bangumi PM polling', () => {
                     timestamp: optimistic.timestamp,
                     timestampText: '刚刚',
                 }],
+                previousPageUrl: null,
                 replyForm: { action: '/pm/conversation/42.chii', fields: {} },
             },
         });
@@ -237,6 +499,154 @@ describe('Bangumi PM polling', () => {
         expect(pmNewMessageIds.value.has('99')).toBe(false);
     });
 
+    it('sends the first draft PM through createPm and switches to the real conversation', async () => {
+        const draftId = 'draft:new_user';
+        pmDetails.value = {
+            [draftId]: {
+                id: draftId,
+                nickname: 'New User',
+                username: 'new_user',
+                avatar: 'peer.jpg',
+                messages: [],
+                previousPageUrl: null,
+                replyForm: null,
+                isDraft: true,
+                draftTitle: '来自 Re:Dollars 的短信',
+            },
+        };
+        activeConversationId.value = `pm:${draftId}`;
+        let resolveSend: (value: any) => void = () => {};
+        mocks.createPm.mockReturnValue(new Promise(resolve => { resolveSend = resolve; }));
+
+        const pending = submitPmReply(draftId, 'hello');
+
+        const optimistic = pmDetails.value[draftId].messages[0];
+        expect(optimistic).toMatchObject({
+            isSelf: true,
+            bodyText: 'hello',
+            state: 'sending',
+        });
+        expect(mocks.createPm).toHaveBeenCalledWith('new_user', '来自 Re:Dollars 的短信', 'hello');
+        expect(mocks.sendPmReply).not.toHaveBeenCalled();
+
+        resolveSend({
+            status: 'sent',
+            detail: {
+                id: '99',
+                nickname: 'New User',
+                username: 'new_user',
+                avatar: 'peer.jpg',
+                messages: [{
+                    id: '500',
+                    isSelf: true,
+                    avatar: '',
+                    userHref: '/user/me',
+                    bodyHtml: 'hello',
+                    bodyText: 'hello',
+                    presentationText: 'hello',
+                    timestamp: optimistic.timestamp,
+                    timestampText: '刚刚',
+                }],
+                previousPageUrl: null,
+                replyForm: { action: '/pm/conversation/99.chii', fields: {} },
+            },
+        });
+        await pending;
+
+        expect(pmDetails.value[draftId]).toBeUndefined();
+        expect(pmDetails.value['99'].messages).toHaveLength(1);
+        expect(pmDetails.value['99'].messages[0]).toMatchObject({
+            id: '500',
+            stableKey: optimistic.stableKey,
+            state: 'sent',
+        });
+        expect(activeConversationId.value).toBe('pm:99');
+    });
+
+    it('marks a rejected draft PM failed and retries it through createPm', async () => {
+        const draftId = 'draft:new_user';
+        pmDetails.value = {
+            [draftId]: {
+                id: draftId,
+                nickname: 'New User',
+                username: 'new_user',
+                avatar: 'peer.jpg',
+                messages: [],
+                previousPageUrl: null,
+                replyForm: null,
+                isDraft: true,
+                draftTitle: '来自 Re:Dollars 的短信',
+            },
+        };
+        activeConversationId.value = `pm:${draftId}`;
+        mocks.createPm.mockResolvedValueOnce({ status: 'rejected', error: 'too fast' });
+
+        const result = await submitPmReply(draftId, 'hello');
+        const failed = pmDetails.value[draftId].messages[0];
+
+        expect(result).toEqual({ status: 'rejected', error: 'too fast' });
+        expect(failed.state).toBe('failed');
+        expect(failed.timestampText).toBe('发送失败');
+
+        mocks.createPm.mockResolvedValueOnce({
+            status: 'sent',
+            detail: {
+                id: '100',
+                nickname: 'New User',
+                username: 'new_user',
+                avatar: 'peer.jpg',
+                messages: [{
+                    id: '501',
+                    isSelf: true,
+                    avatar: '',
+                    userHref: '/user/me',
+                    bodyHtml: 'hello',
+                    bodyText: 'hello',
+                    presentationText: 'hello',
+                    timestamp: failed.timestamp,
+                    timestampText: '刚刚',
+                }],
+                previousPageUrl: null,
+                replyForm: { action: '/pm/conversation/100.chii', fields: {} },
+            },
+        });
+
+        await retryPmReply(draftId, failed.id);
+
+        expect(mocks.createPm).toHaveBeenLastCalledWith('new_user', '来自 Re:Dollars 的短信', 'hello');
+        expect(pmDetails.value[draftId]).toBeUndefined();
+        expect(pmDetails.value['100'].messages[0].id).toBe('501');
+        expect(activeConversationId.value).toBe('pm:100');
+    });
+
+    it('keeps an unknown draft PM pending without loading a fake conversation URL', async () => {
+        const draftId = 'draft:new_user';
+        pmDetails.value = {
+            [draftId]: {
+                id: draftId,
+                nickname: 'New User',
+                username: 'new_user',
+                avatar: 'peer.jpg',
+                messages: [],
+                previousPageUrl: null,
+                replyForm: null,
+                isDraft: true,
+                draftTitle: '来自 Re:Dollars 的短信',
+            },
+        };
+        mocks.createPm.mockResolvedValueOnce({ status: 'unknown', error: 'unknown' });
+
+        await submitPmReply(draftId, 'hello');
+
+        expect(pmDetails.value[draftId].messages).toHaveLength(1);
+        expect(pmDetails.value[draftId].messages[0]).toMatchObject({
+            bodyText: 'hello',
+            state: 'sending',
+        });
+        expect(mocks.fetchPmConversation).not.toHaveBeenCalled();
+        expect(mocks.fetchPmInbox).toHaveBeenCalledOnce();
+    });
+
     it('marks an optimistic PM reply failed when Bangumi rejects it and retries from the failed bubble', async () => {
         pmDetails.value = {
             '42': {
@@ -245,6 +655,7 @@ describe('Bangumi PM polling', () => {
                 username: 'peer',
                 avatar: 'peer.jpg',
                 messages: [],
+                previousPageUrl: null,
                 replyForm: { action: '/pm/conversation/42.chii', fields: {} },
             },
         };
@@ -275,6 +686,7 @@ describe('Bangumi PM polling', () => {
                     timestamp: failed.timestamp,
                     timestampText: '刚刚',
                 }],
+                previousPageUrl: null,
                 replyForm: { action: '/pm/conversation/42.chii', fields: {} },
             },
         });
@@ -294,6 +706,7 @@ describe('Bangumi PM polling', () => {
                 username: 'peer',
                 avatar: 'peer.jpg',
                 messages: [],
+                previousPageUrl: null,
                 replyForm: { action: '/pm/conversation/42.chii', fields: {} },
             },
         };
@@ -304,6 +717,7 @@ describe('Bangumi PM polling', () => {
             username: 'peer',
             avatar: 'peer.jpg',
             messages: [],
+            previousPageUrl: null,
             replyForm: { action: '/pm/conversation/42.chii', fields: {} },
         } as any);
 

@@ -1,5 +1,4 @@
-import { useMemo, useRef, useEffect, useCallback, useState } from 'preact/hooks';
-import { memo } from '@/utils/memo';
+import { useRef, useEffect, useState } from 'preact/hooks';
 import { isMobile } from '@/utils/format';
 import { getRawMessage } from '@/stores/messageStore';
 import { newMessageIds } from '@/stores/chatState';
@@ -31,26 +30,7 @@ interface MessageItemProps {
     isGroupedWithNext?: boolean;
 }
 
-function areMessagePropsEqual(prev: MessageItemProps, next: MessageItemProps): boolean {
-    const prevKey = prev.message.stableKey || prev.message.id;
-    const nextKey = next.message.stableKey || next.message.id;
-
-    return (
-        prevKey === nextKey
-        && prev.message.message === next.message.message
-        && prev.message.is_deleted === next.message.is_deleted
-        && prev.message.edited_at === next.message.edited_at
-        && prev.message.reactions === next.message.reactions
-        && prev.message.link_previews === next.message.link_previews
-        && prev.message.image_meta === next.message.image_meta
-        && prev.message.state === next.message.state
-        && prev.isSelf === next.isSelf
-        && prev.isGrouped === next.isGrouped
-        && prev.isGroupedWithNext === next.isGroupedWithNext
-    );
-}
-
-export const MessageItem = memo(function MessageItem({ message, isSelf, isGrouped, isGroupedWithNext }: MessageItemProps) {
+export function MessageItem({ message, isSelf, isGrouped, isGroupedWithNext }: MessageItemProps) {
     const messageRef = useRef<HTMLDivElement>(null);
     const textContentRef = useRef<HTMLDivElement>(null);
     const [isNew, setIsNew] = useState(() => newMessageIds.peek().has(message.id));
@@ -69,19 +49,14 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
     const editedAt = message.edited_at;
     const replyToId = message.reply_to_id;
     const replyDetails = message.reply_details;
-    const imageMeta = message.image_meta;
     const linkPreviews = message.link_previews;
 
-    const content = useMemo(() => {
-        return renderMessageContent(message);
-    }, [messageId, messageText, isDeleted, replyToId, replyDetails, imageMeta, linkPreviews, settings.value.linkPreview, settings.value.loadImages]);
+    const content = renderMessageContent(message);
 
     useMessageVisibilityEffects(messageRef, messageId, content);
     useMessageImageViewer(messageRef, content);
 
-    const isSticker = useMemo(() => {
-        return isStickerMessage(messageText, isDeleted, replyToId);
-    }, [messageText, isDeleted, replyToId]);
+    const isSticker = isStickerMessage(messageText, isDeleted, replyToId);
     const { isExpanded, isCollapsible, shouldCollapse, toggleExpanded } = useCollapsibleMessage(
         textContentRef,
         content,
@@ -119,7 +94,7 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
     const nickColor = message.color || 'var(--primary-color)';
 
     // 上下文菜单
-    const handleContextMenu = useCallback((e: MouseEvent) => {
+    const handleContextMenu = (e: MouseEvent) => {
         let imageUrl: string | null = null;
         let bmoCode: string | null = null;
         const target = e.target as HTMLElement;
@@ -143,10 +118,10 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
 
         e.preventDefault();
         showContextMenu(e.clientX, e.clientY, String(messageId), imageUrl, bmoCode);
-    }, [messageId]);
+    };
 
     // 触发回复
-    const triggerReply = useCallback(() => {
+    const triggerReply = () => {
         const rawContent = (getRawMessage(messageId) || messageText || '').trim();
         const text = stripQuotes(escapeHTML(rawContent))
             .replace(/\[img\].*?\[\/img\]/gi, '[图片]')
@@ -159,26 +134,21 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
             id: String(messageId),
             uid: String(message.uid),
             user: message.nickname,
-            text: text,
+            text,
             raw: rawContent,
             avatar: message.avatar
         });
         const textarea = document.querySelector('#dollars-main-chat textarea') as HTMLTextAreaElement;
         if (textarea) textarea.focus();
-    }, [messageId, messageText, message.uid, message.nickname, message.avatar]);
-
-    // 重试发送失败的消息（重发前先确认幂等，避免重复）
-    const handleRetry = useCallback(() => {
-        void retryFailedMessage(messageId);
-    }, [messageId]);
+    };
 
     // 气泡点击处理
-    const handleBubbleClick = useCallback((e: MouseEvent) => {
+    const handleBubbleClick = (e: MouseEvent) => {
         if (message.state === 'failed') {
             e.stopPropagation();
-            handleRetry();
+            void retryFailedMessage(messageId);
         }
-    }, [message.state, handleRetry]);
+    };
 
     // 滑动回复
     const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToReply({
@@ -263,8 +233,8 @@ export const MessageItem = memo(function MessageItem({ message, isSelf, isGroupe
                     )}
                 </div>
 
-                <MessageReactions reactions={message.reactions || []} messageId={messageId} />
+                <MessageReactions reactions={message.reactions} messageId={messageId} />
             </div>
         </div>
     );
-}, areMessagePropsEqual);
+}

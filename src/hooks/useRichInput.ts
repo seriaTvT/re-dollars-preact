@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import {
     extractRichInputText,
@@ -28,6 +28,8 @@ interface UseRichInputResult {
     handleInput: () => void;
     handleCompositionStart: () => void;
     handleCompositionEnd: () => void;
+    isComposing: () => boolean;
+    didJustEndComposition: () => boolean;
     updateHeight: () => void;
 }
 
@@ -48,9 +50,10 @@ export function useRichInput({
     const valueRef = useRef('');
     const selectionRef = useRef<RichInputSelection>({ start: 0, end: 0 });
     const isComposingRef = useRef(false);
+    const didJustEndCompositionRef = useRef(false);
     const compositionEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const updateHeight = useCallback(() => {
+    function updateHeight() {
         const editor = editorRef.current;
         if (!editor) return;
 
@@ -58,22 +61,22 @@ export function useRichInput({
         const next = Math.max(minHeight, Math.min(editor.scrollHeight, maxHeight));
         editor.style.height = `${next}px`;
         editor.classList.toggle('is-overflowing', editor.scrollHeight > maxHeight);
-    }, [editorRef, minHeight, maxHeight]);
+    }
 
-    const syncProxy = useCallback((value = valueRef.current, selection = selectionRef.current) => {
+    function syncProxy(value = valueRef.current, selection = selectionRef.current) {
         const proxy = proxyRef?.current;
         if (!proxy) return;
         proxy.value = value;
         proxy.selectionStart = selection.start;
         proxy.selectionEnd = selection.end;
-    }, [proxyRef]);
+    }
 
-    const syncAssetLayout = useCallback(() => {
+    function syncAssetLayout() {
         const editor = editorRef.current;
         if (!editor) return;
 
         const images = Array.from(editor.querySelectorAll<HTMLImageElement>('img'));
-        if (images.length === 0) {
+        if (!images.length) {
             requestAnimationFrame(updateHeight);
             return;
         }
@@ -86,9 +89,9 @@ export function useRichInput({
         });
 
         requestAnimationFrame(updateHeight);
-    }, [editorRef, updateHeight]);
+    }
 
-    const renderBmo = useCallback((value: string) => {
+    function renderBmo(value: string) {
         if (!value.includes('(bmo')) return;
 
         const editor = editorRef.current;
@@ -101,9 +104,9 @@ export function useRichInput({
                 requestAnimationFrame(updateHeight);
             }
         });
-    }, [editorRef, updateHeight]);
+    }
 
-    const renderEditorValue = useCallback((value: string, selection: RichInputSelection, focus = false) => {
+    function renderEditorValue(value: string, selection: RichInputSelection, focus = false) {
         const editor = editorRef.current;
         if (!editor) return;
 
@@ -116,16 +119,16 @@ export function useRichInput({
 
         syncAssetLayout();
         renderBmo(value);
-    }, [editorRef, syncAssetLayout, renderBmo]);
+    }
 
-    const applyValue = useCallback((value: string, options: RichInputValueOptions = {}) => {
+    function applyValue(value: string, options: RichInputValueOptions = {}) {
         const selection = options.selection || { start: value.length, end: value.length };
         valueRef.current = value;
         selectionRef.current = selection;
         syncProxy(value, selection);
         renderEditorValue(value, selection, !!options.focus);
         onValueChange?.(value, options);
-    }, [syncProxy, renderEditorValue, onValueChange]);
+    }
 
     controllerRef.current = {
         focus: () => editorRef.current?.focus(),
@@ -165,7 +168,7 @@ export function useRichInput({
         setValue: (value, options = {}) => applyValue(value, options),
     };
 
-    const handleInput = useCallback(() => {
+    function handleInput() {
         const editor = editorRef.current;
         if (!editor) return;
 
@@ -179,23 +182,26 @@ export function useRichInput({
             renderEditorValue(value, selection);
         }
 
+        updateHeight();
         onValueChange?.(value, {});
-    }, [editorRef, syncProxy, renderEditorValue, onValueChange]);
+    }
 
-    const handleCompositionStart = useCallback(() => {
+    function handleCompositionStart() {
         isComposingRef.current = true;
-    }, []);
+    }
 
-    const handleCompositionEnd = useCallback(() => {
+    function handleCompositionEnd() {
         isComposingRef.current = false;
+        didJustEndCompositionRef.current = true;
         if (compositionEndTimerRef.current) {
             clearTimeout(compositionEndTimerRef.current);
         }
         compositionEndTimerRef.current = setTimeout(() => {
+            didJustEndCompositionRef.current = false;
             compositionEndTimerRef.current = null;
         }, 50);
         handleInput();
-    }, [handleInput]);
+    }
 
     // 代理 textarea 收到输入（如 BMO 拼装面板写入）时同步回富文本编辑器
     useEffect(() => {
@@ -213,7 +219,7 @@ export function useRichInput({
 
         proxy.addEventListener('input', handleProxyInput);
         return () => proxy.removeEventListener('input', handleProxyInput);
-    }, [proxyRef, applyValue]);
+    }, [proxyRef]);
 
     // 光标移动时把选区同步到代理 textarea，保证外部集成插入位置正确
     useEffect(() => {
@@ -230,7 +236,7 @@ export function useRichInput({
 
         document.addEventListener('selectionchange', syncSelection);
         return () => document.removeEventListener('selectionchange', syncSelection);
-    }, [editorRef, syncProxy]);
+    }, [editorRef, proxyRef]);
 
     useEffect(() => () => {
         if (compositionEndTimerRef.current) {
@@ -238,5 +244,12 @@ export function useRichInput({
         }
     }, []);
 
-    return { handleInput, handleCompositionStart, handleCompositionEnd, updateHeight };
+    return {
+        handleInput,
+        handleCompositionStart,
+        handleCompositionEnd,
+        isComposing: () => isComposingRef.current,
+        didJustEndComposition: () => didJustEndCompositionRef.current,
+        updateHeight,
+    };
 }

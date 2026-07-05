@@ -73,7 +73,7 @@ function parsePmTimestamp(value: string) {
         Number(hour),
         Number(minute)
     ).getTime() / 1000;
-    return Number.isFinite(timestamp) ? timestamp : null;
+    return isFinite(timestamp) ? timestamp : null;
 }
 
 function wrapBBCode(tag: string, content: string) {
@@ -184,16 +184,21 @@ function ensurePmPage(document: Document) {
 
 function findNextConversationPage(document: Document, baseUrl: string) {
     const current = new URL(baseUrl, FALLBACK_ORIGIN);
-    const currentPage = Number.parseInt(current.searchParams.get('page') || '1', 10);
+    const currentPage = parseInt(current.searchParams.get('page') || '1', 10);
     const candidates = Array.from(document.querySelectorAll<HTMLAnchorElement>('#pm_pager a'))
         .flatMap(link => {
             const path = toSameOriginPmPath(link.href, baseUrl);
             if (!path) return [];
-            const page = Number.parseInt(new URL(link.href, baseUrl).searchParams.get('page') || '', 10);
-            return Number.isFinite(page) && page > currentPage ? [{ path, page }] : [];
+            const page = parseInt(new URL(link.href, baseUrl).searchParams.get('page') || '', 10);
+            return page > currentPage ? [{ path, page }] : [];
         })
         .sort((a, b) => a.page - b.page);
     return candidates[0]?.path || null;
+}
+
+function findPreviousMessagePage(document: Document, baseUrl: string) {
+    const link = document.querySelector<HTMLAnchorElement>('.pm-message-list .pm-message-more a[href]');
+    return link ? toSameOriginPmPath(link.href, baseUrl) : null;
 }
 
 export function parsePmInbox(html: string, baseUrl = getOrigin()): BangumiPmInboxPage {
@@ -213,7 +218,7 @@ export function parsePmInbox(html: string, baseUrl = getOrigin()): BangumiPmInbo
             avatar: avatarFrom(item, baseUrl),
             dateText: item.querySelector('.pm-conversation-date')?.textContent?.trim() || '',
             lastMessage: item.querySelector('.pm-conversation-desc')?.textContent?.trim() || '',
-            unreadCount: Number.parseInt(item.querySelector('.pm-conversation-unread')?.textContent || '0', 10) || 0,
+            unreadCount: parseInt(item.querySelector('.pm-conversation-unread')?.textContent || '0', 10) || 0,
         }];
     });
     return { conversations, nextPageUrl: findNextConversationPage(document, baseUrl) };
@@ -266,6 +271,7 @@ export function parsePmConversation(html: string, baseUrl: string): BangumiPmCon
         username: decodeURIComponent(username),
         avatar: avatarFrom(document.querySelector('.pm-chat-header'), baseUrl),
         messages,
+        previousPageUrl: findPreviousMessagePage(document, baseUrl),
         replyForm: formElement ? extractForm(formElement, baseUrl) : null,
     };
 }

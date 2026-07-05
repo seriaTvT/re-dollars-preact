@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import type { ScrollManagerRefs } from './useScrollManager';
 import {
     messageIds,
@@ -35,9 +35,24 @@ import { insertUnreadSeparator } from '@/hooks/useStateKeeper';
 
 export function useHistoryLoader(refs: ScrollManagerRefs) {
     const { bodyRef, listRef, isLoadingRef, isStickingToBottom, prevScrollHeight, prevScrollTop, isRestoringScroll } = refs;
+    const visibleMessages = <T extends { uid: string | number }>(messages: T[]) =>
+        messages.filter(m => !blockedUsers.value.has(String(m.uid)));
+    const restoreLiveTimeline = () => {
+        timelineIsLive.value = true;
+        unreadWhileScrolled.value = 0;
+        showScrollBottomBtn.value = false;
+        clearBrowsePosition();
+        syncPresenceSubscriptions();
+    };
+    const finishInitialLoad = () => {
+        isLoadingHistory.value = false;
+        isContextLoading.value = false;
+        initialMessagesLoaded.value = true;
+    };
+    const doubleFrame = (fn: () => void) => requestAnimationFrame(() => requestAnimationFrame(fn));
 
     // 加载历史消息
-    const loadHistory = useCallback(async () => {
+    const loadHistory = async () => {
         if (isLoadingRef.current || historyFullyLoaded.value) return;
         const oldestId = historyOldestId.value;
         if (!oldestId) return;
@@ -53,7 +68,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
 
         try {
             const newMessages = await fetchHistoryMessages(oldestId, 50);
-            if (newMessages.length === 0) {
+            if (!newMessages.length) {
                 historyFullyLoaded.value = true;
             } else {
                 // 更新最旧消息ID (取最小值以防 API 排序不确定)
@@ -61,7 +76,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                 historyOldestId.value = minId;
 
                 // 过滤屏蔽用户
-                const filtered = newMessages.filter(m => !blockedUsers.value.has(String(m.uid)));
+                const filtered = visibleMessages(newMessages);
 
                 // 标记需要恢复滚动
                 isRestoringScroll.current = true;
@@ -76,10 +91,10 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
             isLoadingRef.current = false;
             isLoadingHistory.value = false;
         }
-    }, []);
+    };
 
     // 加载更新消息 (在历史模式中向下加载)
-    const loadNewerHistory = useCallback(async () => {
+    const loadNewerHistory = async () => {
         if (isLoadingRef.current || timelineIsLive.value) return;
         const newestId = historyNewestId.value;
         if (!newestId) return;
@@ -96,7 +111,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                 !existingIds.has(m.id) && !blockedUsers.value.has(String(m.uid))
             );
 
-            if (filteredNewMessages.length > 0) {
+            if (filteredNewMessages.length) {
                 // 追加新消息
                 addMessagesBatch(filteredNewMessages);
 
@@ -106,19 +121,11 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
 
                 // 如果返回的消息少于限制，说明已追赶到最新
                 if (newMessages.length < LIMIT) {
-                    timelineIsLive.value = true;
-                    unreadWhileScrolled.value = 0;
-                    showScrollBottomBtn.value = false;
-                    clearBrowsePosition(); // 清除浏览位置，切换到 live 模式
-                    syncPresenceSubscriptions();
+                    restoreLiveTimeline();
                 }
             } else {
                 // 没有新消息，恢复实时模式
-                timelineIsLive.value = true;
-                unreadWhileScrolled.value = 0;
-                showScrollBottomBtn.value = false;
-                clearBrowsePosition(); // 清除浏览位置，切换到 live 模式
-                syncPresenceSubscriptions();
+                restoreLiveTimeline();
             }
         } catch (e) {
             // ignore
@@ -128,10 +135,10 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                 isLoadingRef.current = false;
             }, 100);
         }
-    }, []);
+    };
 
     // 跳转到指定消息
-    const jumpToMessage = useCallback(async (id: number) => {
+    const jumpToMessage = async (id: number) => {
         const targetId = String(id);
         const highlightDuration = 800;
 
@@ -186,16 +193,14 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
             // 获取消息上下文
             const contextResult = await fetchMessageContext(id);
 
-            if (contextResult && contextResult.messages.length > 0) {
+            if (contextResult?.messages.length) {
                 const targetMsg = contextResult.messages.find(m => m.id === id);
                 if (!targetMsg || blockedUsers.value.has(String(targetMsg.uid))) {
                     isContextLoading.value = false;
                     return;
                 }
 
-                const filtered = contextResult.messages.filter(
-                    m => !blockedUsers.value.has(String(m.uid))
-                );
+                const filtered = visibleMessages(contextResult.messages);
 
                 setMessages(filtered);
                 historyOldestId.value = filtered[0].id;
@@ -232,7 +237,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
             // 注意：isContextLoading.value 这里不设置 false，
             // 而是延迟到 scrollAndHighlight 内部（成功时）或 catch 块（失败时）
         }
-    }, []);
+    };
 
     // 监听外部跳转请求 (例如从 NotificationManager 触发)
     useEffect(() => {
@@ -266,7 +271,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
             try {
                 const savedBrowse = loadBrowsePosition();
                 const recentMessages = await fetchRecentMessages(50);
-                const filteredRecent = recentMessages.filter(m => !blockedUsers.value.has(String(m.uid)));
+                const filteredRecent = visibleMessages(recentMessages);
                 const readId = lastReadId.value;
                 const recentUnreadCount = readId
                     ? filteredRecent.filter(m => m.id > readId).length
@@ -279,13 +284,11 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                     showScrollBottomBtn.value = recentUnreadCount > 0;
 
                     const contextResult = await fetchMessageContext(savedBrowse.anchorMessageId, 25, 50);
-                    if (contextResult && contextResult.messages.length > 0) {
-                        const filtered = contextResult.messages.filter(
-                            m => !blockedUsers.value.has(String(m.uid))
-                        );
+                    if (contextResult?.messages.length) {
+                        const filtered = visibleMessages(contextResult.messages);
 
                         setMessages(filtered);
-                        if (filtered.length > 0) {
+                        if (filtered.length) {
                             historyOldestId.value = filtered[0].id;
                             historyNewestId.value = filtered[filtered.length - 1].id;
                         }
@@ -293,8 +296,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                         timelineIsLive.value = false;
                         isStickingToBottom.current = false;
 
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => {
+                        doubleFrame(() => {
                                 // 插入未读消息分隔线（在第一条未读消息之前）
                                 const readId = lastReadId.value;
                                 if (readId) {
@@ -314,10 +316,7 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                                 }
 
                                 syncPresenceSubscriptions();
-                                isLoadingHistory.value = false;
-                                isContextLoading.value = false;
-                                initialMessagesLoaded.value = true;
-                            });
+                                finishInitialLoad();
                         });
 
                         return;
@@ -335,29 +334,23 @@ export function useHistoryLoader(refs: ScrollManagerRefs) {
                 isStickingToBottom.current = true;
                 clearBrowsePosition();
 
-                if (filteredRecent.length > 0) {
+                if (filteredRecent.length) {
                     addMessagesBatch(filteredRecent);
 
                     historyOldestId.value = filteredRecent[0].id;
                     historyNewestId.value = filteredRecent[filteredRecent.length - 1].id;
 
                     // 使用双重 RAF 确保 Preact 已完成 DOM 渲染
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
+                    doubleFrame(() => {
                             if (bodyRef.current) {
                                 bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
                                 isStickingToBottom.current = true;
                             }
                             syncPresenceSubscriptions();
-                            isLoadingHistory.value = false;
-                            isContextLoading.value = false;
-                            initialMessagesLoaded.value = true;
-                        });
+                            finishInitialLoad();
                     });
                 } else {
-                    isLoadingHistory.value = false;
-                    isContextLoading.value = false;
-                    initialMessagesLoaded.value = true;
+                    finishInitialLoad();
                 }
             } catch (e) {
                 isLoadingHistory.value = false;

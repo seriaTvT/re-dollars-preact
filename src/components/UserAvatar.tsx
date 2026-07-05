@@ -22,7 +22,7 @@ export function UserAvatar({ uid, src, nickname, className = '' }: UserAvatarPro
         e.stopPropagation();
 
         // For uid=0 (bot), show profile for uid 3605
-        const profileUid = (uid === 0 || String(uid) === '0') ? '3605' : String(uid);
+        const profileUid = uidStr === '0' ? '3605' : uidStr;
         showUserProfile(profileUid);
     };
 
@@ -30,10 +30,10 @@ export function UserAvatar({ uid, src, nickname, className = '' }: UserAvatarPro
         e.stopPropagation();
 
         // For uid=0 (bot), use special 'bot' uid for plain text mention
-        if (uid === 0 || String(uid) === '0') {
+        if (uidStr === '0') {
             pendingMention.value = { uid: 'bot', nickname: 'Bangumi娘' };
         } else {
-            pendingMention.value = { uid: String(uid), nickname };
+            pendingMention.value = { uid: uidStr, nickname };
         }
 
         // Mobile vibration feedback

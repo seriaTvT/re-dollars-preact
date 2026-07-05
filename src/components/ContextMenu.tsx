@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useCallback, useRef } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import {
     isContextMenuOpen,
     isContextMenuClosing,
@@ -97,15 +97,15 @@ export function ContextMenu() {
         return onBmoReady(renderBmo);
     }, [isContextMenuOpen.value]);
 
-    const handleReaction = useCallback(async (emoji: string) => {
+    const handleReaction = async (emoji: string) => {
         const targetId = contextMenuTargetId.value;
         if (!targetId) return;
 
         hideContextMenu();
         await apiToggleReaction(Number(targetId), emoji);
-    }, []);
+    };
 
-    const handleMoreReactions = useCallback((e: MouseEvent) => {
+    const handleMoreReactions = (e: MouseEvent) => {
         e.stopPropagation();
 
         // 如果已打开则关闭
@@ -123,9 +123,9 @@ export function ContextMenu() {
             // 8px gap matches the gap between reactions and items
             showReactionPicker(rect.left, rect.bottom + 8, rect.width);
         }
-    }, []);
+    };
 
-    const handleReply = useCallback(() => {
+    const handleReply = () => {
         const targetId = contextMenuTargetId.value;
         if (!targetId) return;
 
@@ -151,12 +151,12 @@ export function ContextMenu() {
             uid,
             user,
             text,
-            raw: raw,
+            raw,
             avatar,
         });
-    }, []);
+    };
 
-    const handleEdit = useCallback(() => {
+    const handleEdit = () => {
         const targetId = contextMenuTargetId.value;
         if (!targetId) return;
 
@@ -183,9 +183,9 @@ export function ContextMenu() {
             hiddenQuote,
             image_meta: msg.image_meta
         });
-    }, []);
+    };
 
-    const handleCopy = useCallback(async () => {
+    const handleCopy = async () => {
         const targetId = contextMenuTargetId.value;
         if (!targetId) return;
 
@@ -198,12 +198,12 @@ export function ContextMenu() {
 
         try {
             await navigator.clipboard.writeText(plainText);
-        } catch (e) {
+        } catch {
             // ignore
         }
-    }, []);
+    };
 
-    const handleDelete = useCallback(async () => {
+    const handleDelete = async () => {
         const targetId = contextMenuTargetId.value;
         if (!targetId) return;
 
@@ -217,10 +217,14 @@ export function ContextMenu() {
         if (!result.status) {
             alert(result.error || '撤回失败');
         }
-    }, []);
+    };
 
-    const handleFavorite = useCallback((e: MouseEvent) => {
+    const handleFavorite = (e: MouseEvent) => {
         const button = e.currentTarget as HTMLButtonElement;
+        const label = button.querySelector('span:not(.context-icon)');
+        const setLabel = (text: string) => {
+            if (label) label.textContent = text;
+        };
 
         if (contextMenuBmoCode.value) {
             const bmoCode = contextMenuBmoCode.value;
@@ -229,32 +233,27 @@ export function ContextMenu() {
                 const existing = bmoji.savedBmo.list() || [];
                 if (!existing.some((i: any) => i.code === bmoCode)) {
                     bmoji.savedBmo.create({ code: bmoCode, name: bmoCode });
-                    const span = button.querySelector('span:not(.context-icon)');
-                    if (span) span.textContent = '已存入BMO面板';
+                    setLabel('已存入BMO面板');
                 } else {
-                    const span = button.querySelector('span:not(.context-icon)');
-                    if (span) span.textContent = '已存在';
+                    setLabel('已存在');
                 }
             } catch (err) {
-                const span = button.querySelector('span:not(.context-icon)');
-                if (span) span.textContent = '收藏失败';
+                setLabel('收藏失败');
             }
         } else if (contextMenuImageUrl.value) {
             // Logic for regular images
             try {
                 addFavorite(contextMenuImageUrl.value);
-                const span = button.querySelector('span:not(.context-icon)');
-                if (span) span.textContent = '已收藏';
+                setLabel('已收藏');
             } catch (err) {
-                const span = button.querySelector('span:not(.context-icon)');
-                if (span) span.textContent = '收藏失败';
+                setLabel('收藏失败');
             }
         }
 
         setTimeout(() => {
             hideContextMenu();
         }, 1000);
-    }, []);
+    };
 
 
 

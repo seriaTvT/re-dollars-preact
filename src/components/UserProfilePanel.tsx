@@ -75,15 +75,7 @@ export function UserProfilePanel() {
 
         fetchGalleryMedia(0, 6, profile.id).then(result => {
             if (stale) return;
-            setMedia(result.items.map(item => ({
-                url: item.url,
-                thumbnailUrl: item.thumbnailUrl,
-                type: item.type,
-                message_id: item.message_id,
-                nickname: item.nickname,
-                avatar: item.avatar,
-                timestamp: item.timestamp,
-            })));
+            setMedia(result.items);
             setMediaLoading(false);
         });
 
@@ -106,35 +98,28 @@ export function UserProfilePanel() {
     if (!isOpen) return null;
 
     const handleHistory = () => {
-        if (profile) {
-            searchQuery.value = `user:${profile.username}`;
-            hideUserProfile();
-            toggleSearch(true);
-        }
+        searchQuery.value = `user:${profile!.username}`;
+        hideUserProfile();
+        toggleSearch(true);
     };
 
     const handleHomepage = () => {
-        if (profile) {
-            window.open(profile.url || `/user/${profile.username}`, '_blank');
-        }
+        window.open(profile!.url || `/user/${profile!.username}`, '_blank');
     };
 
     const handleMedia = () => {
-        if (profile) {
-            searchQuery.value = `user:${profile.username}`;
-            searchGalleryMode.value = true;
-            hideUserProfile();
-            toggleSearch(true);
-        }
+        searchQuery.value = `user:${profile!.username}`;
+        searchGalleryMode.value = true;
+        hideUserProfile();
+        toggleSearch(true);
     };
 
     const handlePm = () => {
-        if (!profile) return;
         hideUserProfile();
         void openPmForUser({
-            username: profile.username,
-            nickname: profile.nickname,
-            avatar: profile.avatar,
+            username: profile!.username,
+            nickname: profile!.nickname,
+            avatar: profile!.avatar,
         });
     };
 
@@ -191,11 +176,11 @@ export function UserProfilePanel() {
                         {/* 名称区（居中） */}
                         <div class="uprofile-name-section">
                             <div class="uprofile-nickname">
-                                {profile?.nickname ?? userId}
+                                {profile.nickname}
                                 {isActive && <span class="uprofile-status-dot active" aria-label="在线" role="img" />}
                             </div>
                             <div class="uprofile-username">
-                                @{profile?.username ?? userId}
+                                @{profile.username}
                             </div>
                             {lastActiveText && !isActive && (
                                 <div class="uprofile-last-active">
@@ -205,7 +190,7 @@ export function UserProfilePanel() {
                         </div>
 
                         {/* 数据统计 */}
-                        {profile?.stats && (
+                        {profile.stats && (
                             <div class="uprofile-stats-row">
                                 <div class="uprofile-stat">
                                     <span class="uprofile-stat-num">{profile.stats.message_count.toLocaleString()}</span>
@@ -220,29 +205,27 @@ export function UserProfilePanel() {
                         )}
 
                         {/* 操作按钮（紧跟名称区） */}
-                        {profile && (
-                            <div class="uprofile-actions">
-                                {profile.source !== 'bangumi' && (
-                                    <button class="uprofile-action-btn" onClick={handleHistory}>
-                                        <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHistory }} />
-                                        搜索发言
-                                    </button>
-                                )}
-                                <button class="uprofile-action-btn" onClick={handleHomepage}>
-                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHome }} />
-                                    主页
+                        <div class="uprofile-actions">
+                            {profile.source !== 'bangumi' && (
+                                <button class="uprofile-action-btn" onClick={handleHistory}>
+                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHistory }} />
+                                    搜索发言
                                 </button>
-                                {isBangumiLoggedIn() && String(profile.id) !== String(window.CHOBITS_UID) && (
-                                    <button class="uprofile-action-btn" onClick={handlePm}>
-                                        <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconReply }} />
-                                        发短信
-                                    </button>
-                                )}
-                            </div>
-                        )}
+                            )}
+                            <button class="uprofile-action-btn" onClick={handleHomepage}>
+                                <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconHome }} />
+                                主页
+                            </button>
+                            {isBangumiLoggedIn() && String(profile.id) !== String(window.CHOBITS_UID) && (
+                                <button class="uprofile-action-btn" onClick={handlePm}>
+                                    <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconReply }} />
+                                    发短信
+                                </button>
+                            )}
+                        </div>
 
                         {/* 信息行 */}
-                        {(profile?.sign || profile?.stats?.first_message_time) && (
+                        {(profile.sign || profile.stats?.first_message_time) && (
                             <div class="uprofile-info-section">
                                 {profile.sign && (
                                     <div class="uprofile-info-row">
@@ -320,7 +303,7 @@ export function UserProfilePanel() {
                         )}
 
                         {/* 无发言记录 */}
-                        {!profile?.stats && profile && profile.source !== 'bangumi' && (
+                        {!profile.stats && profile.source !== 'bangumi' && (
                             <div class="uprofile-empty-hint">暂无发言记录</div>
                         )}
                     </div>

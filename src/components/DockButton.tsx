@@ -42,10 +42,7 @@ function createDockLink() {
 
 export function DockButton() {
     useEffect(() => {
-        const notifyLink = document.querySelector('#dock a[href*="/notify/all"]');
-        if (!notifyLink) return;
-
-        const parentLi = notifyLink.closest('li');
+        const parentLi = document.querySelector('#dock a[href*="/notify/all"]')?.closest('li');
         if (!parentLi) return;
 
         const li = document.createElement('li');

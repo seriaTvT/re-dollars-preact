@@ -1,6 +1,24 @@
-import { describe, expect, it } from 'vitest';
-import { fitWindowRectToViewport } from './windowState';
+// @vitest-environment jsdom
+
+import { beforeEach, describe, expect, it } from 'vitest';
+import {
+    clearChatOpenState,
+    clearWindowState,
+    fitWindowRectToViewport,
+    loadSidebarCollapsedState,
+    loadWindowState,
+    saveActiveConversationId,
+    saveChatOpenState,
+    saveMaximizedState,
+    saveMobileChatViewState,
+    saveSidebarCollapsedState,
+    saveWindowPosition,
+} from './windowState';
 import { MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT } from './constants';
+
+beforeEach(() => {
+    localStorage.clear();
+});
 
 describe('fitWindowRectToViewport', () => {
     it('leaves a rect that already fits untouched', () => {
@@ -43,5 +61,37 @@ describe('fitWindowRectToViewport', () => {
         );
 
         expect(fitted).toEqual({ left: 0, top: 0, width: 240, height: 160 });
+    });
+});
+
+describe('window state cleanup', () => {
+    it('clears only the remembered open state when requested', () => {
+        saveChatOpenState(true);
+        saveActiveConversationId('pm:42');
+
+        clearChatOpenState();
+
+        expect(loadWindowState().isChatOpen).toBeNull();
+        expect(loadWindowState().activeConversationId).toBe('pm:42');
+    });
+
+    it('does not clear the remembered active conversation with window state', () => {
+        saveChatOpenState(true);
+        saveMaximizedState(true);
+        saveMobileChatViewState(true);
+        saveSidebarCollapsedState(true);
+        saveWindowPosition({ x: 10, y: 20, width: 400, height: 550 });
+        saveActiveConversationId('pm:42');
+
+        clearWindowState();
+
+        expect(loadWindowState()).toEqual({
+            isChatOpen: null,
+            isMaximized: null,
+            mobileChatViewActive: null,
+            activeConversationId: 'pm:42',
+            position: null,
+        });
+        expect(loadSidebarCollapsedState()).toBeNull();
     });
 });

@@ -1,12 +1,13 @@
-import { useState, useCallback, useRef, useEffect } from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import type { JSX, RefObject } from 'preact';
 import { isSmileyPanelOpen, isSmileyPanelClosing, toggleSmileyPanel } from '@/stores/ui';
 import { uploadImages } from '@/utils/api/media';
 import { favorites, initFavorites, addFavorite, removeFavorite } from '@/stores/favorites';
-import { smileyRanges, getSmileyUrl, generateSmileyCodes, getGroupedSmileyCodes } from '@/utils/smilies';
+import { smileyRanges, generateSmileyCodes, getGroupedSmileyCodes } from '@/utils/smilies';
 import { escapeHTML } from '@/utils/format';
 import { iconBmoPanel, iconStar, iconUpload } from '@/utils/icons';
 import { loadSavedBmoItems, type BmoItem } from '@/utils/bmo';
+import { SmileyCodeItem } from './SmileyCodeItem';
 
 interface SmileyPanelProps {
     onSelect: (code: string) => void;
@@ -76,17 +77,17 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
         });
     }, [isSmileyPanelOpen.value, activeTab, bmoItems]);
 
-    const handleSelect = useCallback((code: string) => {
+    const handleSelect = (code: string) => {
         onSelect(code);
         toggleSmileyPanel(false);
-    }, [onSelect]);
+    };
 
-    const handleTabClick = useCallback((groupName: string) => {
+    const handleTabClick = (groupName: string) => {
         setActiveTab(groupName);
-    }, []);
+    };
 
     // 打开 BMO 快速拼装面板
-    const handleOpenBmoPanel = useCallback((e: Event) => {
+    const handleOpenBmoPanel = (e: Event) => {
         e.preventDefault();
         const apiObject = (window as any).BgmBmoQuickPanel;
         if (apiObject && typeof apiObject.open === 'function') {
@@ -100,10 +101,10 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
                 window.location.href = '/dev/app/4853';
             }
         }
-    }, [textareaRef]);
+    };
 
     // 上传收藏表情
-    const handleUploadFavorite = useCallback(async (e: Event) => {
+    const handleUploadFavorite = async (e: Event) => {
         e.preventDefault();
         const tempInput = document.createElement('input');
         tempInput.type = 'file';
@@ -133,14 +134,14 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
             }
         };
         tempInput.click();
-    }, []);
+    };
 
     // 移除收藏
-    const handleRemoveFavorite = useCallback((e: Event, url: string) => {
+    const handleRemoveFavorite = (e: Event, url: string) => {
         e.preventDefault();
         e.stopPropagation();
         removeFavorite(url);
-    }, []);
+    };
 
     if (!isSmileyPanelOpen.value) {
         return null;
@@ -150,10 +151,11 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
     let smileys: string[] = [];
     let groupedSmileySections: ReturnType<typeof getGroupedSmileyCodes> = [];
     let specialContent: JSX.Element | null = null;
+    const activeRange = smileyRanges.find(r => r.name === activeTab);
 
     if (activeTab === 'BMO') {
         specialContent = (
-            <div style={{ display: 'contents' }}>
+            <div class="smiley-contents">
                 {/* BMO 快速拼装面板按钮 */}
                 <li class="smiley-item">
                     <a
@@ -161,7 +163,7 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
                         id="dollars-open-bmo-panel"
                         title="打开 BMO 快速拼装面板"
                         onClick={handleOpenBmoPanel}
-                        style={{ backgroundImage: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        style={{ backgroundImage: 'none' }}
                         dangerouslySetInnerHTML={{ __html: iconBmoPanel }}
                     />
                 </li>
@@ -183,10 +185,10 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
                         </li>
                     ))
                 ) : (
-                    <p style={{ width: '100%', textAlign: 'center', color: 'var(--dollars-text-secondary)', fontSize: '12px', marginTop: '20px', padding: '0 10px' }}>
+                    <p class="smiley-empty-hint">
                         暂无保存的 BMO 表情
                         <br />
-                        <a href="/dev/app/4853" target="_blank" rel="noopener" style={{ color: 'var(--primary-color)' }}>
+                        <a href="/dev/app/4853" target="_blank" rel="noopener">
                             前往 BMO 快速拼装面板
                         </a>
                     </p>
@@ -196,14 +198,14 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
     } else if (activeTab === '收藏') {
         const favoritesList = favorites.value;
         specialContent = (
-            <div style={{ display: 'contents' }}>
+            <div class="smiley-contents">
                 {/* 上传按钮 */}
                 <li class="smiley-item favorite-item" style={{ border: '2px dashed var(--dollars-border)', borderRadius: '8px', boxSizing: 'border-box' }}>
                     <a
                         href="#"
                         title="上传新表情"
                         onClick={handleUploadFavorite}
-                        style={{ backgroundImage: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--dollars-text-secondary)' }}
+                        style={{ backgroundImage: 'none', color: 'var(--dollars-text-secondary)' }}
                     >
                         {isUploading ? (
                             <span style={{ fontSize: '12px' }}>...</span>
@@ -236,7 +238,7 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
                         </li>
                     ))
                 ) : (
-                    <p style={{ width: '100%', textAlign: 'center', color: 'var(--dollars-icon-color-secondary)', fontSize: '12px', marginTop: '20px', padding: '0 10px' }}>
+                    <p class="smiley-empty-hint muted">
                         上传或右键图片收藏
                         <br />
                         (存储于Chii云端)
@@ -244,13 +246,12 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
                 )}
             </div>
         );
-    } else if (smileyRanges.find(r => r.name === activeTab)?.isLarge) {
+    } else if (activeRange?.isLarge) {
         groupedSmileySections = getGroupedSmileyCodes(activeTab);
     } else {
         smileys = generateSmileyCodes(activeTab);
     }
 
-    const activeRange = smileyRanges.find(r => r.name === activeTab);
     const isLargeTab = activeRange?.isLarge ?? false;
 
     return (
@@ -288,45 +289,15 @@ export function SmileyPanel({ onSelect, textareaRef }: SmileyPanelProps) {
                     <section key={section.name} class="smiley-group-section">
                         <div class="smiley-group-title">{section.name}</div>
                         <div class="smiley-group-grid">
-                            {section.items.map(({ code }) => {
-                                const url = getSmileyUrl(code);
-                                return (
-                                    <li key={code} class="smiley-item">
-                                        <a
-                                            href="#"
-                                            data-smiley={code}
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                handleSelect(code);
-                                            }}
-                                            style={url ? { backgroundImage: `url('${url}')` } : undefined}
-                                            title={code}
-                                        >
-                                        </a>
-                                    </li>
-                                );
-                            })}
+                            {section.items.map(({ code }) => (
+                                <SmileyCodeItem key={code} code={code} onSelect={handleSelect} />
+                            ))}
                         </div>
                     </section>
                 ))}
-                {smileys.map((code) => {
-                    const url = getSmileyUrl(code);
-                    return (
-                        <li key={code} class="smiley-item">
-                            <a
-                                href="#"
-                                data-smiley={code}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleSelect(code);
-                                }}
-                                style={url ? { backgroundImage: `url('${url}')` } : undefined}
-                                title={code}
-                            >
-                            </a>
-                        </li>
-                    );
-                })}
+                {smileys.map((code) => (
+                    <SmileyCodeItem key={code} code={code} onSelect={handleSelect} />
+                ))}
             </div>
         </div>
     );

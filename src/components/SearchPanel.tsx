@@ -33,7 +33,8 @@ export function SearchPanel() {
     };
 
     const search = async (q: string, append = false) => {
-        if (!q.trim()) {
+        const query = q.trim();
+        if (!query) {
             reset();
             return;
         }
@@ -44,7 +45,7 @@ export function SearchPanel() {
         }
         loading.value = true;
         try {
-            const data = await searchMessages(q, offset.current);
+            const data = await searchMessages(query, offset.current);
             results.value = append ? [...results.value, ...data.messages] : data.messages;
             hasMore.value = data.hasMore;
             offset.current += data.messages.length;
@@ -114,7 +115,7 @@ export function SearchPanel() {
                 <div class="search-bar" style={{ flex: 1, marginBottom: 0 }}>
                     <div
                         class="search-icon"
-                        style={{ display: 'flex', alignItems: 'center', opacity: 0.5 }}
+                        style={{ opacity: 0.5 }}
                         dangerouslySetInnerHTML={{ __html: iconSearch }}
                     />
                     <input

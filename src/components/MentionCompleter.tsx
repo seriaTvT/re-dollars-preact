@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from 'preact/hooks';
+import { useRef, useEffect, useState } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import { escapeHTML } from '@/utils/format';
 import { MENTION_DEBOUNCE, MAX_MENTION_RESULTS } from '@/utils/constants';
@@ -20,8 +20,29 @@ export function MentionCompleter({ editorRef, inputControllerRef }: MentionCompl
     const queryRef = useRef<string | null>(null);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Check for @mention pattern in input
-    const checkInput = useCallback(() => {
+    function hide() {
+        setVisible(false);
+        queryRef.current = null;
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+    }
+
+    async function fetchUsers(query: string) {
+        const data = await searchMentionUsers(query, MAX_MENTION_RESULTS);
+
+        // Check if query changed while fetching
+        if (query !== queryRef.current) return;
+
+        if (data.length > 0) {
+            setUsers(data);
+            setVisible(true);
+        } else {
+            hide();
+        }
+    }
+
+    function checkInput() {
         const controller = inputControllerRef.current;
         if (!controller) return;
 
@@ -55,34 +76,9 @@ export function MentionCompleter({ editorRef, inputControllerRef }: MentionCompl
 
         // Debounce API call
         timerRef.current = setTimeout(() => fetchUsers(currentQuery), MENTION_DEBOUNCE);
-    }, [inputControllerRef, visible]);
+    }
 
-    // Fetch users from API
-    const fetchUsers = async (query: string) => {
-        const data = await searchMentionUsers(query, MAX_MENTION_RESULTS);
-
-        // Check if query changed while fetching
-        if (query !== queryRef.current) return;
-
-        if (data.length > 0) {
-            setUsers(data);
-            setVisible(true);
-        } else {
-            hide();
-        }
-    };
-
-    // Hide completer
-    const hide = useCallback(() => {
-        setVisible(false);
-        queryRef.current = null;
-        if (timerRef.current) {
-            clearTimeout(timerRef.current);
-        }
-    }, []);
-
-    // Replace mention in textarea
-    const selectUser = useCallback((user: MentionUser) => {
+    function selectUser(user: MentionUser) {
         const controller = inputControllerRef.current;
         if (!controller) return;
 
@@ -91,7 +87,7 @@ export function MentionCompleter({ editorRef, inputControllerRef }: MentionCompl
         });
 
         hide();
-    }, [inputControllerRef, matchStart, hide]);
+    }
 
     // Listen for input events
     useEffect(() => {
@@ -120,7 +116,7 @@ export function MentionCompleter({ editorRef, inputControllerRef }: MentionCompl
             editor.removeEventListener('blur', handleBlur);
             editor.removeEventListener('keydown', handleKeyDown);
         };
-    }, [editorRef, checkInput, hide, visible]);
+    }, [editorRef, inputControllerRef, visible]);
 
     if (!visible || users.length === 0) {
         return null;
@@ -134,7 +130,7 @@ export function MentionCompleter({ editorRef, inputControllerRef }: MentionCompl
         >
             {users.map((user) => (
                 <div
-                    key={user.id || user.username}
+                    key={user.id}
                     class="mention-item"
                     onClick={() => selectUser(user)}
                 >

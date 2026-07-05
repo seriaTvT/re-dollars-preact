@@ -73,6 +73,7 @@ describe('Bangumi PM HTML parser', () => {
             id: '9',
             nickname: 'Peer',
             username: 'peer',
+            previousPageUrl: null,
         }));
         expect(detail.messages[0]).toEqual(expect.objectContaining({
             id: '10',
@@ -162,6 +163,25 @@ describe('Bangumi PM HTML parser', () => {
         `, `${origin}/pm/conversation/9.chii?page=1`);
         expect(page.conversations).toHaveLength(1);
         expect(page.nextPageUrl).toBe('/pm/conversation/9.chii?page=2');
+    });
+
+    it('parses the earlier-message cursor from a conversation page', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div class="pm-message-more">
+                        <a href="https://bangumi.tv/pm/conversation/9.chii?page=1&amp;before_msg_id=404953">查看更早短信</a>
+                    </div>
+                    <div id="msg_404953" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">hello</div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii?page=1`);
+
+        expect(detail.previousPageUrl).toBe('/pm/conversation/9.chii?page=1&before_msg_id=404953');
     });
 
     it('extracts reply fields through the revised editor wrapper', () => {

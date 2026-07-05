@@ -1,5 +1,5 @@
 import type { RefObject } from 'preact';
-import { useRef, useCallback } from 'preact/hooks';
+import { useRef } from 'preact/hooks';
 import { isContextMenuOpen, isSmileyPanelOpen, showContextMenu } from '@/stores/ui';
 
 interface SwipeToReplyOptions {
@@ -23,7 +23,7 @@ export function useSwipeToReply({ messageId, onReply, elementRef }: SwipeToReply
         startTime: 0,
     });
 
-    const handleTouchStart = useCallback((e: TouchEvent) => {
+    function handleTouchStart(e: TouchEvent) {
         if (e.touches.length !== 1) return;
         // Don't swipe if touching interactive elements
         if ((e.target as HTMLElement).closest('.reaction-item, button')) return;
@@ -39,9 +39,9 @@ export function useSwipeToReply({ messageId, onReply, elementRef }: SwipeToReply
         if (elementRef.current) {
             elementRef.current.style.transition = 'none';
         }
-    }, [elementRef]);
+    }
 
-    const handleTouchMove = useCallback((e: TouchEvent) => {
+    function handleTouchMove(e: TouchEvent) {
         if (!elementRef.current) return;
 
         const deltaX = e.touches[0].clientX - swipeState.current.startX;
@@ -75,9 +75,9 @@ export function useSwipeToReply({ messageId, onReply, elementRef }: SwipeToReply
                 indicatorEl.style.transform = `translateY(-50%) scale(${0.5 + 0.5 * progress})`;
             }
         }
-    }, [elementRef]);
+    }
 
-    const handleTouchEnd = useCallback((e: TouchEvent) => {
+    function handleTouchEnd(e: TouchEvent) {
         if (!elementRef.current) return;
 
         elementRef.current.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -132,7 +132,7 @@ export function useSwipeToReply({ messageId, onReply, elementRef }: SwipeToReply
         }
 
         swipeState.current.isSwiping = false;
-    }, [onReply, messageId, elementRef]);
+    }
 
     return {
         onTouchStart: handleTouchStart,

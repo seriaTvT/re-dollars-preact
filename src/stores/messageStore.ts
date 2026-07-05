@@ -211,7 +211,7 @@ export function addOptimisticMessage(
 
     const ids = messageIds.peek();
     let lastMsgTs = 0;
-    if (ids.length > 0) {
+    if (ids.length) {
         const lastMsgId = ids[ids.length - 1];
         lastMsgTs = messageMap.peek().get(lastMsgId)?.timestamp || 0;
     }
@@ -277,12 +277,11 @@ export function retryMessage(tempId: number): { content: string; stableKey: stri
  * 批量添加消息 (支持去重，用于加载历史/更新消息)
  */
 export function addMessagesBatch(newMessages: Message[]) {
-    if (newMessages.length === 0) return;
+    if (!newMessages.length) return;
 
     const map = new Map(messageMap.value);
 
     for (const msg of newMessages) {
-        // 批量回流（含重连后的补拉）同样要对账掉本地乐观消息，避免残留重复气泡。
         const { matchedId } = takeOptimisticMatch(map, msg);
         if (matchedId !== undefined) clearPendingTimer(matchedId);
 
@@ -346,7 +345,7 @@ export async function loadMessageContext(messageId: number): Promise<{ targetInd
     try {
         const result = await fetchMessageContext(messageId);
 
-        if (result && result.messages.length > 0) {
+        if (result?.messages.length) {
             const targetMsg = result.messages.find(m => m.id === messageId);
             if (!targetMsg || blockedUsers.value.has(String(targetMsg.uid))) {
                 return null;

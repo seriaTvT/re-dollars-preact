@@ -87,15 +87,7 @@ function generatePreviewCardHTML(
         coverHTML = `<div class="cover"><div style="font-size: 32px; text-align: center; line-height: 80px; color: var(--dollars-text-placeholder);">🔗</div></div>`;
     }
 
-    return `
-        <a href="${escapeHTML(normalizedUrl)}" target="_blank" rel="noopener noreferrer" class="dollars-preview-card" data-entity-type="generic">
-            ${coverHTML}
-            <div class="inner">
-                <p class="title" title="${title}">${title}</p>
-                ${desc ? `<p class="info">${desc}</p>` : ''}
-                <p class="rateInfo">${escapeHTML(domain)}</p>
-            </div>
-        </a>`;
+    return `<a href="${escapeHTML(normalizedUrl)}" target="_blank" rel="noopener noreferrer" class="dollars-preview-card" data-entity-type="generic">${coverHTML}<div class="inner"><p class="title" title="${title}">${title}</p>${desc ? `<p class="info">${desc}</p>` : ''}<p class="rateInfo">${escapeHTML(domain)}</p></div></a>`;
 }
 
 export function processBBCode(

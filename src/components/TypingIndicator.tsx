@@ -1,32 +1,22 @@
 import { typingUsers } from '@/stores/chatState';
-import { useRef, useEffect } from 'preact/hooks';
-import { useSignal } from '@preact/signals';
-import { STRINGS } from '@/utils/strings';
+import { useRef } from 'preact/hooks';
 
 export function TypingIndicator() {
     const users = Array.from(typingUsers.value.values());
     const lastText = useRef('');
-    const isVisible = useSignal(false);
 
-    useEffect(() => {
-        if (users.length > 0) {
-            let text = '';
-            if (users.length === 1) {
-                text = `${users[0]} ${STRINGS.typingSingle}`;
-            } else if (users.length === 2) {
-                text = `${users[0]}${STRINGS.typingAnd}${users[1]} ${STRINGS.typingSingle}`;
-            } else {
-                text = `${users[0]}${STRINGS.typingMultiple(users.length - 1)}`;
-            }
-            lastText.current = text;
-            isVisible.value = true;
+    if (users.length) {
+        if (users.length === 1) {
+            lastText.current = `${users[0]} 正在输入...`;
+        } else if (users.length === 2) {
+            lastText.current = `${users[0]} 和 ${users[1]} 正在输入...`;
         } else {
-            isVisible.value = false;
+            lastText.current = `${users[0]} 和其他 ${users.length - 1} 人正在输入...`;
         }
-    }, [users.length]);
+    }
 
     return (
-        <div id="dollars-typing-indicator" class={isVisible.value ? 'visible' : ''}>
+        <div id="dollars-typing-indicator" class={users.length ? 'visible' : ''}>
             {lastText.current || '\u00A0'}
         </div>
     );

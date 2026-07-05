@@ -50,7 +50,7 @@ export function useMessageImageViewer(
                     : [];
             });
             const index = timelineImages.findIndex((item) => item.container === container);
-            if (mode === 'generic' && timelineImages.length > 0 && index >= 0) {
+            if (mode === 'generic' && timelineImages.length && index >= 0) {
                 showImageViewer(timelineImages.map(item => item.entry.src), index);
                 return;
             }
@@ -60,7 +60,7 @@ export function useMessageImageViewer(
                 .map((item) => Number(item.dataset.dbId))
                 .filter((id) => Number.isInteger(id) && id > 0);
 
-            if (timelineImages.length > 0 && index >= 0 && messageIds.length > 0) {
+            if (timelineImages.length && index >= 0 && messageIds.length) {
                 showImageViewer(
                     buildMessageImageViewerItems(timelineImages.map((item) => item.entry)),
                     index,

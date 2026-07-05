@@ -40,7 +40,10 @@ export type BangumiPmConversationDetail = {
     username: string;
     avatar: string;
     messages: BangumiPmMessage[];
+    previousPageUrl: string | null;
     replyForm: BangumiPmForm | null;
+    isDraft?: boolean;
+    draftTitle?: string;
 };
 
 export type BangumiPmComposeForm = {

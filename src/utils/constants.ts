@@ -70,5 +70,4 @@ export const SCROLL_ANIMATION_DURATION = 700;
 export const HIGHLIGHT_ANIMATION_DURATION = 800;
 export const NEW_MESSAGE_ANIMATION = 350;
 
-// 右键菜单快捷表情 (6 items for horizontal row)
-export const CONTEXT_MENU_REACTIONS = [67, 63, 38, 124, 46, 106].map(n => `(bgm${n})`);
+export const CONTEXT_MENU_REACTIONS = ['(bgm67)', '(bgm63)', '(bgm38)', '(bgm124)', '(bgm46)', '(bgm106)'];

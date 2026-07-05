@@ -1,4 +1,3 @@
-import { useCallback } from 'preact/hooks';
 import { escapeHTML, getAvatarUrl, stripBBCode, decodeHTML } from '@/utils/format';
 import { isChatOpen, toggleChat, pendingJumpToMessage } from '@/stores/chatState';
 import { settings } from '@/stores/user';
@@ -15,7 +14,7 @@ import type { Notification } from '@/types';
 import type { PmNotification } from '@/types/pm';
 
 export function NotificationManager() {
-    const handleView = useCallback((notif: Notification) => {
+    const handleView = (notif: Notification) => {
         void markDollarsNotificationRead(notif);
         toggleChat(true);
 
@@ -23,29 +22,17 @@ export function NotificationManager() {
         if (messageId) {
             pendingJumpToMessage.value = messageId;
         }
-    }, []);
+    };
 
-    const handleMarkAllRead = useCallback(async () => {
-        await markAllNotificationCardsRead();
-    }, []);
-
-    const handleViewPm = useCallback((notif: PmNotification) => {
+    const handleViewPm = (notif: PmNotification) => {
         dismissPmNotification(notif.id);
         openPmConversationFromHref(notif.href);
         toggleChat(true);
-    }, []);
+    };
 
     const count = notificationCardCount.value;
 
-    if (isChatOpen.value) {
-        return null;
-    }
-
-    if (settings.value.notificationType === 'simple') {
-        return null;
-    }
-
-    if (count === 0) {
+    if (isChatOpen.value || settings.value.notificationType === 'simple' || count === 0) {
         return null;
     }
 
@@ -60,7 +47,7 @@ export function NotificationManager() {
                     class="un-clear-all"
                     onClick={(e) => {
                         e.preventDefault();
-                        handleMarkAllRead();
+                        void markAllNotificationCardsRead();
                     }}
                 >
                     全部已读

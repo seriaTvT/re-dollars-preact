@@ -19,28 +19,30 @@ export interface SmileySection {
 }
 
 // Bangumi 官网新版角色动态表情改为稀疏编号。项目内继续保持数字顺序，避免打乱现有面板排布。
-export const musumeSmileyIds = [
-    ...Array.from({ length: 96 }, (_, index) => index + 1),
-    ...Array.from({ length: 20 }, (_, index) => index + 99)
+const ids = (start: number, end: number, ...extra: number[]) => [
+    ...Array.from({ length: end - start + 1 }, (_, index) => start + index),
+    ...extra,
 ];
-export const blakeSmileyIds = Array.from({ length: 118 }, (_, index) => index + 1);
+
+export const musumeSmileyIds = ids(1, 96, ...ids(99, 118));
+export const blakeSmileyIds = ids(1, 118);
 
 const musumeSmileySections: readonly SmileySection[] = [
     {
         name: '情绪反应',
-        ids: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 100, 106, 108, 118]
+        ids: ids(6, 42, 100, 106, 108, 118)
     },
     {
         name: '动作道具',
-        ids: [43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 101, 102, 103, 99, 107, 112, 109, 110, 111, 113, 114, 115, 116, 117]
+        ids: ids(43, 76, 101, 102, 103, 99, 107, 112, 109, 110, 111, 113, 114, 115, 116, 117)
     },
     {
         name: '日常状态',
-        ids: [77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 104, 105, 94, 95, 96]
+        ids: ids(77, 93, 104, 105, 94, 95, 96)
     },
     {
         name: '提示反馈',
-        ids: [1, 2, 3, 4, 5]
+        ids: ids(1, 5)
     }
 ];
 
