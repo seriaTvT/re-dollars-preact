@@ -382,7 +382,7 @@ export function loadPmDetail(id: string, path = `/pm/conversation/${id}.chii`, f
 export function openPmConversation(conversation: BangumiPmConversation) {
     toggleSearch(false);
     setActiveConversation(`pm:${conversation.id}`);
-    setMobileChatView(true);
+    if (isNarrowLayout.peek()) setMobileChatView(true);
     void loadPmDetail(conversation.id, conversation.href);
 }
 
@@ -394,7 +394,7 @@ export function openPmConversationFromHref(href: string) {
     const knownConversation = pmConversations.peek().find(item => item.id === id);
     toggleSearch(false);
     setActiveConversation(`pm:${id}`);
-    setMobileChatView(true);
+    if (isNarrowLayout.peek()) setMobileChatView(true);
     void loadPmDetail(id, knownConversation?.href || path);
     if (!knownConversation) void loadPmInbox(true);
     return true;
@@ -404,7 +404,7 @@ export function openPmCompose(receiver = '') {
     toggleSearch(false);
     pmComposeReceiver.value = receiver;
     setActiveConversation('pm:new');
-    setMobileChatView(true);
+    if (isNarrowLayout.peek()) setMobileChatView(true);
 }
 
 function normalizeText(value: string | null | undefined) {
