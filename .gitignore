@@ -9,7 +9,7 @@ Bangumi-website-resources/
 pm_sample/
 
 # Production
-# dist/ is intentionally NOT ignored to allow direct installation from GitHub
+dist/
 
 # Misc
 .DS_Store

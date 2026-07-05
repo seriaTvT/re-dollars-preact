@@ -1,0 +1,87 @@
+name: Build userscript
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: userscript-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Check and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Stage userscript artifact
+        run: |
+          mkdir -p artifact
+          cp dist/userscript.user.js artifact/userscript.user.js
+
+      - name: Upload userscript artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: userscript
+          path: artifact/userscript.user.js
+          if-no-files-found: error
+
+  publish:
+    name: Publish latest release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download userscript artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: userscript
+          path: artifact
+
+      - name: Publish latest userscript
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git tag --force latest "$GITHUB_SHA"
+          git push --force origin refs/tags/latest
+
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest artifact/userscript.user.js --clobber
+          else
+            gh release create latest artifact/userscript.user.js \
+              --title "Latest userscript build" \
+              --notes "Automated build from the main branch."
+          fi
