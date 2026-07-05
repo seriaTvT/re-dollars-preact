@@ -50,6 +50,7 @@ export function LightboxViewer() {
     const startMid = useRef({ x: 0, y: 0 });
     const lastTap = useRef(0);
     const isDragging = useRef(false);
+    const isTouchGestureActive = useRef(false);
     const hasMoved = useRef(false);
     const swipeStartX = useRef(0);
     const swipeStartY = useRef(0);
@@ -230,6 +231,17 @@ export function LightboxViewer() {
         }
     };
 
+    const canSwipeHorizontally = (dx: number) => dx < 0 ? canNavigateNext : canNavigatePrevious;
+
+    const getSwipeTranslateX = (dx: number) => {
+        if (canSwipeHorizontally(dx)) return dx;
+        return dx * 0.28;
+    };
+
+    const isLightboxControlTarget = (target: EventTarget | null) => (
+        target instanceof Element && !!target.closest('.lb-close, .lb-nav, .lb-capsule')
+    );
+
     // Keyboard
     useEffect(() => {
         if (!visible) return;
@@ -263,7 +275,14 @@ export function LightboxViewer() {
 
     // --- Touch handlers ---
     const onTouchStart = (e: TouchEvent) => {
+        if (isLightboxControlTarget(e.target)) {
+            isTouchGestureActive.current = false;
+            isDragging.current = false;
+            return;
+        }
+
         const touches = e.touches;
+        isTouchGestureActive.current = true;
         hasMoved.current = false;
 
         if (touches.length === 1) {
@@ -297,6 +316,8 @@ export function LightboxViewer() {
     };
 
     const onTouchMove = (e: TouchEvent) => {
+        if (!isTouchGestureActive.current) return;
+
         const touches = e.touches;
         hasMoved.current = true;
 
@@ -323,8 +344,9 @@ export function LightboxViewer() {
                 imgRef.current?.classList.add('lb-dragging');
                 applyTransform();
             } else {
-                // swipe tracking: apply vertical offset for feedback
-                ty.current = dy * 0.5;
+                e.preventDefault();
+                tx.current = getSwipeTranslateX(dx);
+                ty.current = Math.abs(dx) > Math.abs(dy) ? 0 : dy * 0.5;
                 imgRef.current?.classList.add('lb-dragging');
                 applyTransform();
             }
@@ -332,7 +354,9 @@ export function LightboxViewer() {
     };
 
     const onTouchEnd = (e: TouchEvent) => {
+        if (!isTouchGestureActive.current) return;
         if (e.touches.length > 0) return;
+        isTouchGestureActive.current = false;
         isDragging.current = false;
         imgRef.current?.classList.remove('lb-dragging');
 
@@ -398,6 +422,9 @@ export function LightboxViewer() {
             ref={overlayRef}
             class="lb-overlay"
             onClick={onBackdropClick}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
         >
             {/* Close button */}
             <button class="lb-close" onClick={close} aria-label="Close" />
@@ -440,9 +467,6 @@ export function LightboxViewer() {
                     alt=""
                     draggable={false}
                     onDblClick={onImageDoubleClick}
-                    onTouchStart={onTouchStart}
-                    onTouchMove={onTouchMove}
-                    onTouchEnd={onTouchEnd}
                     onWheel={onWheel}
                     onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = '/img/no_img.gif';
