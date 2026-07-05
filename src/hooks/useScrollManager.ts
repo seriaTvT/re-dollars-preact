@@ -69,6 +69,7 @@ export function useScrollManager(
     const scrollAnimationRef = useRef<number | null>(null);
     const isProgrammaticScroll = useRef(false); // 程序滚动标记，防止 ResizeObserver 干扰
     const keepBottomUntil = useRef(0);
+    const previousInputAreaHeight = useRef(inputAreaHeight.value);
     const wasChatOpen = useRef(false);
 
     const jumpToBottom = useCallback(() => {
@@ -351,7 +352,15 @@ export function useScrollManager(
     }, [isChatOpen.value]);
 
     useEffect(() => {
-        if (!isChatOpen.value || hasUnreadMessages.value || !timelineIsLive.value) return;
+        const previousHeight = previousInputAreaHeight.current;
+        const currentHeight = inputAreaHeight.value;
+        previousInputAreaHeight.current = currentHeight;
+
+        if (!isChatOpen.value || hasUnreadMessages.value || !timelineIsLive.value || !bodyRef.current) return;
+
+        const heightDelta = Math.abs(currentHeight - previousHeight);
+        const shouldKeepBottom = isStickingToBottom.current || isNearScrollBottom(bodyRef.current, heightDelta + 50);
+        if (!shouldKeepBottom) return;
 
         keepBottomUntil.current = Date.now() + 500;
         requestAnimationFrame(() => {
