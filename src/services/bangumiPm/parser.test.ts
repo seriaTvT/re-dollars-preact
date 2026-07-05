@@ -150,6 +150,59 @@ describe('Bangumi PM HTML parser', () => {
         expect(html).not.toContain('src="javascript:');
     });
 
+    it('restores image BBCode when Bangumi renders it as a link', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_13" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">
+                            <a href="https://example.com/image.jpg">https://example.com/image.jpg</a>
+                            <a href="https://example.com/raw.png">[img]https://example.com/raw.png[/img]</a>
+                            <a href="https://example.com/manual.webp">manual image link</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toContain('[img]https://example.com/image.jpg[/img]');
+        expect(message.presentationText).toContain('[img]https://example.com/raw.png[/img]');
+        expect(message.presentationText).toContain('[url=https://example.com/manual.webp]manual image link[/url]');
+
+        const html = message.bodyHtml;
+        expect(html).toContain('data-full-src="https://example.com/image.jpg"');
+        expect(html).toContain('data-full-src="https://example.com/raw.png"');
+        expect(html).toContain('<a href="https://example.com/manual.webp" target="_blank" rel="noopener noreferrer">manual image link</a>');
+    });
+
+    it('restores Bangumi native quote blocks in PM bodies', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_405192" class="pm-message pm-message-self clearit">
+                        <a href="/user/wataame" class="avatar">
+                            <span class="avatarNeue avatarSize32" style="background-image:url('//lain.bgm.tv/pic/user/l/000/46/46/464691_8806h.jpg?r=1777358261&amp;hd=1')"></span>
+                        </a>
+                        <div class="pm-message-bubble">
+                            <div class="pm-message-body"><div class="quote"><q>123</q></div>hahaha</div>
+                            <div class="pm-message-info"><small>2026-7-6 03:14 / del</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toBe('[quote]123[/quote]hahaha');
+        expect(message.bodyHtml).toContain('class="chat-quote"');
+        expect(message.bodyHtml).toContain('123');
+        expect(message.bodyHtml).toContain('hahaha');
+    });
+
     it('treats pager links as conversation-list pagination', () => {
         const page = parsePmInbox(`
             <div id="contentPM">

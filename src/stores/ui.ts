@@ -23,9 +23,11 @@ export {
 
     // Panel-specific extra state
     contextMenuPosition,
+    contextMenuTarget,
     contextMenuTargetId,
     contextMenuImageUrl,
     contextMenuBmoCode,
+    contextMenuSource,
     userProfilePanelUserId,
     imageViewerItems,
     imageViewerIndex,
@@ -47,6 +49,9 @@ export {
     toggleSearch,
 
 } from '@/stores/panels';
+
+export type { ContextMenuSource } from '@/stores/panels';
+export type { MessageActionTarget } from '@/utils/messageActions';
 
 const browserWindow = typeof window !== 'undefined' ? window : undefined;
 const savedWindowState = loadWindowState();

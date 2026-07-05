@@ -499,6 +499,61 @@ describe('Bangumi PM polling', () => {
         expect(pmNewMessageIds.value.has('99')).toBe(false);
     });
 
+    it('reconciles quoted optimistic PM replies when Bangumi removes quote-adjacent whitespace', async () => {
+        pmDetails.value = {
+            '42': {
+                id: '42',
+                nickname: 'Peer',
+                username: 'peer',
+                avatar: 'peer.jpg',
+                messages: [],
+                previousPageUrl: null,
+                replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+            },
+        };
+        let resolveSend: (value: any) => void = () => {};
+        mocks.sendPmReply.mockReturnValue(new Promise(resolve => { resolveSend = resolve; }));
+
+        const pending = submitPmReply('42', '[quote]hello[/quote]\nreply');
+
+        const optimistic = pmDetails.value['42'].messages[0];
+        expect(optimistic).toMatchObject({
+            bodyText: '[quote]hello[/quote]\nreply',
+            state: 'sending',
+        });
+
+        resolveSend({
+            status: 'sent',
+            detail: {
+                id: '42',
+                nickname: 'Peer',
+                username: 'peer',
+                avatar: 'peer.jpg',
+                messages: [{
+                    id: '100',
+                    isSelf: true,
+                    avatar: '',
+                    userHref: '/user/me',
+                    bodyHtml: '<blockquote class="chat-quote"></blockquote>reply',
+                    bodyText: 'helloreply',
+                    presentationText: '[quote]hello[/quote]reply',
+                    timestamp: optimistic.timestamp,
+                    timestampText: '刚刚',
+                }],
+                previousPageUrl: null,
+                replyForm: { action: '/pm/conversation/42.chii', fields: {} },
+            },
+        });
+        await pending;
+
+        expect(pmDetails.value['42'].messages).toHaveLength(1);
+        expect(pmDetails.value['42'].messages[0]).toMatchObject({
+            id: '100',
+            stableKey: optimistic.stableKey,
+            state: 'sent',
+        });
+    });
+
     it('sends the first draft PM through createPm and switches to the real conversation', async () => {
         const draftId = 'draft:new_user';
         pmDetails.value = {

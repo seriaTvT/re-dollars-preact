@@ -29,6 +29,15 @@ export type BangumiPmMessage = {
     state?: 'sending' | 'sent' | 'failed';
 };
 
+export type BangumiPmReplyTarget = {
+    conversationId: string;
+    messageId: string;
+    user: string;
+    avatar: string;
+    text: string;
+    raw: string;
+};
+
 export type BangumiPmForm = {
     action: string;
     fields: Record<string, string>;

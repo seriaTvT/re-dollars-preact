@@ -10,6 +10,7 @@ import { escapeHTML } from '@/utils/format';
 import { processBBCode } from '@/utils/bbcode';
 
 const FALLBACK_ORIGIN = 'https://bangumi.tv';
+const IMAGE_URL_EXT_RE = /\.(?:apng|avif|bmp|gif|jpe?g|png|svg|webp)$/i;
 // 与 sanitizePmBody 阶段无关：pmPresentationText 复原 BBCode 时需要跳过这些危险标签，
 // 避免把 <script> 之类的文本内容混进渲染文本。
 const BLOCKED_TAGS = new Set(['IFRAME', 'MATH', 'OBJECT', 'SCRIPT', 'STYLE', 'SVG', 'TEMPLATE']);
@@ -87,6 +88,32 @@ function mediaUrl(element: Element, baseUrl: string) {
     return safeResourceUrl(raw, baseUrl);
 }
 
+function isImageUrl(value: string) {
+    try {
+        return IMAGE_URL_EXT_RE.test(new URL(value).pathname);
+    } catch {
+        return false;
+    }
+}
+
+function textMatchesUrl(text: string, url: string, baseUrl: string) {
+    try {
+        return new URL(text.trim(), baseUrl).href === url;
+    } catch {
+        return false;
+    }
+}
+
+function imageBBCodeFromLink(element: Element, href: string, baseUrl: string) {
+    const text = element.textContent?.trim() || '';
+    const match = text.match(/^\[img\]([\s\S]+?)\[\/img\]$/i);
+    if (match) {
+        const src = safeResourceUrl(match[1], baseUrl);
+        return src ? `[img]${src}[/img]` : null;
+    }
+    return isImageUrl(href) && textMatchesUrl(text, href, baseUrl) ? `[img]${href}[/img]` : null;
+}
+
 function presentSpan(element: Element, content: string): string {
     if (!content) return content;
     if (element.classList.contains('text_mask') || element.classList.contains('mask')) {
@@ -107,9 +134,13 @@ function pmPresentationText(source: Node, baseUrl: string): string {
     if (BLOCKED_TAGS.has(source.tagName)) return '';
 
     const content = Array.from(source.childNodes).map(node => pmPresentationText(node, baseUrl)).join('');
+    if (source.classList.contains('quote')) return wrapBBCode('quote', content);
+
     switch (source.tagName) {
         case 'BR':
             return '\n';
+        case 'Q':
+            return content;
         case 'IMG': {
             if (source.classList.contains('smile')) return source.getAttribute('alt') || '';
             const src = safeResourceUrl(source.getAttribute('src') || '', baseUrl);
@@ -132,6 +163,8 @@ function pmPresentationText(source: Node, baseUrl: string): string {
         case 'A': {
             const href = safeResourceUrl(source.getAttribute('href') || '', baseUrl);
             if (!href) return content;
+            const imageBBCode = imageBBCodeFromLink(source, href, baseUrl);
+            if (imageBBCode) return imageBBCode;
             // 裸链接交给 processBBCode 的自动链接逻辑，与主聊天一致
             return content.trim() === href ? href : `[url=${href}]${content}[/url]`;
         }

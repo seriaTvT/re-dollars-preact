@@ -1,5 +1,6 @@
 import { signal } from '@preact/signals';
 import type { ImageViewerItem } from '@/types';
+import type { MessageActionTarget } from '@/utils/messageActions';
 
 // Panel identifiers
 export type PanelId = 'smiley' | 'contextMenu' | 'reactionPicker' | 'userProfile' | 'search' | 'imageViewer';
@@ -32,10 +33,13 @@ export const searchGalleryMode = signal(false);
 // --- Panel-specific extra state ---
 
 // Context menu
+export type ContextMenuSource = 'dollars' | 'pm';
 export const contextMenuPosition = signal({ x: 0, y: 0 });
+export const contextMenuTarget = signal<MessageActionTarget | null>(null);
 export const contextMenuTargetId = signal<string | null>(null);
 export const contextMenuImageUrl = signal<string | null>(null);
 export const contextMenuBmoCode = signal<string | null>(null);
+export const contextMenuSource = signal<ContextMenuSource>('dollars');
 
 // User profile panel
 export const userProfilePanelUserId = signal<string | null>(null);
@@ -93,9 +97,11 @@ function hidePanelImmediate(id: PanelId): void {
 function cleanupPanelState(id: PanelId): void {
     switch (id) {
         case 'contextMenu':
+            contextMenuTarget.value = null;
             contextMenuTargetId.value = null;
             contextMenuImageUrl.value = null;
             contextMenuBmoCode.value = null;
+            contextMenuSource.value = 'dollars';
             break;
         case 'userProfile':
             userProfilePanelUserId.value = null;
@@ -159,11 +165,23 @@ export function togglePanel(id: PanelId, open?: boolean): void {
 
 // --- High-level convenience functions (preserve existing API signatures) ---
 
-export function showContextMenu(x: number, y: number, targetId: string | null, imageUrl?: string | null, bmoCode?: string | null): void {
+export function showContextMenu(
+    x: number,
+    y: number,
+    target: string | MessageActionTarget | null,
+    imageUrl?: string | null,
+    bmoCode?: string | null,
+    source: ContextMenuSource = 'dollars'
+): void {
+    const resolvedTarget: MessageActionTarget | null = typeof target === 'string'
+        ? source === 'dollars' ? { kind: 'dollars', id: target } : null
+        : target;
     contextMenuPosition.value = { x, y };
-    contextMenuTargetId.value = targetId;
+    contextMenuTarget.value = resolvedTarget;
+    contextMenuTargetId.value = resolvedTarget?.id ?? null;
     contextMenuImageUrl.value = imageUrl ?? null;
     contextMenuBmoCode.value = bmoCode ?? null;
+    contextMenuSource.value = resolvedTarget?.kind ?? source;
     showPanel('contextMenu');
 }
 

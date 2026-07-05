@@ -8,6 +8,7 @@ import { toSameOriginPmPath } from '@/services/bangumiPm/parser';
 import { settings, userInfo } from '@/stores/user';
 import { escapeHTML, getAvatarUrl } from '@/utils/format';
 import { processBBCode } from '@/utils/bbcode';
+import { rawPmMessageText, summarizeReplyText } from '@/utils/messageActions';
 import { NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import {
     createOptimisticStableKey,
@@ -17,7 +18,13 @@ import {
 } from '@/utils/optimisticMessages';
 import { updateSignalSet } from '@/utils/signalMap';
 import { addPmNotification, dismissPmNotification, prunePmNotifications } from '@/stores/notifications';
-import type { BangumiPmConversation, BangumiPmConversationDetail, BangumiPmMessage, BangumiPmSendOutcome } from '@/types/pm';
+import type {
+    BangumiPmConversation,
+    BangumiPmConversationDetail,
+    BangumiPmMessage,
+    BangumiPmReplyTarget,
+    BangumiPmSendOutcome,
+} from '@/types/pm';
 
 export const pmConversations = signal<BangumiPmConversation[]>([]);
 export const pmDetails = signal<Record<string, BangumiPmConversationDetail>>({});
@@ -31,6 +38,7 @@ export const pmEarlierMessagesLoading = signal<Set<string>>(new Set());
 export const pmEarlierMessagesError = signal<Record<string, string>>({});
 export const pmComposeReceiver = signal('');
 export const pmNewMessageIds = signal<Set<string>>(new Set());
+export const pmReplyingTo = signal<BangumiPmReplyTarget | null>(null);
 // 未读短信总数（来自 /json/notify）。即使聊天面板关闭也会更新，用于 Dock 角标。
 export const pmUnreadCount = signal(0);
 // 每会话未读数（来自 /json/notify，id → 未读数）。始终新鲜，不依赖收件箱 HTML 解析，
@@ -84,7 +92,42 @@ function pmNotifySignature(notify: BangumiNotify) {
 }
 
 function normalizePmMessageText(value: string | null | undefined) {
-    return (value || '').replace(/\s+/g, ' ').trim();
+    return (value || '')
+        .replace(/\[quote([^\]]*)\]\s*/gi, '[quote$1]')
+        .replace(/\s*\[\/quote\]\s*/gi, '[/quote]')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function pmMessageReplyUser(detail: BangumiPmConversationDetail, message: BangumiPmMessage) {
+    if (!message.isSelf) return detail.nickname || 'Bangumi 短信';
+    return userInfo.peek().nickname || userInfo.peek().name || '我';
+}
+
+export function setPmReplyTo(conversationId: string, message: BangumiPmMessage) {
+    const detail = pmDetails.peek()[conversationId];
+    if (!detail) return false;
+    const raw = rawPmMessageText(message);
+    const text = summarizeReplyText(raw);
+    pmReplyingTo.value = {
+        conversationId,
+        messageId: message.id,
+        user: pmMessageReplyUser(detail, message),
+        avatar: message.avatar,
+        text,
+        raw,
+    };
+    return true;
+}
+
+export function setPmReplyToMessage(conversationId: string, messageId: string) {
+    const detail = pmDetails.peek()[conversationId];
+    const message = detail?.messages.find(item => item.id === messageId);
+    return detail && message ? setPmReplyTo(conversationId, message) : false;
+}
+
+export function cancelPmReply() {
+    pmReplyingTo.value = null;
 }
 
 function pmMessageNumericId(id: string) {
@@ -437,6 +480,7 @@ export function loadPmDetail(id: string, path = `/pm/conversation/${id}.chii`, f
 }
 
 export function openPmConversation(conversation: BangumiPmConversation) {
+    cancelPmReply();
     toggleSearch(false);
     setActiveConversation(`pm:${conversation.id}`);
     if (isNarrowLayout.peek()) setMobileChatView(true);
@@ -449,6 +493,7 @@ export function openPmConversationFromHref(href: string) {
     if (!path || !id) return false;
 
     const knownConversation = pmConversations.peek().find(item => item.id === id);
+    cancelPmReply();
     toggleSearch(false);
     setActiveConversation(`pm:${id}`);
     if (isNarrowLayout.peek()) setMobileChatView(true);
@@ -458,6 +503,7 @@ export function openPmConversationFromHref(href: string) {
 }
 
 export function openPmCompose(receiver = '') {
+    cancelPmReply();
     toggleSearch(false);
     pmComposeReceiver.value = receiver;
     setActiveConversation('pm:new');
@@ -510,6 +556,7 @@ function findPmConversationForUser(username: string, nickname: string, avatar: s
 }
 
 function openPmDraft(id: string) {
+    cancelPmReply();
     toggleSearch(false);
     setActiveConversation(`pm:${id}`);
     if (isNarrowLayout.peek()) setMobileChatView(true);

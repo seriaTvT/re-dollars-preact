@@ -6,8 +6,8 @@ import { setReplyTo } from '@/stores/composerState';
 import { settings } from '@/stores/user';
 import { retryFailedMessage } from '@/services/composer/sendMessage';
 import type { Message } from '@/types';
-import { stripQuotes } from '@/utils/bbcode';
-import { escapeHTML, formatDate, getAvatarUrl } from '@/utils/format';
+import { formatDate, getAvatarUrl } from '@/utils/format';
+import { summarizeReplyText } from '@/utils/messageActions';
 import { showContextMenu } from '@/stores/ui';
 import { COLLAPSE_MAX_HEIGHT, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import { UserAvatar } from './UserAvatar';
@@ -117,18 +117,13 @@ export function MessageItem({ message, isSelf, isGrouped, isGroupedWithNext }: M
         }
 
         e.preventDefault();
-        showContextMenu(e.clientX, e.clientY, String(messageId), imageUrl, bmoCode);
+        showContextMenu(e.clientX, e.clientY, { kind: 'dollars', id: String(messageId) }, imageUrl, bmoCode);
     };
 
     // 触发回复
     const triggerReply = () => {
         const rawContent = (getRawMessage(messageId) || messageText || '').trim();
-        const text = stripQuotes(escapeHTML(rawContent))
-            .replace(/\[img\].*?\[\/img\]/gi, '[图片]')
-            .replace(/\[file=.*?\].*?\[\/file\]/gi, '[附件]')
-            .replace(/\n/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
+        const text = summarizeReplyText(rawContent);
 
         setReplyTo({
             id: String(messageId),

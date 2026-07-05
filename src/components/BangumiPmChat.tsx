@@ -3,10 +3,13 @@ import { MEDIA_FILE_ACCEPT, useMediaUpload } from '@/hooks/useMediaUpload';
 import { useCollapsibleMessage } from '@/hooks/useCollapsibleMessage';
 import { useFloatingAttachMenu } from '@/hooks/useFloatingAttachMenu';
 import { useMessageImageViewer } from '@/hooks/useMessageImageViewer';
+import { hydrateImageLoadingState } from '@/hooks/useMessageVisibilityEffects';
 import { useRichInput } from '@/hooks/useRichInput';
+import { useSwipeToReply } from '@/hooks/useSwipeToReply';
 import { activeConversationId } from '@/stores/conversations';
 import {
     activePmKey,
+    cancelPmReply,
     isBangumiLoggedIn,
     loadEarlierPmMessages,
     loadPmDetail,
@@ -18,13 +21,16 @@ import {
     pmEarlierMessagesError,
     pmEarlierMessagesLoading,
     pmNewMessageIds,
+    pmReplyingTo,
     openPmDraftForReceiver,
     openPmForUser,
     retryPmReply,
+    setPmReplyTo,
     submitPmReply,
 } from '@/stores/bangumiPm';
-import { showUserProfile, toggleSmileyPanel } from '@/stores/ui';
+import { showContextMenu, showUserProfile, toggleSmileyPanel } from '@/stores/ui';
 import { settings } from '@/stores/user';
+import { buildPmReplyBody } from '@/services/bangumiPm/reply';
 import { COLLAPSE_MAX_HEIGHT, MAX_MENTION_RESULTS, MENTION_DEBOUNCE, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import { formatDate } from '@/utils/format';
 import { searchMentionUsers, type MentionSearchUser } from '@/utils/api/users';
@@ -63,18 +69,23 @@ function arePmMessagesGrouped(current: BangumiPmMessage | undefined, adjacent: B
 }
 
 function PmMessageItem({
+    conversationId,
     message,
     nickname,
     isGrouped,
     isGroupedWithNext,
+    onReply,
     onRetry,
 }: {
+    conversationId: string;
     message: BangumiPmMessage;
     nickname: string;
     isGrouped: boolean;
     isGroupedWithNext: boolean;
+    onReply?: (message: BangumiPmMessage) => void;
     onRetry?: (messageId: string) => void;
 }) {
+    const messageRef = useRef<HTMLDivElement>(null);
     const textContentRef = useRef<HTMLDivElement>(null);
     const [isNew, setIsNew] = useState(() => pmNewMessageIds.peek().has(message.id));
     const presentationText = message.presentationText || message.bodyText;
@@ -113,11 +124,34 @@ function PmMessageItem({
         }
     }, [isNew]);
 
+    useEffect(() => {
+        const el = textContentRef.current;
+        if (el) hydrateImageLoadingState(el);
+    }, [message.bodyHtml]);
+
     const handleBubbleClick = (event: MouseEvent) => {
         if (message.state !== 'failed') return;
         event.stopPropagation();
         onRetry?.(message.id);
     };
+
+    const triggerReply = () => {
+        onReply?.(message);
+    };
+
+    const handleContextMenu = (event: MouseEvent) => {
+        event.preventDefault();
+        showContextMenu(event.clientX, event.clientY, { kind: 'pm', conversationId, id: message.id });
+    };
+
+    const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToReply({
+        messageId: message.id,
+        onReply: triggerReply,
+        elementRef: messageRef,
+        contextMenuSource: 'pm',
+        contextMenuTarget: { kind: 'pm', conversationId, id: message.id },
+    });
+
     const handleAvatarClick = (event: MouseEvent) => {
         const username = message.userHref.match(/^\/user\/(.+)$/)?.[1];
         if (!username) return;
@@ -128,9 +162,17 @@ function PmMessageItem({
 
     return (
         <div
+            ref={messageRef}
             class={`chat-message dollars-pm-message${message.isSelf ? ' self' : ''}${isGrouped ? ' is-grouped-with-prev' : ''}${isGroupedWithNext ? ' is-grouped-with-next' : ''}${isNew ? ' new-message' : ''}${message.state === 'sending' ? ' pending' : ''}${message.state === 'failed' ? ' failed' : ''}`}
+            data-pm-id={message.id}
             data-timestamp={message.timestamp ?? undefined}
+            onContextMenu={handleContextMenu}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            onTouchCancel={onTouchEnd}
         >
+            <div class="swipe-reply-indicator"></div>
             <a class="dollars-pm-avatar-link" href={message.userHref || '#'} target="_blank" rel="noopener noreferrer" onClick={handleAvatarClick}>
                 <img class="avatar" src={message.avatar || '/img/no_icon_subject.png'} alt={message.isSelf ? '' : nickname} />
             </a>
@@ -284,6 +326,7 @@ function PmConversationView({ id }: { id: string }) {
     const canCompose = !!detail?.replyForm || !!detail?.isDraft;
     const isLoadingEarlier = pmEarlierMessagesLoading.value.has(id);
     const earlierError = pmEarlierMessagesError.value[id] || '';
+    const activeReply = pmReplyingTo.value?.conversationId === id ? pmReplyingTo.value : null;
 
     const handleEditorKeyDown = (event: KeyboardEvent) => {
         if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return;
@@ -326,11 +369,14 @@ function PmConversationView({ id }: { id: string }) {
     const send = async () => {
         const content = (inputControllerRef.current?.getValue() || '').trim();
         if (!content || sending || isUploading) return;
+        const reply = pmReplyingTo.value?.conversationId === id ? pmReplyingTo.value : null;
+        const body = buildPmReplyBody(content, reply);
         setSending(true);
         setSendError('');
-        const pending = submitPmReply(id, content);
+        const pending = submitPmReply(id, body);
         inputControllerRef.current?.setValue('', { focus: true });
         setPreviewMedia([]);
+        if (reply) cancelPmReply();
         const result = await pending;
         setSending(false);
         if (result.status !== 'sent') setSendError(result.error);
@@ -359,6 +405,13 @@ function PmConversationView({ id }: { id: string }) {
                 isAutoLoadingEarlierRef.current = false;
             });
         }
+    };
+
+    const replyToMessage = (message: BangumiPmMessage) => {
+        if (!setPmReplyTo(id, message)) return;
+        requestAnimationFrame(() => {
+            composerRef.current?.focus();
+        });
     };
 
     const handleMessageScroll = () => {
@@ -399,10 +452,12 @@ function PmConversationView({ id }: { id: string }) {
                         <div key={message.stableKey || message.id}>
                             {showTopic && <div class="dollars-pm-topic">{message.topic}</div>}
                             <PmMessageItem
+                                conversationId={id}
                                 message={message}
                                 nickname={nickname}
                                 isGrouped={isGrouped}
                                 isGroupedWithNext={isGroupedWithNext}
+                                onReply={replyToMessage}
                                 onRetry={retry}
                             />
                         </div>
@@ -418,6 +473,28 @@ function PmConversationView({ id }: { id: string }) {
                     textareaRef={composerProxyRef}
                 />
                 <div class="chat-input-area">
+                    {activeReply && (
+                        <div id="dollars-pm-reply-preview" class="reply-preview visible">
+                            <div class="reply-bar"></div>
+                            <img
+                                class="reply-avatar"
+                                src={activeReply.avatar || '/img/no_icon_subject.png'}
+                                alt=""
+                            />
+                            <div class="reply-info">
+                                <span class="reply-user">{activeReply.user}</span>
+                                <span class="reply-text">{activeReply.text}</span>
+                            </div>
+                            <button
+                                type="button"
+                                class="reply-cancel-btn"
+                                title="取消回复"
+                                onClick={() => cancelPmReply()}
+                            >
+                                ×
+                            </button>
+                        </div>
+                    )}
                     {sendError && <div class="dollars-pm-error dollars-pm-input-error">{sendError}</div>}
                     <MediaPreview previewMedia={previewMedia} onRemoveMedia={handleRemoveMedia} />
                     <div class="input-wrapper">

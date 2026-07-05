@@ -1,11 +1,14 @@
 import type { RefObject } from 'preact';
 import { useRef } from 'preact/hooks';
 import { isContextMenuOpen, isSmileyPanelOpen, showContextMenu } from '@/stores/ui';
+import type { ContextMenuSource, MessageActionTarget } from '@/stores/ui';
 
 interface SwipeToReplyOptions {
-    messageId: number;
+    messageId: number | string;
     onReply: () => void;
     elementRef: RefObject<HTMLDivElement>;
+    contextMenuSource?: ContextMenuSource;
+    contextMenuTarget?: MessageActionTarget;
 }
 
 interface SwipeHandlers {
@@ -14,7 +17,13 @@ interface SwipeHandlers {
     onTouchEnd: (e: TouchEvent) => void;
 }
 
-export function useSwipeToReply({ messageId, onReply, elementRef }: SwipeToReplyOptions): SwipeHandlers {
+export function useSwipeToReply({
+    messageId,
+    onReply,
+    elementRef,
+    contextMenuSource = 'dollars',
+    contextMenuTarget,
+}: SwipeToReplyOptions): SwipeHandlers {
     const swipeState = useRef({
         startX: 0,
         startY: 0,
@@ -127,7 +136,14 @@ export function useSwipeToReply({ messageId, onReply, elementRef }: SwipeToReply
                 // Prevent ghost click that might trigger the menu immediately
                 if (e.cancelable) e.preventDefault();
 
-                showContextMenu(touch.clientX, touch.clientY, String(messageId), null);
+                showContextMenu(
+                    touch.clientX,
+                    touch.clientY,
+                    contextMenuTarget || String(messageId),
+                    null,
+                    null,
+                    contextMenuSource
+                );
             }
         }
 

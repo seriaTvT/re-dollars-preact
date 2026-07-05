@@ -13,7 +13,7 @@ function updateContainerSize(container: HTMLElement, w: number, h: number) {
     container.dataset.ih = String(h);
 }
 
-function hydrateImageLoadingState(root: HTMLElement) {
+export function hydrateImageLoadingState(root: HTMLElement) {
     root.querySelectorAll('.full-image').forEach((img: Element) => {
         const image = img as HTMLImageElement;
         const container = image.closest('.image-container') as HTMLElement | null;
