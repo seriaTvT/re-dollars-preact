@@ -22,7 +22,7 @@ A lighter, more maintainable rewrite of the Bangumi/Chii.in Re:Dollars userscrip
 
 ### For Users
 1.  Install a Userscript manager like [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.top/).
-2.  [**Click here to install the script**](dist/userscript.user.js?raw=true) (GitHub raw link).
+2.  [**Click here to install the script**](https://github.com/maho0x/re-dollars-preact/releases/download/latest/userscript.user.js) (latest GitHub Actions build).
 
 ### For Developers
 

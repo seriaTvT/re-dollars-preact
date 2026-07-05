@@ -6,7 +6,7 @@ export type {
     ImageMeta,
     LinkPreview,
     ReplyDetails,
-} from '../../../shared/types';
+} from './shared';
 
 import type {
     MessageBase,
@@ -15,7 +15,7 @@ import type {
     ImageMeta,
     LinkPreview,
     ReplyDetails,
-} from '../../../shared/types';
+} from './shared';
 
 // 会话类型
 export interface Conversation {
