@@ -3,11 +3,12 @@ import { activeConversationId, setActiveConversation } from './conversations';
 import { isChatOpen } from './chatState';
 import { chatLayoutReady, isNarrowLayout, mobileChatViewActive, setMobileChatView, toggleSearch } from '@/stores/ui';
 import { createPm, fetchPmConversation, fetchPmInbox, sendPmReply } from '@/services/bangumiPm/client';
-import { fetchNotify, type BangumiNotify, type BangumiNotifyPmItem } from '@/services/bangumiPm/notify';
+import { fetchNotify, type BangumiNotify } from '@/services/bangumiPm/notify';
 import { toSameOriginPmPath } from '@/services/bangumiPm/parser';
 import { settings } from '@/stores/user';
 import { getAvatarUrl } from '@/utils/format';
-import type { BangumiPmConversation, BangumiPmConversationDetail, PmNotification } from '@/types/pm';
+import { addPmNotification, dismissPmNotification, prunePmNotifications } from '@/stores/notifications';
+import type { BangumiPmConversation, BangumiPmConversationDetail } from '@/types/pm';
 
 export const pmConversations = signal<BangumiPmConversation[]>([]);
 export const pmDetails = signal<Record<string, BangumiPmConversationDetail>>({});
@@ -29,30 +30,6 @@ function isSameUnreadMap(a: Record<string, number>, b: Record<string, number>) {
     if (keysA.length !== Object.keys(b).length) return false;
     return keysA.every(key => a[key] === b[key]);
 }
-// 右下角通知卡片队列（仅「详细」通知模式下生成），与 Dollars 通知并列展示。
-export const pmNotifications = signal<PmNotification[]>([]);
-
-function upsertPmNotification(item: BangumiNotifyPmItem) {
-    // notify 端点不含头像，尽量复用已缓存会话里的头像。
-    const known = pmConversations.peek().find(conversation => conversation.id === item.id);
-    const card: PmNotification = {
-        id: item.id,
-        href: item.href,
-        nickname: item.peerName,
-        avatar: known?.avatar || '',
-        title: item.title,
-        unreadCount: item.unreadCount,
-    };
-    const rest = pmNotifications.peek().filter(existing => existing.id !== item.id);
-    pmNotifications.value = [card, ...rest];
-}
-
-export function dismissPmNotification(id: string) {
-    if (pmNotifications.peek().some(item => item.id === id)) {
-        pmNotifications.value = pmNotifications.peek().filter(item => item.id !== id);
-    }
-}
-
 // 本地把某会话标记为已读：立刻扣减 notify 派生的角标信号，不必等下一次轮询。
 // （读取会话页会在服务端标记已读，下一次 notify 会与此一致。）
 function markPmConversationRead(id: string) {
@@ -62,10 +39,6 @@ function markPmConversationRead(id: string) {
     delete next[id];
     pmUnreadByConversation.value = next;
     pmUnreadCount.value = Math.max(0, pmUnreadCount.peek() - prev);
-}
-
-export function clearAllPmNotifications() {
-    if (pmNotifications.peek().length) pmNotifications.value = [];
 }
 
 let inboxRequest: Promise<void> | null = null;
@@ -411,14 +384,13 @@ export function startPmPolling() {
         if (settings.value.notificationType === 'detail' && hasBaseline && !isChatOpen.peek()) {
             for (const item of notify.pmList) {
                 if (item.unreadCount <= (previousUnread.get(item.id) || 0)) continue;
-                upsertPmNotification(item);
+                const known = pmConversations.peek().find(conversation => conversation.id === item.id);
+                addPmNotification(item, known?.avatar || '');
             }
         }
         // 在别处（其它标签页/原站）已读的会话不再出现在未读列表里，撤掉其残留卡片。
         const unreadIds = new Set(notify.pmList.map(item => item.id));
-        if (pmNotifications.peek().some(card => !unreadIds.has(card.id))) {
-            pmNotifications.value = pmNotifications.peek().filter(card => unreadIds.has(card.id));
-        }
+        prunePmNotifications(unreadIds);
 
         previousUnread.clear();
         for (const item of notify.pmList) previousUnread.set(item.id, item.unreadCount);
