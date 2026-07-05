@@ -2,9 +2,11 @@ import { useCallback } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { escapeHTML, getAvatarUrl, stripBBCode, decodeHTML } from '@/utils/format';
 import { fetchNotifications, markNotificationRead, markAllNotificationsRead } from '@/utils/api/messages';
-import { toggleChat, unreadJumpList, pendingJumpToMessage } from '@/stores/chatState';
+import { isChatOpen, toggleChat, unreadJumpList, pendingJumpToMessage } from '@/stores/chatState';
 import { userInfo, settings } from '@/stores/user';
+import { pmNotifications, dismissPmNotification, clearAllPmNotifications, openPmConversationFromHref } from '@/stores/bangumiPm';
 import type { Notification } from '@/types';
+import type { PmNotification } from '@/types/pm';
 
 // Notification store
 export const notifications = signal<Notification[]>([]);
@@ -128,6 +130,7 @@ export function NotificationManager() {
     // Handle mark all read
     const handleMarkAllRead = useCallback(async () => {
         clearAllNotifications();
+        clearAllPmNotifications();
 
         if (userInfo.value.id) {
             try {
@@ -138,7 +141,19 @@ export function NotificationManager() {
         }
     }, []);
 
-    const count = notifications.value.length;
+    // 点击短信通知卡片：撤掉卡片并在 RD 内打开对应会话
+    const handleViewPm = useCallback((notif: PmNotification) => {
+        dismissPmNotification(notif.id);
+        openPmConversationFromHref(notif.href);
+        toggleChat(true);
+    }, []);
+
+    const count = notifications.value.length + pmNotifications.value.length;
+
+    // 聊天窗打开时，通知都能在面板内直接看到，右下角卡片无需再弹。
+    if (isChatOpen.value) {
+        return null;
+    }
 
     // 精简模式下不显示通知面板 (只闪烁图标)
     if (settings.value.notificationType === 'simple') {
@@ -168,6 +183,14 @@ export function NotificationManager() {
             </div>
             <div class="un-body">
                 <ul>
+                    {pmNotifications.value.map((notif) => (
+                        <PmNotificationItem
+                            key={`pm-${notif.id}`}
+                            notification={notif}
+                            onView={() => handleViewPm(notif)}
+                            onDismiss={() => dismissPmNotification(notif.id)}
+                        />
+                    ))}
                     {notifications.value.map((notif) => (
                         <NotificationItem
                             key={notif.id}
@@ -186,6 +209,61 @@ interface NotificationItemProps {
     notification: Notification;
     onView: () => void;
     onDismiss: () => void;
+}
+
+interface PmNotificationItemProps {
+    notification: PmNotification;
+    onView: () => void;
+    onDismiss: () => void;
+}
+
+function PmNotificationItem({ notification, onView, onDismiss }: PmNotificationItemProps) {
+    const rawTitle = decodeHTML(notification.title || '');
+    const title = rawTitle.substring(0, 20) + (rawTitle.length > 20 ? '...' : '');
+    const label = notification.unreadCount > 1 ? `发来 ${notification.unreadCount} 条短信` : '发来短信';
+
+    return (
+        <li class="un-item" data-pm-id={notification.id}>
+            {notification.avatar && (
+                <span
+                    class="avatarNeue avatarReSize40"
+                    style={{ backgroundImage: `url('${getAvatarUrl(notification.avatar, 'm')}')` }}
+                />
+            )}
+            <div class="content">
+                <strong class="un-widget-title">
+                    {escapeHTML(notification.nickname || 'Bangumi 用户')}{' '}
+                    <span style={{ fontWeight: 'normal', color: 'var(--dollars-text-placeholder)', fontSize: '11px' }}>
+                        {label}
+                    </span>
+                </strong>
+                <span class="un-widget-message">{escapeHTML(title)}</span>
+                <div class="actions">
+                    <a
+                        href="#"
+                        class="un-action-btn btnRedSmall ll"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            onView();
+                        }}
+                    >
+                        <span>查看</span>
+                    </a>
+                    <a
+                        href="#"
+                        class="un-action-btn btnGraySmall ll"
+                        style={{ marginLeft: '6px' }}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            onDismiss();
+                        }}
+                    >
+                        <span>忽略</span>
+                    </a>
+                </div>
+            </div>
+        </li>
+    );
 }
 
 function NotificationItem({ notification, onView, onDismiss }: NotificationItemProps) {
