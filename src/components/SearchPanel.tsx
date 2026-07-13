@@ -3,8 +3,7 @@ import { useSignal } from '@preact/signals';
 import { isSearchActive, toggleSearch, searchGalleryMode } from '@/stores/ui';
 import { searchQuery } from '@/stores/chatState';
 import { getFirstMessageIdByDate, searchMessages } from '@/utils/api/messages';
-import { SEARCH_DEBOUNCE } from '@/utils/constants';
-import { debounce, formatDate, getAvatarUrl } from '@/utils/format';
+import { formatDate, getAvatarUrl } from '@/utils/format';
 import { iconCalendar, iconClose, iconPhoto, iconSearch } from '@/utils/icons';
 import { navigateToMessage } from '@/utils/navigation';
 import { GalleryPanel } from './GalleryPanel';
@@ -17,11 +16,13 @@ export function SearchPanel() {
     const results = useSignal<Message[]>([]);
     const loading = useSignal(false);
     const hasMore = useSignal(false);
+    const hasSearched = useSignal(false);
     const offset = useRef(0);
 
     const reset = () => {
         results.value = [];
         hasMore.value = false;
+        hasSearched.value = false;
         offset.current = 0;
     };
 
@@ -38,10 +39,12 @@ export function SearchPanel() {
             reset();
             return;
         }
+
         if (!append) {
             results.value = [];
             offset.current = 0;
             hasMore.value = true;
+            hasSearched.value = true;
         }
         loading.value = true;
         try {
@@ -54,14 +57,14 @@ export function SearchPanel() {
         }
     };
 
-    const debouncedSearch = debounce((q: string) => search(q), SEARCH_DEBOUNCE);
+    const handleQueryInput = (value: string) => {
+        searchQuery.value = value;
+        reset();
+    };
 
-    // 监听查询变化（排除相册模式）
-    useEffect(() => {
-        if (!isSearchActive.value || searchGalleryMode.value) return;
-        if (searchQuery.value) debouncedSearch(searchQuery.value);
-        else reset();
-    }, [searchQuery.value, isSearchActive.value]);
+    const submitSearch = () => {
+        void search(searchQuery.value);
+    };
 
     // 面板打开时聚焦输入框
     useEffect(() => {
@@ -115,7 +118,10 @@ export function SearchPanel() {
                 <div class="search-bar" style={{ flex: 1, marginBottom: 0 }}>
                     <div
                         class="search-icon"
-                        style={{ opacity: 0.5 }}
+                        style={{ opacity: 0.5, cursor: 'pointer' }}
+                        title="搜索"
+                        role="button"
+                        onClick={submitSearch}
                         dangerouslySetInnerHTML={{ __html: iconSearch }}
                     />
                     <input
@@ -123,7 +129,13 @@ export function SearchPanel() {
                         type="search"
                         placeholder="搜索消息..."
                         value={searchQuery.value}
-                        onInput={(e) => { searchQuery.value = (e.target as HTMLInputElement).value; }}
+                        onInput={(e) => handleQueryInput((e.target as HTMLInputElement).value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                submitSearch();
+                            }
+                        }}
                         autoFocus
                     />
                     <div
@@ -184,7 +196,7 @@ export function SearchPanel() {
                         <div class="search-status-msg">搜索中...</div>
                     )}
 
-                    {!loading.value && results.value.length === 0 && searchQuery.value && (
+                    {!loading.value && hasSearched.value && results.value.length === 0 && (
                         <div class="search-status-msg">未找到相关消息</div>
                     )}
                 </div>
