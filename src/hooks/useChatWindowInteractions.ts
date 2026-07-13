@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import { isMobileViewport, isMaximized } from '@/stores/ui';
-import { settings } from '@/stores/user';
 import { MIN_WINDOW_HEIGHT, MIN_WINDOW_WIDTH } from '@/utils/constants';
 import { fitWindowRectToViewport, loadWindowPosition, saveWindowPosition } from '@/utils/windowState';
 
@@ -19,8 +18,6 @@ function getPointer(e: MouseEvent | TouchEvent): Pointer {
 }
 
 function persistWindowPosition(element: HTMLDivElement) {
-    if (!settings.value.rememberOpenState) return;
-
     saveWindowPosition({
         x: element.offsetLeft,
         y: element.offsetTop,
@@ -167,7 +164,7 @@ export function useChatWindowInteractions(windowRef: RefObject<HTMLDivElement>) 
     };
 
     useEffect(() => {
-        if (isMobileViewport.value || isMaximized.value || !settings.value.rememberOpenState) return;
+        if (isMobileViewport.value || isMaximized.value) return;
 
         const saved = loadWindowPosition();
         if (saved && windowRef.current) {

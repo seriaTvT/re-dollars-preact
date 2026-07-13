@@ -1,27 +1,39 @@
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { MEDIA_FILE_ACCEPT, useMediaUpload } from '@/hooks/useMediaUpload';
 import { useCollapsibleMessage } from '@/hooks/useCollapsibleMessage';
+import { useFloatingAttachMenu } from '@/hooks/useFloatingAttachMenu';
 import { useMessageImageViewer } from '@/hooks/useMessageImageViewer';
+import { hydrateImageLoadingState } from '@/hooks/useMessageVisibilityEffects';
 import { useRichInput } from '@/hooks/useRichInput';
+import { useSwipeToReply } from '@/hooks/useSwipeToReply';
 import { activeConversationId } from '@/stores/conversations';
 import {
-    activePmId,
+    activePmKey,
+    cancelPmReply,
     isBangumiLoggedIn,
+    loadEarlierPmMessages,
     loadPmDetail,
     pmComposeReceiver,
     pmConversations,
     pmDetailError,
     pmDetailLoading,
     pmDetails,
+    pmEarlierMessagesError,
+    pmEarlierMessagesLoading,
     pmNewMessageIds,
+    pmReplyingTo,
+    openPmDraftForReceiver,
+    openPmForUser,
     retryPmReply,
-    submitNewPm,
+    setPmReplyTo,
     submitPmReply,
 } from '@/stores/bangumiPm';
-import { showUserProfile, toggleSmileyPanel } from '@/stores/ui';
+import { showContextMenu, showUserProfile, toggleSmileyPanel } from '@/stores/ui';
 import { settings } from '@/stores/user';
-import { COLLAPSE_MAX_HEIGHT, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
+import { buildPmReplyBody } from '@/services/bangumiPm/reply';
+import { COLLAPSE_MAX_HEIGHT, MAX_MENTION_RESULTS, MENTION_DEBOUNCE, NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import { formatDate } from '@/utils/format';
+import { searchMentionUsers, type MentionSearchUser } from '@/utils/api/users';
 import { getFloatingDateLabel, isNearScrollBottom } from '@/utils/floatingDate';
 import { iconFile, iconPhoto } from '@/utils/icons';
 import { canGroupAdjacentMessages } from '@/utils/messageGrouping';
@@ -36,15 +48,10 @@ import { MediaPreview } from './MediaPreview';
 import { FloatingDateCapsule } from './FloatingDateCapsule';
 import { SmileyPanel } from './SmileyPanel';
 import { TextFormatter } from './TextFormatter';
-import { FloatingPortal } from './FloatingPortal';
+import { AttachMenu } from './AttachMenu';
+import { MentionCompleter } from './MentionCompleter';
 
 const MAX_INPUT_HEIGHT = 150;
-const ATTACH_MENU_WIDTH = 176;
-
-type AttachMenuPosition = {
-    left: number;
-    bottom: number;
-};
 
 function arePmMessagesGrouped(current: BangumiPmMessage | undefined, adjacent: BangumiPmMessage | undefined) {
     return canGroupAdjacentMessages(
@@ -62,18 +69,23 @@ function arePmMessagesGrouped(current: BangumiPmMessage | undefined, adjacent: B
 }
 
 function PmMessageItem({
+    conversationId,
     message,
     nickname,
     isGrouped,
     isGroupedWithNext,
+    onReply,
     onRetry,
 }: {
+    conversationId: string;
     message: BangumiPmMessage;
     nickname: string;
     isGrouped: boolean;
     isGroupedWithNext: boolean;
+    onReply?: (message: BangumiPmMessage) => void;
     onRetry?: (messageId: string) => void;
 }) {
+    const messageRef = useRef<HTMLDivElement>(null);
     const textContentRef = useRef<HTMLDivElement>(null);
     const [isNew, setIsNew] = useState(() => pmNewMessageIds.peek().has(message.id));
     const presentationText = message.presentationText || message.bodyText;
@@ -112,11 +124,34 @@ function PmMessageItem({
         }
     }, [isNew]);
 
+    useEffect(() => {
+        const el = textContentRef.current;
+        if (el) hydrateImageLoadingState(el);
+    }, [message.bodyHtml]);
+
     const handleBubbleClick = (event: MouseEvent) => {
         if (message.state !== 'failed') return;
         event.stopPropagation();
         onRetry?.(message.id);
     };
+
+    const triggerReply = () => {
+        onReply?.(message);
+    };
+
+    const handleContextMenu = (event: MouseEvent) => {
+        event.preventDefault();
+        showContextMenu(event.clientX, event.clientY, { kind: 'pm', conversationId, id: message.id });
+    };
+
+    const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToReply({
+        messageId: message.id,
+        onReply: triggerReply,
+        elementRef: messageRef,
+        contextMenuSource: 'pm',
+        contextMenuTarget: { kind: 'pm', conversationId, id: message.id },
+    });
+
     const handleAvatarClick = (event: MouseEvent) => {
         const username = message.userHref.match(/^\/user\/(.+)$/)?.[1];
         if (!username) return;
@@ -127,9 +162,17 @@ function PmMessageItem({
 
     return (
         <div
+            ref={messageRef}
             class={`chat-message dollars-pm-message${message.isSelf ? ' self' : ''}${isGrouped ? ' is-grouped-with-prev' : ''}${isGroupedWithNext ? ' is-grouped-with-next' : ''}${isNew ? ' new-message' : ''}${message.state === 'sending' ? ' pending' : ''}${message.state === 'failed' ? ' failed' : ''}`}
+            data-pm-id={message.id}
             data-timestamp={message.timestamp ?? undefined}
+            onContextMenu={handleContextMenu}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            onTouchCancel={onTouchEnd}
         >
+            <div class="swipe-reply-indicator"></div>
             <a class="dollars-pm-avatar-link" href={message.userHref || '#'} target="_blank" rel="noopener noreferrer" onClick={handleAvatarClick}>
                 <img class="avatar" src={message.avatar || '/img/no_icon_subject.png'} alt={message.isSelf ? '' : nickname} />
             </a>
@@ -228,42 +271,32 @@ function PmFloatingDate({ listRef }: { listRef: { current: HTMLDivElement | null
     return <FloatingDateCapsule label={label} preserveLastLabel={false} />;
 }
 
-function handleComposerKeyDown(event: KeyboardEvent, submit: () => void) {
-    if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return;
-    const modifier = event.ctrlKey || event.metaKey;
-    const shouldSend = settings.value.sendShortcut === 'Enter' ? !modifier : modifier;
-    if (!shouldSend) return;
-    event.preventDefault();
-    submit();
-}
-
 function PmConversationView({ id }: { id: string }) {
     const detail = pmDetails.value[id];
     const conversation = pmConversations.value.find(item => item.id === id);
-    const displayDetail = detail || {
-        id,
-        nickname: conversation?.nickname || 'Bangumi 短信',
-        username: '',
-        avatar: conversation?.avatar || '',
-        messages: [],
-        replyForm: null,
-    };
-    const isInitialLoading = !detail && (pmDetailLoading.value || !pmDetailError.value);
+    const messages = detail?.messages || [];
+    const nickname = detail?.nickname || conversation?.nickname || 'Bangumi 短信';
+    const isDraftId = id.startsWith('draft:');
+    const isInitialLoading = !isDraftId && !detail && (pmDetailLoading.value || !pmDetailError.value);
     const [sending, setSending] = useState(false);
     const [sendError, setSendError] = useState('');
-    const [isAttachMenuOpen, setIsAttachMenuOpen] = useState(false);
-    const [isAttachMenuClosing, setIsAttachMenuClosing] = useState(false);
-    const [attachMenuPosition, setAttachMenuPosition] = useState<AttachMenuPosition | null>(null);
     const [inputHeight, setInputHeight] = useState(80);
     const listRef = useRef<HTMLDivElement>(null);
     const composerRef = useRef<HTMLDivElement>(null);
     const composerProxyRef = useRef<HTMLTextAreaElement>(null);
     const inputControllerRef = useRef<RichInputController | null>(null);
     const inputContainerRef = useRef<HTMLDivElement>(null);
-    const attachButtonRef = useRef<HTMLButtonElement>(null);
-    const attachMenuRef = useRef<HTMLDivElement>(null);
-    const attachCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const previousLastId = useRef('');
+    const isAutoLoadingEarlierRef = useRef(false);
+    const {
+        attachButtonRef,
+        attachMenuRef,
+        attachMenuPosition,
+        closeAttachMenu,
+        isAttachMenuClosing,
+        isAttachMenuOpen,
+        toggleAttachMenu,
+    } = useFloatingAttachMenu({ containerRef: inputContainerRef });
     const {
         fileInputRef,
         isUploading,
@@ -290,7 +323,10 @@ function PmConversationView({ id }: { id: string }) {
         onValueChange: (value, options) => parseMediaFiles(value, options.knownMeta),
     });
 
-    const canCompose = !!detail?.replyForm;
+    const canCompose = !!detail?.replyForm || !!detail?.isDraft;
+    const isLoadingEarlier = pmEarlierMessagesLoading.value.has(id);
+    const earlierError = pmEarlierMessagesError.value[id] || '';
+    const activeReply = pmReplyingTo.value?.conversationId === id ? pmReplyingTo.value : null;
 
     const handleEditorKeyDown = (event: KeyboardEvent) => {
         if (event.key !== 'Enter' || event.isComposing || event.keyCode === 229) return;
@@ -305,7 +341,7 @@ function PmConversationView({ id }: { id: string }) {
     };
 
     useEffect(() => {
-        if (!detail) void loadPmDetail(id);
+        if (!detail && !isDraftId) void loadPmDetail(id);
     }, [id]);
 
     useEffect(() => {
@@ -330,93 +366,20 @@ function PmConversationView({ id }: { id: string }) {
         previousLastId.current = lastId;
     }, [detail?.messages]);
 
-    const updateAttachMenuPosition = useCallback(() => {
-        const container = inputContainerRef.current;
-        if (!container) return;
-
-        const containerRect = container.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const left = Math.min(
-            viewportWidth - ATTACH_MENU_WIDTH - 8,
-            Math.max(8, containerRect.right - ATTACH_MENU_WIDTH)
-        );
-
-        setAttachMenuPosition({
-            left,
-            bottom: Math.max(5, viewportHeight - containerRect.top + 5),
-        });
-    }, []);
-
-    const closeAttachMenu = useCallback(() => {
-        if (!isAttachMenuOpen || isAttachMenuClosing) return;
-
-        setIsAttachMenuClosing(true);
-        if (attachCloseTimerRef.current) {
-            clearTimeout(attachCloseTimerRef.current);
-        }
-        attachCloseTimerRef.current = setTimeout(() => {
-            setIsAttachMenuOpen(false);
-            setIsAttachMenuClosing(false);
-            attachCloseTimerRef.current = null;
-        }, 200);
-    }, [isAttachMenuOpen, isAttachMenuClosing]);
-
-    const toggleAttachMenu = useCallback(() => {
-        if (isAttachMenuOpen) {
-            closeAttachMenu();
-            return;
-        }
-
-        if (attachCloseTimerRef.current) {
-            clearTimeout(attachCloseTimerRef.current);
-            attachCloseTimerRef.current = null;
-        }
-        setIsAttachMenuClosing(false);
-        updateAttachMenuPosition();
-        setIsAttachMenuOpen(true);
-    }, [closeAttachMenu, isAttachMenuOpen, updateAttachMenuPosition]);
-
-    useEffect(() => {
-        if (!isAttachMenuOpen) return;
-
-        const handlePointerDown = (event: PointerEvent) => {
-            const target = event.target as Node | null;
-            if (target && attachButtonRef.current?.contains(target)) return;
-            if (target && attachMenuRef.current?.contains(target)) return;
-            closeAttachMenu();
-        };
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') closeAttachMenu();
-        };
-        const handleViewportChange = () => updateAttachMenuPosition();
-
-        document.addEventListener('pointerdown', handlePointerDown);
-        document.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('resize', handleViewportChange);
-        window.addEventListener('scroll', handleViewportChange, true);
-        return () => {
-            document.removeEventListener('pointerdown', handlePointerDown);
-            document.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('resize', handleViewportChange);
-            window.removeEventListener('scroll', handleViewportChange, true);
-        };
-    }, [closeAttachMenu, isAttachMenuOpen, updateAttachMenuPosition]);
-
     const send = async () => {
         const content = (inputControllerRef.current?.getValue() || '').trim();
         if (!content || sending || isUploading) return;
+        const reply = pmReplyingTo.value?.conversationId === id ? pmReplyingTo.value : null;
+        const body = buildPmReplyBody(content, reply);
         setSending(true);
         setSendError('');
-        const pending = submitPmReply(id, content);
+        const pending = submitPmReply(id, body);
         inputControllerRef.current?.setValue('', { focus: true });
         setPreviewMedia([]);
+        if (reply) cancelPmReply();
         const result = await pending;
         setSending(false);
-        if (result.status === 'sent') {
-            return;
-        }
-        setSendError(result.error);
+        if (result.status !== 'sent') setSendError(result.error);
     };
 
     const retry = async (messageId: string) => {
@@ -428,6 +391,35 @@ function PmConversationView({ id }: { id: string }) {
         if (result.status !== 'sent') setSendError(result.error);
     };
 
+    const loadEarlier = async () => {
+        if (!detail?.previousPageUrl || isLoadingEarlier || isAutoLoadingEarlierRef.current) return;
+        const list = listRef.current;
+        const previousHeight = list?.scrollHeight || 0;
+        const previousTop = list?.scrollTop || 0;
+        isAutoLoadingEarlierRef.current = true;
+        try {
+            await loadEarlierPmMessages(id);
+        } finally {
+            requestAnimationFrame(() => {
+                if (list) list.scrollTop = list.scrollHeight - previousHeight + previousTop;
+                isAutoLoadingEarlierRef.current = false;
+            });
+        }
+    };
+
+    const replyToMessage = (message: BangumiPmMessage) => {
+        if (!setPmReplyTo(id, message)) return;
+        requestAnimationFrame(() => {
+            composerRef.current?.focus();
+        });
+    };
+
+    const handleMessageScroll = () => {
+        const list = listRef.current;
+        if (!list || list.scrollTop >= 200) return;
+        void loadEarlier();
+    };
+
     let previousTopic = '';
     return (
         <div class="dollars-pm-view">
@@ -435,6 +427,7 @@ function PmConversationView({ id }: { id: string }) {
             <div
                 class="dollars-pm-message-scroll"
                 ref={listRef}
+                onScroll={handleMessageScroll}
                 style={{ paddingBottom: `${inputHeight + 20}px` }}
             >
                 {isInitialLoading && (
@@ -446,19 +439,25 @@ function PmConversationView({ id }: { id: string }) {
                         <button type="button" onClick={() => void loadPmDetail(id)}>重试</button>
                     </div>
                 )}
-                {displayDetail.messages.map((message, index) => {
+                {isLoadingEarlier && <div class="dollars-pm-history-status">正在加载更早短信…</div>}
+                {earlierError && (
+                    <div class="dollars-pm-history-status error">{earlierError}，继续向上滚动重试</div>
+                )}
+                {messages.map((message, index) => {
                     const showTopic = !!message.topic && message.topic !== previousTopic;
                     previousTopic = message.topic || previousTopic;
-                    const isGrouped = arePmMessagesGrouped(displayDetail.messages[index - 1], message);
-                    const isGroupedWithNext = arePmMessagesGrouped(message, displayDetail.messages[index + 1]);
+                    const isGrouped = arePmMessagesGrouped(messages[index - 1], message);
+                    const isGroupedWithNext = arePmMessagesGrouped(message, messages[index + 1]);
                     return (
                         <div key={message.stableKey || message.id}>
                             {showTopic && <div class="dollars-pm-topic">{message.topic}</div>}
                             <PmMessageItem
+                                conversationId={id}
                                 message={message}
-                                nickname={displayDetail.nickname}
+                                nickname={nickname}
                                 isGrouped={isGrouped}
                                 isGroupedWithNext={isGroupedWithNext}
+                                onReply={replyToMessage}
                                 onRetry={retry}
                             />
                         </div>
@@ -468,11 +467,34 @@ function PmConversationView({ id }: { id: string }) {
             </div>
             <div class="chat-input-container dollars-pm-input-container" ref={inputContainerRef}>
                 <TextFormatter editorRef={composerRef} inputControllerRef={inputControllerRef} />
+                <MentionCompleter editorRef={composerRef} inputControllerRef={inputControllerRef} />
                 <SmileyPanel
                     onSelect={code => inputControllerRef.current?.insertText(code, { focus: true })}
                     textareaRef={composerProxyRef}
                 />
                 <div class="chat-input-area">
+                    {activeReply && (
+                        <div id="dollars-pm-reply-preview" class="reply-preview visible">
+                            <div class="reply-bar"></div>
+                            <img
+                                class="reply-avatar"
+                                src={activeReply.avatar || '/img/no_icon_subject.png'}
+                                alt=""
+                            />
+                            <div class="reply-info">
+                                <span class="reply-user">{activeReply.user}</span>
+                                <span class="reply-text">{activeReply.text}</span>
+                            </div>
+                            <button
+                                type="button"
+                                class="reply-cancel-btn"
+                                title="取消回复"
+                                onClick={() => cancelPmReply()}
+                            >
+                                ×
+                            </button>
+                        </div>
+                    )}
                     {sendError && <div class="dollars-pm-error dollars-pm-input-error">{sendError}</div>}
                     <MediaPreview previewMedia={previewMedia} onRemoveMedia={handleRemoveMedia} />
                     <div class="input-wrapper">
@@ -481,7 +503,7 @@ function PmConversationView({ id }: { id: string }) {
                             id="dollars-emoji-btn"
                             class="action-btn"
                             title="表情"
-                            disabled={sending || isUploading || !detail?.replyForm}
+                            disabled={sending || isUploading || !canCompose}
                             onClick={() => toggleSmileyPanel()}
                         />
                         <div class="dollars-input-wrapper">
@@ -516,37 +538,20 @@ function PmConversationView({ id }: { id: string }) {
                                     title="上传附件"
                                     aria-haspopup="menu"
                                     aria-expanded={isAttachMenuOpen && !isAttachMenuClosing}
-                                    disabled={sending || isUploading || !detail?.replyForm}
+                                    disabled={sending || isUploading || !canCompose}
                                     onClick={toggleAttachMenu}
                                 />
                             </div>
                             {isAttachMenuOpen && attachMenuPosition && (
-                                <FloatingPortal>
-                                    <div
-                                        ref={attachMenuRef}
-                                        class={`dollars-attach-menu context-menu-items ${isAttachMenuClosing ? 'closing' : ''}`}
-                                        role="menu"
-                                        style={{
-                                            left: `${attachMenuPosition.left}px`,
-                                            bottom: `${attachMenuPosition.bottom}px`,
-                                        }}
-                                    >
-                                        <button type="button" role="menuitem" onClick={() => {
-                                            closeAttachMenu();
-                                            handleAttachMediaClick();
-                                        }}>
-                                            <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconPhoto }} />
-                                            <span>媒体</span>
-                                        </button>
-                                        <button type="button" role="menuitem" onClick={() => {
-                                            closeAttachMenu();
-                                            handleAttachFileClick();
-                                        }}>
-                                            <span class="context-icon" aria-hidden="true" dangerouslySetInnerHTML={{ __html: iconFile }} />
-                                            <span>文件</span>
-                                        </button>
-                                    </div>
-                                </FloatingPortal>
+                                <AttachMenu
+                                    isClosing={isAttachMenuClosing}
+                                    menuRef={attachMenuRef}
+                                    position={attachMenuPosition}
+                                    items={[
+                                        { icon: iconPhoto, label: '媒体', onClick: () => { closeAttachMenu(); handleAttachMediaClick(); } },
+                                        { icon: iconFile, label: '文件', onClick: () => { closeAttachMenu(); handleAttachFileClick(); } },
+                                    ]}
+                                />
                             )}
                             <input
                                 ref={fileInputRef}
@@ -559,7 +564,7 @@ function PmConversationView({ id }: { id: string }) {
                             <button
                                 type="button"
                                 class={`send-btn ${isUploading ? 'uploading' : ''}`}
-                                disabled={sending || isUploading || !detail?.replyForm}
+                                disabled={sending || isUploading || !canCompose}
                                 onClick={send}
                                 title={sending || isUploading ? '发送中…' : '发送'}
                             />
@@ -572,52 +577,164 @@ function PmConversationView({ id }: { id: string }) {
 }
 
 function PmComposeView() {
+    const suggestionsRef = useRef<HTMLDivElement>(null);
+    const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const queryRef = useRef('');
     const [receiver, setReceiver] = useState(pmComposeReceiver.value);
-    const [title, setTitle] = useState('');
-    const [body, setBody] = useState('');
+    const [suggestions, setSuggestions] = useState<MentionSearchUser[]>([]);
+    const [suggestionsVisible, setSuggestionsVisible] = useState(false);
+    const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
     const [sending, setSending] = useState(false);
     const [error, setError] = useState('');
 
     useEffect(() => setReceiver(pmComposeReceiver.value), [pmComposeReceiver.value]);
 
-    const send = async () => {
-        if (!receiver.trim() || !title.trim() || !body.trim() || sending) return;
+    useEffect(() => () => {
+        if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    }, []);
+
+    const hideSuggestions = () => {
+        setSuggestionsVisible(false);
+        setActiveSuggestionIndex(0);
+    };
+
+    const fetchReceiverSuggestions = async (query: string) => {
+        const users = await searchMentionUsers(query, MAX_MENTION_RESULTS);
+        if (query !== queryRef.current) return;
+        setSuggestions(users);
+        setActiveSuggestionIndex(0);
+        setSuggestionsVisible(users.length > 0);
+    };
+
+    const scheduleReceiverSearch = (value: string) => {
+        const query = value.trim();
+        queryRef.current = query;
+        if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+
+        if (!query) {
+            setSuggestions([]);
+            hideSuggestions();
+            return;
+        }
+
+        searchTimerRef.current = setTimeout(() => {
+            void fetchReceiverSuggestions(query);
+        }, MENTION_DEBOUNCE);
+    };
+
+    const handleReceiverInput = (event: Event) => {
+        const value = event.currentTarget instanceof HTMLInputElement ? event.currentTarget.value : '';
+        setReceiver(value);
+        setError('');
+        scheduleReceiverSearch(value);
+    };
+
+    const confirmReceiver = async () => {
+        if (!receiver.trim() || sending) return;
         setSending(true);
         setError('');
-        const result = await submitNewPm(receiver.trim(), title.trim(), body.trim());
+        hideSuggestions();
+        const result = await openPmDraftForReceiver(receiver);
         setSending(false);
-        if (result.status !== 'sent') setError(result.error);
+        if (result.status === 'rejected') setError(result.error);
+    };
+
+    const openSuggestedUser = async (user: MentionSearchUser) => {
+        if (sending) return;
+        const username = user.username.trim();
+        if (!username) return;
+        setReceiver(username);
+        setSending(true);
+        setError('');
+        hideSuggestions();
+        await openPmForUser({
+            username,
+            nickname: user.nickname || username,
+            avatar: user.avatar_url || '',
+        });
+        setSending(false);
+    };
+
+    const handleReceiverKeyDown = (event: KeyboardEvent) => {
+        if (event.isComposing || event.keyCode === 229) return;
+        if (suggestionsVisible && suggestions.length > 0) {
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                setActiveSuggestionIndex(index => (index + 1) % suggestions.length);
+                return;
+            }
+            if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                setActiveSuggestionIndex(index => (index + suggestions.length - 1) % suggestions.length);
+                return;
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                hideSuggestions();
+                return;
+            }
+        }
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        if (suggestionsVisible && suggestions[activeSuggestionIndex]) {
+            void openSuggestedUser(suggestions[activeSuggestionIndex]);
+        } else {
+            void confirmReceiver();
+        }
     };
 
     return (
         <div class="dollars-pm-compose-view">
             <div class="dollars-pm-compose-card">
-                <label>
+                <label class="dollars-pm-receiver-field">
                     收件人
-                    <input value={receiver} autocomplete="off" onInput={event => setReceiver(event.currentTarget.value)} />
-                </label>
-                <label>
-                    主题
-                    <input value={title} onInput={event => setTitle(event.currentTarget.value)} />
-                </label>
-                <label class="dollars-pm-compose-body">
-                    正文
-                    <textarea
-                        value={body}
-                        onInput={event => setBody(event.currentTarget.value)}
-                        onKeyDown={event => handleComposerKeyDown(event, send)}
+                    <input
+                        value={receiver}
+                        autocomplete="off"
+                        autofocus
+                        onInput={handleReceiverInput}
+                        onKeyDown={handleReceiverKeyDown}
+                        onBlur={event => {
+                            if (suggestionsRef.current?.contains(event.relatedTarget as Node)) return;
+                            setTimeout(hideSuggestions, 120);
+                        }}
                     />
+                    {suggestionsVisible && suggestions.length > 0 && (
+                        <div
+                            ref={suggestionsRef}
+                            class="dollars-pm-receiver-suggestions visible"
+                        >
+                            {suggestions.map((user, index) => (
+                                <button
+                                    key={user.id}
+                                    type="button"
+                                    class={`mention-item ${index === activeSuggestionIndex ? 'active' : ''}`}
+                                    onMouseDown={event => {
+                                        event.preventDefault();
+                                        void openSuggestedUser(user);
+                                    }}
+                                >
+                                    <img
+                                        src={user.avatar_url || '//lain.bgm.tv/pic/user/m/000/00/00/0.jpg'}
+                                        alt=""
+                                    />
+                                    <span class="mention-item-info">
+                                        <span class="mention-item-nick">{user.nickname || user.username}</span>
+                                        <span class="mention-item-user">@{user.username}</span>
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </label>
                 {error && <div class="dollars-pm-error">{error}</div>}
                 <div class="dollars-pm-compose-actions">
                     <button type="button" class="secondary" onClick={() => {
                         setReceiver('');
-                        setTitle('');
-                        setBody('');
                         setError('');
                     }}>清空</button>
-                    <button type="button" disabled={sending || !receiver.trim() || !title.trim() || !body.trim()} onClick={send}>
-                        {sending ? '发送中…' : '发送短信'}
+                    <button type="button" disabled={sending || !receiver.trim()} onClick={confirmReceiver}>
+                        {sending ? '打开中…' : '开始聊天'}
                     </button>
                 </div>
             </div>
@@ -635,6 +752,6 @@ export function BangumiPmChat() {
         );
     }
     if (activeConversationId.value === 'pm:new') return <PmComposeView />;
-    const id = activePmId();
+    const id = activePmKey();
     return id ? <PmConversationView id={id} /> : <div class="pm-empty-state">请选择一个短信会话</div>;
 }

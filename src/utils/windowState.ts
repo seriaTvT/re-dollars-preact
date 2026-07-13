@@ -3,6 +3,7 @@ import { MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT } from '@/utils/constants';
 const CHAT_OPEN_KEY = 'dollars.isChatOpen';
 const MAXIMIZED_KEY = 'dollars.isMaximized';
 const MOBILE_CHAT_VIEW_KEY = 'dollars.mobileChatViewActive';
+const SIDEBAR_COLLAPSED_KEY = 'dollars.sidebarCollapsed';
 const ACTIVE_CONVERSATION_KEY = 'dollars.activeConversationId';
 const CHAT_POSITION_KEY = 'dollarsChatPosition';
 
@@ -85,6 +86,14 @@ export function saveMobileChatViewState(active: boolean): void {
     localStorage.setItem(MOBILE_CHAT_VIEW_KEY, JSON.stringify(active));
 }
 
+export function saveSidebarCollapsedState(collapsed: boolean): void {
+    localStorage.setItem(SIDEBAR_COLLAPSED_KEY, JSON.stringify(collapsed));
+}
+
+export function loadSidebarCollapsedState(): boolean | null {
+    return readBoolean(SIDEBAR_COLLAPSED_KEY);
+}
+
 export function saveActiveConversationId(conversationId: string): void {
     localStorage.setItem(ACTIVE_CONVERSATION_KEY, conversationId);
 }
@@ -110,10 +119,14 @@ export function loadWindowPosition(): SavedChatWindowPosition | null {
     }
 }
 
-export function clearWindowState(): void {
+export function clearChatOpenState(): void {
     localStorage.removeItem(CHAT_OPEN_KEY);
+}
+
+export function clearWindowState(): void {
+    clearChatOpenState();
     localStorage.removeItem(MAXIMIZED_KEY);
     localStorage.removeItem(MOBILE_CHAT_VIEW_KEY);
-    localStorage.removeItem(ACTIVE_CONVERSATION_KEY);
+    localStorage.removeItem(SIDEBAR_COLLAPSED_KEY);
     localStorage.removeItem(CHAT_POSITION_KEY);
 }

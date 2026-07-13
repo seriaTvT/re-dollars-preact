@@ -31,6 +31,7 @@ describe('Bangumi PM client', () => {
         vi.stubGlobal('fetch', fetchMock);
         const detail = {
             id: '9', nickname: 'Peer', username: 'peer', avatar: '', messages: [],
+            previousPageUrl: null,
             replyForm: {
                 action: '/pm/create.chii',
                 fields: { formhash: 'redacted', msg_receivers: 'peer', related: '10' },
@@ -72,6 +73,7 @@ describe('Bangumi PM client', () => {
         vi.stubGlobal('fetch', fetchMock);
         const detail = {
             id: '9', nickname: 'Peer', username: 'peer', avatar: '', messages: [],
+            previousPageUrl: null,
             replyForm: { action: '/pm/create.chii', fields: { formhash: 'redacted' } },
         } satisfies BangumiPmConversationDetail;
 

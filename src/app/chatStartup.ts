@@ -30,9 +30,7 @@ function restoreRememberedWindowState() {
         restoreActiveConversation();
     }
 
-    if (!settings.value.rememberOpenState) return;
-
-    if (savedState.isChatOpen !== null) {
+    if (settings.value.rememberOpenState && savedState.isChatOpen !== null) {
         isChatOpen.value = savedState.isChatOpen;
     }
     if (savedState.isMaximized !== null) {

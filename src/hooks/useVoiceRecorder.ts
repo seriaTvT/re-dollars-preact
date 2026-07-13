@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 
 export type VoiceRecorderState = 'idle' | 'recording' | 'preview';
 
@@ -55,14 +55,14 @@ export function useVoiceRecorder() {
     const cancelledRef = useRef(false);
     const objectUrlRef = useRef<string | null>(null);
 
-    const clearTimer = useCallback(() => {
+    function clearTimer() {
         if (timerRef.current) {
             clearInterval(timerRef.current);
             timerRef.current = null;
         }
-    }, []);
+    }
 
-    const clearDraft = useCallback(() => {
+    function clearDraft() {
         if (objectUrlRef.current) {
             URL.revokeObjectURL(objectUrlRef.current);
             objectUrlRef.current = null;
@@ -72,9 +72,9 @@ export function useVoiceRecorder() {
         if (state !== 'recording') {
             setState('idle');
         }
-    }, [state]);
+    }
 
-    const finishRecording = useCallback(() => {
+    function finishRecording() {
         clearTimer();
         stopStream(streamRef.current);
         streamRef.current = null;
@@ -111,9 +111,9 @@ export function useVoiceRecorder() {
             duration: Math.max(1, Math.round((Date.now() - startTimeRef.current) / 1000)),
         });
         setState('preview');
-    }, [clearTimer]);
+    }
 
-    const startRecording = useCallback(async () => {
+    async function startRecording() {
         if (state === 'recording') return;
         if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
             alert('当前浏览器不支持录音');
@@ -158,16 +158,16 @@ export function useVoiceRecorder() {
             }
             setState('idle');
         }
-    }, [clearDraft, finishRecording, state]);
+    }
 
-    const stopRecording = useCallback(() => {
+    function stopRecording() {
         const recorder = recorderRef.current;
         if (recorder?.state === 'recording') {
             recorder.stop();
         }
-    }, []);
+    }
 
-    const cancelVoice = useCallback(() => {
+    function cancelVoice() {
         const recorder = recorderRef.current;
         if (recorder?.state === 'recording') {
             cancelledRef.current = true;
@@ -175,7 +175,7 @@ export function useVoiceRecorder() {
             return;
         }
         clearDraft();
-    }, [clearDraft]);
+    }
 
     useEffect(() => () => {
         cancelledRef.current = true;
@@ -184,7 +184,7 @@ export function useVoiceRecorder() {
         if (objectUrlRef.current) {
             URL.revokeObjectURL(objectUrlRef.current);
         }
-    }, [clearTimer]);
+    }, []);
 
     return {
         voiceState: state,

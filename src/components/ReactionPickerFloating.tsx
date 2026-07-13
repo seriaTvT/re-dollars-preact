@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useCallback, useRef, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import {
     isReactionPickerOpen,
     isReactionPickerClosing,
@@ -8,13 +8,13 @@ import {
     hideContextMenu,
 } from '@/stores/ui';
 import { toggleReaction as apiToggleReaction } from '@/utils/api/messages';
-import { smileyRangesWithoutFavorites, getSmileyUrl, generateSmileyCodes } from '@/utils/smilies';
+import { smileyRangesWithoutFavorites, generateSmileyCodes } from '@/utils/smilies';
 import { loadSavedBmoItems, type BmoItem } from '@/utils/bmo';
+import { SmileyCodeItem } from './SmileyCodeItem';
 
 export function ReactionPickerFloating() {
     const [activeTab, setActiveTab] = useState('TV');
     const [bmoItems, setBmoItems] = useState<BmoItem[]>([]);
-    const contentRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     // 加载 BMO 表情 - 使用官方 API
@@ -96,14 +96,14 @@ export function ReactionPickerFloating() {
         }
     }, [isReactionPickerOpen.value, reactionPickerPosition.value, activeTab]); // activeTab change alters height
 
-    const handleReaction = useCallback(async (emoji: string) => {
+    async function handleReaction(emoji: string) {
         const targetId = contextMenuTargetId.value;
         if (!targetId) return;
 
         hideReactionPicker();
         hideContextMenu();
         await apiToggleReaction(Number(targetId), emoji);
-    }, []);
+    }
 
     if (!isReactionPickerOpen.value) {
         return null;
@@ -117,7 +117,7 @@ export function ReactionPickerFloating() {
 
     if (activeTab === 'BMO') {
         specialContent = (
-            <div style={{ display: 'contents' }}>
+            <div class="smiley-contents">
                 {bmoItems.length > 0 ? (
                     bmoItems.map((item) => (
                         <li key={item.code} class="smiley-item">
@@ -135,7 +135,7 @@ export function ReactionPickerFloating() {
                         </li>
                     ))
                 ) : (
-                    <p style={{ width: '100%', textAlign: 'center', color: 'var(--dollars-text-secondary)', fontSize: '12px', marginTop: '20px', padding: '0 10px' }}>
+                    <p class="smiley-empty-hint">
                         暂无保存的 BMO 表情
                     </p>
                 )}
@@ -178,26 +178,11 @@ export function ReactionPickerFloating() {
             </div>
 
             {/* Content */}
-            <div class="reaction-picker-content" ref={contentRef}>
+            <div class="reaction-picker-content">
                 {specialContent}
-                {smileys.map((code) => {
-                    const url = getSmileyUrl(code);
-                    return (
-                        <li key={code} class="smiley-item">
-                            <a
-                                href="#"
-                                data-smiley={code}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleReaction(code);
-                                }}
-                                style={url ? { backgroundImage: `url('${url}')` } : undefined}
-                                title={code}
-                            >
-                            </a>
-                        </li>
-                    );
-                })}
+                {smileys.map((code) => (
+                    <SmileyCodeItem key={code} code={code} onSelect={handleReaction} />
+                ))}
             </div>
         </div>
     );

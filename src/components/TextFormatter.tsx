@@ -1,5 +1,5 @@
 import { render, type RefObject } from 'preact';
-import { useRef, useCallback, useEffect } from 'preact/hooks';
+import { useRef, useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import {
     iconBack,
@@ -25,6 +25,13 @@ interface TextFormatterProps {
 }
 
 const PORTAL_ID = 'dollars-text-formatter-portal';
+const BASIC_FORMAT_BUTTONS = [
+    ['b', '加粗', iconBold],
+    ['i', '斜体', iconItalic],
+    ['u', '下划线', iconUnderline],
+    ['s', '删除线', iconStrike],
+    ['code', '等宽代码', iconCode],
+] as const;
 
 export function TextFormatter({ editorRef, inputControllerRef }: TextFormatterProps) {
     useEffect(() => {
@@ -51,8 +58,41 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
     const linkInputRef = useRef<HTMLInputElement>(null);
     const savedRangeRef = useRef<{ start: number; end: number } | null>(null);
 
-    // Check for text selection
-    const checkSelection = useCallback(() => {
+    function hide() {
+        formatterVisible.value = false;
+        setTimeout(() => {
+            if (!formatterVisible.value) {
+                formatterLinkMode.value = false;
+                if (linkInputRef.current) {
+                    linkInputRef.current.value = '';
+                }
+            }
+        }, 200);
+    }
+
+    function restoreSelection() {
+        const controller = inputControllerRef.current;
+        if (controller && savedRangeRef.current) {
+            controller.focus();
+            controller.setSelection(savedRangeRef.current.start, savedRangeRef.current.end);
+        }
+    }
+
+    function show() {
+        const editor = editorRef.current;
+        const controller = inputControllerRef.current;
+        const el = containerRef.current;
+        if (!editor || !controller || !el) return;
+
+        const rect = editor.getBoundingClientRect();
+        el.style.top = `${rect.top - 50}px`;
+        el.style.left = `${rect.left + (rect.width / 2) - (el.offsetWidth / 2)}px`;
+
+        formatterVisible.value = true;
+        savedRangeRef.current = controller.getSelection();
+    }
+
+    function checkSelection() {
         const editor = editorRef.current;
         const controller = inputControllerRef.current;
         if (!editor || !controller) return;
@@ -71,38 +111,9 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
         } else {
             hide();
         }
-    }, [editorRef, inputControllerRef]);
+    }
 
-    // Show formatter
-    const show = useCallback(() => {
-        const editor = editorRef.current;
-        const controller = inputControllerRef.current;
-        const el = containerRef.current;
-        if (!editor || !controller || !el) return;
-
-        const rect = editor.getBoundingClientRect();
-        el.style.top = `${rect.top - 50}px`;
-        el.style.left = `${rect.left + (rect.width / 2) - (el.offsetWidth / 2)}px`;
-
-        formatterVisible.value = true;
-        savedRangeRef.current = controller.getSelection();
-    }, [editorRef, inputControllerRef]);
-
-    // Hide formatter
-    const hide = useCallback(() => {
-        formatterVisible.value = false;
-        setTimeout(() => {
-            if (!formatterVisible.value) {
-                formatterLinkMode.value = false;
-                if (linkInputRef.current) {
-                    linkInputRef.current.value = '';
-                }
-            }
-        }, 200);
-    }, []);
-
-    // Switch to link mode
-    const switchMode = useCallback((isLinkMode: boolean) => {
+    function switchMode(isLinkMode: boolean) {
         const controller = inputControllerRef.current;
         if (isLinkMode) {
             formatterLinkMode.value = true;
@@ -112,19 +123,9 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
             formatterLinkMode.value = false;
             restoreSelection();
         }
-    }, [inputControllerRef]);
+    }
 
-    // Restore selection
-    const restoreSelection = useCallback(() => {
-        const controller = inputControllerRef.current;
-        if (controller && savedRangeRef.current) {
-            controller.focus();
-            controller.setSelection(savedRangeRef.current.start, savedRangeRef.current.end);
-        }
-    }, [inputControllerRef]);
-
-    // Apply BBCode
-    const applyBBCode = useCallback((tag: string) => {
+    function applyBBCode(tag: string) {
         restoreSelection();
         const controller = inputControllerRef.current;
         if (!controller) return;
@@ -147,10 +148,9 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
             }
         });
         hide();
-    }, [inputControllerRef, restoreSelection, hide]);
+    }
 
-    // Apply link
-    const applyLink = useCallback(() => {
+    function applyLink() {
         const url = linkInputRef.current?.value.trim();
         if (!url) {
             switchMode(false);
@@ -181,7 +181,7 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
         if (linkInputRef.current) {
             linkInputRef.current.value = '';
         }
-    }, [inputControllerRef, switchMode, hide]);
+    }
 
     // Event listeners
     useEffect(() => {
@@ -210,7 +210,7 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
             editor.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
         };
-    }, [editorRef, checkSelection, hide]);
+    }, [editorRef, inputControllerRef]);
 
     // Handle link input keydown
     const handleLinkKeyDown = (e: KeyboardEvent) => {
@@ -225,7 +225,7 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
 
     const className = `dollars-text-formatter${formatterVisible.value ? ' visible' : ''}${formatterLinkMode.value ? ' link-mode' : ''}`;
 
-    const formatterContent = (
+    return (
         <div
             ref={containerRef}
             id="dollars-text-formatter"
@@ -234,11 +234,9 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
             <div class="formatter-row main-buttons">
                 <button type="button" class="formatter-btn" title="防剧透 (Mask)" onClick={() => applyBBCode('mask')} dangerouslySetInnerHTML={{ __html: iconSpoiler }} />
                 <div class="formatter-divider" />
-                <button type="button" class="formatter-btn" title="加粗" onClick={() => applyBBCode('b')} dangerouslySetInnerHTML={{ __html: iconBold }} />
-                <button type="button" class="formatter-btn" title="斜体" onClick={() => applyBBCode('i')} dangerouslySetInnerHTML={{ __html: iconItalic }} />
-                <button type="button" class="formatter-btn" title="下划线" onClick={() => applyBBCode('u')} dangerouslySetInnerHTML={{ __html: iconUnderline }} />
-                <button type="button" class="formatter-btn" title="删除线" onClick={() => applyBBCode('s')} dangerouslySetInnerHTML={{ __html: iconStrike }} />
-                <button type="button" class="formatter-btn" title="等宽代码" onClick={() => applyBBCode('code')} dangerouslySetInnerHTML={{ __html: iconCode }} />
+                {BASIC_FORMAT_BUTTONS.map(([tag, title, icon]) => (
+                    <button key={tag} type="button" class="formatter-btn" title={title} onClick={() => applyBBCode(tag)} dangerouslySetInnerHTML={{ __html: icon }} />
+                ))}
                 <div class="formatter-divider" />
                 <button type="button" class="formatter-btn" title="添加链接" onClick={() => switchMode(true)} dangerouslySetInnerHTML={{ __html: iconLink }} />
             </div>
@@ -251,6 +249,4 @@ function TextFormatterLayer({ editorRef, inputControllerRef }: TextFormatterProp
             </div>
         </div>
     );
-
-    return formatterContent;
 }

@@ -55,7 +55,7 @@ export function FloatingUI() {
 
         // 更新已读位置到最新消息
         const ids = messageIds.value;
-        if (ids.length > 0) {
+        if (ids.length) {
             updateReadState(ids[ids.length - 1]);
         }
 
@@ -68,11 +68,11 @@ export function FloatingUI() {
         // 非 live 模式：重新加载最新消息
         try {
             const recentMessages = await fetchRecentMessages(50);
-            if (recentMessages.length > 0) {
+            if (recentMessages.length) {
                 const filtered = recentMessages.filter(m => !blockedUsers.value.has(String(m.uid)));
                 setMessages(filtered);
 
-                if (filtered.length > 0) {
+                if (filtered.length) {
                     historyOldestId.value = filtered[0].id;
                     historyNewestId.value = filtered[filtered.length - 1].id;
                 }
@@ -97,7 +97,7 @@ export function FloatingUI() {
     const handleScrollToMention = (e: Event) => {
         e.preventDefault();
         const jumpList = unreadJumpList.value;
-        if (jumpList.length === 0) return;
+        if (!jumpList.length) return;
         const nextMentionId = jumpList[0];
         unreadJumpList.value = jumpList.slice(1);
         pendingJumpToMessage.value = nextMentionId;
@@ -108,18 +108,16 @@ export function FloatingUI() {
     const mentionBtnBottom = bottomBtnBottom + 50;
 
     const jumpList = unreadJumpList.value;
-    const showMentionBtn = jumpList.length > 0;
+    const showMentionBtn = !!jumpList.length;
     const scrollBtnClasses = `nav-btn ${showScrollBottomBtn.value ? 'visible' : ''} mode-${scrollButtonMode.value}`;
     // 使用 lastReadId 计算未读数量
     const currentUnreadCount = unreadCount.value;
 
-    const getTooltip = () => {
-        return scrollButtonMode.value === 'to-unread' ? '跳转到未读消息' : '跳转到最新消息';
-    };
+    const scrollTooltip = scrollButtonMode.value === 'to-unread' ? '跳转到未读消息' : '跳转到最新消息';
 
     return (
         <Fragment>
-            <FloatingDateCapsule label={currentDateLabel.value || ''} />
+            <FloatingDateCapsule label={currentDateLabel.value} />
 
             <div
                 id="dollars-scroll-mention-btn"
@@ -140,7 +138,7 @@ export function FloatingUI() {
                 class={scrollBtnClasses}
                 onClick={handleScrollBottom}
                 style={{ bottom: `${bottomBtnBottom}px` }}
-                title={getTooltip()}
+                title={scrollTooltip}
             >
                 {currentUnreadCount > 0 && (
                     <div id="dollars-unread-badge" class="nav-btn-badge">

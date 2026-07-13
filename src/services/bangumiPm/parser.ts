@@ -10,6 +10,7 @@ import { escapeHTML } from '@/utils/format';
 import { processBBCode } from '@/utils/bbcode';
 
 const FALLBACK_ORIGIN = 'https://bangumi.tv';
+const IMAGE_URL_EXT_RE = /\.(?:apng|avif|bmp|gif|jpe?g|png|svg|webp)$/i;
 // 与 sanitizePmBody 阶段无关：pmPresentationText 复原 BBCode 时需要跳过这些危险标签，
 // 避免把 <script> 之类的文本内容混进渲染文本。
 const BLOCKED_TAGS = new Set(['IFRAME', 'MATH', 'OBJECT', 'SCRIPT', 'STYLE', 'SVG', 'TEMPLATE']);
@@ -73,7 +74,7 @@ function parsePmTimestamp(value: string) {
         Number(hour),
         Number(minute)
     ).getTime() / 1000;
-    return Number.isFinite(timestamp) ? timestamp : null;
+    return isFinite(timestamp) ? timestamp : null;
 }
 
 function wrapBBCode(tag: string, content: string) {
@@ -87,7 +88,46 @@ function mediaUrl(element: Element, baseUrl: string) {
     return safeResourceUrl(raw, baseUrl);
 }
 
+function isImageUrl(value: string) {
+    try {
+        return IMAGE_URL_EXT_RE.test(new URL(value).pathname);
+    } catch {
+        return false;
+    }
+}
+
+function textMatchesUrl(text: string, url: string, baseUrl: string) {
+    try {
+        return new URL(text.trim(), baseUrl).href === url;
+    } catch {
+        return false;
+    }
+}
+
+function imageBBCodeFromLink(element: Element, href: string, baseUrl: string) {
+    const text = element.textContent?.trim() || '';
+    const match = text.match(/^\[img\]([\s\S]+?)\[\/img\]$/i);
+    if (match) {
+        const src = safeResourceUrl(match[1], baseUrl);
+        return src ? `[img]${src}[/img]` : null;
+    }
+    return isImageUrl(href) && textMatchesUrl(text, href, baseUrl) ? `[img]${href}[/img]` : null;
+}
+
+function smileyCodeFromImage(element: Element) {
+    const codePattern = /^\((?:bgm\d+|musume_\d+|blake_\d+)\)$/i;
+    for (const attribute of Array.from(element.attributes)) {
+        const code = attribute.value.trim();
+        if (codePattern.test(code)) return code;
+    }
+    return null;
+}
+
 function presentSpan(element: Element, content: string): string {
+    if (element.classList.contains('bmo')) {
+        const code = element.getAttribute('data-code')?.trim() || '';
+        if (/^\(bmo(?:C|_)[a-zA-Z0-9_-]+\)$/i.test(code)) return code;
+    }
     if (!content) return content;
     if (element.classList.contains('text_mask') || element.classList.contains('mask')) {
         return wrapBBCode('mask', content);
@@ -99,19 +139,35 @@ function presentSpan(element: Element, content: string): string {
     return content;
 }
 
+function normalizePmTextNode(value: string) {
+    return value.replace(/[ \t]*[\r\n]+[ \t]*/g, ' ');
+}
+
+function normalizePmPresentationText(value: string) {
+    return value
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/\n[ \t]+/g, '\n')
+        .trim();
+}
+
 // 把 Bangumi 短信正文的 DOM 复原成 Dollars 风格的 BBCode 文本，
 // 再交由 processBBCode 渲染，从而与主聊天保持完全一致（[code]、加粗、引用等）。
 function pmPresentationText(source: Node, baseUrl: string): string {
-    if (source.nodeType === Node.TEXT_NODE) return source.textContent || '';
+    if (source.nodeType === Node.TEXT_NODE) return normalizePmTextNode(source.textContent || '');
     if (!(source instanceof Element)) return '';
     if (BLOCKED_TAGS.has(source.tagName)) return '';
 
     const content = Array.from(source.childNodes).map(node => pmPresentationText(node, baseUrl)).join('');
+    if (source.classList.contains('quote')) return wrapBBCode('quote', content);
+
     switch (source.tagName) {
         case 'BR':
             return '\n';
+        case 'Q':
+            return content;
         case 'IMG': {
-            if (source.classList.contains('smile')) return source.getAttribute('alt') || '';
+            const smileyCode = smileyCodeFromImage(source);
+            if (smileyCode) return smileyCode;
             const src = safeResourceUrl(source.getAttribute('src') || '', baseUrl);
             return src ? `[img]${src}[/img]` : '';
         }
@@ -132,6 +188,8 @@ function pmPresentationText(source: Node, baseUrl: string): string {
         case 'A': {
             const href = safeResourceUrl(source.getAttribute('href') || '', baseUrl);
             if (!href) return content;
+            const imageBBCode = imageBBCodeFromLink(source, href, baseUrl);
+            if (imageBBCode) return imageBBCode;
             // 裸链接交给 processBBCode 的自动链接逻辑，与主聊天一致
             return content.trim() === href ? href : `[url=${href}]${content}[/url]`;
         }
@@ -184,16 +242,21 @@ function ensurePmPage(document: Document) {
 
 function findNextConversationPage(document: Document, baseUrl: string) {
     const current = new URL(baseUrl, FALLBACK_ORIGIN);
-    const currentPage = Number.parseInt(current.searchParams.get('page') || '1', 10);
+    const currentPage = parseInt(current.searchParams.get('page') || '1', 10);
     const candidates = Array.from(document.querySelectorAll<HTMLAnchorElement>('#pm_pager a'))
         .flatMap(link => {
             const path = toSameOriginPmPath(link.href, baseUrl);
             if (!path) return [];
-            const page = Number.parseInt(new URL(link.href, baseUrl).searchParams.get('page') || '', 10);
-            return Number.isFinite(page) && page > currentPage ? [{ path, page }] : [];
+            const page = parseInt(new URL(link.href, baseUrl).searchParams.get('page') || '', 10);
+            return page > currentPage ? [{ path, page }] : [];
         })
         .sort((a, b) => a.page - b.page);
     return candidates[0]?.path || null;
+}
+
+function findPreviousMessagePage(document: Document, baseUrl: string) {
+    const link = document.querySelector<HTMLAnchorElement>('.pm-message-list .pm-message-more a[href]');
+    return link ? toSameOriginPmPath(link.href, baseUrl) : null;
 }
 
 export function parsePmInbox(html: string, baseUrl = getOrigin()): BangumiPmInboxPage {
@@ -213,7 +276,7 @@ export function parsePmInbox(html: string, baseUrl = getOrigin()): BangumiPmInbo
             avatar: avatarFrom(item, baseUrl),
             dateText: item.querySelector('.pm-conversation-date')?.textContent?.trim() || '',
             lastMessage: item.querySelector('.pm-conversation-desc')?.textContent?.trim() || '',
-            unreadCount: Number.parseInt(item.querySelector('.pm-conversation-unread')?.textContent || '0', 10) || 0,
+            unreadCount: parseInt(item.querySelector('.pm-conversation-unread')?.textContent || '0', 10) || 0,
         }];
     });
     return { conversations, nextPageUrl: findNextConversationPage(document, baseUrl) };
@@ -244,7 +307,9 @@ export function parsePmConversation(html: string, baseUrl: string): BangumiPmCon
         const userLink = child.querySelector<HTMLAnchorElement>('a[href*="/user/"]');
         const info = child.querySelector('.pm-message-info small')?.textContent || '';
         const timestampText = info.split('/')[0]?.trim() || '';
-        const presentationText = Array.from(body.childNodes).map(node => pmPresentationText(node, baseUrl)).join('').trim();
+        const presentationText = normalizePmPresentationText(
+            Array.from(body.childNodes).map(node => pmPresentationText(node, baseUrl)).join('')
+        );
         messages.push({
             id: messageId,
             isSelf: child.classList.contains('pm-message-self'),
@@ -266,6 +331,7 @@ export function parsePmConversation(html: string, baseUrl: string): BangumiPmCon
         username: decodeURIComponent(username),
         avatar: avatarFrom(document.querySelector('.pm-chat-header'), baseUrl),
         messages,
+        previousPageUrl: findPreviousMessagePage(document, baseUrl),
         replyForm: formElement ? extractForm(formElement, baseUrl) : null,
     };
 }

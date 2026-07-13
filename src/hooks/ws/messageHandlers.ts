@@ -74,7 +74,7 @@ export function handleNewMessages(data: any) {
         }
     }
 
-    if (newUnreadCount > 0 && timelineIsLive.value && !isAtBottom.value) {
+    if (newUnreadCount && timelineIsLive.value && !isAtBottom.value) {
         unreadWhileScrolled.value += newUnreadCount;
         showScrollBottomBtn.value = true;
     }
@@ -130,13 +130,13 @@ export function handleMessageEdit(data: any) {
 export function checkMissedMessages() {
     if (!isChatOpen.value) return;
     const ids = messageIds.value;
-    if (ids.length === 0) return;
+    if (!ids.length) return;
 
     const lastId = ids[ids.length - 1];
     getUnreadCount(lastId, Number(userInfo.value.id)).then(async res => {
-        if (res && res.count > 0) {
+        if (res?.count) {
             const newMessages = await fetchNewerMessages(lastId, 100);
-            if (newMessages.length > 0) {
+            if (newMessages.length) {
                 addMessagesBatch(newMessages);
             }
         }

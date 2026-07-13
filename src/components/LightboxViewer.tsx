@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'preact/hooks';
+import { useEffect, useRef } from 'preact/hooks';
 import { batch } from '@preact/signals';
 import {
     isImageViewerOpen,
@@ -7,7 +7,6 @@ import {
     imageViewerSource,
     imageViewerTimelineState,
     hideImageViewer,
-    imageViewerIndex as indexSignal,
     hideUserProfile,
     toggleSearch,
 } from '@/stores/ui';
@@ -51,6 +50,7 @@ export function LightboxViewer() {
     const startMid = useRef({ x: 0, y: 0 });
     const lastTap = useRef(0);
     const isDragging = useRef(false);
+    const isTouchGestureActive = useRef(false);
     const hasMoved = useRef(false);
     const swipeStartX = useRef(0);
     const swipeStartY = useRef(0);
@@ -58,15 +58,14 @@ export function LightboxViewer() {
     const timelineLoading = useRef(false);
 
     const items = imageViewerItems.value;
-    const images = items.map(item => item.src);
     const index = imageViewerIndex.value;
     const source = imageViewerSource.value;
     const timelineState = imageViewerTimelineState.value;
     const visible = isImageViewerOpen.value;
-    const total = images.length;
+    const total = items.length;
     const currentItem = items[index];
 
-    const handleCapsuleClick = useCallback((e: MouseEvent) => {
+    const handleCapsuleClick = (e: MouseEvent) => {
         e.stopPropagation();
         const messageId = currentItem?.messageId;
         if (!messageId) return;
@@ -80,16 +79,16 @@ export function LightboxViewer() {
         }
         pendingJumpToMessage.value = messageId;
         toggleChat(true);
-    }, [currentItem?.messageId, source]);
+    };
 
-    const applyTransform = useCallback(() => {
+    const applyTransform = () => {
         const img = imgRef.current;
         if (img) {
             img.style.transform = `translate3d(${tx.current}px,${ty.current}px,0) scale(${scale.current})`;
         }
-    }, []);
+    };
 
-    const zoomAtPoint = useCallback((clientX: number, clientY: number, nextScale: number) => {
+    const zoomAtPoint = (clientX: number, clientY: number, nextScale: number) => {
         const img = imgRef.current;
         if (!img) return;
 
@@ -115,13 +114,13 @@ export function LightboxViewer() {
         scale.current = clampedScale;
         img.classList.remove('lb-dragging');
         applyTransform();
-    }, [applyTransform]);
+    };
 
-    const toggleZoomAtPoint = useCallback((clientX: number, clientY: number) => {
+    const toggleZoomAtPoint = (clientX: number, clientY: number) => {
         zoomAtPoint(clientX, clientY, scale.current > 1.1 ? 1 : 2.5);
-    }, [zoomAtPoint]);
+    };
 
-    const resetTransform = useCallback(() => {
+    const resetTransform = () => {
         scale.current = 1;
         tx.current = 0;
         ty.current = 0;
@@ -130,9 +129,9 @@ export function LightboxViewer() {
             img.classList.remove('lb-dragging');
             img.style.transform = '';
         }
-    }, []);
+    };
 
-    const close = useCallback(() => {
+    const close = () => {
         if (closing.current) return;
         closing.current = true;
         const overlay = overlayRef.current;
@@ -144,17 +143,18 @@ export function LightboxViewer() {
             hideImageViewer();
             closing.current = false;
         }, ANIM_DURATION);
-    }, []);
+    };
 
-    const loadTimelinePage = useCallback(async (direction: 'before' | 'after') => {
+    const loadTimelinePage = async (direction: 'before' | 'after') => {
         const timeline = imageViewerTimelineState.peek();
-        const hasMore = direction === 'before' ? timeline?.hasOlder : timeline?.hasNewer;
+        const isBefore = direction === 'before';
+        const hasMore = isBefore ? timeline?.hasOlder : timeline?.hasNewer;
         if (!timeline || !hasMore || timelineLoading.current) return;
 
         timelineLoading.current = true;
         try {
-            const cursorId = direction === 'before' ? timeline.beforeId : timeline.afterId;
-            const cursorIndex = direction === 'before' ? timeline.beforeIndex : timeline.afterIndex;
+            const cursorId = isBefore ? timeline.beforeId : timeline.afterId;
+            const cursorIndex = isBefore ? timeline.beforeIndex : timeline.afterIndex;
             const page = await fetchGalleryTimelineImages(direction, cursorId, cursorIndex);
             if (
                 !isImageViewerOpen.peek()
@@ -165,7 +165,7 @@ export function LightboxViewer() {
             }
 
             if (page.items.length === 0) {
-                imageViewerTimelineState.value = direction === 'before'
+                imageViewerTimelineState.value = isBefore
                     ? { ...timeline, hasOlder: false }
                     : { ...timeline, hasNewer: false };
                 return;
@@ -173,15 +173,15 @@ export function LightboxViewer() {
 
             const currentItems = imageViewerItems.peek();
             const merged = mergeTimelineImagePage(currentItems, page.items, direction);
-            const boundaryId = direction === 'before'
+            const boundaryId = isBefore
                 ? page.items[0].messageId!
                 : page.items[page.items.length - 1].messageId!;
-            const boundaryIndex = direction === 'before'
+            const boundaryIndex = isBefore
                 ? page.items[0].mediaIndex!
                 : page.items[page.items.length - 1].mediaIndex!;
 
             batch(() => {
-                if (direction === 'before') {
+                if (isBefore) {
                     imageViewerItems.value = merged.items;
                     imageViewerIndex.value = merged.index;
                     imageViewerTimelineState.value = {
@@ -207,15 +207,15 @@ export function LightboxViewer() {
         } finally {
             timelineLoading.current = false;
         }
-    }, [resetTransform]);
+    };
 
-    const navigate = useCallback((dir: number) => {
+    const navigate = (dir: number) => {
         const currentItems = imageViewerItems.peek();
         const currentIndex = imageViewerIndex.peek();
         const nextIndex = currentIndex + dir;
 
         if (nextIndex >= 0 && nextIndex < currentItems.length) {
-            indexSignal.value = nextIndex;
+            imageViewerIndex.value = nextIndex;
             resetTransform();
             return;
         }
@@ -226,10 +226,21 @@ export function LightboxViewer() {
         }
 
         if (currentItems.length > 1) {
-            indexSignal.value = (nextIndex + currentItems.length) % currentItems.length;
+            imageViewerIndex.value = (nextIndex + currentItems.length) % currentItems.length;
             resetTransform();
         }
-    }, [loadTimelinePage, resetTransform]);
+    };
+
+    const canSwipeHorizontally = (dx: number) => dx < 0 ? canNavigateNext : canNavigatePrevious;
+
+    const getSwipeTranslateX = (dx: number) => {
+        if (canSwipeHorizontally(dx)) return dx;
+        return dx * 0.28;
+    };
+
+    const isLightboxControlTarget = (target: EventTarget | null) => (
+        target instanceof Element && !!target.closest('.lb-close, .lb-nav, .lb-capsule')
+    );
 
     // Keyboard
     useEffect(() => {
@@ -241,7 +252,7 @@ export function LightboxViewer() {
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, [visible, close, navigate]);
+    }, [visible]);
 
     // Fade in on mount
     useEffect(() => {
@@ -250,11 +261,11 @@ export function LightboxViewer() {
         requestAnimationFrame(() => {
             overlayRef.current?.classList.add('lb-visible');
         });
-    }, [visible, index, resetTransform]);
+    }, [visible, index]);
 
     if (!visible || total === 0) return null;
 
-    const src = images[index];
+    const src = currentItem?.src;
     const canNavigatePrevious = source === 'timeline'
         ? index > 0 || !!timelineState?.hasOlder
         : total > 1;
@@ -264,7 +275,14 @@ export function LightboxViewer() {
 
     // --- Touch handlers ---
     const onTouchStart = (e: TouchEvent) => {
+        if (isLightboxControlTarget(e.target)) {
+            isTouchGestureActive.current = false;
+            isDragging.current = false;
+            return;
+        }
+
         const touches = e.touches;
+        isTouchGestureActive.current = true;
         hasMoved.current = false;
 
         if (touches.length === 1) {
@@ -298,6 +316,8 @@ export function LightboxViewer() {
     };
 
     const onTouchMove = (e: TouchEvent) => {
+        if (!isTouchGestureActive.current) return;
+
         const touches = e.touches;
         hasMoved.current = true;
 
@@ -324,8 +344,9 @@ export function LightboxViewer() {
                 imgRef.current?.classList.add('lb-dragging');
                 applyTransform();
             } else {
-                // swipe tracking: apply vertical offset for feedback
-                ty.current = dy * 0.5;
+                e.preventDefault();
+                tx.current = getSwipeTranslateX(dx);
+                ty.current = Math.abs(dx) > Math.abs(dy) ? 0 : dy * 0.5;
                 imgRef.current?.classList.add('lb-dragging');
                 applyTransform();
             }
@@ -333,7 +354,9 @@ export function LightboxViewer() {
     };
 
     const onTouchEnd = (e: TouchEvent) => {
+        if (!isTouchGestureActive.current) return;
         if (e.touches.length > 0) return;
+        isTouchGestureActive.current = false;
         isDragging.current = false;
         imgRef.current?.classList.remove('lb-dragging');
 
@@ -399,6 +422,9 @@ export function LightboxViewer() {
             ref={overlayRef}
             class="lb-overlay"
             onClick={onBackdropClick}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
         >
             {/* Close button */}
             <button class="lb-close" onClick={close} aria-label="Close" />
@@ -441,9 +467,6 @@ export function LightboxViewer() {
                     alt=""
                     draggable={false}
                     onDblClick={onImageDoubleClick}
-                    onTouchStart={onTouchStart}
-                    onTouchMove={onTouchMove}
-                    onTouchEnd={onTouchEnd}
                     onWheel={onWheel}
                     onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = '/img/no_img.gif';

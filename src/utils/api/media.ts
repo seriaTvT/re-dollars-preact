@@ -69,11 +69,11 @@ const UPLOAD_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
 const UPLOAD_TIMEOUT_MS = 60_000; // 60s
 const UPLOAD_MAX_RETRIES = 1;
 const UPLOAD_MAX_BATCH_IMAGES = 20;
-const IMAGE_EXTENSIONS = new Set([
+export const IMAGE_EXTENSIONS = [
     '.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif',
     '.bmp', '.tiff', '.tif', '.svg', '.heic', '.heif',
     '.ico', '.jxl', '.apng',
-]);
+];
 
 function getFileExtension(filename: string) {
     const dotIndex = filename.lastIndexOf('.');
@@ -81,7 +81,7 @@ function getFileExtension(filename: string) {
 }
 
 function isImageFile(file: File) {
-    return file.type.startsWith('image/') || IMAGE_EXTENSIONS.has(getFileExtension(file.name));
+    return file.type.startsWith('image/') || IMAGE_EXTENSIONS.includes(getFileExtension(file.name));
 }
 
 function stringValue(value: unknown): string | undefined {

@@ -73,6 +73,7 @@ describe('Bangumi PM HTML parser', () => {
             id: '9',
             nickname: 'Peer',
             username: 'peer',
+            previousPageUrl: null,
         }));
         expect(detail.messages[0]).toEqual(expect.objectContaining({
             id: '10',
@@ -149,6 +150,125 @@ describe('Bangumi PM HTML parser', () => {
         expect(html).not.toContain('src="javascript:');
     });
 
+    it('restores newer Bangumi smileys from native image attributes and paths', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_15" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">
+                            <img class="smiley" src="/img/smiles/tv/02.gif" alt="(bgm25)">
+                            <img src="./saved/101.gif" smileid="140" class="smile" &nbsp;&nbsp;alt="(bgm124)" width="21">
+                            <img src="./saved/102.gif" smileid="141" class="smile" &nbsp;&nbsp;alt="(bgm125)" width="21">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toBe('(bgm25) (bgm124) (bgm125)');
+        expect(message.bodyHtml).toContain('alt="(bgm25)"');
+        expect(message.bodyHtml).toContain('alt="(bgm124)"');
+        expect(message.bodyHtml).toContain('alt="(bgm125)"');
+        expect(message.bodyHtml).not.toContain('class="image-container"');
+    });
+
+    it('restores BMO codes from Bangumi PM placeholder spans', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_16" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">
+                            before<span class="bmo" data-code="(bmoCDmBDiwGMNcgBJYxCAscB)"></span>after
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toBe('before(bmoCDmBDiwGMNcgBJYxCAscB)after');
+        expect(message.bodyHtml).toContain('class="bmo"');
+        expect(message.bodyHtml).toContain('data-code="(bmoCDmBDiwGMNcgBJYxCAscB)"');
+    });
+
+    it('restores image BBCode when Bangumi renders it as a link', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_13" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">
+                            <a href="https://example.com/image.jpg">https://example.com/image.jpg</a>
+                            <a href="https://example.com/raw.png">[img]https://example.com/raw.png[/img]</a>
+                            <a href="https://example.com/manual.webp">manual image link</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toContain('[img]https://example.com/image.jpg[/img]');
+        expect(message.presentationText).toContain('[img]https://example.com/raw.png[/img]');
+        expect(message.presentationText).toContain('[url=https://example.com/manual.webp]manual image link[/url]');
+
+        const html = message.bodyHtml;
+        expect(html).toContain('data-full-src="https://example.com/image.jpg"');
+        expect(html).toContain('data-full-src="https://example.com/raw.png"');
+        expect(html).toContain('<a href="https://example.com/manual.webp" target="_blank" rel="noopener noreferrer">manual image link</a>');
+    });
+
+    it('restores Bangumi native quote blocks in PM bodies', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_405192" class="pm-message pm-message-self clearit">
+                        <a href="/user/wataame" class="avatar">
+                            <span class="avatarNeue avatarSize32" style="background-image:url('//lain.bgm.tv/pic/user/l/000/46/46/464691_8806h.jpg?r=1777358261&amp;hd=1')"></span>
+                        </a>
+                        <div class="pm-message-bubble">
+                            <div class="pm-message-body"><div class="quote"><q>123</q></div>hahaha</div>
+                            <div class="pm-message-info"><small>2026-7-6 03:14 / del</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toBe('[quote]123[/quote]hahaha');
+        expect(message.bodyHtml).toContain('class="chat-quote"');
+        expect(message.bodyHtml).toContain('123');
+        expect(message.bodyHtml).toContain('hahaha');
+    });
+
+    it('does not duplicate source-formatting newlines after line breaks', () => {
+        const parseBody = (body: string) => parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_14" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">${body}</div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`).messages[0].presentationText;
+
+        const firstParse = parseBody('first<br>\nsecond<br>\n<br>\nthird');
+        const secondParse = parseBody(firstParse.replace(/\n/g, '<br>\n'));
+
+        expect(firstParse).toBe('first\nsecond\n\nthird');
+        expect(secondParse).toBe(firstParse);
+    });
+
     it('treats pager links as conversation-list pagination', () => {
         const page = parsePmInbox(`
             <div id="contentPM">
@@ -162,6 +282,25 @@ describe('Bangumi PM HTML parser', () => {
         `, `${origin}/pm/conversation/9.chii?page=1`);
         expect(page.conversations).toHaveLength(1);
         expect(page.nextPageUrl).toBe('/pm/conversation/9.chii?page=2');
+    });
+
+    it('parses the earlier-message cursor from a conversation page', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div class="pm-message-more">
+                        <a href="https://bangumi.tv/pm/conversation/9.chii?page=1&amp;before_msg_id=404953">查看更早短信</a>
+                    </div>
+                    <div id="msg_404953" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">hello</div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii?page=1`);
+
+        expect(detail.previousPageUrl).toBe('/pm/conversation/9.chii?page=1&before_msg_id=404953');
     });
 
     it('extracts reply fields through the revised editor wrapper', () => {

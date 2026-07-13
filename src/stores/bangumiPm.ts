@@ -8,6 +8,7 @@ import { toSameOriginPmPath } from '@/services/bangumiPm/parser';
 import { settings, userInfo } from '@/stores/user';
 import { escapeHTML, getAvatarUrl } from '@/utils/format';
 import { processBBCode } from '@/utils/bbcode';
+import { rawPmMessageText, summarizeReplyText } from '@/utils/messageActions';
 import { NEW_MESSAGE_ANIMATION } from '@/utils/constants';
 import {
     createOptimisticStableKey,
@@ -17,7 +18,13 @@ import {
 } from '@/utils/optimisticMessages';
 import { updateSignalSet } from '@/utils/signalMap';
 import { addPmNotification, dismissPmNotification, prunePmNotifications } from '@/stores/notifications';
-import type { BangumiPmConversation, BangumiPmConversationDetail, BangumiPmMessage, BangumiPmSendOutcome } from '@/types/pm';
+import type {
+    BangumiPmConversation,
+    BangumiPmConversationDetail,
+    BangumiPmMessage,
+    BangumiPmReplyTarget,
+    BangumiPmSendOutcome,
+} from '@/types/pm';
 
 export const pmConversations = signal<BangumiPmConversation[]>([]);
 export const pmDetails = signal<Record<string, BangumiPmConversationDetail>>({});
@@ -27,19 +34,17 @@ export const pmInboxError = signal('');
 export const pmNextInboxPage = signal<string | null>(null);
 export const pmDetailLoading = signal(false);
 export const pmDetailError = signal('');
+export const pmEarlierMessagesLoading = signal<Set<string>>(new Set());
+export const pmEarlierMessagesError = signal<Record<string, string>>({});
 export const pmComposeReceiver = signal('');
 export const pmNewMessageIds = signal<Set<string>>(new Set());
+export const pmReplyingTo = signal<BangumiPmReplyTarget | null>(null);
 // 未读短信总数（来自 /json/notify）。即使聊天面板关闭也会更新，用于 Dock 角标。
 export const pmUnreadCount = signal(0);
 // 每会话未读数（来自 /json/notify，id → 未读数）。始终新鲜，不依赖收件箱 HTML 解析，
 // 用于「在会话视图里也能反映其他会话的新消息」这类角标。
 export const pmUnreadByConversation = signal<Record<string, number>>({});
 
-function isSameUnreadMap(a: Record<string, number>, b: Record<string, number>) {
-    const keysA = Object.keys(a);
-    if (keysA.length !== Object.keys(b).length) return false;
-    return keysA.every(key => a[key] === b[key]);
-}
 // 本地把某会话标记为已读：立刻扣减 notify 派生的角标信号，不必等下一次轮询。
 // （读取会话页会在服务端标记已读，下一次 notify 会与此一致。）
 function markPmConversationRead(id: string) {
@@ -53,6 +58,7 @@ function markPmConversationRead(id: string) {
 
 let inboxRequest: Promise<void> | null = null;
 const detailRequests = new Map<string, Promise<void>>();
+const earlierDetailRequests = new Map<string, Promise<void>>();
 let hasLoadedMoreInboxPages = false;
 let lastInboxLoadedAt = 0;
 const lastDetailLoadedAt = new Map<string, number>();
@@ -68,8 +74,11 @@ const pmOptimisticAdapter: OptimisticMessageAdapter<BangumiPmMessage> = {
 
 const PM_INBOX_REFRESH_INTERVAL = 120_000;
 const PM_DETAIL_REFRESH_INTERVAL = 30_000;
+const PM_DRAFT_PREFIX = 'draft:';
+const PM_DRAFT_TITLE = '来自 Re:Dollars 的短信';
 // /json/notify 极轻量，可持续轮询以驱动全局角标与变更探测。
-// 面板打开时用更快的节奏，尽快发现对方新消息；关闭时只需维持角标，放慢即可。
+// 正在短信会话时优先实时性；面板其他视图稍慢，关闭时只维持角标。
+const PM_NOTIFY_POLL_INTERVAL_CONVERSATION = 2_000;
 const PM_NOTIFY_POLL_INTERVAL_OPEN = 5_000;
 const PM_NOTIFY_POLL_INTERVAL_IDLE = 15_000;
 
@@ -83,74 +92,77 @@ function pmNotifySignature(notify: BangumiNotify) {
     return `${notify.pmCount}|${conversations}`;
 }
 
-function arePmConversationsEqual(
-    current: BangumiPmConversation[],
-    next: BangumiPmConversation[]
-) {
-    return current.length === next.length && current.every((item, index) => {
-        const candidate = next[index];
-        return candidate
-            && item.id === candidate.id
-            && item.href === candidate.href
-            && item.nickname === candidate.nickname
-            && item.avatar === candidate.avatar
-            && item.dateText === candidate.dateText
-            && item.lastMessage === candidate.lastMessage
-            && item.unreadCount === candidate.unreadCount;
-    });
-}
-
-function arePmFormsEqual(
-    current: BangumiPmConversationDetail['replyForm'],
-    next: BangumiPmConversationDetail['replyForm']
-) {
-    if (!current || !next) return current === next;
-    const currentFields = Object.entries(current.fields);
-    const nextFields = Object.entries(next.fields);
-    return current.action === next.action
-        && currentFields.length === nextFields.length
-        && currentFields.every(([key, value]) => next.fields[key] === value);
-}
-
-function arePmDetailsEqual(
-    current: BangumiPmConversationDetail | undefined,
-    next: BangumiPmConversationDetail
-) {
-    return !!current
-        && current.id === next.id
-        && current.nickname === next.nickname
-        && current.username === next.username
-        && current.avatar === next.avatar
-        && arePmFormsEqual(current.replyForm, next.replyForm)
-        && current.messages.length === next.messages.length
-        && current.messages.every((message, index) => {
-            const candidate = next.messages[index];
-            return candidate
-                && message.id === candidate.id
-                && message.isSelf === candidate.isSelf
-                && message.avatar === candidate.avatar
-                && message.userHref === candidate.userHref
-                && message.bodyHtml === candidate.bodyHtml
-                && message.bodyText === candidate.bodyText
-                && message.presentationText === candidate.presentationText
-                && message.timestamp === candidate.timestamp
-                && message.timestampText === candidate.timestampText
-                && message.topic === candidate.topic
-                && message.state === candidate.state
-                && message.stableKey === candidate.stableKey;
-        });
-}
-
 function normalizePmMessageText(value: string | null | undefined) {
-    return (value || '').replace(/\s+/g, ' ').trim();
+    return (value || '')
+        .replace(/\[quote([^\]]*)\]\s*/gi, '[quote$1]')
+        .replace(/\s*\[\/quote\]\s*/gi, '[/quote]')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function pmMessageReplyUser(detail: BangumiPmConversationDetail, message: BangumiPmMessage) {
+    if (!message.isSelf) return detail.nickname || 'Bangumi 短信';
+    return userInfo.peek().nickname || userInfo.peek().name || '我';
+}
+
+export function setPmReplyTo(conversationId: string, message: BangumiPmMessage) {
+    const detail = pmDetails.peek()[conversationId];
+    if (!detail) return false;
+    const raw = rawPmMessageText(message);
+    const text = summarizeReplyText(raw);
+    pmReplyingTo.value = {
+        conversationId,
+        messageId: message.id,
+        user: pmMessageReplyUser(detail, message),
+        avatar: message.avatar,
+        text,
+        raw,
+    };
+    return true;
+}
+
+export function setPmReplyToMessage(conversationId: string, messageId: string) {
+    const detail = pmDetails.peek()[conversationId];
+    const message = detail?.messages.find(item => item.id === messageId);
+    return detail && message ? setPmReplyTo(conversationId, message) : false;
+}
+
+export function cancelPmReply() {
+    pmReplyingTo.value = null;
+}
+
+function pmMessageNumericId(id: string) {
+    return /^\d+$/.test(id) ? parseInt(id, 10) : null;
+}
+
+function isPmDraftId(id: string) {
+    return id.startsWith(PM_DRAFT_PREFIX);
+}
+
+function pmDraftId(username: string) {
+    return `${PM_DRAFT_PREFIX}${encodeURIComponent(username)}`;
+}
+
+function comparePmMessages(a: BangumiPmMessage, b: BangumiPmMessage) {
+    if (a.timestamp !== null && b.timestamp !== null && a.timestamp !== b.timestamp) {
+        return a.timestamp - b.timestamp;
+    }
+    const aId = pmMessageNumericId(a.id);
+    const bId = pmMessageNumericId(b.id);
+    if (aId !== null && bId !== null && aId !== bId) return aId - bId;
+    if (aId !== null && bId === null) return -1;
+    if (aId === null && bId !== null) return 1;
+    return 0;
 }
 
 function mergeLocalPmMessages(
     current: BangumiPmConversationDetail | undefined,
-    next: BangumiPmConversationDetail
+    next: BangumiPmConversationDetail,
+    previousPageUrl = current ? current.previousPageUrl : next.previousPageUrl
 ) {
-    const currentById = new Map((current?.messages || []).map(message => [message.id, message]));
-    const messages = mergeOptimisticList(current?.messages, next.messages, pmOptimisticAdapter, {
+    const currentMessages = current?.messages || [];
+    const currentById = new Map(currentMessages.map(message => [message.id, message]));
+    const incomingMessages = mergeOptimisticList(currentMessages, next.messages, pmOptimisticAdapter, {
         isIncomingCandidate: message => message.isSelf,
         timestampWindowSeconds: 60,
         mergeMatched: (incoming, local) => local.stableKey
@@ -162,7 +174,22 @@ function mergeLocalPmMessages(
             ? { ...message, stableKey: currentMessage.stableKey, state: currentMessage.state === 'sent' ? 'sent' as const : message.state }
             : message;
     });
-    return messages === next.messages ? next : { ...next, messages: [...messages] };
+
+    const incomingIds = new Set(incomingMessages.map(message => message.id));
+    const incomingStableKeys = new Set(incomingMessages.map(message => message.stableKey).filter(Boolean));
+    const byId = new Map<string, BangumiPmMessage>();
+    for (const message of currentMessages) {
+        if (incomingIds.has(message.id)) continue;
+        if (message.stableKey && incomingStableKeys.has(message.stableKey)) continue;
+        byId.set(message.id, message);
+    }
+    for (const message of incomingMessages) byId.set(message.id, message);
+
+    return {
+        ...next,
+        previousPageUrl,
+        messages: Array.from(byId.values()).sort(comparePmMessages),
+    };
 }
 
 function markPmMessageNew(id: string) {
@@ -170,13 +197,15 @@ function markPmMessageNew(id: string) {
     setTimeout(() => updateSignalSet(pmNewMessageIds, set => set.delete(id)), NEW_MESSAGE_ANIMATION);
 }
 
-function setPmDetail(id: string, detail: BangumiPmConversationDetail) {
+function setPmDetail(
+    id: string,
+    detail: BangumiPmConversationDetail,
+    options: { markNew?: boolean; previousPageUrl?: string | null } = {}
+) {
     const current = pmDetails.peek()[id];
-    const merged = mergeLocalPmMessages(current, detail);
-    if (!arePmDetailsEqual(current, merged)) {
-        pmDetails.value = { ...pmDetails.peek(), [id]: merged };
-    }
-    if (current) {
+    const merged = mergeLocalPmMessages(current, detail, options.previousPageUrl);
+    pmDetails.value = { ...pmDetails.peek(), [id]: merged };
+    if (current && options.markNew !== false) {
         const currentIds = new Set(current.messages.map(message => message.id));
         const currentStableKeys = new Set(current.messages.map(message => message.stableKey).filter(Boolean));
         for (const message of merged.messages) {
@@ -187,17 +216,18 @@ function setPmDetail(id: string, detail: BangumiPmConversationDetail) {
     }
 }
 
+function migrateDraftPmDetail(draftId: string, detail: BangumiPmConversationDetail) {
+    const draft = pmDetails.peek()[draftId];
+    const mergedDraft = mergeLocalPmMessages(draft, detail);
+    const next = { ...pmDetails.peek() };
+    delete next[draftId];
+    const existing = next[detail.id];
+    next[detail.id] = existing ? mergeLocalPmMessages(existing, mergedDraft) : mergedDraft;
+    pmDetails.value = next;
+}
+
 function renderOptimisticPmBody(body: string) {
     return processBBCode(escapeHTML(body), {}, {}, {});
-}
-
-function selfPmAvatar(detail: BangumiPmConversationDetail) {
-    return [...detail.messages].reverse().find(message => message.isSelf)?.avatar || userInfo.peek().avatar || '';
-}
-
-function selfPmHref(detail: BangumiPmConversationDetail) {
-    return [...detail.messages].reverse().find(message => message.isSelf)?.userHref
-        || (window.CHOBITS_USERNAME ? `/user/${window.CHOBITS_USERNAME}` : '');
 }
 
 function addOptimisticPmMessage(id: string, body: string) {
@@ -206,13 +236,22 @@ function addOptimisticPmMessage(id: string, body: string) {
 
     const lastTimestamp = detail.messages[detail.messages.length - 1]?.timestamp || 0;
     const timestamp = optimisticTimestamp(lastTimestamp);
+    let avatar = userInfo.peek().avatar || '';
+    let userHref = window.CHOBITS_USERNAME ? `/user/${window.CHOBITS_USERNAME}` : '';
+    for (let i = detail.messages.length - 1; i >= 0; i--) {
+        const message = detail.messages[i];
+        if (!message.isSelf) continue;
+        avatar = message.avatar || avatar;
+        userHref = message.userHref || userHref;
+        break;
+    }
 
     const stableKey = createOptimisticStableKey('pm-temp');
     const message: BangumiPmMessage = {
         id: `temp-${nextOptimisticPmId--}`,
         isSelf: true,
-        avatar: selfPmAvatar(detail),
-        userHref: selfPmHref(detail),
+        avatar,
+        userHref,
         bodyHtml: renderOptimisticPmBody(body),
         bodyText: body,
         presentationText: body,
@@ -256,12 +295,25 @@ async function finishPmReply(
     tempId: string,
     result: BangumiPmSendOutcome
 ) {
+    const current = pmDetails.peek()[id];
     if (result.status === 'sent') {
-        setPmDetail(id, result.detail);
+        if (current?.isDraft) {
+            migrateDraftPmDetail(id, result.detail);
+            if (activeConversationId.peek() === `pm:${id}`) {
+                setActiveConversation(`pm:${result.detail.id}`);
+            }
+        } else {
+            setPmDetail(id, result.detail);
+        }
         lastDetailLoadedAt.set(id, Date.now());
+        lastDetailLoadedAt.set(result.detail.id, Date.now());
         void loadPmInbox(true);
     } else if (result.status === 'unknown') {
-        await loadPmDetail(id, undefined, true);
+        if (current?.isDraft) {
+            void loadPmInbox(true);
+        } else {
+            await loadPmDetail(id, undefined, true);
+        }
     } else {
         updateLocalPmMessage(id, tempId, { state: 'failed', timestampText: '发送失败' });
     }
@@ -273,6 +325,10 @@ export function isBangumiLoggedIn() {
 
 export function activePmId() {
     return activeConversationId.value.match(/^pm:(\d+)$/)?.[1] || null;
+}
+
+export function activePmKey() {
+    return activeConversationId.value.match(/^pm:(\d+|draft:.+)$/)?.[1] || null;
 }
 
 function shouldLoadPmInbox() {
@@ -308,13 +364,11 @@ export function loadPmInbox(force = false) {
             } else {
                 pmNextInboxPage.value = page.nextPageUrl;
             }
-            if (!arePmConversationsEqual(pmConversations.peek(), nextConversations)) {
-                pmConversations.value = nextConversations;
-            }
+            pmConversations.value = nextConversations;
             lastInboxLoadedAt = Date.now();
             if (pmInboxError.peek()) pmInboxError.value = '';
         })
-        .catch(error => { pmInboxError.value = error instanceof Error ? error.message : '短信列表加载失败'; })
+        .catch((error: any) => { pmInboxError.value = error.message || '短信列表加载失败'; })
         .finally(() => {
             if (isInitialLoad) pmInboxLoading.value = false;
             inboxRequest = null;
@@ -336,16 +390,69 @@ export async function loadMorePmConversations() {
         ];
         pmNextInboxPage.value = page.nextPageUrl;
         hasLoadedMoreInboxPages = true;
-    } catch (error) {
-        pmInboxError.value = error instanceof Error ? error.message : '更多短信会话加载失败';
+    } catch (error: any) {
+        pmInboxError.value = error.message || '更多短信会话加载失败';
     } finally {
         pmMoreInboxLoading.value = false;
     }
 }
 
-export function loadPmDetail(id: string, path = `/pm/conversation/${id}.chii`, force = false) {
-    const existing = detailRequests.get(id);
+function setPmEarlierMessagesError(id: string, message: string) {
+    const next = { ...pmEarlierMessagesError.peek() };
+    if (message) next[id] = message;
+    else delete next[id];
+    pmEarlierMessagesError.value = next;
+}
+
+function setPmEarlierMessagesLoading(id: string, loading: boolean) {
+    updateSignalSet(pmEarlierMessagesLoading, set => {
+        if (loading) set.add(id);
+        else set.delete(id);
+    });
+}
+
+export function loadEarlierPmMessages(id: string) {
+    const existing = earlierDetailRequests.get(id);
     if (existing) return existing;
+    const current = pmDetails.peek()[id];
+    const path = current?.previousPageUrl;
+    if (!path) return Promise.resolve();
+
+    setPmEarlierMessagesLoading(id, true);
+    setPmEarlierMessagesError(id, '');
+    const request = fetchPmConversation(path)
+        .then(detail => {
+            if (detail.id !== id) throw new Error('Bangumi 返回了不匹配的短信会话');
+            const currentMessageIds = new Set((pmDetails.peek()[id] || current).messages.map(message => message.id));
+            const hasNewMessages = detail.messages.some(message => !currentMessageIds.has(message.id));
+            setPmDetail(id, detail, {
+                markNew: false,
+                previousPageUrl: hasNewMessages && detail.previousPageUrl !== path
+                    ? detail.previousPageUrl
+                    : null,
+            });
+        })
+        .catch(error => {
+            setPmEarlierMessagesError(id, (error as any).message || '更早短信加载失败');
+        })
+        .finally(() => {
+            earlierDetailRequests.delete(id);
+            setPmEarlierMessagesLoading(id, false);
+        });
+    earlierDetailRequests.set(id, request);
+    return request;
+}
+
+export function loadPmDetail(
+    id: string,
+    path = `/pm/conversation/${id}.chii`,
+    force = false
+): Promise<void> {
+    if (isPmDraftId(id)) return Promise.resolve();
+    const existing = detailRequests.get(id);
+    if (existing) {
+        return force ? existing.then(() => loadPmDetail(id, path, true)) : existing;
+    }
     const cachedDetail = pmDetails.peek()[id];
     const lastLoadedAt = lastDetailLoadedAt.get(id) || 0;
     if (!force && cachedDetail && Date.now() - lastLoadedAt < PM_DETAIL_REFRESH_INTERVAL) {
@@ -370,7 +477,7 @@ export function loadPmDetail(id: string, path = `/pm/conversation/${id}.chii`, f
             lastDetailLoadedAt.set(id, Date.now());
             if (pmDetailError.peek()) pmDetailError.value = '';
         })
-        .catch(error => { pmDetailError.value = error instanceof Error ? error.message : '短信会话加载失败'; })
+        .catch((error: any) => { pmDetailError.value = error.message || '短信会话加载失败'; })
         .finally(() => {
             detailRequests.delete(id);
             pmDetailLoading.value = detailRequests.size > 0;
@@ -379,11 +486,20 @@ export function loadPmDetail(id: string, path = `/pm/conversation/${id}.chii`, f
     return request;
 }
 
+function hasUnreadPmConversation(id: string, inboxUnreadCount = 0) {
+    return inboxUnreadCount > 0 || (pmUnreadByConversation.peek()[id] || 0) > 0;
+}
+
 export function openPmConversation(conversation: BangumiPmConversation) {
+    cancelPmReply();
     toggleSearch(false);
     setActiveConversation(`pm:${conversation.id}`);
     if (isNarrowLayout.peek()) setMobileChatView(true);
-    void loadPmDetail(conversation.id, conversation.href);
+    void loadPmDetail(
+        conversation.id,
+        conversation.href,
+        hasUnreadPmConversation(conversation.id, conversation.unreadCount)
+    );
 }
 
 export function openPmConversationFromHref(href: string) {
@@ -392,15 +508,21 @@ export function openPmConversationFromHref(href: string) {
     if (!path || !id) return false;
 
     const knownConversation = pmConversations.peek().find(item => item.id === id);
+    cancelPmReply();
     toggleSearch(false);
     setActiveConversation(`pm:${id}`);
     if (isNarrowLayout.peek()) setMobileChatView(true);
-    void loadPmDetail(id, knownConversation?.href || path);
+    void loadPmDetail(
+        id,
+        knownConversation?.href || path,
+        hasUnreadPmConversation(id, knownConversation?.unreadCount)
+    );
     if (!knownConversation) void loadPmInbox(true);
     return true;
 }
 
 export function openPmCompose(receiver = '') {
+    cancelPmReply();
     toggleSearch(false);
     pmComposeReceiver.value = receiver;
     setActiveConversation('pm:new');
@@ -427,8 +549,10 @@ function findPmConversationForUser(username: string, nickname: string, avatar: s
     const targetAvatar = userAvatarKey(avatar ? getAvatarUrl(avatar, 'm') : '');
 
     const detailMatch = Object.values(pmDetails.peek()).find(detail =>
-        normalizeText(detail.username) === targetUsername
-            || normalizeText(detail.replyForm?.fields.msg_receivers) === targetUsername
+        !detail.isDraft
+            && pmMessageNumericId(detail.id) !== null
+            && (normalizeText(detail.username) === targetUsername
+                || normalizeText(detail.replyForm?.fields.msg_receivers) === targetUsername)
     );
     if (detailMatch) {
         return pmConversations.peek().find(item => item.id === detailMatch.id) || {
@@ -450,6 +574,35 @@ function findPmConversationForUser(username: string, nickname: string, avatar: s
     }) || null;
 }
 
+function openPmDraft(id: string) {
+    cancelPmReply();
+    toggleSearch(false);
+    setActiveConversation(`pm:${id}`);
+    if (isNarrowLayout.peek()) setMobileChatView(true);
+}
+
+function ensurePmDraftForUser(user: { username: string; nickname: string; avatar: string }) {
+    const id = pmDraftId(user.username);
+    const existing = pmDetails.peek()[id];
+    if (existing?.isDraft) return id;
+
+    pmDetails.value = {
+        ...pmDetails.peek(),
+        [id]: {
+            id,
+            nickname: user.nickname || user.username,
+            username: user.username,
+            avatar: user.avatar ? getAvatarUrl(user.avatar, 'm') : '',
+            messages: [],
+            previousPageUrl: null,
+            replyForm: null,
+            isDraft: true,
+            draftTitle: PM_DRAFT_TITLE,
+        },
+    };
+    return id;
+}
+
 export async function openPmForUser(user: { username: string; nickname: string; avatar: string }) {
     let conversation = findPmConversationForUser(user.username, user.nickname, user.avatar);
     if (!conversation) {
@@ -462,15 +615,34 @@ export async function openPmForUser(user: { username: string; nickname: string; 
         return 'conversation' as const;
     }
 
-    openPmCompose(user.username);
-    return 'compose' as const;
+    const draftId = ensurePmDraftForUser(user);
+    openPmDraft(draftId);
+    return 'draft' as const;
+}
+
+export async function openPmDraftForReceiver(receiver: string) {
+    const username = receiver.trim();
+    if (!username) {
+        return { status: 'rejected' as const, error: '请输入收件人' };
+    }
+
+    const target = await openPmForUser({ username, nickname: username, avatar: '' });
+    return { status: 'opened' as const, target };
+}
+
+function sendPmDetailMessage(detail: BangumiPmConversationDetail, body: string) {
+    if (!detail.isDraft) return sendPmReply(detail, body);
+    if (!detail.username) {
+        return Promise.resolve<BangumiPmSendOutcome>({ status: 'rejected', error: '缺少短信收件人' });
+    }
+    return createPm(detail.username, detail.draftTitle || PM_DRAFT_TITLE, body);
 }
 
 export async function submitPmReply(id: string, body: string) {
     const detail = pmDetails.value[id];
     if (!detail) return { status: 'rejected' as const, error: '会话尚未加载' };
     const tempId = addOptimisticPmMessage(id, body);
-    const result = await sendPmReply(detail, body);
+    const result = await sendPmDetailMessage(detail, body);
     if (tempId) await finishPmReply(id, tempId, result);
     return result;
 }
@@ -483,19 +655,8 @@ export async function retryPmReply(id: string, tempId: string) {
     }
 
     updateLocalPmMessage(id, tempId, { state: 'sending', timestampText: '发送中' });
-    const result = await sendPmReply(detail, message.rawBody);
+    const result = await sendPmDetailMessage(detail, message.rawBody);
     await finishPmReply(id, tempId, result);
-    return result;
-}
-
-export async function submitNewPm(receiver: string, title: string, body: string) {
-    const result = await createPm(receiver, title, body);
-    if (result.status === 'sent') {
-        setPmDetail(result.detail.id, result.detail);
-        lastDetailLoadedAt.set(result.detail.id, Date.now());
-        setActiveConversation(`pm:${result.detail.id}`);
-        void loadPmInbox(true);
-    }
     return result;
 }
 
@@ -556,9 +717,7 @@ export function startPmPolling() {
 
         const unreadMap: Record<string, number> = {};
         for (const item of notify.pmList) unreadMap[item.id] = item.unreadCount;
-        if (!isSameUnreadMap(pmUnreadByConversation.peek(), unreadMap)) {
-            pmUnreadByConversation.value = unreadMap;
-        }
+        pmUnreadByConversation.value = unreadMap;
 
         emitPmNotifications(notify);
 
@@ -598,7 +757,11 @@ export function startPmPolling() {
     const scheduleNotify = () => {
         if (notifyTimer) clearTimeout(notifyTimer);
         if (stopped || document.visibilityState !== 'visible') return;
-        const interval = isChatOpen.peek() ? PM_NOTIFY_POLL_INTERVAL_OPEN : PM_NOTIFY_POLL_INTERVAL_IDLE;
+        const interval = !isChatOpen.peek()
+            ? PM_NOTIFY_POLL_INTERVAL_IDLE
+            : activePmId()
+                ? PM_NOTIFY_POLL_INTERVAL_CONVERSATION
+                : PM_NOTIFY_POLL_INTERVAL_OPEN;
         notifyTimer = setTimeout(async () => {
             await pollNotify();
             scheduleNotify();
@@ -621,7 +784,10 @@ export function startPmPolling() {
     };
 
     let lastChatOpen = isChatOpen.peek();
-    const unsubscribeConversation = activeConversationId.subscribe(loadVisibleData);
+    const unsubscribeConversation = activeConversationId.subscribe(() => {
+        loadVisibleData();
+        scheduleNotify();
+    });
     const unsubscribeChatOpen = isChatOpen.subscribe(open => {
         loadVisibleData();
         if (open === lastChatOpen) return; // 忽略订阅时的首次立即触发

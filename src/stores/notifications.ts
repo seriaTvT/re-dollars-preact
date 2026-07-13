@@ -20,7 +20,7 @@ function notificationMessageId(notification: Notification) {
 function syncUnreadJumpList() {
     unreadJumpList.value = dollarsNotifications.value
         .map(notificationMessageId)
-        .filter(id => Number.isFinite(id) && id > 0)
+        .filter(id => id > 0)
         .sort((a, b) => a - b);
 }
 

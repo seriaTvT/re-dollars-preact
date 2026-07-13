@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'preact/hooks';
+import { useRef } from 'preact/hooks';
 
 interface LongPressOptions {
     threshold?: number;
@@ -11,10 +11,8 @@ export function useLongPress({ threshold = 500, onLongPress, onClick }: LongPres
     const isLongPressRef = useRef(false);
     const startXRef = useRef(0);
     const startYRef = useRef(0);
-    // 标记是否已处理过事件，防止冒泡到父组件
-    const handledRef = useRef(false);
 
-    const start = useCallback((e: MouseEvent | TouchEvent) => {
+    function start(e: MouseEvent | TouchEvent) {
         // Only accept left click or touch
         if (e instanceof MouseEvent && e.button !== 0) return;
 
@@ -27,22 +25,20 @@ export function useLongPress({ threshold = 500, onLongPress, onClick }: LongPres
         }
 
         isLongPressRef.current = false;
-        handledRef.current = false;
         timerRef.current = setTimeout(() => {
             isLongPressRef.current = true;
-            handledRef.current = true;
             onLongPress(e);
         }, threshold);
-    }, [onLongPress, threshold]);
+    }
 
-    const clear = useCallback(() => {
+    function clear() {
         if (timerRef.current) {
             clearTimeout(timerRef.current);
             timerRef.current = null;
         }
-    }, []);
+    }
 
-    const move = useCallback((e: MouseEvent | TouchEvent) => {
+    function move(e: MouseEvent | TouchEvent) {
         if (!timerRef.current) return;
 
         const moveThreshold = 10;
@@ -62,9 +58,9 @@ export function useLongPress({ threshold = 500, onLongPress, onClick }: LongPres
         ) {
             clear();
         }
-    }, [clear]);
+    }
 
-    const end = useCallback((e: MouseEvent | TouchEvent) => {
+    function end(e: MouseEvent | TouchEvent) {
         clear();
         
         // 如果是长按，阻止事件冒泡到父组件
@@ -76,11 +72,10 @@ export function useLongPress({ threshold = 500, onLongPress, onClick }: LongPres
         
         // 短按：触发 onClick 并标记已处理
         if (onClick) {
-            handledRef.current = true;
             e.stopPropagation();
             onClick(e);
         }
-    }, [clear, onClick]);
+    }
 
     return {
         onMouseDown: (e: MouseEvent) => start(e),

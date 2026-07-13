@@ -1,7 +1,7 @@
 import { useRef } from 'preact/hooks';
 
 interface FloatingDateCapsuleProps {
-    label: string;
+    label?: string | null;
     preserveLastLabel?: boolean;
 }
 

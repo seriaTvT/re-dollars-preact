@@ -1,25 +1,27 @@
-import { useEffect, useLayoutEffect, useCallback, useRef } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import {
     isContextMenuOpen,
     isContextMenuClosing,
     contextMenuPosition,
+    contextMenuTarget,
     contextMenuTargetId,
     contextMenuImageUrl,
     contextMenuBmoCode,
+    contextMenuSource,
     hideContextMenu,
     showReactionPicker,
     hideReactionPicker,
     isReactionPickerOpen,
 } from '@/stores/ui';
 import { setReplyTo, setEditingMessage } from '@/stores/composerState';
-import { messageMap, getRawMessage } from '@/stores/messageStore';
+import { pmDetails, setPmReplyToMessage } from '@/stores/bangumiPm';
+import { messageMap } from '@/stores/messageStore';
 import { userInfo } from '@/stores/user';
 import { toggleReaction as apiToggleReaction, deleteMessage as apiDeleteMessage } from '@/utils/api/messages';
 import { CONTEXT_MENU_REACTIONS } from '@/utils/constants';
 import { iconCopy, iconDelete, iconEdit, iconExpand, iconFavorite, iconReply } from '@/utils/icons';
 import { getSmileyUrl } from '@/utils/smilies';
-import { stripQuotes } from '@/utils/bbcode';
-import { decodeHTML } from '@/utils/format';
+import { copyRawMessageText, rawMessageForTarget, summarizeReplyText } from '@/utils/messageActions';
 import { addFavorite } from '@/stores/favorites';
 import { ReactionPickerFloating } from './ReactionPickerFloating';
 import { onBmoReady } from '@/utils/bmo';
@@ -97,15 +99,15 @@ export function ContextMenu() {
         return onBmoReady(renderBmo);
     }, [isContextMenuOpen.value]);
 
-    const handleReaction = useCallback(async (emoji: string) => {
-        const targetId = contextMenuTargetId.value;
-        if (!targetId) return;
+    const handleReaction = async (emoji: string) => {
+        const target = contextMenuTarget.value;
+        if (!target || target.kind !== 'dollars') return;
 
         hideContextMenu();
-        await apiToggleReaction(Number(targetId), emoji);
-    }, []);
+        await apiToggleReaction(Number(target.id), emoji);
+    };
 
-    const handleMoreReactions = useCallback((e: MouseEvent) => {
+    const handleMoreReactions = (e: MouseEvent) => {
         e.stopPropagation();
 
         // 如果已打开则关闭
@@ -123,46 +125,44 @@ export function ContextMenu() {
             // 8px gap matches the gap between reactions and items
             showReactionPicker(rect.left, rect.bottom + 8, rect.width);
         }
-    }, []);
+    };
 
-    const handleReply = useCallback(() => {
-        const targetId = contextMenuTargetId.value;
-        if (!targetId) return;
+    const handleReply = () => {
+        const target = contextMenuTarget.value;
+        if (!target) return;
 
         hideContextMenu();
 
-        const raw = getRawMessage(targetId);
-        const messageEl = document.getElementById(`db-${targetId}`);
-        if (!raw || !messageEl) return;
+        if (target.kind === 'pm') {
+            if (!setPmReplyToMessage(target.conversationId, target.id)) return;
+            requestAnimationFrame(() => {
+                const editor = document.querySelector('.dollars-pm-textarea') as HTMLElement | null;
+                editor?.focus();
+            });
+            return;
+        }
 
-        const uid = messageEl.dataset.uid || '';
-        const user = messageEl.querySelector('.nickname a')?.textContent?.trim() || '';
-        const avatar = (messageEl.querySelector('.avatar') as HTMLImageElement)?.src || '';
-
-        const text = stripQuotes(decodeHTML(raw))
-            .replace(/\[img\].*?\[\/img\]/gi, '[图片]')
-            .replace(/\[file=.*?\].*?\[\/file\]/gi, '[附件]')
-            .replace(/\n/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
+        const message = messageMap.value.get(Number(target.id));
+        const raw = rawMessageForTarget(target);
+        if (!raw || !message) return;
 
         setReplyTo({
-            id: targetId,
-            uid,
-            user,
-            text,
-            raw: raw,
-            avatar,
+            id: target.id,
+            uid: String(message.uid),
+            user: message.nickname,
+            text: summarizeReplyText(raw),
+            raw,
+            avatar: message.avatar,
         });
-    }, []);
+    };
 
-    const handleEdit = useCallback(() => {
-        const targetId = contextMenuTargetId.value;
-        if (!targetId) return;
+    const handleEdit = () => {
+        const target = contextMenuTarget.value;
+        if (!target || target.kind !== 'dollars') return;
 
         hideContextMenu();
 
-        const msg = messageMap.value.get(Number(targetId));
+        const msg = messageMap.value.get(Number(target.id));
         if (!msg) return;
 
         const rawContent = msg.message;
@@ -178,34 +178,28 @@ export function ContextMenu() {
         }
 
         setEditingMessage({
-            id: targetId,
+            id: target.id,
             raw: editableText,
             hiddenQuote,
             image_meta: msg.image_meta
         });
-    }, []);
+    };
 
-    const handleCopy = useCallback(async () => {
-        const targetId = contextMenuTargetId.value;
-        if (!targetId) return;
+    const handleCopy = async () => {
+        const target = contextMenuTarget.value;
+        if (!target) return;
 
         hideContextMenu();
 
-        const raw = getRawMessage(targetId);
-        if (!raw) return;
+        await copyRawMessageText(rawMessageForTarget(
+            target,
+            target.kind === 'pm' ? pmDetails.peek()[target.conversationId] : undefined
+        ));
+    };
 
-        const plainText = decodeHTML(raw).replace(/\[.*?\]/g, '').trim();
-
-        try {
-            await navigator.clipboard.writeText(plainText);
-        } catch (e) {
-            // ignore
-        }
-    }, []);
-
-    const handleDelete = useCallback(async () => {
-        const targetId = contextMenuTargetId.value;
-        if (!targetId) return;
+    const handleDelete = async () => {
+        const target = contextMenuTarget.value;
+        if (!target || target.kind !== 'dollars') return;
 
         hideContextMenu(); // Close first to improve responsiveness
 
@@ -213,14 +207,18 @@ export function ContextMenu() {
             return;
         }
 
-        const result = await apiDeleteMessage(Number(targetId));
+        const result = await apiDeleteMessage(Number(target.id));
         if (!result.status) {
             alert(result.error || '撤回失败');
         }
-    }, []);
+    };
 
-    const handleFavorite = useCallback((e: MouseEvent) => {
+    const handleFavorite = (e: MouseEvent) => {
         const button = e.currentTarget as HTMLButtonElement;
+        const label = button.querySelector('span:not(.context-icon)');
+        const setLabel = (text: string) => {
+            if (label) label.textContent = text;
+        };
 
         if (contextMenuBmoCode.value) {
             const bmoCode = contextMenuBmoCode.value;
@@ -229,32 +227,27 @@ export function ContextMenu() {
                 const existing = bmoji.savedBmo.list() || [];
                 if (!existing.some((i: any) => i.code === bmoCode)) {
                     bmoji.savedBmo.create({ code: bmoCode, name: bmoCode });
-                    const span = button.querySelector('span:not(.context-icon)');
-                    if (span) span.textContent = '已存入BMO面板';
+                    setLabel('已存入BMO面板');
                 } else {
-                    const span = button.querySelector('span:not(.context-icon)');
-                    if (span) span.textContent = '已存在';
+                    setLabel('已存在');
                 }
             } catch (err) {
-                const span = button.querySelector('span:not(.context-icon)');
-                if (span) span.textContent = '收藏失败';
+                setLabel('收藏失败');
             }
         } else if (contextMenuImageUrl.value) {
             // Logic for regular images
             try {
                 addFavorite(contextMenuImageUrl.value);
-                const span = button.querySelector('span:not(.context-icon)');
-                if (span) span.textContent = '已收藏';
+                setLabel('已收藏');
             } catch (err) {
-                const span = button.querySelector('span:not(.context-icon)');
-                if (span) span.textContent = '收藏失败';
+                setLabel('收藏失败');
             }
         }
 
         setTimeout(() => {
             hideContextMenu();
         }, 1000);
-    }, []);
+    };
 
 
 
@@ -263,10 +256,12 @@ export function ContextMenu() {
     }
 
     const { x, y } = contextMenuPosition.value;
-    const targetId = contextMenuTargetId.value;
-    const msg = targetId ? messageMap.value.get(Number(targetId)) : null;
+    const target = contextMenuTarget.value;
+    const targetId = target?.id ?? contextMenuTargetId.value;
+    const isPmMenu = target?.kind === 'pm' || contextMenuSource.value === 'pm';
+    const msg = target?.kind === 'dollars' ? messageMap.value.get(Number(target.id)) : null;
     const isSelf = msg && String(msg.uid) === String(userInfo.value.id);
-    const hasImage = !!contextMenuImageUrl.value || !!contextMenuBmoCode.value;
+    const hasImage = !isPmMenu && (!!contextMenuImageUrl.value || !!contextMenuBmoCode.value);
 
     return (
         <>
@@ -277,7 +272,7 @@ export function ContextMenu() {
                 style={{ left: `${x}px`, top: `${y}px`, pointerEvents: 'auto' }}
             >
                 {/* 快捷表情行 - Telegram 风格 */}
-                {targetId && (
+                {targetId && !isPmMenu && (
                     <div class="context-menu-reactions">
                         {CONTEXT_MENU_REACTIONS.map((emoji) => {
                             const url = getSmileyUrl(emoji);
@@ -306,7 +301,20 @@ export function ContextMenu() {
 
                 {/* 菜单项 */}
                 {/* 菜单项 - 当表情选择器打开时隐藏 */}
-                {!isReactionPickerOpen.value && (
+                {!isReactionPickerOpen.value && isPmMenu && (
+                    <div class="context-menu-items">
+                        <button data-action="reply" onClick={handleReply}>
+                            <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconReply }} />
+                            <span>回复</span>
+                        </button>
+                        <button data-action="copy" onClick={handleCopy}>
+                            <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconCopy }} />
+                            <span>复制</span>
+                        </button>
+                    </div>
+                )}
+
+                {!isReactionPickerOpen.value && !isPmMenu && (
                     <div class="context-menu-items">
                         <button data-action="reply" onClick={handleReply}>
                             <span class="context-icon" dangerouslySetInnerHTML={{ __html: iconReply }} />

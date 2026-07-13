@@ -13,26 +13,29 @@ import {
 } from '@/stores/bangumiPm';
 
 export function ConversationList({ searchTerm = '' }: { searchTerm?: string }) {
+    const query = searchTerm.toLowerCase();
+    const activeId = activeConversationId.value;
+    const isNarrow = isNarrowLayout.value;
     // 过滤扩展会话项
     const extensionItems = extensionConversations.value
-        .filter(item => !searchTerm || item.title.toLowerCase().includes(searchTerm.toLowerCase()))
+        .filter(item => !query || item.title.toLowerCase().includes(query))
         .sort((a, b) => (b.priority || 0) - (a.priority || 0));
 
-    const filteredConversations = searchTerm
+    const filteredConversations = query
         ? conversations.value.filter(conv =>
-            conv.title.toLowerCase().includes(searchTerm.toLowerCase())
+            conv.title.toLowerCase().includes(query)
         )
         : conversations.value;
-    const filteredPmConversations = searchTerm
+    const filteredPmConversations = query
         ? pmConversations.value.filter(conversation =>
-            `${conversation.nickname} ${conversation.lastMessage}`.toLowerCase().includes(searchTerm.toLowerCase())
+            `${conversation.nickname} ${conversation.lastMessage}`.toLowerCase().includes(query)
         )
         : pmConversations.value;
 
     const handleClick = (conversationId: string) => {
         setActiveConversation(conversationId);
         // 在 narrow 模式下，切换到聊天视图
-        if (isNarrowLayout.value) {
+        if (isNarrow) {
             setMobileChatView(true);
         }
     };
@@ -41,7 +44,7 @@ export function ConversationList({ searchTerm = '' }: { searchTerm?: string }) {
         setActiveExtension(item.id);
         item.onClick();
         // 在 narrow 模式下，切换到聊天视图
-        if (isNarrowLayout.value) {
+        if (isNarrow) {
             setMobileChatView(true);
         }
     };
@@ -70,7 +73,7 @@ export function ConversationList({ searchTerm = '' }: { searchTerm?: string }) {
             })}
             {/* 原有会话列表 */}
             {filteredConversations.map(conv => {
-                const isActive = conv.id === activeConversationId.value;
+                const isActive = conv.id === activeId;
                 const title = conv.type === 'channel' ? conv.title : conv.user?.nickname || conv.title;
                 const avatarUrl = conv.type === 'channel' ? conv.avatar : conv.user?.avatar || conv.avatar;
                 const lastMessageText = (conv.lastMessage.text || '').replace(/\[.*?\]/g, '').trim();
@@ -102,7 +105,7 @@ export function ConversationList({ searchTerm = '' }: { searchTerm?: string }) {
                 return (
                     <div
                         key={conversationId}
-                        class={`conversation-item ${activeConversationId.value === conversationId ? 'active' : ''}`}
+                        class={`conversation-item ${activeId === conversationId ? 'active' : ''}`}
                         data-conversation-id={conversationId}
                         onClick={() => openPmConversation(conversation)}
                     >

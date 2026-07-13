@@ -1,92 +1,40 @@
 import { settings, saveSettings, isLoggedIn, userInfo } from '@/stores/user';
 import { isChatOpen } from '@/stores/chatState';
-import { isMaximized, mobileChatViewActive } from '@/stores/ui';
 import { performLogin, performLogout } from '@/utils/api/auth';
 import type { Settings } from '@/types';
-import { clearWindowState, saveChatOpenState, saveMaximizedState, saveMobileChatViewState } from '@/utils/windowState';
+import { clearChatOpenState, saveChatOpenState } from '@/utils/windowState';
 
-interface SettingsConfigItem {
-    key: keyof Settings | 'auth_control_group';
-    type: 'checkbox' | 'radio' | 'auth_control_group';
-    label: string;
-    options?: Record<string, string>;
-    onchange?: () => void;
-}
+type SettingsConfigItem = readonly [
+    keyof Settings | 'auth_control_group',
+    'checkbox' | 'radio' | 'auth_control_group',
+    string,
+    Record<string, string>?,
+    (() => void)?,
+];
 
 const settingsConfig: SettingsConfigItem[] = [
-    {
-        key: 'auth_control_group',
-        type: 'auth_control_group',
-        label: 'Bangumi 授权',
-    },
-    {
-        key: 'showCard',
-        type: 'checkbox',
-        label: '首页显示 Re:Dollars 卡片',
-        onchange: applyHomeCardDisplay,
-    },
-    {
-        key: 'linkPreview',
-        type: 'checkbox',
-        label: '启用链接预览',
-    },
-    {
-        key: 'sharePresence',
-        type: 'checkbox',
-        label: '分享在线状态',
-    },
-    {
-        key: 'notificationType',
-        type: 'radio',
-        label: '消息通知',
-        options: {
+    ['auth_control_group', 'auth_control_group', 'Bangumi 授权'],
+    ['showCard', 'checkbox', '首页显示 Re:Dollars 卡片', undefined, applyHomeCardDisplay],
+    ['linkPreview', 'checkbox', '启用链接预览'],
+    ['sharePresence', 'checkbox', '分享在线状态'],
+    ['notificationType', 'radio', '消息通知', {
             detail: '详细',
             simple: '精简',
             off: '关闭',
-        },
-    },
-    {
-        key: 'pmNoticeOpensRD',
-        type: 'checkbox',
-        label: '短信通知跳转到 RD',
-    },
-    {
-        key: 'loadImages',
-        type: 'checkbox',
-        label: '默认加载图片',
-    },
-    {
-        key: 'rememberOpenState',
-        type: 'checkbox',
-        label: '记忆窗口状态',
-        onchange: handleRememberOpenStateChange,
-    },
-    {
-        key: 'sendShortcut',
-        type: 'radio',
-        label: '发送快捷键',
-        options: {
+        }],
+    ['pmNoticeOpensRD', 'checkbox', '短信通知跳转到 RD'],
+    ['loadImages', 'checkbox', '默认加载图片'],
+    ['rememberOpenState', 'checkbox', '记忆窗口状态', undefined, handleRememberOpenStateChange],
+    ['sendShortcut', 'radio', '发送快捷键', {
             CtrlEnter: 'Ctrl+Enter 发送',
             Enter: 'Enter 发送',
-        },
-    },
-    {
-        key: 'backgroundMode',
-        type: 'radio',
-        label: '主题背景',
-        options: {
+        }],
+    ['backgroundMode', 'radio', '主题背景', {
             transparent: '透明',
             lines: '线条',
             tint: '色调',
-        },
-        onchange: applyBackgroundPattern,
-    },
-    {
-        key: 'glassBlur',
-        type: 'checkbox',
-        label: '玻璃模糊',
-        onchange: applyGlassBlur,
-    },
+        }, applyBackgroundPattern],
+    ['glassBlur', 'checkbox', '玻璃模糊', undefined, applyGlassBlur],
 ];
 
 const PANEL_TAB = 'dollars_chat_settings';
@@ -169,14 +117,10 @@ function applyGlassBlur() {
 }
 
 function handleRememberOpenStateChange() {
-    // 如果关闭了记忆状态，清除所有保存的窗口状态
     if (!settings.value.rememberOpenState) {
-        clearWindowState();
+        clearChatOpenState();
     } else {
-        // 如果开启了记忆状态，保存当前所有窗口状态
         saveChatOpenState(isChatOpen.value);
-        saveMaximizedState(isMaximized.value);
-        saveMobileChatViewState(mobileChatViewActive.value);
     }
 }
 
@@ -188,46 +132,47 @@ export function applyAllSettings() {
 
 function generateApiConfig() {
     return settingsConfig.map((s) => {
-        if (s.type === 'auth_control_group') {
+        const [key, type, label, options, onchange] = s;
+        if (type === 'auth_control_group') {
             authControlConfig = authControlConfig || createAuthControlConfig();
             syncAuthControlConfig();
             return authControlConfig;
-        } else if (s.type === 'checkbox') {
+        } else if (type === 'checkbox') {
             return {
-                title: s.label,
-                name: s.key,
+                title: label,
+                name: key,
                 type: 'radio' as const,
-                defaultValue: String(settings.value[s.key as keyof Settings] ?? true),
-                getCurrentValue: () => String(settings.value[s.key as keyof Settings]),
+                defaultValue: String(settings.value[key as keyof Settings] ?? true),
+                getCurrentValue: () => String(settings.value[key as keyof Settings]),
                 onChange: (value: string) => {
                     settings.value = {
                         ...settings.peek(),
-                        [s.key]: value === 'true',
+                        [key]: value === 'true',
                     };
                     saveSettings();
-                    if (s.onchange) s.onchange();
+                    if (onchange) onchange();
                 },
                 options: [
                     { value: 'true', label: '开启' },
                     { value: 'false', label: '关闭' },
                 ],
             };
-        } else if (s.type === 'radio' && s.options) {
+        } else if (type === 'radio' && options) {
             return {
-                title: s.label,
-                name: s.key,
+                title: label,
+                name: key,
                 type: 'radio' as const,
-                defaultValue: String(settings.value[s.key as keyof Settings] ?? Object.keys(s.options)[0]),
-                getCurrentValue: () => String(settings.value[s.key as keyof Settings]),
+                defaultValue: String(settings.value[key as keyof Settings] ?? Object.keys(options)[0]),
+                getCurrentValue: () => String(settings.value[key as keyof Settings]),
                 onChange: (value: string) => {
                     settings.value = {
                         ...settings.peek(),
-                        [s.key]: value,
+                        [key]: value,
                     };
                     saveSettings();
-                    if (s.onchange) s.onchange();
+                    if (onchange) onchange();
                 },
-                options: Object.entries(s.options).map(([value, label]) => ({ value, label })),
+                options: Object.entries(options).map(([value, label]) => ({ value, label })),
             };
         }
         return null;

@@ -15,12 +15,12 @@ function decodeHtmlEntities(input: string): string {
     return input.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (match, entity: string) => {
         const key = entity.toLowerCase();
         if (key.startsWith('#x')) {
-            const code = Number.parseInt(key.slice(2), 16);
-            return Number.isFinite(code) && code <= 0x10ffff ? String.fromCodePoint(code) : match;
+            const code = parseInt(key.slice(2), 16);
+            return code <= 0x10ffff ? String.fromCodePoint(code) : match;
         }
         if (key.startsWith('#')) {
-            const code = Number.parseInt(key.slice(1), 10);
-            return Number.isFinite(code) && code <= 0x10ffff ? String.fromCodePoint(code) : match;
+            const code = parseInt(key.slice(1), 10);
+            return code <= 0x10ffff ? String.fromCodePoint(code) : match;
         }
         return NAMED_ENTITIES[key] ?? match;
     });

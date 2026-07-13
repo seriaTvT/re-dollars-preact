@@ -5,11 +5,10 @@ import {
     searchQuery,
 } from '@/stores/chatState';
 import {
-    messageMap,
     getMessageGrouping,
+    messageMap,
 } from '@/stores/messageStore';
-import { toggleSearch, showUserProfile } from '@/stores/ui';
-import { inputAreaHeight } from '@/stores/ui';
+import { inputAreaHeight, showUserProfile, toggleSearch } from '@/stores/ui';
 import { blockedUsers } from '@/stores/user';
 import { MessageItem } from './MessageItem';
 import { useScrollManager } from '@/hooks/useScrollManager';
