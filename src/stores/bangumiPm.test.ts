@@ -30,6 +30,7 @@ import { chatLayoutReady, isNarrowLayout, mobileChatViewActive } from './ui';
 import {
     loadEarlierPmMessages,
     loadPmDetail,
+    openPmConversation,
     openPmConversationFromHref,
     openPmDraftForReceiver,
     openPmForUser,
@@ -38,6 +39,7 @@ import {
     pmEarlierMessagesError,
     pmEarlierMessagesLoading,
     pmNewMessageIds,
+    pmUnreadByConversation,
     retryPmReply,
     startPmPolling,
     submitPmReply,
@@ -56,6 +58,7 @@ describe('Bangumi PM polling', () => {
         pmEarlierMessagesLoading.value = new Set();
         pmEarlierMessagesError.value = {};
         pmNewMessageIds.value = new Set();
+        pmUnreadByConversation.value = {};
         mocks.fetchPmInbox.mockResolvedValue({ conversations: [], nextPageUrl: null });
         mocks.fetchPmInbox.mockClear();
         mocks.fetchPmConversation.mockClear();
@@ -176,6 +179,62 @@ describe('Bangumi PM polling', () => {
         expect(activeConversationId.value).toBe('pm:42');
         expect(mocks.fetchPmInbox).not.toHaveBeenCalled();
         expect(mocks.fetchPmConversation).toHaveBeenCalledWith('/pm/conversation/42.chii');
+    });
+
+    it('refreshes a recently cached PM detail when the inbox reports unread messages', async () => {
+        mocks.fetchPmConversation.mockResolvedValue({
+            id: '42',
+            nickname: 'Peer',
+            username: 'peer',
+            avatar: '',
+            messages: [],
+            previousPageUrl: null,
+            replyForm: null,
+        });
+        await loadPmDetail('42', undefined, true);
+        mocks.fetchPmConversation.mockClear();
+
+        openPmConversation({
+            id: '42',
+            href: '/pm/conversation/42.chii',
+            nickname: 'Peer',
+            avatar: '',
+            dateText: '',
+            lastMessage: 'new message',
+            unreadCount: 1,
+        });
+
+        await vi.waitFor(() => expect(mocks.fetchPmConversation).toHaveBeenCalledWith('/pm/conversation/42.chii'));
+    });
+
+    it('queues a forced refresh when an older PM detail request is still running', async () => {
+        let resolveFirst!: (detail: any) => void;
+        mocks.fetchPmConversation
+            .mockImplementationOnce(() => new Promise(resolve => { resolveFirst = resolve; }))
+            .mockResolvedValueOnce({
+                id: '42',
+                nickname: 'Peer',
+                username: 'peer',
+                avatar: '',
+                messages: [],
+                previousPageUrl: null,
+                replyForm: null,
+            });
+
+        const firstRequest = loadPmDetail('42', undefined, true);
+        const forcedRequest = loadPmDetail('42', undefined, true);
+        resolveFirst({
+            id: '42',
+            nickname: 'Peer',
+            username: 'peer',
+            avatar: '',
+            messages: [],
+            previousPageUrl: null,
+            replyForm: null,
+        });
+
+        await Promise.all([firstRequest, forcedRequest]);
+        expect(mocks.fetchPmConversation).toHaveBeenCalledTimes(2);
     });
 
     it('refreshes inbox and opens an existing PM conversation by nickname', async () => {

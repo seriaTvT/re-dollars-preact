@@ -366,7 +366,9 @@ export function ChatInput() {
                         <button
                             class="reply-cancel-btn"
                             onClick={() => {
-                                clearInput();
+                                if (editingMessage.value) {
+                                    clearInput();
+                                }
                                 cancelReplyOrEdit();
                             }}
                         >

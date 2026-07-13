@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useRef } from 'preact/hooks';
 import type { RefObject } from 'preact';
 import {
     extractRichInputText,
@@ -53,7 +53,7 @@ export function useRichInput({
     const didJustEndCompositionRef = useRef(false);
     const compositionEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    function updateHeight() {
+    const updateHeight = useCallback(() => {
         const editor = editorRef.current;
         if (!editor) return;
 
@@ -61,7 +61,7 @@ export function useRichInput({
         const next = Math.max(minHeight, Math.min(editor.scrollHeight, maxHeight));
         editor.style.height = `${next}px`;
         editor.classList.toggle('is-overflowing', editor.scrollHeight > maxHeight);
-    }
+    }, [editorRef, minHeight, maxHeight]);
 
     function syncProxy(value = valueRef.current, selection = selectionRef.current) {
         const proxy = proxyRef?.current;

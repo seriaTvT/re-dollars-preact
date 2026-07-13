@@ -150,6 +150,52 @@ describe('Bangumi PM HTML parser', () => {
         expect(html).not.toContain('src="javascript:');
     });
 
+    it('restores newer Bangumi smileys from native image attributes and paths', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_15" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">
+                            <img class="smiley" src="/img/smiles/tv/02.gif" alt="(bgm25)">
+                            <img src="./saved/101.gif" smileid="140" class="smile" &nbsp;&nbsp;alt="(bgm124)" width="21">
+                            <img src="./saved/102.gif" smileid="141" class="smile" &nbsp;&nbsp;alt="(bgm125)" width="21">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toBe('(bgm25) (bgm124) (bgm125)');
+        expect(message.bodyHtml).toContain('alt="(bgm25)"');
+        expect(message.bodyHtml).toContain('alt="(bgm124)"');
+        expect(message.bodyHtml).toContain('alt="(bgm125)"');
+        expect(message.bodyHtml).not.toContain('class="image-container"');
+    });
+
+    it('restores BMO codes from Bangumi PM placeholder spans', () => {
+        const detail = parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_16" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">
+                            before<span class="bmo" data-code="(bmoCDmBDiwGMNcgBJYxCAscB)"></span>after
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`);
+
+        const message = detail.messages[0];
+        expect(message.presentationText).toBe('before(bmoCDmBDiwGMNcgBJYxCAscB)after');
+        expect(message.bodyHtml).toContain('class="bmo"');
+        expect(message.bodyHtml).toContain('data-code="(bmoCDmBDiwGMNcgBJYxCAscB)"');
+    });
+
     it('restores image BBCode when Bangumi renders it as a link', () => {
         const detail = parsePmConversation(`
             <div id="contentPM">
@@ -201,6 +247,26 @@ describe('Bangumi PM HTML parser', () => {
         expect(message.bodyHtml).toContain('class="chat-quote"');
         expect(message.bodyHtml).toContain('123');
         expect(message.bodyHtml).toContain('hahaha');
+    });
+
+    it('does not duplicate source-formatting newlines after line breaks', () => {
+        const parseBody = (body: string) => parsePmConversation(`
+            <div id="contentPM">
+                <div class="pm-chat-title"><strong><a href="/user/peer">Peer</a></strong></div>
+                <div class="pm-message-list">
+                    <div id="msg_14" class="pm-message pm-message-peer">
+                        <a href="/user/peer"></a>
+                        <div class="pm-message-body">${body}</div>
+                    </div>
+                </div>
+            </div>
+        `, `${origin}/pm/conversation/9.chii`).messages[0].presentationText;
+
+        const firstParse = parseBody('first<br>\nsecond<br>\n<br>\nthird');
+        const secondParse = parseBody(firstParse.replace(/\n/g, '<br>\n'));
+
+        expect(firstParse).toBe('first\nsecond\n\nthird');
+        expect(secondParse).toBe(firstParse);
     });
 
     it('treats pager links as conversation-list pagination', () => {

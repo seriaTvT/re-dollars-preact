@@ -77,7 +77,8 @@ const PM_DETAIL_REFRESH_INTERVAL = 30_000;
 const PM_DRAFT_PREFIX = 'draft:';
 const PM_DRAFT_TITLE = '来自 Re:Dollars 的短信';
 // /json/notify 极轻量，可持续轮询以驱动全局角标与变更探测。
-// 面板打开时用更快的节奏，尽快发现对方新消息；关闭时只需维持角标，放慢即可。
+// 正在短信会话时优先实时性；面板其他视图稍慢，关闭时只维持角标。
+const PM_NOTIFY_POLL_INTERVAL_CONVERSATION = 2_000;
 const PM_NOTIFY_POLL_INTERVAL_OPEN = 5_000;
 const PM_NOTIFY_POLL_INTERVAL_IDLE = 15_000;
 
@@ -442,10 +443,16 @@ export function loadEarlierPmMessages(id: string) {
     return request;
 }
 
-export function loadPmDetail(id: string, path = `/pm/conversation/${id}.chii`, force = false) {
+export function loadPmDetail(
+    id: string,
+    path = `/pm/conversation/${id}.chii`,
+    force = false
+): Promise<void> {
     if (isPmDraftId(id)) return Promise.resolve();
     const existing = detailRequests.get(id);
-    if (existing) return existing;
+    if (existing) {
+        return force ? existing.then(() => loadPmDetail(id, path, true)) : existing;
+    }
     const cachedDetail = pmDetails.peek()[id];
     const lastLoadedAt = lastDetailLoadedAt.get(id) || 0;
     if (!force && cachedDetail && Date.now() - lastLoadedAt < PM_DETAIL_REFRESH_INTERVAL) {
@@ -479,12 +486,20 @@ export function loadPmDetail(id: string, path = `/pm/conversation/${id}.chii`, f
     return request;
 }
 
+function hasUnreadPmConversation(id: string, inboxUnreadCount = 0) {
+    return inboxUnreadCount > 0 || (pmUnreadByConversation.peek()[id] || 0) > 0;
+}
+
 export function openPmConversation(conversation: BangumiPmConversation) {
     cancelPmReply();
     toggleSearch(false);
     setActiveConversation(`pm:${conversation.id}`);
     if (isNarrowLayout.peek()) setMobileChatView(true);
-    void loadPmDetail(conversation.id, conversation.href);
+    void loadPmDetail(
+        conversation.id,
+        conversation.href,
+        hasUnreadPmConversation(conversation.id, conversation.unreadCount)
+    );
 }
 
 export function openPmConversationFromHref(href: string) {
@@ -497,7 +512,11 @@ export function openPmConversationFromHref(href: string) {
     toggleSearch(false);
     setActiveConversation(`pm:${id}`);
     if (isNarrowLayout.peek()) setMobileChatView(true);
-    void loadPmDetail(id, knownConversation?.href || path);
+    void loadPmDetail(
+        id,
+        knownConversation?.href || path,
+        hasUnreadPmConversation(id, knownConversation?.unreadCount)
+    );
     if (!knownConversation) void loadPmInbox(true);
     return true;
 }
@@ -738,7 +757,11 @@ export function startPmPolling() {
     const scheduleNotify = () => {
         if (notifyTimer) clearTimeout(notifyTimer);
         if (stopped || document.visibilityState !== 'visible') return;
-        const interval = isChatOpen.peek() ? PM_NOTIFY_POLL_INTERVAL_OPEN : PM_NOTIFY_POLL_INTERVAL_IDLE;
+        const interval = !isChatOpen.peek()
+            ? PM_NOTIFY_POLL_INTERVAL_IDLE
+            : activePmId()
+                ? PM_NOTIFY_POLL_INTERVAL_CONVERSATION
+                : PM_NOTIFY_POLL_INTERVAL_OPEN;
         notifyTimer = setTimeout(async () => {
             await pollNotify();
             scheduleNotify();
@@ -761,7 +784,10 @@ export function startPmPolling() {
     };
 
     let lastChatOpen = isChatOpen.peek();
-    const unsubscribeConversation = activeConversationId.subscribe(loadVisibleData);
+    const unsubscribeConversation = activeConversationId.subscribe(() => {
+        loadVisibleData();
+        scheduleNotify();
+    });
     const unsubscribeChatOpen = isChatOpen.subscribe(open => {
         loadVisibleData();
         if (open === lastChatOpen) return; // 忽略订阅时的首次立即触发

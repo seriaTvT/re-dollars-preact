@@ -114,7 +114,20 @@ function imageBBCodeFromLink(element: Element, href: string, baseUrl: string) {
     return isImageUrl(href) && textMatchesUrl(text, href, baseUrl) ? `[img]${href}[/img]` : null;
 }
 
+function smileyCodeFromImage(element: Element) {
+    const codePattern = /^\((?:bgm\d+|musume_\d+|blake_\d+)\)$/i;
+    for (const attribute of Array.from(element.attributes)) {
+        const code = attribute.value.trim();
+        if (codePattern.test(code)) return code;
+    }
+    return null;
+}
+
 function presentSpan(element: Element, content: string): string {
+    if (element.classList.contains('bmo')) {
+        const code = element.getAttribute('data-code')?.trim() || '';
+        if (/^\(bmo(?:C|_)[a-zA-Z0-9_-]+\)$/i.test(code)) return code;
+    }
     if (!content) return content;
     if (element.classList.contains('text_mask') || element.classList.contains('mask')) {
         return wrapBBCode('mask', content);
@@ -126,10 +139,21 @@ function presentSpan(element: Element, content: string): string {
     return content;
 }
 
+function normalizePmTextNode(value: string) {
+    return value.replace(/[ \t]*[\r\n]+[ \t]*/g, ' ');
+}
+
+function normalizePmPresentationText(value: string) {
+    return value
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/\n[ \t]+/g, '\n')
+        .trim();
+}
+
 // 把 Bangumi 短信正文的 DOM 复原成 Dollars 风格的 BBCode 文本，
 // 再交由 processBBCode 渲染，从而与主聊天保持完全一致（[code]、加粗、引用等）。
 function pmPresentationText(source: Node, baseUrl: string): string {
-    if (source.nodeType === Node.TEXT_NODE) return source.textContent || '';
+    if (source.nodeType === Node.TEXT_NODE) return normalizePmTextNode(source.textContent || '');
     if (!(source instanceof Element)) return '';
     if (BLOCKED_TAGS.has(source.tagName)) return '';
 
@@ -142,7 +166,8 @@ function pmPresentationText(source: Node, baseUrl: string): string {
         case 'Q':
             return content;
         case 'IMG': {
-            if (source.classList.contains('smile')) return source.getAttribute('alt') || '';
+            const smileyCode = smileyCodeFromImage(source);
+            if (smileyCode) return smileyCode;
             const src = safeResourceUrl(source.getAttribute('src') || '', baseUrl);
             return src ? `[img]${src}[/img]` : '';
         }
@@ -282,7 +307,9 @@ export function parsePmConversation(html: string, baseUrl: string): BangumiPmCon
         const userLink = child.querySelector<HTMLAnchorElement>('a[href*="/user/"]');
         const info = child.querySelector('.pm-message-info small')?.textContent || '';
         const timestampText = info.split('/')[0]?.trim() || '';
-        const presentationText = Array.from(body.childNodes).map(node => pmPresentationText(node, baseUrl)).join('').trim();
+        const presentationText = normalizePmPresentationText(
+            Array.from(body.childNodes).map(node => pmPresentationText(node, baseUrl)).join('')
+        );
         messages.push({
             id: messageId,
             isSelf: child.classList.contains('pm-message-self'),
