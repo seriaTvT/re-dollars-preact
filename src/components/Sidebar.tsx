@@ -13,7 +13,11 @@ export function Sidebar() {
     return (
         <div id="dollars-sidebar">
             <div id="dollars-sidebar-search-container">
-                <div class="dollars-sidebar-search-row">
+                <form
+                    class="dollars-sidebar-search-row"
+                    autoComplete="off"
+                    onSubmit={(e) => e.preventDefault()}
+                >
                     <input
                         type="search"
                         id="dollars-sidebar-search-input"
@@ -26,7 +30,7 @@ export function Sidebar() {
                             ＋
                         </button>
                     )}
-                </div>
+                </form>
             </div>
             <ConversationList searchTerm={searchTerm} />
         </div>
